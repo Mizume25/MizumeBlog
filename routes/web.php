@@ -4,7 +4,7 @@ use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', IndexController::class);
+Route::get('/', IndexController::class)->name('home');;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {

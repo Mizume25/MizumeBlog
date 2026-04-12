@@ -26,7 +26,7 @@ export default function Welcome() {
                         /* CASO 1: Sesión Iniciada */
                         <Link
                             href={route('dashboard')}
-                            className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-6 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                            className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-6 font-medium text-primary-foreground transition-colors hover:bg-primary/10"
                         >
                             Ir al Dashboard
                         </Link>
@@ -42,14 +42,14 @@ export default function Welcome() {
 
                             <Link
                                 href={route('register')}
-                                className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background px-6 font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                                className="inline-flex h-12 items-center justify-center rounded-md bg-[#F3E5AB] px-6 font-semibold text-[#5D3A1A] transition-all hover:bg-[#2D1B0D] hover:text-[#D2B48C]"
                             >
                                 Crear Cuenta
                             </Link>
 
                             <Link
                                 href={route('dashboard')}
-                                className="inline-flex h-12 items-center justify-center rounded-md bg-secondary px-6 font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
+                                className="inline-flex h-12 items-center justify-center rounded-md border border-[#F3E5AB]/60 px-6 font-semibold text-[#F3E5AB] transition-all hover:bg-[#F3E5AB]/10"
                             >
                                 Entrar como Invitado
                             </Link>
