@@ -24,7 +24,7 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
 
-        const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
+    const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
         email: '',
         password: '',
         remember: false,
@@ -38,69 +38,97 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
-            <Head title="Log in" />
+        <AuthLayout title="MizumeBlog" description="Inicia session">
+            <Head title="Iniciar Session" />
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            required
-                            autoFocus
-                            tabIndex={1}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
-                        />
-                        <InputError message={errors.email} />
-                    </div>
+            {/* CONTENEDOR CENTRADO Y TARJETA MARRÓN */}
+            <div className="mx-auto w-full max-w-md rounded-lg bg-[#754C22] p-8 shadow-lg border border-border/50">
 
-                    <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
-                            {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
-                                    Forgot password?
-                                </TextLink>
-                            )}
+                <form className="flex flex-col gap-6" onSubmit={submit}>
+                    <div className="grid gap-6">
+                        {/* EMAIL */}
+                        <div className="grid gap-2 text-left">
+                            <Label htmlFor="email" className="text-white">Correo Electronico</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                required
+                                autoFocus
+                                tabIndex={1}
+                                autoComplete="email"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                placeholder="email@example.com"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20"
+                            />
+                            <InputError message={errors.email} />
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            tabIndex={2}
-                            autoComplete="current-password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
-                        />
-                        <InputError message={errors.password} />
+
+                        {/* PASSWORD */}
+                        <div className="grid gap-2 text-left">
+                            <div className="flex items-center">
+                                <Label
+                                    htmlFor="email"
+                                    className="text-white my-custom-class"
+                                >
+                                    Contraseña
+                                </Label>
+                                {canResetPassword && (
+                                    <TextLink href={route('password.request')} className="ml-auto text-sm text-white/70 hover:text-white" tabIndex={5}>
+                                        ¿Olvidaste tu contraseña?
+                                    </TextLink>
+                                )}
+                            </div>
+                            <Input
+                                id="password"
+                                type="password"
+                                required
+                                tabIndex={2}
+                                autoComplete="current-password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                placeholder="Password"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20"
+                            />
+                            <InputError message={errors.password} />
+                        </div>
+
+                        {/* REMEMBER ME */}
+                        <div className="flex items-center space-x-3">
+                            <Checkbox
+                                id="remember"
+                                name="remember"
+                                tabIndex={3}
+                                checked={data.remember}
+                                onCheckedChange={(checked) => setData('remember', !!checked)}
+                                className="border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-[#754C22] cursor-pointer"
+                            />
+                            <Label htmlFor="remember" className="text-white">Recuérdame</Label>
+                        </div>
+
+                        {/* BOTÓN LOGIN (BLANCO COMO EL DE LA WELCOME) */}
+                        <Button
+                            type="submit"
+                            className="mt-4 w-full bg-white text-[#754C22] hover:bg-white/90 font-bold h-12 cursor-pointer"
+                            tabIndex={4}
+                            disabled={processing}
+                        >
+                            {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            Iniciar Sesión
+                        </Button>
                     </div>
 
-                    <div className="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" tabIndex={3} />
-                        <Label htmlFor="remember">Remember me</Label>
+                    {/* REGISTRO */}
+                    <div className="text-white/70 text-center text-sm">
+                        ¿No tienes cuenta?{' '}
+                        <TextLink href={route('register')} className="text-white font-bold underline" tabIndex={5}>
+                            Regístrate
+                        </TextLink>
                     </div>
+                </form>
+            </div>
 
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
-                    </Button>
-                </div>
-
-                <div className="text-muted-foreground text-center text-sm">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
-                    </TextLink>
-                </div>
-            </form>
-
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && <div className="mt-4 text-center text-sm font-medium text-green-400">{status}</div>}
         </AuthLayout>
     );
 }

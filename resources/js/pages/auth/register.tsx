@@ -14,6 +14,7 @@ interface RegisterForm {
     email: string;
     password: string;
     password_confirmation: string;
+    [key: string]: any;
 }
 
 export default function Register() {
@@ -49,6 +50,7 @@ export default function Register() {
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
                             placeholder="Full name"
+                            className='bg-[#754C22]'
                         />
                         <InputError message={errors.name} className="mt-2" />
                     </div>
@@ -65,6 +67,7 @@ export default function Register() {
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
                             placeholder="email@example.com"
+                            className='bg-[#754C22]'
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -81,6 +84,7 @@ export default function Register() {
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Password"
+                            className='bg-[#754C22]'
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -97,13 +101,14 @@ export default function Register() {
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
                             placeholder="Confirm password"
+                            className='bg-[#754C22]'
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button type="submit" className="mt-2 w-full cursor-pointer" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Create account
+                        Crear Cuenta
                     </Button>
                 </div>
 
