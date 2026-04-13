@@ -7,7 +7,7 @@ function HomeSideBarLeft() {
             <section className="mb-[30px]">
 
                 <div className="mb-4">
-                    <img src="#" alt="Perfil" className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover" />
+                    <img src="IMG/Foto-Perfil.jpg" alt="Perfil" className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover" />
                 </div>
 
                 <h3

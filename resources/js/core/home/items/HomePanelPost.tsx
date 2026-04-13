@@ -26,18 +26,14 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
         <>
             {left ? (
                 <a href="#" className="no-underline block cursor-pointer group" data-id={post.id}>
-                    <article style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${post?.ruta}')`,
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover'
-                    }}
-                        className="featured-post  min-h-[360px] flex flex-col justify-between p-[30px]  shadow-[10px_4px_15px_rgba(255,255,255,0.1)] group anime">
+                    <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
+    className={styles.featuredPost}>
 
                         <div className="flex justify-end items-start mt-[-5px] mr-[10px]">
                             <div className="flex gap-[15px] flex-wrap justify-end">
                                 {/* Iteramos tags*/}
                                 {arr_Tags.map((p, index) => (
-                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm" key={index}>
+                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm " key={index}>
                                         {p}
                                     </span>
 
@@ -46,7 +42,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
                                 <span
                                     className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm">
                                     {
-                                     `Lectura de ${fecha}`
+                                        `Lectura de ${fecha}`
                                     }
                                 </span>
 
@@ -81,18 +77,14 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
                 </a>
             ) : (
                 <a href="#" className="no-underline block cursor-pointer group" data-id={post.id}>
-                    <article style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('${post?.ruta}')`,
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover'
-                    }}
-                        className= "featured-post text-white min-h-[360px] flex flex-col justify-between p-[30px] shadow-[10px_4px_15px_rgba(255,255,255,0.1)] group anime">
+                    <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
+    className={styles.featuredPost}>
 
                         <div className="flex justify-start items-start mt-[-5px] ml-[10px]">
                             <div className="flex gap-[15px] flex-wrap justify-start">
                                 {/* Iteramos tags*/}
                                 {arr_Tags.map((p, index) => (
-                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm" key={index}>
+                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm over:bg-[#4a4a4a]" key={index}>
                                         {p}
                                     </span>
                                 ))}
