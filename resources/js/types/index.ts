@@ -42,12 +42,14 @@ export interface User {
 //Interfaces para post Destacados
 export interface Post {
     titulo: string,
+    web_title?:string,
     genero: string,
     categoria: string,
     autor: string,
     fecha_publicacion:string,
     descripcion?:string,
     destacado:number
+    ruta: string,
 }
 
 

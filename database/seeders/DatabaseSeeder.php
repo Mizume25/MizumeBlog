@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         //Cargamos Funcion
         $this->seedCatalog();
 
+        //Informamos del seeder 
         $this->command->info('Post Cargados');
 
     }
