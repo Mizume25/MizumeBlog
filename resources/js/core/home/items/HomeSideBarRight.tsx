@@ -1,6 +1,27 @@
+import { type Post } from "@/types"
+import { ReactNode } from 'react';
 
 //Home Side Bar Right
-function HomeSideBarRight() {
+function HomeSideBarRight({ featured }: { featured: Post[] }) {
+
+    //Iteramos lista
+    const renderPost = (featured: Post[]): ReactNode => {
+    // 1. Cortamos el array desde el índice 3 hasta el final
+    // 2. Mapeamos ese nuevo array para devolver el JSX
+    return featured.slice(3).map((p) => (
+        <li 
+            key={p.id} 
+            className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left" 
+            data-id={p.id}
+        >
+            <a href={p?.ruta} className="text-white no-underline block">
+                {p.titulo}
+            </a>
+        </li>
+    ));
+};
+
+
     return (
         <aside id="sidebar-derecha" className="bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] 
     /* --- MÓVIL (Estado inicial: Lejos a la derecha) --- */
@@ -13,16 +34,13 @@ function HomeSideBarRight() {
             <section className="mb-[30px]">
                 <h3 id="title-right"
                     className="text-xl text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
-                    Posts Destacados
+                    Post Destacados
                 </h3>
                 <ul className="pl-0 text-center" id="list-right">
-                    <li
-                        className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left">
-                        <a href="../Post/Post_Destacados/TextosAntonioMachado.html"
-                            className="text-white no-underline block" id="itemOne">
-                            Escrutinio a Textos de Machado
-                        </a>
-                    </li>
+                    {
+                        renderPost(featured)
+                    }
+                    {/*
                     <li
                         className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]">
                         <a href="../Post/Post_Destacados/TextosStendhal.html" className="text-white no-underline block"
@@ -37,6 +55,7 @@ function HomeSideBarRight() {
                             Escrutinio a textos de Mallarme
                         </a>
                     </li>
+                        */}
                 </ul>
             </section>
 

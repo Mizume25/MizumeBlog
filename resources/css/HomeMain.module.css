@@ -1,3 +1,5 @@
+
+
 /* Base para el contenedor del artículo */
     .featured-post {
         position: relative;
@@ -23,25 +25,8 @@
     }
 
     /* Efecto de Zoom al hacer Hover en el enlace (group) */
-    .group:hover .featured-post::before {
+    .anime:hover .featured-post::before {
         transform: scale(1.05);
         /* Agranda la imagen un 5% */
     }
 
-    /* Definición de fondos específicos */
-    .fondo-articulo1::before {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/Layouts/Home/Ejemplo.jpg');
-        background-position: center;
-    }
-
-    .fondo-articulo2::before {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/Layouts/Home/Ejemplo.jpg');
-        background-position: center 12%;
-        /* Ajuste vertical */
-    }
-
-    .fondo-articulo3::before {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/Layouts/Home/Ejemplo.jpg');
-        background-position: center 20%;
-        /* Ajuste vertical */
-    }

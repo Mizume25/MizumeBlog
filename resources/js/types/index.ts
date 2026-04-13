@@ -41,6 +41,7 @@ export interface User {
 
 //Interfaces para post Destacados
 export interface Post {
+    id:number,
     titulo: string,
     web_title?:string,
     genero: string,

@@ -38,9 +38,9 @@ class HomeController extends Controller
     public function index()
     {   
         //Recibimos solo los post destacados
-        $featured = $this->getFeaturedPost();
+        $posts = $this->getFeaturedPost();
 
         //Retornamos el objeto filtrado
-        return Inertia::render('dashboard', compact('featured'));
+        return Inertia::render('dashboard', compact('posts'));
     }
 }
