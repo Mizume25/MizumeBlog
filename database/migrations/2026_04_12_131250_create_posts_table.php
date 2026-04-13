@@ -15,12 +15,14 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
+            $table->string('web_title')->nullable();
             $table->string('genero');
             $table->enum('categoria', ['Literatura', 'AnimeManga', 'Reflexiones']);
             $table->string('autor');
             $table->date('fecha_publicacion');
             $table->text('descripcion')->nullable();
             $table->boolean('destacado')->default(true);
+            $table->string('ruta')->nullable();
             $table->timestamps();
             
         });

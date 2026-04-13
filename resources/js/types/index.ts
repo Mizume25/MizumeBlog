@@ -40,12 +40,14 @@ export interface User {
 }
 
 //Interfaces para post Destacados
-export interface PostDestacados {
-    tag1: string;
-    tag2: string;
-    title: string;
-    leyenda: string;
-    ruta: string;
+export interface Post {
+    titulo: string,
+    genero: string,
+    categoria: string,
+    autor: string,
+    fecha_publicacion:string,
+    descripcion?:string,
+    destacado:number
 }
 
 

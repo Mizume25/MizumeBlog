@@ -2,22 +2,37 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    //1. Seeder Primero de mis primeros psot 
+    private function seedCatalog(): void
     {
-        // User::factory(10)->create();
+        $json_date = file_get_contents('database/data/Contenido.json');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $arr_post = json_decode($json_date, true);
+
+        if (!empty($arr_post)) {
+
+            foreach ($arr_post as $data) {
+
+                Post::create($data);
+            }
+        }
+
+
+    }
+
+    public function run(): void 
+    {   
+        //Cargamos Funcion
+        $this->seedCatalog();
+
+        $this->command->info('Post Cargados');
+
     }
 }

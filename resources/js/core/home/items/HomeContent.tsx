@@ -1,8 +1,8 @@
 import '@/../css/HomeMain.module.css';
-import {type PostDestacados} from '@/types';
+import {type Post } from '@/types';
 
 //CONTENIDO GENERAL
-function HomeContent({FirstPost, SecondPost, ThreePost} : {FirstPost:PostDestacados, SecondPost:PostDestacados, ThreePost:PostDestacados}) {
+function HomeContent({FirstPost, SecondPost, ThreePost} : {FirstPost:Post, SecondPost:Post, ThreePost:Post}) {
   return (
         <div className="p-0 m-0 bg-transparent flex flex-col gap-[5px]">
 

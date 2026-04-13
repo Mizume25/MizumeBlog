@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import HomeHeader from '@/core/home/items/HomeHeader';
 import HomeSideBarLeft from '@/core/home/items/HomeSideBarLeft';
 import HomeSideBarRight from '@/core/home/items/HomeSideBarRight';
-import {type PostDestacados} from '@/types';
+import {type Post} from '@/types';
 //Variable de estado 
 
 
