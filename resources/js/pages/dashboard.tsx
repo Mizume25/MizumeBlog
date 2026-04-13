@@ -2,7 +2,12 @@ import { Head } from '@inertiajs/react';
 import HomeHeader from '@/core/home/items/HomeHeader';
 import HomeSideBarLeft from '@/core/home/items/HomeSideBarLeft';
 import HomeSideBarRight from '@/core/home/items/HomeSideBarRight';
-import HomeContent from '@/core/home/items/HomeContent';
+import {type PostDestacados} from '@/types';
+//Variable de estado 
+
+
+
+//Contenido del Home
 export default function Dashboard() {
     return (
         <>
