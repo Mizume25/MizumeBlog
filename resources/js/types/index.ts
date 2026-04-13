@@ -48,8 +48,8 @@ export interface Post {
     autor: string,
     fecha_publicacion:string,
     descripcion?:string,
-    destacado:number
-    ruta: string,
+    destacado: 1 | 0
+    ruta?: string,
 }
 
 
