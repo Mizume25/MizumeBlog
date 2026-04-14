@@ -4,7 +4,7 @@ import HomeSideBarLeft from '@/core/home/items/HomeSideBarLeft';
 import HomeSideBarRight from '@/core/home/items/HomeSideBarRight';
 import { type Post } from '@/types';
 import HomeContent from '@/core/home/items/HomeContent';
-import { getRandomInt } from '@/lib/utils';
+import { getRandomInt, getRandomPost } from '@/lib/utils';
 import HomeButton from '@/core/home/items/HomeButton';
 import { useState, useEffect } from 'react';
 import { ReactNode } from 'react';
@@ -14,33 +14,18 @@ export interface SideBarChange { // HomeSideBarRight
     sidebar: string,
     title: string,
     item: string[],
-    featured: Post[],
+    featured: Post[] | undefined,
 }
-
-
 
 //OBJETOS PARA LOS COMPONENTES 
 const btnId: string = "buttonMenu"; // HomeButton
 
-
-
 //Contenido del Home
 export default function Dashboard({ posts }: { posts: Post[] }) {
 
-    
+    const MAX_POST : number = 6;
 
-    //DECLARAMOS UN SET
-    const webPosts = new Set<Post>();
-    const max = Math.min(6, posts.length); // Seguridad: no pedir más de los que existen
-
-    //ITERAMOS SET DE POSTS
-    while (webPosts.size < max) {
-        const id = getRandomInt(0, posts.length - 1);
-        webPosts.add(posts[id]); // Si el post ya existe, el Set lo ignora automáticamente
-    }
-
-    //CREAMOS UN ARRAY POSTS NUEVO
-    const featured: Post[] = Array.from(webPosts);
+    const featured : Post[] | undefined = getRandomPost(MAX_POST, posts);
 
     const ITEMS_SIDEBAR: SideBarChange = { // HomeSideBarRight
         sidebar: "sidebar-derecha",
@@ -70,7 +55,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
 
                     {/*SideBar derecho*/}
-                    <HomeSideBarRight ITEMS_SIDEBAR={ITEMS_SIDEBAR} />
+                    <HomeSideBarRight ITEMS_SIDEBAR={ITEMS_SIDEBAR } />
 
                 </main>
             </>

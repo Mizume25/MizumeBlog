@@ -31,3 +31,26 @@ export const getRandomInt = (min: number, max: number): number => {
 };
 
 
+// FUNCION: Obtener post random 
+export const getRandomPost = (max: number, posts: Post[]): Post[] | undefined => { 
+
+    const webPosts = new Set<Post>();
+    try {
+
+        if(max < 0 || max > posts.length) throw new Error("El numero maximo no es valido");
+        if(posts == null) throw new Error("El array de Post es nulo");
+
+        const limit = Math.min(max, posts.length); 
+            while (webPosts.size < limit) {
+                const id = getRandomInt(0, posts.length - 1);
+                webPosts.add(posts[id]); 
+            }
+
+        const featured: Post[] = Array.from(webPosts);
+
+        return featured;
+
+    } catch (e) {
+        console.log(e);
+    }
+};
