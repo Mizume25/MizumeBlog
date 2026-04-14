@@ -3,7 +3,7 @@ import { Post } from '@/types';
 
 //GENERAR FECHA
 const getMounth = (data: string | undefined): string => {
-    let d = new Date(data ?? "");
+    let d = new Date(data ?? "01-01-1999");
 
     let name: string = new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(d);
     return name;

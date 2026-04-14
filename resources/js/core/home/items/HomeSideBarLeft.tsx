@@ -24,7 +24,7 @@ function HomeSideBarLeft() {
                     </li>
                     <li
                         className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]">
-                        <a href="../Archivador/ArchivadorMain.html" className="text-white no-underline">
+                        <a href="#" className="text-white no-underline">
                             🐢 Archivador
                         </a>
                     </li>

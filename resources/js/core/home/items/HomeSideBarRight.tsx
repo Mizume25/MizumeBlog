@@ -1,16 +1,31 @@
 import { type Post } from "@/types"
-import { ReactNode } from 'react';
-import { SideBarChange } from "@/pages/dashboard";
 
+//Creamos un objeto
 
 //Home Side Bar Right
-function HomeSideBarRight({ ITEMS_SIDEBAR }: { ITEMS_SIDEBAR: SideBarChange }) {
+function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }) {
 
+    //FUNCION QUE RENDERIZA POST
+    const renderPost = (sidebarPosts: Post[] | undefined) => {
 
+        return sidebarPosts?.map((post, index) => {
+            return (
+                <li
+                    key={post.id || index} 
+                    className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]"
+                >
+                    <a href={post?.ruta} className="text-white no-underline block">
+                        {post.titulo}
+                    </a>
+                </li>
+            );
+        });
+
+    }
 
 
     return (
-        <aside id={ITEMS_SIDEBAR.sidebar} className="bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] 
+        <aside className="bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] 
     /* --- MÓVIL (Estado inicial: Lejos a la derecha) --- */
     fixed inset-y-0 right-0 z-40 w-72 
     transform translate-x-full lg:transform-none duration-200 ease-out
@@ -19,12 +34,12 @@ function HomeSideBarRight({ ITEMS_SIDEBAR }: { ITEMS_SIDEBAR: SideBarChange }) {
     lg:static lg:translate-x-0 lg:w-full lg:block lg:sticky lg:top-6 lg:z-auto">
 
             <section className="mb-[30px]">
-                <h3 id={ITEMS_SIDEBAR.title}
+                <h3
                     className="text-xl text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
                     Post Destacados
                 </h3>
                 <ul className="pl-0 text-center" id="list-right">
-
+                    {renderPost(sidebarPosts)}
                     {/*
                     <li
                         className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]">
