@@ -1,4 +1,5 @@
 
+import React from "react";
 // SideBar Left
 function HomeSideBarLeft() {
     return (
@@ -41,4 +42,4 @@ function HomeSideBarLeft() {
     )
 }
 
-export default HomeSideBarLeft
+export default React.memo(HomeSideBarLeft);

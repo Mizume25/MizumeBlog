@@ -1,5 +1,5 @@
 import { type Post } from "@/types"
-
+import React from "react";
 //Creamos un objeto
 
 //Home Side Bar Right
@@ -87,4 +87,4 @@ function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }
     )
 }
 
-export default HomeSideBarRight
+export default React.memo(HomeSideBarRight);

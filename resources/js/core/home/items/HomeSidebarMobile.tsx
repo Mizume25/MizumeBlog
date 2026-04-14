@@ -1,16 +1,31 @@
-
+import React from "react"
 //SIDE BAR RESPONSIVE
-function HomeSidebarMobile({onClose, isOpen} : {onClose: () => void , isOpen:boolean}) {
+function HomeSidebarMobile({isOpen} : {isOpen:boolean}) {
+  interface Seccion {
+    nombre: string;
+    ruta: string;
+}
 
-    console.log("Hola desde el responsive");
-    console.log(isOpen);
+// 2. Tipas la constante como un array de esa interfaz
+const secciones: Seccion[] = [
+    { nombre: 'Sobre Autores', ruta: '/sobre' },
+    { nombre: 'Archivador', ruta: '/archivo'},
+    { nombre: 'Intereses', ruta: '/intereses' },
+];
+
+const netWorks : Seccion[] = [
+    {nombre: "Twitter", ruta:'#'},
+    {nombre: "Instagram" , ruta:'#'},
+    {nombre: "GitHub", ruta:'#'},
+    {nombre: "LinkedIn", ruta:'#'}
     
+]
   return (
     <>
       {/* 1. Backdrop (Fondo oscuro para cerrar al hacer clic fuera) */}
-      <div 
+      <div  
         className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        onClick={onClose}
+       
       />
 
       {/* 2. El Sidebar */}
@@ -24,7 +39,7 @@ function HomeSidebarMobile({onClose, isOpen} : {onClose: () => void , isOpen:boo
         
         {/* Botón para cerrar (Opcional pero recomendado en móvil) */}
         <button 
-          onClick={onClose}
+           
           className="text-white mb-6 text-sm font-light opacity-70 hover:opacity-100"
         >
           ✕ Cerrar
@@ -36,8 +51,16 @@ function HomeSidebarMobile({onClose, isOpen} : {onClose: () => void , isOpen:boo
             Post Destacados
           </h3>
           <ul className="pl-0 flex flex-col gap-2">
-             {/* Aquí mapearás tus posts dinámicos */}
-             <li className="text-white/80 text-sm italic">Cargando noticias...</li>
+            {secciones.map((item) => 
+            
+              <li key={item.nombre}
+              className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mb-0">
+                        <a href={item.ruta} className="text-white no-underline">
+                            🐢 {item.nombre}
+                        </a>
+                    </li>
+            
+            )} 
           </ul>
         </section>
 
@@ -47,13 +70,13 @@ function HomeSidebarMobile({onClose, isOpen} : {onClose: () => void , isOpen:boo
             Sígueme
           </h3>
           <div className="flex flex-col gap-3">
-            {['Twitter', 'Instagram', 'LinkedIn', 'GitHub'].map((red) => (
+            {netWorks.map((red) => (
               <a 
-                key={red}
-                href="#" 
+                key={red.nombre}
+                href={red.ruta}
                 className="py-[10px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] text-center transition-colors hover:bg-[rgb(129,106,84)] no-underline text-sm"
               >
-                🐢 {red}
+                🐢 {red.nombre}
               </a>
             ))}
           </div>
@@ -63,4 +86,4 @@ function HomeSidebarMobile({onClose, isOpen} : {onClose: () => void , isOpen:boo
   )
 }
 
-export default HomeSidebarMobile
+export default React.memo(HomeSidebarMobile);

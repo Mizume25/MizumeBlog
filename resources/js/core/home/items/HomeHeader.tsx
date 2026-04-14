@@ -1,4 +1,4 @@
-
+import React from "react";
 // HEADER DEL CONTENIDO 
 function HomeHeader() {
     return (
@@ -13,4 +13,4 @@ function HomeHeader() {
     )
 }
 
-export default HomeHeader
+export default React.memo(HomeHeader);

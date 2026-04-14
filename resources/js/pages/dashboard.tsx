@@ -1,81 +1,95 @@
 import { Head } from '@inertiajs/react';
-import HomeHeader from '@/core/home/items/HomeHeader';
-import HomeSideBarLeft from '@/core/home/items/HomeSideBarLeft';
-import HomeSideBarRight from '@/core/home/items/HomeSideBarRight';
 import { type Post } from '@/types';
-import HomeContent from '@/core/home/items/HomeContent';
 import { getRandomInt, getRandomPost } from '@/lib/utils';
-import HomeButton from '@/core/home/items/HomeButton';
-import { useState, useEffect } from 'react';
-import { ReactNode } from 'react';
-import HomeSidebarMobile from '@/core/home/items/HomeSidebarMobile';
-
+import { useState, useEffect , useMemo , useCallback } from 'react';
+import { 
+    HomeHeader, 
+    HomeSideBarLeft, 
+    HomeSideBarRight, 
+    HomeContent, 
+    HomeButton, 
+    HomeSidebarMobile 
+} from '../core/home/items';
+ 
 //INTERFACES PARA LOS COMPONENTES
 export interface SideBarChange { // HomeSideBarRight
     sidebar: string,
     title: string,
-    list: Post[] | undefined ,
+    list: Post[] | undefined,
 }
 
 //Interfaz de sidebar Defailt
 export interface DefaultSideBar {
     title: string,
-    items:string[],
-    routes:string[],
+    items: string[],
+    routes: string[],
 }
 
-const DEFAULT : DefaultSideBar = {
+const DEFAULT: DefaultSideBar = {
     title: "Secciones",
-    items: ["🐢 Sobre Autores"," 🐢 Archivador","🐢 Intereses"],
-    routes: ["#","#","#"],
+    items: ["🐢 Sobre Autores", " 🐢 Archivador", "🐢 Intereses"],
+    routes: ["#", "#", "#"],
 }
 
-//OBJETOS PARA LOS COMPONENTES 
-const btnId: string = "buttonMenu"; // HomeButton
-
-//Contenido del Home
-export default function Dashboard({ posts }: { posts: Post[] }) {
-
-    function useMediaQuery(query : string) {
+// Versión SUPER SIMPLE de useMediaQuery
+    const useMediaQuery = (query:string) => {
         const [matches, setMatches] = useState(false);
 
         useEffect(() => {
             const media = window.matchMedia(query);
+
+            // Actualizar el estado inicial
             if (media.matches !== matches) {
                 setMatches(media.matches);
             }
+
+            // Definir el listener para cambios de pantalla
             const listener = () => setMatches(media.matches);
+
+            // Soporte para navegadores modernos y antiguos
             media.addEventListener('change', listener);
+
             return () => media.removeEventListener('change', listener);
         }, [matches, query]);
 
         return matches;
-    }
+    };
 
-    const CONTENT:boolean = useMediaQuery("(max-width: 1024px)");
-
+//Contenido del Home
+export default function Dashboard({ posts }: { posts: Post[] }) {
+    const MAX_POST: number = 6;
     const [menuAbierto, setMenuAbierto] = useState(false);
 
-    const MAX_POST: number = 6;
-
-    const featured: Post[] | undefined = getRandomPost(MAX_POST, posts);
-
-    const mainPosts : Post[] | undefined = featured?.slice(0, 3);
-
-   
     
-    // Del tercero en adelante para el sidebar
-    const sidebarPosts : Post[] | undefined  = featured?.slice(3);
+    const { mainPosts, sidebarPosts } = useMemo(() => {
+        const featured = getRandomPost(MAX_POST, posts);
+        return {
+            mainPosts: featured?.slice(0, 3),
+            sidebarPosts: featured?.slice(3)
+        };
+    }, [posts]); // Solo se recalcula si 'posts' cambia
+    
+    const CONTENT = useMediaQuery("(max-width: 1024px)");
+
+   useCallback
+
+    // Botón toggle simple
+    const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        setMenuAbierto(prev => !prev);
+    }, []);
 
    
+
     return (
         <>
             {/* Head de el Home*/}
-            <Head title='Home'></Head>
+            <Head title='Home' ></Head>
 
             {/* Bottton del Responsive */}
-            <HomeButton btnId={btnId} />
-
+            <HomeButton onButtonClick={handleButtonClick} />
             <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[1fr_3fr_1fr] gap-8 items-start">
 
                 {/*Header Layout*/}
@@ -89,7 +103,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                 <HomeContent mainPosts={mainPosts} />
 
                 {CONTENT && (
-                    <HomeSidebarMobile isOpen={menuAbierto} onClose={() => setMenuAbierto(false)}/>     
+                    <HomeSidebarMobile isOpen={menuAbierto} />
                 )}
 
                 {/*SideBar derecho*/}

@@ -1,10 +1,11 @@
 
+import React from 'react';
 import { type Post } from '@/types';
 import { getRandomInt } from '@/lib/utils';
 import HomePanelPost from './HomePanelPost';
 //CONTENIDO GENERAL
 function HomeContent({ mainPosts }: { mainPosts: Post[] | undefined}) {
-
+    
     return (
         <div className="p-0 m-0 bg-transparent flex flex-col gap-[0px]">
 
@@ -18,4 +19,4 @@ function HomeContent({ mainPosts }: { mainPosts: Post[] | undefined}) {
     )
 }
 
-export default HomeContent
+export default React.memo(HomeContent);
