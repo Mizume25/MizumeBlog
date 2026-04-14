@@ -8,95 +8,26 @@ import { getRandomInt } from '@/lib/utils';
 import HomeButton from '@/core/home/items/HomeButton';
 import { useState, useEffect } from 'react';
 import { ReactNode } from 'react';
-//Variable de estado 
 
-//Interfaces de Ids
-export interface SideBarChange {
+//INTERFACES PARA LOS COMPONENTES
+export interface SideBarChange { // HomeSideBarRight
     sidebar: string,
     title: string,
+    item: string[],
+    featured: Post[],
 }
 
-export interface itemID {
-    item: string[];
-}
 
-const btnId: string = "buttonMenu";
 
-//Creamos el objeto
-const ID_SIDE_BAR: SideBarChange = {
-    sidebar: "sidebar-derecha",
-    title: "title-right"
-}
+//OBJETOS PARA LOS COMPONENTES 
+const btnId: string = "buttonMenu"; // HomeButton
 
-const ID_ITEM: itemID = {
-    item: ["itemOne", "itemTwo", "itemThree"],
-}
+
 
 //Contenido del Home
 export default function Dashboard({ posts }: { posts: Post[] }) {
-    const [modoSidebar, setModoSidebar] = useState<'posts' | 'secciones'>('posts');
-    // --- FUNCIONES DE CONTENIDO ---
-    useEffect(() => {
-        //FUNCIONALIDAD DEL SIDEBAR
-        const btn = document.getElementById('buttonMenu') as HTMLButtonElement;
-        const sidebar = document.getElementById('sidebar-derecha') as HTMLElement;
-        const title = document.getElementById('title-right') as HTMLHeadingElement;
-        const itemOne = document.getElementById('itemOne') as HTMLAnchorElement; // Si es un <a>
-        const itemTwo = document?.getElementById('itemTwo') as HTMLAnchorElement;
-        const itemThree = document?.getElementById('itemThree') as HTMLAnchorElement;
 
-        // Definimos el breakpoint de 1024px (el mismo que lg: en Tailwind)
-        const isMobile = window.matchMedia("(max-width: 1023px)");
-        
-
-        const setSectionsContent = () => {
-            title.textContent = "Secciones";
-            itemOne.textContent = "🐢 Sobre Autores";
-            itemTwo.textContent = "🐢 Archivador";
-            itemThree.textContent = "🐢 Intereses";
-            // Aquí asignarías los href a las secciones del blog
-            itemOne.href = "#sobre-autores";
-            itemTwo.href = "#archivador";
-            itemThree.href = "#intereses";
-        };
-
-        // --- LÓGICA DE EVENTOS ---
-
-        btn.addEventListener('click', () => {
-            // Solo ejecutamos lógica si estamos en resolución móvil
-            if (isMobile.matches) {
-                // Hacemos el movimiento (si tiene la clase se la quita, si no se la pone)
-                sidebar.classList.toggle('translate-x-full');
-
-                // Comprobamos si el sidebar SE ACABA DE ABRIR
-                // Si NO tiene la clase 'translate-x-full', significa que está en pantalla
-                if (!sidebar.classList.contains('translate-x-full')) {
-                   setModoSidebar('secciones');
-                } else {
-                    // Cuando se cierra, podemos devolverlo al estado original
-                   setModoSidebar('posts');
-                }
-            }
-        });
-
-        // Detectar cuando el usuario cambia el tamaño de la ventana (Resize)
-        isMobile.addEventListener('change', (e) => {
-            if (!e.matches) {
-                // Si pasamos a Desktop (pantalla grande):
-                 setModoSidebar('posts'); // Siempre mostrar posts en PC
-                sidebar.classList.remove('translate-x-full'); // Asegurar que no esté movido
-            } else {
-                sidebar.classList.add('translate-x-full');
-                setModoSidebar('posts');
-
-            }
-        });
-
-        // Al cargar la página por primera vez, si es PC, forzamos contenido de posts
-        if (!isMobile.matches) {
-            setModoSidebar('posts');
-        }
-    }, []);
+    
 
     //DECLARAMOS UN SET
     const webPosts = new Set<Post>();
@@ -111,6 +42,12 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
     //CREAMOS UN ARRAY POSTS NUEVO
     const featured: Post[] = Array.from(webPosts);
 
+    const ITEMS_SIDEBAR: SideBarChange = { // HomeSideBarRight
+        sidebar: "sidebar-derecha",
+        title: "title-right",
+        item: ["itemOne", "itemTwo", "itemThree"],
+        featured: featured
+    }
         return (
             <>
                 {/* Head de el Home*/}
@@ -133,7 +70,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
 
                     {/*SideBar derecho*/}
-                    <HomeSideBarRight featured={featured} ID_SIDE_BAR={ID_SIDE_BAR} ID_ITEM={ID_ITEM} modo={modoSidebar} />
+                    <HomeSideBarRight ITEMS_SIDEBAR={ITEMS_SIDEBAR} />
 
                 </main>
             </>
