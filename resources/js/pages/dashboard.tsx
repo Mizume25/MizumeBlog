@@ -25,11 +25,7 @@ export interface DefaultSideBar {
     routes: string[],
 }
 
-const DEFAULT: DefaultSideBar = {
-    title: "Secciones",
-    items: ["🐢 Sobre Autores", " 🐢 Archivador", "🐢 Intereses"],
-    routes: ["#", "#", "#"],
-}
+
 
 // Versión SUPER SIMPLE de useMediaQuery
     const useMediaQuery = (query:string) => {
