@@ -9,7 +9,7 @@ import {
     HomeContent, 
     HomeButton, 
     HomeSidebarMobile 
-} from '../core/home/items';
+} from '../core/home';
  
 //INTERFACES PARA LOS COMPONENTES
 export interface SideBarChange { // HomeSideBarRight

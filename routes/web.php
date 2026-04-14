@@ -5,13 +5,15 @@ use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', IndexController::class)->name('home');;
-
 Route::middleware(['auth'])->group(function () {
     
 });
 
+//Renderizamos dashboard
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+//Renderizamos post
+Route::get('post/show/{id}',[HomeController::class, 'show'])->name('post.show');
 
 
 require __DIR__.'/settings.php';

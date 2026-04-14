@@ -25,7 +25,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean }
 
         <>
             {left ? (
-                <a href="#" className="no-underline block cursor-pointer group" data-id={post?.id}>
+                <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
                     <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
     className={styles.featuredPost}>
 
@@ -76,7 +76,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean }
                     </article>
                 </a>
             ) : (
-                <a href="#" className="no-underline block cursor-pointer group" data-id={post?.id}>
+                <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
                     <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
     className={styles.featuredPost}>
 

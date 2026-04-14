@@ -11,4 +11,6 @@ class IndexController extends Controller
     {
         return Inertia::render('welcome');
     }
+
+
 }
