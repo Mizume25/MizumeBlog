@@ -81,7 +81,11 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
         setMenuAbierto(prev => !prev);
     }, []);
 
-   
+    //Boton de solo cerrar 
+    const handleClose = useCallback(() => {
+    setMenuAbierto(false);
+    }, []);
+
 
     return (
         <>
@@ -103,7 +107,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                 <HomeContent mainPosts={mainPosts} />
 
                 {CONTENT && (
-                    <HomeSidebarMobile isOpen={menuAbierto} />
+                    <HomeSidebarMobile isOpen={menuAbierto} onClose={handleClose}/>
                 )}
 
                 {/*SideBar derecho*/}

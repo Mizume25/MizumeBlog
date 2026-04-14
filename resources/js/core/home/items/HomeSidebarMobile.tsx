@@ -1,6 +1,6 @@
 import React from "react"
 //SIDE BAR RESPONSIVE
-function HomeSidebarMobile({isOpen} : {isOpen:boolean}) {
+function HomeSidebarMobile({isOpen , onClose} : {isOpen:boolean, onClose: () => void}) {
   interface Seccion {
     nombre: string;
     ruta: string;
@@ -20,10 +20,17 @@ const netWorks : Seccion[] = [
     {nombre: "LinkedIn", ruta:'#'}
     
 ]
+
+  const handleClick = () => {
+      onClose()
+  };
+
+  
+
   return (
     <>
       {/* 1. Backdrop (Fondo oscuro para cerrar al hacer clic fuera) */}
-      <div  
+      <div  onClick={onClose}
         className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
        
       />
@@ -38,9 +45,9 @@ const netWorks : Seccion[] = [
       `}>
         
         {/* Botón para cerrar (Opcional pero recomendado en móvil) */}
-        <button 
+        <button onClick={handleClick}
            
-          className="text-white mb-6 text-sm font-light opacity-70 hover:opacity-100"
+          className="text-white mb-6 text-sm font-light opacity-70 hover:opacity-100 cursor-pointer"
         >
           ✕ Cerrar
         </button>
