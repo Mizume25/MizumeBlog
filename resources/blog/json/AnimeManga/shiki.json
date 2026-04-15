@@ -1,0 +1,26 @@
+[
+    {
+       "id": "puntos-capitales",
+       "titulo": "Puntos Capitales"
+    },
+    {
+        "id":"notas-de-abril",
+        "titulo":"Notas de Abril"
+    },
+    {
+        "id":"notas-de-mayo",
+        "titulo":"Notas de Mayo"
+    },
+    {
+        "id":"alegorias-y-dramaturgia",
+        "titulo":"Alegorías y dramaturgia"
+    },
+    {
+        "id":"concatenación-y-conclusiones-generales",
+        "titulo":"Concatenación y conclusiones generales"
+    },
+    {
+        "id":"apuntes-finales",
+        "titulo":"Apuntes Finales"
+    }
+]

@@ -1,0 +1,6 @@
+//FUNCIONES DE UTILIDAD PARA LAS VISTAS
+
+//FUNCION QUE FILTRA ARCHIVO json
+export const findRoute = () => {
+
+}

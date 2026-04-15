@@ -1,45 +1,69 @@
-//SIDE BAR INDEX
-function PostSideBarRight({ index }: { index: string[] }) {
 
-    let count: number = 0;
+//Indice de contenido
+function PostSideBarRight() {
+  return (
+    <aside className="lg:col-span-3 space-y-6 font-['Lexend']">
+                <div className="bg-[#2A1B12]/95 p-8 rounded-lg border border-white/10 shadow-2xl text-center">
+                    <div className="relative inline-block mb-4">
+                        <img src="IMG/Foto-Perfil.jpg"
+                            className="w-28 h-28 rounded-full border-4 border-[#C8AD7F] object-cover mx-auto shadow-xl"
+                            alt="Gabriel" />
+                    </div>
 
-    return (
+                    <h3 className="text-white text-2xl font-bold mb-1">Gabriel</h3>
+                    <p className="text-[#A18B75] text-sm mb-6 uppercase tracking-widest">Blog de Lecturas</p>
 
-        <aside id="sidebarIndex" className="fixed inset-y-0 left-0 z-[60] w-80 bg-[#2A1B12] p-8 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out 
-             lg:relative lg:translate-x-0 lg:col-span-3 lg:bg-[#2A1B12]/95 lg:block lg:transform-none
-             lg:sticky lg:top-10 lg:h-fit lg:p-8 lg:pr-6 lg:ml-10  border border-white/10">
+                    <div className="flex justify-center gap-3">
+                        <a href="#"
+                            className="w-10 h-10 bg-[#3498db] hover:bg-[#2980b9] hover:-translate-y-1 transition-all duration-300 rounded-full flex items-center justify-center text-black font-bold text-xs shadow-md">
+                            IN
+                        </a>
+                        <a href="#"
+                            className="w-10 h-10 bg-[#3498db] hover:bg-[#2980b9] hover:-translate-y-1 transition-all duration-300 rounded-full flex items-center justify-center text-black font-bold text-xs shadow-md">
+                            TW
+                        </a>
+                        <a href="#"
+                            className="w-10 h-10 bg-[#3498db] hover:bg-[#2980b9] hover:-translate-y-1 transition-all duration-300 rounded-full flex items-center justify-center text-black font-bold text-xs shadow-md">
+                            GH
+                        </a>
+                    </div>
+                </div>
 
-            <button id="closeSidebar"
-                className="lg:hidden absolute top-4 right-4 text-[#C8AD7F] hover:text-white transition-colors">
-                <i className="fas fa-times text-2xl"></i>
-            </button>
+                <div className="bg-[#2A1B12]/95 p-6 rounded-lg border border-white/10 shadow-2xl">
+                    <h4
+                        className="text-white text-lg font-bold mb-4 border-b border-[#C8AD7F]/30 pb-2 flex items-center gap-2">
+                        <span className="text-[#C8AD7F]">★</span> Artículos Destacados
+                    </h4>
 
-            <h3 className="text-white text-2xl font-bold border-b-2 border-[#C8AD7F]/40 pb-3 mb-6 tracking-tight">
-                Índice de Contenido
-            </h3>
-
-            <ul className="space-y-6 text-[#A18B75]">
-                
-
-                {index.map((p,i) =>
-                    <li
-                        className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
-                        <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                        <a href={`#section${i + 1}`} className="text-lg font-medium group-hover:text-white transition-colors">{p}</a>
-                    </li>
-
-                 
-                )}
-
-                <li
-                    className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer border-t border-white/10 pt-4">
-                    <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                    <a href="#" className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A
-                        HOME </a>
-                </li>
-            </ul>
-        </aside>
-    )
+                    <ul className="space-y-3">
+                        <li>
+                            <a href="#"
+                                className="group flex items-center gap-3 text-[#A18B75] hover:text-white transition-all duration-300 hover:translate-x-2">
+                                <span
+                                    className="w-1.5 h-1.5 bg-[#C8AD7F] rounded-full group-hover:scale-150 transition-transform"></span>
+                                <span className="text-sm font-medium">Análisis de la narrativa en Shiki</span>
+                            </a>
+                        </li>
+                        <li className="border-t border-white/5 pt-3">
+                            <a href="#"
+                                className="group flex items-center gap-3 text-[#A18B75] hover:text-white transition-all duration-300 hover:translate-x-2">
+                                <span
+                                    className="w-1.5 h-1.5 bg-[#C8AD7F] rounded-full group-hover:scale-150 transition-transform"></span>
+                                <span className="text-sm font-medium">El simbolismo de los Sotoba</span>
+                            </a>
+                        </li>
+                        <li className="border-t border-white/5 pt-3">
+                            <a href="#"
+                                className="group flex items-center gap-3 text-[#A18B75] hover:text-white transition-all duration-300 hover:translate-x-2">
+                                <span
+                                    className="w-1.5 h-1.5 bg-[#C8AD7F] rounded-full group-hover:scale-150 transition-transform"></span>
+                                <span className="text-sm font-medium">Filosofía y Muerte en el Manga</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+  )
 }
 
 export default PostSideBarRight
