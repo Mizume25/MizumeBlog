@@ -2,10 +2,10 @@
 //Indice de contenido
 function PostSideBarRight() {
   return (
-    <aside className="lg:col-span-3 space-y-6 font-['Lexend']">
+    <aside className="lg:col-span-3 space-y-6 ">
                 <div className="bg-[#2A1B12]/95 p-8 rounded-lg border border-white/10 shadow-2xl text-center">
                     <div className="relative inline-block mb-4">
-                        <img src="IMG/Foto-Perfil.jpg"
+                        <img src="/IMG/Foto-Perfil.jpg"
                             className="w-28 h-28 rounded-full border-4 border-[#C8AD7F] object-cover mx-auto shadow-xl"
                             alt="Gabriel" />
                     </div>

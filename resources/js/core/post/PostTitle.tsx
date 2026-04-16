@@ -1,8 +1,5 @@
 
-//Titulo de el articulo
-function PostTitle({ title, data, webtitle, autor }: { title: string, data: string, webtitle: string | undefined, autor: string }) {
-
-    const transformarFecha = (data :string) => {
+const transformarFecha = (data :string) => {
         // 1. Creamos el objeto fecha (asegurándote de que el string sea YYYY-MM-DD)
         const fecha = new Date(data);
 
@@ -12,7 +9,11 @@ function PostTitle({ title, data, webtitle, autor }: { title: string, data: stri
             month: 'long',
             year: 'numeric'
         }).format(fecha);
-    };
+};
+
+//Titulo de el articulo
+function PostTitle({data, webtitle, autor }: { data: string, webtitle: string | undefined, autor: string }) {
+
 
     let newDate:string = transformarFecha(data);
 
@@ -22,9 +23,9 @@ function PostTitle({ title, data, webtitle, autor }: { title: string, data: stri
     return (
         <header className="px-8 pb-4 text-center">
             <div className="bg-[#C8AD7F] py-8 px-6 rounded-xl shadow-lg mb-6 relative">
-                <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">
-                    {title}
-                    <span className="text-2xl md:text-3xl opacity-90">{webtitle || `Lectura de ${autor}`}</span>
+                <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight drop-shadow-md drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+               
+                   { webtitle || `Lectura de ${autor}`}
                 </h1>
 
             </div>

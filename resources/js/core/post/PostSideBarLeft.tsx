@@ -1,14 +1,24 @@
 
 //Interfaz del Indice
-interface Index {
-    id:string,
-    title:string,
-}
+
+import { Index } from "@/pages/post/show";
 
 //SIDE BAR INDEX
-function PostSideBarLeft({ index }: { index: Index[] }) {
+function PostSideBarLeft({ list, onFindID}: { list: Index[], onFindID: (id: string) => void }) {
 
-    let count: number = 0;
+    const handleID = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // 1. Evitamos que el enlace intente navegar o recargar la página
+    e.preventDefault();
+    
+    // 2. Accedemos al href del elemento que tiene el onClick (el <a>)
+    const href = e.currentTarget.getAttribute('href'); 
+    
+    // 3. Limpiamos el ID (por ejemplo, si el href es "#123", quitamos el "#")
+    if (href) {
+        const id = href.replace('#', ''); 
+        onFindID(id);
+    }
+};
 
     return (
 
@@ -28,11 +38,11 @@ function PostSideBarLeft({ index }: { index: Index[] }) {
             <ul className="space-y-6 text-[#A18B75]">
                 
 
-                {index.map((p,i) =>
-                    <li
+                {list.map((p) =>
+                    <li key={p.id}
                         className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
                         <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                        <a href={`#${p.id}`} className="text-lg font-medium group-hover:text-white transition-colors">{p.title}</a>
+                        <a  href={`#${p.id}`} onClick={handleID} className="text-lg font-medium group-hover:text-white transition-colors">{p.titulo}</a>
                     </li>
 
                  
@@ -41,7 +51,7 @@ function PostSideBarLeft({ index }: { index: Index[] }) {
                 <li
                     className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer border-t border-white/10 pt-4">
                     <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                    <a href="#" className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A
+                    <a  href="#" className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A
                         HOME </a>
                 </li>
             </ul>
