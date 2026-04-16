@@ -1,5 +1,6 @@
 [
     {
+        "id":1,
         "titulo": "Shiki",
         "web_title":"El vitalismo de Sotoba",
         "genero": "Novela Ligera,Terror, Misterio",
@@ -8,9 +9,11 @@
         "fecha_publicacion": "2025-04-09",
         "descripcion": "Recopilación de mis Notas de Marzo a Abril de lectura de Shiki una de las obras escritas por Fuyumi Ono, adaptada a anime y manga, artículo que desmenuza las figuras más importantes de la obra....",
         "destacado": true,
-        "ruta":"/IMG/Portada/AniManga/P-Shiki.jpg"
+        "ruta":"/IMG/Portada/AniManga/P-Shiki.jpg",
+        "publicado":true
     },
-    {
+    {   
+        "id":2,
         "titulo": "Classroom of the elite",
         "web_title":"COTE",
         "genero": "Novela Ligera, Slice Of Life",
@@ -19,9 +22,11 @@
         "fecha_publicacion": "2026-01-10",
         "descripcion": "Como lector desde hace años, me he tomado el tiempo no solo de leer la obra, sino de analizarla volumen tras volumen, sacando conclusiones nuevas por cada arco culminado. Sin embargo, el reciente auge ha expuesto una preocupación que ya hace tiempo me tenía en ascuas...",
         "destacado": true,
-        "ruta":"/IMG/Portada/AniManga/P-Cote.jpg"
+        "ruta":"/IMG/Portada/AniManga/P-Cote.jpg",
+        "publicado":true
     },
-    {
+    {   
+        "id":3,
         "titulo": "Antologia de Machado",
         "genero": "Poesia,Modernismo",
         "categoria": "Literatura",
@@ -29,9 +34,11 @@
         "fecha_publicacion": "2026-01-11",
         "descripcion": "Analisis y comentarios generales sobre algunos poemas de Antonio Machado",
         "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-Machado.jpg"
+        "ruta":"/IMG/Portada/Literatura/P-Machado.jpg",
+        "publicado":true
     },
-    {
+    {   
+        "id":4,
         "titulo": "Antología de Mallarmé",
         "genero": "Poesía,Simbolismo",
         "categoria": "Literatura",
@@ -39,9 +46,11 @@
         "fecha_publicacion": "2026-01-02",
         "descripcion": "Llegué a su obra cúspide del tan hablado poema de \"Herodias\". Para ser honesto analizar cada poema bajo una noción clara de ignorancia poética e interpretación es duro....",
         "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-Mallarme.jpg"
+        "ruta":"/IMG/Portada/Literatura/P-Mallarme.jpg",
+        "publicado":true
     },
-    {
+    {   
+        "id":5,
         "titulo": "Antologia de Stendhal",
         "genero": "Novela, Realismo",
         "categoria": "Literatura",
@@ -49,9 +58,11 @@
         "fecha_publicacion": "2026-01-12",
         "descripcion": "Comentarios sobre la obra de Stendhal.",
         "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-Stendhal.jpg"
+        "ruta":"/IMG/Portada/Literatura/P-Stendhal.jpg",
+        "publicado":true
     },
-    {
+    {   
+        "id":6,
         "titulo": "Parasite in Love",
         "web_title":"Los organismos deben seguir viviendo",
         "genero": "Novela Ligera, Romance, Misterio",
@@ -60,9 +71,11 @@
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis de la obra Parasite in love, conjunto de reflexiones primeras.",
         "destacado": false,
-        "ruta":"/IMG/Portada/AniManga/P-Parasite-Love.jpg"
+        "ruta":"/IMG/Portada/AniManga/P-Parasite-Love.jpg",
+        "publicado": false
     },
-    {
+    {   
+        "id":7,
         "titulo": "Shin Sekai Yori",
         "web_title":"SSY",
         "genero": "Novela,Ciencia Ficción, Misterio",
@@ -71,9 +84,11 @@
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios generales sobre la obra de Shin Sekai Yori.",
         "destacado": false,
-        "ruta":"/IMG/Portada/AniManga/P-SSY.jpg"
+        "ruta":"/IMG/Portada/AniManga/P-SSY.jpg",
+        "publicado": false
     },
-    {
+    {   
+        "id":8,
         "titulo": "UN-GO",
         "web_title":"El Corazón al Desnudo",
         "genero": "Anime, Misterio, Sobrenatural",
@@ -81,9 +96,11 @@
         "autor": "J-ta Yamada",
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios sobre el anime de UN-GO: Inagron.",
-        "destacado": false
+        "destacado": false,
+        "publicado": false
     },
-    {
+    {   
+        "id":9,
         "titulo": "Colorful",
         "web_title":"",
         "genero": "Anime,Slice Of Life",
@@ -91,18 +108,22 @@
         "autor": "Eto Mori",
         "fecha_publicacion": "2026-01-16",
         "descripcion": "Analisis y comentarios de la pelicula Colorful",
-        "destacado": false
+        "destacado": false,
+        "publicado": false
     },
-    {
+    {   
+        "id":10,
         "titulo": "The Perfect Insider",
         "genero": "Novela, Misterio",
         "categoria": "AnimeManga",
         "autor": "Hiroshi Mori",
         "fecha_publicacion": "2026-01-17",
         "descripcion": "Analisis y comentarios sobre la obra de Hiroshi Mori",
-        "destacado": false
+        "destacado": false,
+        "publicado": false
     },
-    {
+    {   
+        "id":11,
         "titulo": "Antología de Giacomo Leopardi",
         "genero": "Poesia, Pesimismo",
         "categoria": "Literatura",
@@ -110,6 +131,7 @@
         "fecha_publicacion": "2026-01-25",
         "descripcion": "Análisis y esquemas sobre los escritos de Giacomo Leopardi.",
         "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-Giacomo.jpg"
+        "ruta":"/IMG/Portada/Literatura/P-Giacomo.jpg",
+        "publicado": true
     }
 ]

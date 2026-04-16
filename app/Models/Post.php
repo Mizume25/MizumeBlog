@@ -16,6 +16,7 @@ class Post extends Model
         'fecha_publicacion',
         'descripcion',
         'destacado',
-        'ruta'
+        'ruta',
+        'publicado'
     ];
 }

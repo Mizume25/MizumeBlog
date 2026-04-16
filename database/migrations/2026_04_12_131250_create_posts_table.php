@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->boolean('destacado')->default(true);
             $table->string('ruta')->nullable();
+            $table->boolean('publicado')->default(false);
             $table->timestamps();
             
         });
