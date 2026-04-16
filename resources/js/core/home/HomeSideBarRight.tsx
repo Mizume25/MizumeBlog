@@ -1,6 +1,14 @@
 import { type Post } from "@/types"
 import React from "react";
+import { Seccion } from "./HomeSidebarMobile";
 //Creamos un objeto
+export const netWork  : Seccion [] = [
+    {nombre: "LinkedIn", ruta:"https://www.linkedin.com/in/gabriel-nivicela-86733035a/"},
+    {nombre: "Instagram", ruta:"https://www.instagram.com/_mi_zume_/"},
+    {nombre: "GitHub", ruta:"https://github.com/Mizume25"}
+    
+]
+
 
 //Home Side Bar Right
 function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }) {
@@ -40,22 +48,7 @@ function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }
                 </h3>
                 <ul className="pl-0 text-center" id="list-right">
                     {renderPost(sidebarPosts)}
-                    {/*
-                    <li
-                        className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]">
-                        <a href="../Post/Post_Destacados/TextosStendhal.html" className="text-white no-underline block"
-                            id="itemTwo">
-                            Examen a Rojo y negro de Stendhal
-                        </a>
-                    </li>
-                    <li
-                        className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]">
-                        <a href="../Post/Post_Destacados/TextosMallarme.html" className="text-white no-underline block"
-                            id="itemThree">
-                            Escrutinio a textos de Mallarme
-                        </a>
-                    </li>
-                        */}
+            
                 </ul>
             </section>
 
@@ -65,22 +58,15 @@ function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }
                     Sígueme
                 </h3>
                 <section className="flex flex-wrap gap-[10px]">
-                    <a href="#"
+
+                    {netWork.map((p , i)=> (
+                        <a key={i} 
+                        href={p.ruta}
                         className="inline-block py-[8px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] transition-colors duration-300 hover:bg-[rgb(129,106,84)] no-underline">
-                        🐢 Twitter
+                        🐢 {p.nombre}
                     </a>
-                    <a href="#"
-                        className="inline-block py-[8px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] transition-colors duration-300 hover:bg-[rgb(129,106,84)] no-underline">
-                        🐢 Instagram
-                    </a>
-                    <a href="#"
-                        className="inline-block py-[8px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] transition-colors duration-300 hover:bg-[rgb(129,106,84)] no-underline">
-                        🐢 LinkedIn
-                    </a>
-                    <a href="#"
-                        className="inline-block py-[8px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] transition-colors duration-300 hover:bg-[rgb(129,106,84)] no-underline">
-                        🐢 GitHub
-                    </a>
+                    ))}
+                    
                 </section>
             </section>
         </aside>

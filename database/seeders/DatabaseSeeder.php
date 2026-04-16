@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     //1. Seeder Primero de mis primeros psot 
     private function seedCatalog(): void
     {
-        $json_date = file_get_contents('database/data/Contenido.json');
+        $json_date = file_get_contents('public/data/Contenido.json');
 
         $arr_post = json_decode($json_date, true);
 

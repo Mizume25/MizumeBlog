@@ -4,7 +4,7 @@ import React from "react";
 //Boton
 function HomeButton({ onButtonClick }: {onButtonClick?: (e:React.MouseEvent<HTMLButtonElement>) => void}) {
 
-     const handleClick = (e:React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (e:React.MouseEvent<HTMLButtonElement>) => {
             onButtonClick?.(e);
     };
 

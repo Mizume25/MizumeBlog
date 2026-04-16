@@ -1,10 +1,12 @@
 import React from "react"
-//SIDE BAR RESPONSIVE
-function HomeSidebarMobile({isOpen , onClose} : {isOpen:boolean, onClose: () => void}) {
-  interface Seccion {
+export interface Seccion {
     nombre: string;
     ruta: string;
 }
+
+//SIDE BAR RESPONSIVE
+function HomeSidebarMobile({isOpen , onClose} : {isOpen:boolean, onClose: () => void}) {
+
 
 // 2. Tipas la constante como un array de esa interfaz
 const secciones: Seccion[] = [

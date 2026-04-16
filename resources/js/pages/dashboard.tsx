@@ -67,7 +67,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
     
     const CONTENT = useMediaQuery("(max-width: 1024px)");
 
-   useCallback
+   
 
     // Botón toggle simple
     const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {

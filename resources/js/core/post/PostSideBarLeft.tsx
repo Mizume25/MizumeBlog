@@ -1,33 +1,28 @@
-
-//Interfaz del Indice
-
 import { Index } from "@/pages/post/show";
 
-//SIDE BAR INDEX
-function PostSideBarLeft({ list, onFindID}: { list: Index[], onFindID: (id: string) => void }) {
+function PostSideBarLeft({ list, onFindID, menuAbierto }: { list: Index[], onFindID: (id: string) => void, menuAbierto: boolean }) {
 
     const handleID = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // 1. Evitamos que el enlace intente navegar o recargar la página
-    e.preventDefault();
-    
-    // 2. Accedemos al href del elemento que tiene el onClick (el <a>)
-    const href = e.currentTarget.getAttribute('href'); 
-    
-    // 3. Limpiamos el ID (por ejemplo, si el href es "#123", quitamos el "#")
-    if (href) {
-        const id = href.replace('#', ''); 
-        onFindID(id);
-    }
-};
+        e.preventDefault();
+        const href = e.currentTarget.getAttribute('href');
+        if (href) {
+            const id = href.replace('#', '');
+            onFindID(id);
+        }
+    };
 
     return (
-
-        <aside id="sidebarIndex" className="fixed inset-y-0 left-0 z-[60] w-80 bg-[#2A1B12] p-8 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out 
-             lg:relative lg:translate-x-0 lg:col-span-3 lg:bg-[#2A1B12]/95 lg:block lg:transform-none
-             lg:sticky lg:top-10 lg:h-fit lg:p-8 lg:pr-6 lg:ml-10  border border-white/10">
-
-            <button id="closeSidebar"
-                className="lg:hidden absolute top-4 right-4 text-[#C8AD7F] hover:text-white transition-colors">
+        <aside
+            id="sidebarIndex"
+            className={`fixed inset-y-0 left-0 z-[60] w-80 bg-[#2A1B12] p-8 shadow-2xl transition-transform duration-300 ease-in-out
+                ${menuAbierto ? 'translate-x-0' : '-translate-x-full'}
+                lg:relative lg:translate-x-0 lg:col-span-3 lg:bg-[#2A1B12]/95 lg:block lg:transform-none
+                lg:sticky lg:top-10 lg:h-fit lg:p-8 lg:pr-6 lg:ml-10 border border-white/10`}
+        >
+            <button
+                id="closeSidebar"
+                className="lg:hidden absolute top-4 right-4 text-[#C8AD7F] hover:text-white transition-colors"
+            >
                 <i className="fas fa-times text-2xl"></i>
             </button>
 
@@ -36,27 +31,20 @@ function PostSideBarLeft({ list, onFindID}: { list: Index[], onFindID: (id: stri
             </h3>
 
             <ul className="space-y-6 text-[#A18B75]">
-                
-
                 {list.map((p) =>
-                    <li key={p.id}
-                        className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
+                    <li key={p.id} className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
                         <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                        <a  href={`#${p.id}`} onClick={handleID} className="text-lg font-medium group-hover:text-white transition-colors">{p.titulo}</a>
+                        <a href={`#${p.id}`} onClick={handleID} className="text-lg font-medium group-hover:text-white transition-colors">{p.titulo}</a>
                     </li>
-
-                 
                 )}
 
-                <li
-                    className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer border-t border-white/10 pt-4">
+                <li className="group flex items-center gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer border-t border-white/10 pt-4">
                     <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
-                    <a  href="#" className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A
-                        HOME </a>
+                    <a href={route('dashboard')} className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A HOME</a>
                 </li>
             </ul>
         </aside>
-    )
+    );
 }
 
-export default PostSideBarLeft
+export default PostSideBarLeft;

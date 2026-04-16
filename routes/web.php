@@ -12,7 +12,8 @@ Route::middleware(['auth'])->group(function () {
 //Renderizamos dashboard
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-
+//Renderizamos ruta dashboard
+Route::get('dashboard',[HomeController::class , 'index'])->name('dashboard');
 
 //Renderizamos post
 Route::get('post/show/{id}',[HomeController::class, 'show'])->name('post.show');
