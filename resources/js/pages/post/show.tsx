@@ -9,6 +9,7 @@ import {
     PostSideBarLeft, 
     PostSideBarRight,  
 } from '../../core/post';
+import Coments from '@/core/coments/Coments';
 
 export interface Index {
   id: string,
@@ -57,7 +58,7 @@ function show({ post, index, contenido }: { post: Post, index: Index[], contenid
         {/* Componente del SideBar Derecho */}
         <PostSideBarRight id={post.id} />
 
-
+        <Coments />
         
 
         </div>
