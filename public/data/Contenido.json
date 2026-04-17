@@ -39,7 +39,7 @@
     },
     {   
         "id":4,
-        "titulo": "Antología de Mallarmé",
+        "titulo": "Antologia de Mallarme",
         "genero": "Poesía,Simbolismo",
         "categoria": "Literatura",
         "autor": "Stéphane Mallarmé",
@@ -124,7 +124,7 @@
     },
     {   
         "id":11,
-        "titulo": "Antología de Giacomo Leopardi",
+        "titulo": "Antologia de Giacomo Leopardi",
         "genero": "Poesia, Pesimismo",
         "categoria": "Literatura",
         "autor": "Giacomo Leopardi",

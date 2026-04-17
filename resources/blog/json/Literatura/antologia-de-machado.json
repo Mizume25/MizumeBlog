@@ -1,0 +1,40 @@
+[
+  {
+    "id": "notas-preliminares",
+    "titulo": "Notas Preliminares"
+  },
+  {
+    "id": "biografía-y-prólogo",
+    "titulo": "Biografía y Prólogo"
+  },
+  {
+    "id": "soledades",
+    "titulo": "Soledades"
+  },
+  {
+    "id": "del-camino",
+    "titulo": "Del Camino"
+  },
+  {
+    "id": "canciones",
+    "titulo": "Canciones"
+  },
+  {
+    "id": "galerias",
+    "titulo": "Galerias"
+  },
+  {
+    "id": "notas",
+    "titulo": "Notas"
+  },
+
+  {
+    "id": "campos-de-castilla-1907-1917",
+    "titulo": "CAMPOS DE CASTILLA (1907-1917)"
+  },
+  {
+    "id": "la-tierra-de-alvagonzález",
+    "titulo": "La tierra de Alvagonzález"
+  }
+  
+]

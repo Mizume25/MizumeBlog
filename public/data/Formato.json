@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "home_config": null,
+        "article_config": null
+    },
+    {
+        "id": 2,
+        "home_config": null,
+        "article_config": "bg-[center_13%]"
+    }, 
+    {
+        "id":3,
+        "home_config":""
+    }
+]

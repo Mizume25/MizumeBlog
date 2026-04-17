@@ -16,7 +16,6 @@ const secciones: Seccion[] = [
 ];
 
 const netWorks : Seccion[] = [
-    {nombre: "Twitter", ruta:'#'},
     {nombre: "Instagram" , ruta:'#'},
     {nombre: "GitHub", ruta:'#'},
     {nombre: "LinkedIn", ruta:'#'}
@@ -55,9 +54,15 @@ const netWorks : Seccion[] = [
         </button>
 
         {/* Sección de Posts */}
+
         <section className="mb-[30px]">
+
+          <div className="mb-4">
+                    <img src="IMG/Foto-Perfil.jpg" alt="Perfil" className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover" />
+                </div>
+
           <h3 className="text-xl text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
-            Post Destacados
+            Secciones
           </h3>
           <ul className="pl-0 flex flex-col gap-2">
             {secciones.map((item) => 

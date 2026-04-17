@@ -27,7 +27,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean }
             {left ? (
                 <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
                     <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
-    className={styles.featuredPost}>
+                    className={styles.featuredPost}>
 
                         <div className="flex justify-end items-start mt-[-5px] mr-[10px]">
                             <div className="flex gap-[15px] flex-wrap justify-end">
