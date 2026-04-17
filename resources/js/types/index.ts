@@ -53,4 +53,14 @@ export interface Post {
     ruta?: string,
 }
 
+//Interfaz comentarios
+export interface Comentario {
+    id:number,
+    descripcion:string,
+    fecha:string,
+    user_id:number,
+    post_id:number,
+    name: string,
+    email:string,
+}
 

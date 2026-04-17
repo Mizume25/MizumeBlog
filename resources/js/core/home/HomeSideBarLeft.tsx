@@ -1,7 +1,13 @@
 
 import React from "react";
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { LogOut } from "lucide-react";
+import LogoutButton from "../auth/LogoutButton";
 // SideBar Left
 function HomeSideBarLeft() {
+    const { auth } = usePage<SharedData>().props;
+
     return (
         <aside className="bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] hidden lg:block sticky top-6 ">
 
@@ -10,7 +16,10 @@ function HomeSideBarLeft() {
                 <div className="mb-4">
                     <img src="IMG/Foto-Perfil.jpg" alt="Perfil" className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover" />
                 </div>
-
+                <div className="text-center w-full">
+                    <span>Hola, {auth.user?.name || "Bienvenido/a!"}</span>
+                </div>
+                <br />
                 <h3
                     className="text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] text-xl">
                     Secciones
@@ -36,6 +45,10 @@ function HomeSideBarLeft() {
                         </a>
                     </li>
                 </ul>
+                <br />
+                
+                {auth.user &&  <LogoutButton />}
+
             </section>
 
         </aside>

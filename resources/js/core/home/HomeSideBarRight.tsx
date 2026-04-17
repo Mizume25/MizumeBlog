@@ -1,6 +1,7 @@
 import { type Post } from "@/types"
 import React from "react";
 import { Seccion } from "./HomeSidebarMobile";
+
 //Creamos un objeto
 export const netWork  : Seccion [] = [
     {nombre: "LinkedIn", ruta:"https://www.linkedin.com/in/gabriel-nivicela-86733035a/"},
@@ -12,7 +13,7 @@ export const netWork  : Seccion [] = [
 
 //Home Side Bar Right
 function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }) {
-
+    
     //FUNCION QUE RENDERIZA POST
     const renderPost = (sidebarPosts: Post[] | undefined) => {
 

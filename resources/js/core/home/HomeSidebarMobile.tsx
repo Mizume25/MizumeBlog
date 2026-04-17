@@ -1,12 +1,14 @@
 import React from "react"
+import LogoutButton from "../auth/LogoutButton";
 export interface Seccion {
     nombre: string;
     ruta: string;
 }
-
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
 //SIDE BAR RESPONSIVE
 function HomeSidebarMobile({isOpen , onClose} : {isOpen:boolean, onClose: () => void}) {
-
+const { auth } = usePage<SharedData>().props;
 
 // 2. Tipas la constante como un array de esa interfaz
 const secciones: Seccion[] = [
@@ -94,6 +96,8 @@ const netWorks : Seccion[] = [
               </a>
             ))}
           </div>
+          <br />
+          {auth.user &&  <LogoutButton />}
         </section>
       </aside>
     </>

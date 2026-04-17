@@ -1,6 +1,8 @@
-import { Post } from '@/types'
+import { Comentario, Post } from '@/types'
 import { Head } from '@inertiajs/react'
 import { useCallback, useState } from 'react';
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
 
 import { 
     PostBTN, 
@@ -10,16 +12,18 @@ import {
     PostSideBarRight,  
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
+import TopAuthBar from '@/core/auth/TopAuthBar';
 
 export interface Index {
   id: string,
   titulo: string,
 }
 
-function show({ post, index, contenido }: { post: Post, index: Index[], contenido: string }) {
+function show({ post, index, contenido, coments }: { post: Post, index: Index[], contenido: string , coments:Comentario []  }) {
 
 
   const list: Index[] = index;
+  const { auth } = usePage<SharedData>().props;
 
   const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -39,7 +43,7 @@ function show({ post, index, contenido }: { post: Post, index: Index[], contenid
     <>
         {/* Pestaña de la Página */}
         <Head title='Show'></Head>
-
+        {!auth.user && <TopAuthBar />}
         {/* Componente imagen header */}
         <PostHeader route={post?.ruta} title={post.titulo} />
 
@@ -58,7 +62,7 @@ function show({ post, index, contenido }: { post: Post, index: Index[], contenid
         {/* Componente del SideBar Derecho */}
         <PostSideBarRight id={post.id} />
 
-        <Coments />
+        <Coments coments={coments} post_id={post.id}/>
         
 
         </div>

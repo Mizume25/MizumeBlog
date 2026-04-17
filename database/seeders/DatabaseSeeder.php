@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,6 +32,12 @@ class DatabaseSeeder extends Seeder
     {   
         //Cargamos Funcion
         $this->seedCatalog();
+
+        User::create([
+            'name' => 'Tester',
+            'email' => 'tester@test.es',
+            'password' => Hash::make('123456789') 
+        ]);
 
         //Informamos del seeder 
         $this->command->info('Post Cargados');

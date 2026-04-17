@@ -10,6 +10,9 @@ import {
     HomeButton, 
     HomeSidebarMobile 
 } from '../core/home';
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import TopAuthBar from '@/core/auth/TopAuthBar';
  
 //INTERFACES PARA LOS COMPONENTES
 export interface SideBarChange { // HomeSideBarRight
@@ -55,7 +58,7 @@ export interface DefaultSideBar {
 export default function Dashboard({ posts }: { posts: Post[] }) {
     const MAX_POST: number = 6;
     const [menuAbierto, setMenuAbierto] = useState(false);
-
+    const { auth } = usePage<SharedData>().props;
     
     const { mainPosts, sidebarPosts } = useMemo(() => {
         const featured = getRandomPost(MAX_POST, posts);
@@ -87,11 +90,11 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
         <>
             {/* Head de el Home*/}
             <Head title='Home' ></Head>
-
+            {!auth.user && <TopAuthBar />}
             {/* Bottton del Responsive */}
             <HomeButton onButtonClick={handleButtonClick} />
             <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[1fr_3fr_1fr] gap-8 items-start">
-
+             
                 {/*Header Layout*/}
                 <HomeHeader />
 
