@@ -31,7 +31,7 @@ function InfoProgresBar({ posts } : { posts:Post[]}) {
                         </div>
                         <div className="h-1.5 bg-[#F5EDD8] rounded-full overflow-hidden">
                             <div
-                            style={{}}
+                            style={{ width: `${g.width}%` }}
                             className={`h-full bg-[#C8AD7F] rounded-full`}></div>
                         </div>
                     </div>

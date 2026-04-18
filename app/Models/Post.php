@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
-{   
+{
     //Propiedades de Modelo
     protected $fillable = [
         'titulo',
@@ -19,4 +19,9 @@ class Post extends Model
         'ruta',
         'publicado'
     ];
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class);
+    }
 }

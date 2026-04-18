@@ -34,6 +34,11 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 //Ruta al panel principal
 Route::get('post/MizumeAdmin', [AdminController::class , 'panel'])->name('post.panel');
 
+//Ruta a la edición de Post
+Route::get('post/edit/{id}', [AdminController::class , 'edit'])->name('post.edit');
+
+//Ruta a la destruccion de un Post
+Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -1,17 +1,17 @@
 import { Post } from '@/types'
 import { useState } from 'react'
-
-function InfoTable({ posts , getCategoria, categoriaActual}: { posts: Post[] , getCategoria: (id:string) => void, categoriaActual:string}) {
+import { router } from '@inertiajs/react';
+function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], getCategoria: (id: string) => void, categoriaActual: string }) {
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
-            getCategoria(e.currentTarget.id);
+        getCategoria(e.currentTarget.id);
     };
 
 
     return (
         <div className="lg:col-span-2 bg-white border border-[#EAD9B8] rounded-xl overflow-hidden shadow-sm">
             <div className="px-5 py-4 border-b border-[#EAD9B8] flex items-center justify-between bg-gradient-to-r from-[#C8AD7F]/10 to-transparent">
-                <h3 className="text-[#3B2314]">Posts recientes</h3>
+                <h3 className="text-[#3B2314]">Tabla de Posts</h3>
                 <div className=" flex bg-[#F5EDD8] p-1.5 rounded-xl border border-[#EAD9B8] gap-2 shadow-inner">
                     {['Todos', 'Literatura', 'Reflexiones', 'AnimeManga'].map((cat) => {
                         // Variable para controlar el estado activo (puedes vincularla a tu useState)
@@ -71,8 +71,13 @@ function InfoTable({ posts , getCategoria, categoriaActual}: { posts: Post[] , g
                                 </td>
                                 <td className="px-5 py-4">
                                     <div className="flex gap-2">
-                                        <button className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-[#A08050] transition-colors cursor-pointer">Editar</button>
-                                        <button className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer">Borrar</button>
+                                        <a href={route('post.edit', post.id)} className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-[#A08050] transition-colors cursor-pointer">Editar</a>
+                                        <button
+                                            onClick={() => router.delete(route('post.destroy', post.id))}
+                                            className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer"
+                                        >
+                                            Borrar
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

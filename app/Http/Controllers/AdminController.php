@@ -54,4 +54,30 @@ class AdminController extends Controller
             ]
         ]);
     }
+
+    //Vista de Edicion de Post
+    public function edit($id)
+    {
+        $post = $this->posts->findOrFail($id);
+
+        return Inertia::render('post/edit', compact('post'));
+    }
+
+    //Vista de borrado de Post
+    public function destroy($id)
+    {
+
+        $post = $this->posts->findOrFail($id);
+
+        //Colecccion de comentarios
+        $coments = $post->comentarios();
+        
+        //Borramos Contenido Relacionado
+        $coments->delete();
+        $post->delete();
+
+        
+        return redirect()->route('post.panel')->with('success', 'Post eliminado');
+
+    }
 }

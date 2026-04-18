@@ -1,5 +1,5 @@
 import React from 'react'
-import { Data } from './MizumeAdmin'
+import { Data } from '@/pages/post/MizumeAdmin';
 import { Comentario, Post , User } from '@/types';
 
 
