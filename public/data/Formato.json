@@ -2,15 +2,57 @@
     {
         "id": 1,
         "home_config": null,
-        "article_config": null
+        "article_config": "bg-[center_14%]"
     },
     {
         "id": 2,
-        "home_config": null,
+        "home_config": "center 12%",
         "article_config": "bg-[center_13%]"
     }, 
     {
         "id":3,
-        "home_config":""
+        "home_config": "center 20%",
+        "article_config":"bg-[center_35%]"
+    },
+    {
+        "id":4,
+        "home_config": null,
+        "article_config":"bg-[center_20%]"
+    },
+    {
+        "id":5,
+        "home_config": null,
+        "article_config":"bg-[center_40%]"
+    },
+    {
+        "id":6,
+        "home_config": null,
+        "article_config":null
+    },
+    {
+        "id":7,
+        "home_config": null,
+        "article_config":null
+    },
+    {
+        "id":8,
+        "home_config": null,
+        "article_config":null
+    },
+    {
+        "id":9,
+        "home_config": null,
+        "article_config":null
+    },
+    {
+        "id":10,
+        "home_config": null,
+        "article_config":null
+    },
+    {
+        "id":11,
+        "home_config": null,
+        "article_config":"bg-[center_40%]"
     }
+    
 ]

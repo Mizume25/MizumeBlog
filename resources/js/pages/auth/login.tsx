@@ -104,6 +104,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 className="border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-[#754C22] cursor-pointer"
                             />
                             <Label htmlFor="remember" className="text-white">Recuérdame</Label>
+
                         </div>
 
                         {/* BOTÓN LOGIN (BLANCO COMO EL DE LA WELCOME) */}
@@ -116,6 +117,15 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                             Iniciar Sesión
                         </Button>
+                        <div className="flex items-center justify-center">
+                            <a
+                                href="/auth/google"
+                                className="bg-white flex items-center justify-center gap-2 border px-4 py-2 rounded-lg hover:bg-gray-100 text-black w-[320px] pt-3 pb-3"
+                            >
+                                <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
+                                <span className="leading-none">Continuar con Google</span>
+                            </a>
+                        </div>
                     </div>
 
                     {/* REGISTRO */}

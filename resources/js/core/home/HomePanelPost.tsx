@@ -1,6 +1,8 @@
 import styles from '@/../css/HomeMain.module.css';
 import { Post } from '@/types';
-
+import { getFormatoPost } from '@/types/utils';
+import { useEffect, useState } from 'react';
+import { Formato } from '@/types/utils';
 //GENERAR FECHA
 const getMounth = (data: string | undefined): string => {
     let d = new Date(data ?? "01-01-1999");
@@ -11,23 +13,52 @@ const getMounth = (data: string | undefined): string => {
 
 
 //Paneles dinamicos del Home
-function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean }) {
+function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean}) {
+
+    const formatDefault : Formato = {
+        id:post?.id,
+        home_config:"center",
+        article_config:"bg-[center_18%]",
+    }
+
 
     //Generamos un array
     const arr_Tags: string[] | undefined = post?.genero.split(',').map(p => p.trim());
-
+    const [format, setFormat] = useState<Formato | null>(formatDefault);
     //Dinamic Background
 
 
-    let fecha : string = getMounth(post?.fecha_publicacion);
+    let fecha: string = getMounth(post?.fecha_publicacion);
+
+    useEffect(() => {
+        const fetchFormat = async () => {
+            if (post?.id) {
+                try {
+                    const data = await getFormatoPost(post.id);
+                    setFormat(data);
+                    console.log(data);
+                } catch (error) {
+                    console.error("Error cargando formato:", error);
+                }
+            }
+        };
+
+        fetchFormat();
+    }, [post?.id])
+
+    
+
+    
 
     return (
 
         <>
             {left ? (
                 <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
-                    <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
-                    className={styles.featuredPost}>
+                    <article style={{ 
+                        '--bg-image': `url('${post?.ruta}')` ,
+                        '--bg-format': `${format?.home_config}`} as React.CSSProperties}
+                        className={styles.featuredPost}>
 
                         <div className="flex justify-end items-start mt-[-5px] mr-[10px]">
                             <div className="flex gap-[15px] flex-wrap justify-end">
@@ -78,7 +109,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean }
             ) : (
                 <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
                     <article style={{ '--bg-image': `url('${post?.ruta}')` } as React.CSSProperties}
-    className={styles.featuredPost}>
+                        className={styles.featuredPost}>
 
                         <div className="flex justify-start items-start mt-[-5px] ml-[10px]">
                             <div className="flex gap-[15px] flex-wrap justify-start">

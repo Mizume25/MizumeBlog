@@ -28,7 +28,7 @@
     
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: var(--bg-format);
     
     /* Volvemos a un tiempo normal para que lo disfrutes */
     transition: transform 0.8s ease-in-out;

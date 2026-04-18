@@ -4,6 +4,7 @@ import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { LogOut } from "lucide-react";
 import LogoutButton from "../auth/LogoutButton";
+import PanelBTN from "../auth/PanelBTN";
 // SideBar Left
 function HomeSideBarLeft() {
     const { auth } = usePage<SharedData>().props;
@@ -48,6 +49,8 @@ function HomeSideBarLeft() {
                 <br />
                 
                 {auth.user &&  <LogoutButton />}
+                <br />
+                <PanelBTN />
 
             </section>
 

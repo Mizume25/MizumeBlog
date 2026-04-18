@@ -52,6 +52,7 @@ export interface Post {
     descripcion?:string,
     destacado: 1 | 0
     ruta?: string,
+    publicado: boolean
 }
 
 //Interfaz comentarios

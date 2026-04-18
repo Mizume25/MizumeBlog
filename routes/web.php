@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\GoogleController;
 
 Route::middleware(['auth'])->group(function () {
 
@@ -25,6 +25,14 @@ Route::post('/comentarios', [HomeController::class, 'store'])->name('comments.st
 
 //Funciones de contenido - Eliminar Comentario 
 Route::delete('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy');
+
+//Api de google
+Route::get('/auth/google', [GoogleController::class, 'redirect']);
+
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+
+//Ruta al panel principal
+Route::get('post/MizumeAdmin', [AdminController::class , 'panel'])->name('post.panel');
 
 
 require __DIR__.'/settings.php';

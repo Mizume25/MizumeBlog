@@ -1,4 +1,10 @@
 import Swal from 'sweetalert2';
+export interface Formato {
+    id?:number,
+    home_config?:string,
+    article_config?:string,
+}
+
 
 // Creamos una versión personalizada de SweetAlert2 con tus colores
 const MySwal = Swal.mixin({
@@ -61,6 +67,29 @@ export const getName = async (max: number, omitId: number): Promise<Rutas[]> => 
     console.error(error);
     return []; 
   }
+};
+
+
+//Formato de las imagenes de los post
+export const getFormatoPost = async (id:number): Promise<Formato | null> => {
+    try {
+        
+    
+    const answer = await fetch('/data/Formato.json');
+        if (!answer.ok) throw new Error('Error al cargar JSON');
+
+    const data = await answer.json();
+
+    const formatPost : Formato = data
+    .find((p : any) => p.id == id);
+    
+    return formatPost ?? null;
+    
+
+    } catch (error) {
+        console.error(error);
+        return null; 
+    }
 };
 
 

@@ -1,10 +1,14 @@
 //HEADER POST
-function PostHeader({ route, title }: { route: string | undefined, title: string }) {
+function PostHeader({ route, title, format }: { route: string | undefined, title: string, format?:string  }) {
+
+  
+  
+  
   return (
     <>
       {/* Imagen de la obra */}
       <header
-        className="w-full h-[35vh] bg-no-repeat bg-cover bg-[center_18%]"
+        className={`w-full h-[35vh] bg-no-repeat bg-cover ${format}`}
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`
         }}

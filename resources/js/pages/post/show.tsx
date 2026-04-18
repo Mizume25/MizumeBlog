@@ -1,6 +1,6 @@
 import { Comentario, Post } from '@/types'
 import { Head } from '@inertiajs/react'
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
@@ -13,6 +13,9 @@ import {
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
 import TopAuthBar from '@/core/auth/TopAuthBar';
+import { Formato } from '@/types/utils';
+import { getFormatoPost } from '@/types/utils';
+
 
 export interface Index {
   id: string,
@@ -21,6 +24,31 @@ export interface Index {
 
 function show({ post, index, contenido, coments }: { post: Post, index: Index[], contenido: string , coments:Comentario []  }) {
 
+  const formatDefault : Formato = {
+          id:post?.id,
+          home_config:"center",
+          article_config:"bg-[center_18%]",
+  }
+
+  const [format, setFormat] = useState<Formato | null>(formatDefault);
+
+  useEffect(() => {
+        const fetchFormat = async () => {
+            if (post?.id) {
+                try {
+                    const data = await getFormatoPost(post.id);
+                    setFormat(data);
+                } catch (error) {
+                    console.error("Error cargando formato:", error);
+                }
+            }
+        };
+
+        fetchFormat();
+    }, [post?.id])
+
+
+  console.log(format)
 
   const list: Index[] = index;
   const { auth } = usePage<SharedData>().props;
@@ -45,7 +73,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
         <Head title='Show'></Head>
         {!auth.user && <TopAuthBar />}
         {/* Componente imagen header */}
-        <PostHeader route={post?.ruta} title={post.titulo} />
+        <PostHeader route={post?.ruta} title={post.titulo} format={format?.article_config} />
 
         <PostBTN onButtonClick={handleButtonClick} />
         {/* Contenedor del Main */}
