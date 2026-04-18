@@ -85,6 +85,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
     setMenuAbierto(false);
     }, []);
 
+    const exist : boolean = auth?.user ? true : false;
 
     return (
         <>
@@ -99,7 +100,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                 <HomeHeader />
 
                 {/*SideBar izquierdo*/}
-                <HomeSideBarLeft />
+                <HomeSideBarLeft exist={exist}/>
 
 
                 {/*Contenido Body*/}

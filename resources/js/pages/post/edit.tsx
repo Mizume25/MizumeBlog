@@ -11,12 +11,12 @@ function edit({ post }: { post: Post }) {
     // y si hay un error de validación Inertia los reenvía con los valores anteriores.
     const [form, setForm] = useState({
         titulo: post.titulo ?? '',
-        subtitulo: post.web_title ?? '',
+        web_title: post.web_title ?? '',
         categoria: post.categoria ?? '',
         genero: post.genero ?? '',
         fecha_publicacion: post.fecha_publicacion ?? '',
         publicado: post.publicado ?? false,
-        portada: post.ruta ?? '',   // URL actual
+        ruta: post.ruta ?? '',   // URL actual
         portadaFile: null as File | null,            // nuevo archivo (si lo cambian)
     });
 
@@ -46,15 +46,15 @@ function edit({ post }: { post: Post }) {
 
         const data = new FormData();
         data.append('titulo', form.titulo);
-        data.append('subtitulo', form.subtitulo);
+        data.append('web_title', form.web_title);
         data.append('categoria', form.categoria);
         data.append('genero', form.genero);
         data.append('fecha_publicacion', form.fecha_publicacion);
         data.append('publicado', form.publicado ? '1' : '0');
-        if (form.portadaFile) data.append('portada', form.portadaFile);
+        if (form.portadaFile) data.append('ruta', form.portadaFile);
         data.append('_method', 'PUT'); // Laravel espera PUT/PATCH
 
-        router.post(`/admin/posts/${post.id}`, data);
+        router.post(`/post/edit/${post.id}`, data);
     };
 
     const CATEGORIAS = ['Literatura', 'AnimeManga', 'Reflexiones'];
@@ -136,8 +136,8 @@ function edit({ post }: { post: Post }) {
                                 </label>
                                 <input
                                     type="text"
-                                    name="subtitulo"
-                                    value={form.subtitulo}
+                                    name="web_title"
+                                    value={form.web_title}
                                     onChange={handleChange}
                                     placeholder="Subtítulo o descripción corta"
                                     className="
@@ -267,6 +267,7 @@ function edit({ post }: { post: Post }) {
                         <button
                             type="submit"
                             className="
+                                cursor-pointer
                                 px-6 py-2.5 text-sm font-semibold
                                 bg-[#3B2314] text-[#E8D5A3]
                                 rounded-lg shadow-sm

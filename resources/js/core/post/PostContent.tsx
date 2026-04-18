@@ -25,12 +25,6 @@ function PostContent({ post, contenido, index, selectedId }: { post: Post, conte
         selectedId={selectedId}
       />
 
-
-
-
-
-
-
     </article>
   )
 }

@@ -37,8 +37,10 @@ Route::get('post/MizumeAdmin', [AdminController::class , 'panel'])->name('post.p
 //Ruta a la edición de Post
 Route::get('post/edit/{id}', [AdminController::class , 'edit'])->name('post.edit');
 
+Route::post('post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
+
 //Ruta a la destruccion de un Post
-Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
+Route::match(['post', 'put'], 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

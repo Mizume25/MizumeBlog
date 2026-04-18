@@ -100,7 +100,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
                             </h2>
 
                             <span
-                                className="hidden lg:block absolute bottom-[55px] right-0 mr-[20px] font-light italic text-right [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)]">
+                                className="hidden lg:block absolute bottom-[55px] right-0 mr-[20px] font-blood italic text-right text-white [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)]">
                                 {post?.web_title || `Lectura de ${post?.autor}`}
                             </span>
                         </div>
@@ -136,7 +136,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
                             </h2>
 
                             <span
-                                className="hidden lg:block absolute bottom-[30px] left-0 ml-[20px] font-light italic text-left [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)]">
+                                className="hidden lg:block absolute bottom-[30px] left-0 ml-[20px] font-light italic text-left text-white  [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)]">
                                 {post?.web_title || `Lectura de ${post?.autor}`}
                             </span>
                         </div>
