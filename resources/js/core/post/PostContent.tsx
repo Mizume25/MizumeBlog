@@ -12,7 +12,7 @@ function PostContent({ post, contenido, index, selectedId }: { post: Post, conte
 
   return (
     /* Contenido Main*/
-    <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden">
+    <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden ps-4 pe-4">
 
       {/* Contenedor de Tags*/}
       <PostTag tags={tags} />

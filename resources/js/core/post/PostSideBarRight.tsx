@@ -27,7 +27,7 @@ function PostSideBarRight({ id }: { id: number }) {
 
     console.log(posts)
     return (
-        <aside className="lg:col-span-3 space-y-6 sticky top-6 h-fit">
+        <aside className="lg:col-span-3 space-y-6 lg:sticky top-6 h-fit">
 
             <PostProfile />
 

@@ -11,7 +11,7 @@ use Inertia\Inertia;
 use function Symfony\Component\String\s;
 
 class HomeController extends Controller
-{   
+{
     //Variable de la classe
     private $posts;
 
@@ -19,28 +19,26 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->posts = Post::all();
-    } 
+    }
 
     private function getComents($id)
     {
         $coments = DB::table('users')
-        ->join('comentarios', 'comentarios.user_id', '=' , 'users.id')
-        ->where('comentarios.post_id', '=', $id)
-        ->select('comentarios.*', 'users.name', 'users.email')
-        ->get();
+            ->join('comentarios', 'comentarios.user_id', '=', 'users.id')
+            ->where('comentarios.post_id', '=', $id)
+            ->select('comentarios.*', 'users.name', 'users.email')
+            ->get();
 
         return $coments;
-
     }
 
     //Funcion que carga post destacados
-    private function getFeaturedPost ()
-    {      
+    private function getFeaturedPost()
+    {
         $featured = collect();
         //Recorremos la propiedad
-        foreach ($this->posts as $post)
-        {
-            if($post->destacado != 0){
+        foreach ($this->posts as $post) {
+            if ($post->destacado != 0) {
 
                 $featured->push($post);
             }
@@ -50,30 +48,30 @@ class HomeController extends Controller
     }
 
     // Modificar archivos
-    private function modifiFiles ($titulo) : string
+    private function modifiFiles($titulo): string
     {
-          $titulo = mb_strtolower($titulo, 'UTF-8');
+        $titulo = mb_strtolower($titulo, 'UTF-8');
 
-          $index = str_replace(' ', '-', $titulo);
+        $index = str_replace(' ', '-', $titulo);
 
-          return $index;
+        return $index;
     }
 
     // Encontrar archivos
-    private function findJSON (Post $post, $newTitle) : string
-    {   
+    private function findJSON(Post $post, $newTitle): string
+    {
         return resource_path("blog/json/{$post->categoria}/{$newTitle}.json");
     }
 
-    private function findMD (Post $post, $newTitle) : string
-    {   
+    private function findMD(Post $post, $newTitle): string
+    {
         return resource_path("blog/markdown/{$post->categoria}/{$newTitle}.md");
     }
 
 
     // Cargar Index General
     public function index()
-    {   
+    {
         //Recibimos solo los post destacados
         $posts = $this->getFeaturedPost();
 
@@ -83,7 +81,7 @@ class HomeController extends Controller
 
     // Cargar un objeto Post
     public function show($id)
-    {   
+    {
         //BUSCAMOS ID
         $post = $this->posts->findOrFail($id);
         $coments = $this->getComents($id);
@@ -92,17 +90,17 @@ class HomeController extends Controller
         $title = $this->modifiFiles($post->titulo);
 
         //ENCONTRAMOS LOS ARCHIVOS JSON Y MD
-        $routeJson= $this->findJSON($post, $title);
+        $routeJson = $this->findJSON($post, $title);
         $routeMd = $this->findMD($post, $title);
 
         //OBTENEMOS OBJETO JSON
         $jsonContent = file_get_contents($routeJson);
-        
+
         //MAQUETAMOS LOS OBJETOS JSON Y MD
-        $index = json_decode($jsonContent, true); 
+        $index = json_decode($jsonContent, true);
         $contenido = file_get_contents($routeMd);
 
-        return Inertia::render('post/show',[
+        return Inertia::render('post/show', [
             'post'  => $post,
             'index' => $index,
             'contenido' => $contenido,
@@ -135,11 +133,11 @@ class HomeController extends Controller
 
     public function destroy($id)
     {
-            // 1. Buscar el comentario
+        // 1. Buscar el comentario
         $comentario = DB::table('comentarios')->where('id', $id)->first();
 
         // 2. Verificar si existe y si pertenece al usuario autenticado
-        if (!$comentario || $comentario->user_id !== Auth::id()) {
+        if (!$comentario || ($comentario->user_id !== Auth::id() && Auth::user()->role !== 'admin')) {
             return back()->with('error', 'No tienes permiso para borrar esto.');
         }
 
@@ -148,6 +146,4 @@ class HomeController extends Controller
 
         return back()->with('success', 'Comentario eliminado.');
     }
-
-    
 }

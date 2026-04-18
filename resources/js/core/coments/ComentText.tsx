@@ -1,14 +1,15 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
-
-function ComentText({ key, name, data, comentario, user_id }: { key: number, name: string, data: string, comentario: string, user_id: number }) {
+import { toast } from 'sonner';
+function ComentText({ key, id ,name, data, comentario, user_id }: { key: number, id:number, name: string, data: string, comentario: string, user_id: number }) {
     const { auth } = usePage<SharedData>().props;
+    
     const handleDelete = () => {
-        if (confirm('¿Seguro que quieres borrar este comentario?')) {
-
-            router.delete(route('comments.destroy', key));
-        }
+        router.delete(route('comments.destroy', id),{
+        preserveScroll:true
+     });
+        
     };
 
     return (
@@ -20,7 +21,7 @@ function ComentText({ key, name, data, comentario, user_id }: { key: number, nam
             <p className="text-sm leading-relaxed text-[#c8ad7f]">
                 {comentario}
             </p>
-            {auth.user.id == user_id && (
+            {(auth.user.id == user_id || auth.user.role == 'admin') && (
                 <div className="flex justify-end mt-2">
             <button
                 onClick={handleDelete}

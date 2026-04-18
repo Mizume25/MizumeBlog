@@ -11,19 +11,21 @@ const ListaComentarios = (coments : Comentario []) => {
   return (
     <>
     
-    
+    {coments.map((comentario) => ( 
     <div className="flex gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
       <ComentProfile />
-      {coments.map((comentario) => (
+     
         <ComentText 
           key={comentario.id} // Obligatorio en React para el rendimiento
+          id={comentario.id}
           name={comentario.name} 
           data={comentario.fecha}
           comentario={comentario.descripcion}
           user_id={comentario.user_id}
         />
+        </div>
       ))}
-    </div>
+    
     </>
   );
 };

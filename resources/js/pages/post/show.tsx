@@ -52,7 +52,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
         <main className="mt-16 max-w-[1700px] mx-auto px-4 pb-20">
 
         {/* Articulo */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
 
         {/* Componente del SideBar Izquierdo */}
         <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} />

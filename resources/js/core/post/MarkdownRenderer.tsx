@@ -147,7 +147,7 @@ const components: Components = {
 
   // ── Separador horizontal ──────────────────────────────────────────────────
   hr: () => (
-    <hr className="border-none border-t border-white/10 my-8" />
+    <hr className="border-none border-t border-white/10 " />
   ),
 
   // ── Negrita y cursiva ─────────────────────────────────────────────────────

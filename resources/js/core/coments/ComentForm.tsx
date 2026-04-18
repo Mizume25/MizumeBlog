@@ -5,13 +5,10 @@ import { SharedData } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 
-function ComentForm({ post_id }:{ post_id:number}) {
+function ComentForm({ post_id }: { post_id: number }) {
 
 
-    const handleRegister = () => {
-    // Esto simplemente cambia la URL a la de registro
-    router.get(route('register'));
-    };
+   
 
     const { auth } = usePage<SharedData>().props;
     // Dentro de tu componente:
@@ -21,44 +18,65 @@ function ComentForm({ post_id }:{ post_id:number}) {
     });
 
     const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    post(route('comments.store'), {
-        onSuccess: () => reset('body'), 
-    });
+        e.preventDefault();
+        post(route('comments.store'), {
+            preserveScroll: true,
+            onSuccess: () => reset('body'),
+        });
 
-    
 
-    
-};
+
+
+    };
 
 
     return (
-        <form className="mt-8 space-y-4" onSubmit={auth.user ? handleSubmit : handleRegister} >
-            <div className="flex gap-4 items-start">
-                <ComentProfile />
-                <div className="flex-grow space-y-3">
-                    <textarea
-                        value={data.body} // Vinculamos el valor
-                        onChange={e => setData('body', e.target.value)} // Actualizamos el estado
-                        placeholder={`${auth.user?.name ?? "Oye"}, puedes escribir tu comentario aquí`}
-                        className="w-full bg-[#1e140f] border border-[#4a3728] rounded-md p-3 text-[#f3e5ab] placeholder-[#5a4234] focus:outline-none focus:ring-2 focus:ring-[#8b5e3c] resize-y min-h-[100px]"
-                    ></textarea>
+        <>
+        {auth.user ? (
+                <form className="mt-8 space-y-4" onSubmit={handleSubmit} >
+                    <div className="flex gap-4 items-start">
+                        <ComentProfile />
+                        <div className="flex-grow space-y-3">
+                            <textarea
+                                value={data.body} // Vinculamos el valor
+                                onChange={e => setData('body', e.target.value)} // Actualizamos el estado
+                                placeholder={`${auth.user?.name ?? "Oye"}, puedes escribir tu comentario aquí`}
+                                className="w-full bg-[#1e140f] border border-[#4a3728] rounded-md p-3 text-[#f3e5ab] placeholder-[#5a4234] focus:outline-none focus:ring-2 focus:ring-[#8b5e3c] resize-y min-h-[100px]"
+                            ></textarea>
 
-                    {/* Mostrar errores de validación de Laravel si existen */}
-                    {errors.body && <div className="text-red-500 text-sm">{errors.body}</div>}
+                            {/* Mostrar errores de validación de Laravel si existen */}
+                            {errors.body && <div className="text-red-500 text-sm">{errors.body}</div>}
 
-                    <div className="flex justify-end">
+                            <div className="flex justify-end">
+                                <button
+                                    disabled={processing} // Evita múltiples clics
+                                    type="submit"
+                                    className="cursor-pointer bg-[#8b5e3c] hover:bg-[#a67c52] text-[#1e140f] font-bold py-2 px-6 rounded-md transition-all duration-200 shadow-lg active:scale-95 disabled:opacity-50"
+                                >
+                                    {processing ? 'Publicando...' : 'Publicar comentario'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+               
+            ) : (
+                
+                <div className="flex gap-4 items-start opacity-80">
+                  
+                    <div className="flex-grow p-6 border border-[#4a3728] border-dashed rounded-md bg-[#1e140f]/50 text-center">
+                       
                         <button
-                            disabled={processing} // Evita múltiples clics
-                            type="submit"
-                            className="cursor-pointer bg-[#8b5e3c] hover:bg-[#a67c52] text-[#1e140f] font-bold py-2 px-6 rounded-md transition-all duration-200 shadow-lg active:scale-95 disabled:opacity-50"
+                            onClick={() => router.get(route('register'))}
+                            className="bg-[#8b5e3c] hover:bg-[#a67c52] text-[#1e140f] font-bold py-2 px-8 rounded-md transition-all shadow-lg cursor-pointer"
                         >
-                            {processing ? 'Publicando...' : 'Publicar comentario'}
+                            Registrarse
                         </button>
                     </div>
                 </div>
-            </div>
-        </form>
+                
+            )}
+        </>
     )
 }
 

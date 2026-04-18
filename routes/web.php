@@ -24,7 +24,7 @@ Route::get('post/show/{id}',[HomeController::class, 'show'])->name('post.show');
 Route::post('/comentarios', [HomeController::class, 'store'])->name('comments.store');
 
 //Funciones de contenido - Eliminar Comentario 
-Route::post('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy');
+Route::delete('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy');
 
 
 require __DIR__.'/settings.php';
