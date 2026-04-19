@@ -45,9 +45,14 @@ Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.dest
 //Ruta de la Edicion de Post
 Route::match(['post', 'put'], 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 
+//Ruta para ir al formulario de crear post
 Route::get('post/create',[AdminController::class , 'create'])->name('post.create');
 
+//Ruta para generar un post
 Route::post('post/store', [AdminController::class, 'store'])->name('post.store');
+
+//Ruta para generar un backup
+Route::post('post/backup',[AdminController::class, 'backup'])->name('post.backup');
 
 
 require __DIR__.'/settings.php';

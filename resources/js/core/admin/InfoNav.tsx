@@ -36,6 +36,12 @@ function InfoNav({ onMenuOpen }: InfoNavProps) {
                 <a href={route('post.create')} className="cursor-pointer px-4 py-2 text-sm bg-[#3B2314] text-[#E8D5A3] rounded-md hover:bg-[#6B3F1F] transition-colors shadow-sm">
                     + Nuevo post
                 </a>
+                <a
+                    href={(route('post.backup'))}
+                    className="cursor-pointer px-4 py-2 text-sm bg-[#5C3D1E] text-[#E8D5A3] rounded-md hover:bg-[#7A5230] transition-colors shadow-sm"
+                >
+                    ↓ Backup
+                </a>
             </div>
         </header>
     )

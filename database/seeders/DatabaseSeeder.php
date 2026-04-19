@@ -4,44 +4,46 @@ namespace Database\Seeders;
 
 use App\Models\Post;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    //1. Seeder Primero de mis primeros psot 
     private function seedCatalog(): void
     {
-        $json_date = file_get_contents('public/data/Contenido.json');
+        // Buscar el backup más reciente
+        $backups = glob(storage_path('backups/posts_*.json'));
 
-        $arr_post = json_decode($json_date, true);
+        // Si no hay backups usar el archivo original como fallback
+        if (empty($backups)) {
+            $this->command->warn('No hay backups, usando Contenido.json como fallback');
+            $path = public_path('data/Contenido.json');
+        } else {
+            sort($backups);
+            $path = end($backups);
+            $this->command->info('Usando backup: ' . basename($path));
+        }
 
-        if (!empty($arr_post)) {
+        $posts = json_decode(file_get_contents($path), true);
 
-            foreach ($arr_post as $data) {
-
+        if (!empty($posts)) {
+            foreach ($posts as $data) {
                 Post::create($data);
             }
         }
-
-
     }
 
-    public function run(): void 
-    {   
-        //Cargamos Funcion
+    public function run(): void
+    {
         $this->seedCatalog();
 
         User::create([
-            'name' => 'Tester',
-            'email' => 'tester@test.es',
-            'password' => Hash::make('1234'), 
-            'role' => 'admin'
+            'name'     => 'Tester',
+            'email'    => 'tester@test.es',
+            'password' => Hash::make('1234'),
+            'role'     => 'admin'
         ]);
 
-        //Informamos del seeder 
-        $this->command->info('Post Cargados');
-
+        $this->command->info('Posts cargados correctamente');
     }
 }

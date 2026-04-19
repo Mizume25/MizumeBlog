@@ -240,6 +240,24 @@ class AdminController extends Controller
             'article_config' => null,
         ]);
 
-        return redirect()->route('post.panel')->with('success', 'Post creado correctamente');
+       return back()->with('Success', "Post creado con exito");
+    }
+
+    public function backup()
+    {
+        $posts = Post::all()->toArray();
+        $fecha = now()->format('Y-m-d');
+        $path  = storage_path("backups/posts_{$fecha}.json");
+
+        if (!file_exists(storage_path('backups'))) {
+            mkdir(storage_path('backups'), 0755, true);
+        }
+
+        file_put_contents(
+            $path,
+            json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
+
+        return back()->with('success', "Backup creado: posts_{$fecha}.json");
     }
 }
