@@ -48,10 +48,5 @@
         "id": 10,
         "home_config": null,
         "article_config": null
-    },
-    {
-        "id": 11,
-        "home_config": null,
-        "article_config": "bg-[center_40%]"
     }
 ]

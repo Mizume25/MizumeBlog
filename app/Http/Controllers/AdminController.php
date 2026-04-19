@@ -129,11 +129,11 @@ class AdminController extends Controller
     public function destroy($id)
     {
 
-        $post = $this->posts->findOrFail($id);
+        $post = Post::findOrFail($id);;
 
         //Colecccion de comentarios
         $coments = $post->comentarios();
-        $this->imgConfig->delete($id);
+        $this->imgConfig->delete((int)$id);
         //Borramos Contenido Relacionado
         $coments->delete();
         $post->delete();
