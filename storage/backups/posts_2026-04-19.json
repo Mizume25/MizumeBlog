@@ -163,20 +163,5 @@
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
-    },
-    {
-        "id": 12,
-        "titulo": "Ejemplo",
-        "web_title": "Ejemplo",
-        "genero": "Ejemplo",
-        "categoria": "AnimeManga",
-        "autor": "Ejemplo",
-        "fecha_publicacion": "2026-02-12",
-        "descripcion": "Ejemplo",
-        "destacado": 1,
-        "ruta": null,
-        "publicado": 0,
-        "created_at": "2026-04-19T11:58:04.000000Z",
-        "updated_at": "2026-04-19T11:58:04.000000Z"
     }
 ]
