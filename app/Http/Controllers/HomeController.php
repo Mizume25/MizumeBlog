@@ -14,6 +14,7 @@ class HomeController extends Controller
 {
     //Variable de la classe
     private $posts;
+    
 
     //Inicializamos Cargado de Posts
     public function __construct()

@@ -39,6 +39,9 @@ Route::get('post/edit/{id}', [AdminController::class , 'edit'])->name('post.edit
 
 Route::post('post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 
+//Ruta de destruccion
+Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
+
 //Ruta a la destruccion de un Post
 Route::match(['post', 'put'], 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 

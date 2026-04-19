@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Comentario;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Container\Attributes\Storage;
+use App\Services\ImageConfigService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Inertia\Inertia;
 
 class AdminController extends Controller
@@ -16,12 +15,14 @@ class AdminController extends Controller
     private $posts;
     private $users;
     private $coments;
+   
 
-    public function __construct()
+    public function __construct(private ImageConfigService $imgConfig)
     {
         $this->posts = Post::all();
         $this->users = User::all();
         $this->coments = Comentario::all();
+        
     }
 
     private function getPosts()
@@ -132,7 +133,7 @@ class AdminController extends Controller
 
         //Colecccion de comentarios
         $coments = $post->comentarios();
-
+        $this->imgConfig->delete($id);
         //Borramos Contenido Relacionado
         $coments->delete();
         $post->delete();
