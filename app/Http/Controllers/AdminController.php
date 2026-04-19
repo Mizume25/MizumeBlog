@@ -75,31 +75,48 @@ class AdminController extends Controller
             'genero'            => 'required|string',
             'fecha_publicacion' => 'required|date',
             'publicado'         => 'required|in:0,1',
-            'ruta'           => 'nullable|image|max:2048',
+            'ruta'              => 'nullable|image|max:2048',
         ]);
 
-        $post = Post::findOrFail($id);
+        $post  = Post::findOrFail($id);
         $datos = $request->except('ruta');
 
         if ($request->hasFile('ruta')) {
 
-            // Si ya existía una imagen antigua, la borramos del disco para no dejar basura
-            if ($post->ruta) {
-                FacadesStorage::disk('public')->delete($post->ruta);
+            $file = $request->file('ruta');
+            $ext  = strtolower($file->getClientOriginalExtension());
+
+            // Limpiar el título
+            $nameClean = strtolower($request->titulo);
+            $nameClean = str_replace(
+                ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
+                ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
+                $nameClean
+            );
+            $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
+            $nameClean = trim($nameClean, '-');
+
+            $filename = "P-{$nameClean}.{$ext}";
+            $dest     = public_path("IMG/Portada/{$request->categoria}");
+            $newRuta  = "/IMG/Portada/{$request->categoria}/{$filename}";
+
+            // Crear el directorio si no existe
+            if (!file_exists($dest)) {
+                mkdir($dest, 0755, true);
             }
 
-            $file = $request->file('ruta');
+            // Mover primero la nueva imagen
+            $file->move($dest, $filename);
 
-            $nameClean = str_replace(' ', '-', $request->titulo);
-            $ext = $file->getClientOriginalExtension();
-            $path = "P-{$nameClean}.{$ext }";
+            // Borrar la antigua solo si es diferente a la nueva
+            if ($post->ruta && $post->ruta !== $newRuta) {
+                $oldPath = public_path($post->ruta);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
 
-            $dest = "/IMG/Portada/{$request->categoria}";
-
-            $path = $file->storeAs($dest, $path, 'public');
-
-            // Guardamos ese STRING en la columna 'ruta' de la base de datos
-            $datos['ruta'] = $path;
+            $datos['ruta'] = $newRuta;
         }
 
         $post->update($datos);

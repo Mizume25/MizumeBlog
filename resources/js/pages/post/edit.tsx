@@ -15,6 +15,7 @@ function edit({ post }: { post: Post }) {
         categoria: post.categoria ?? '',
         genero: post.genero ?? '',
         fecha_publicacion: post.fecha_publicacion ?? '',
+        descripcion: post.descripcion ?? '',
         publicado: post.publicado ?? false,
         ruta: post.ruta ?? '',   // URL actual
         portadaFile: null as File | null,            // nuevo archivo (si lo cambian)
@@ -50,6 +51,7 @@ function edit({ post }: { post: Post }) {
         data.append('categoria', form.categoria);
         data.append('genero', form.genero);
         data.append('fecha_publicacion', form.fecha_publicacion);
+        data.append('descripcion', form.descripcion);
         data.append('publicado', form.publicado ? '1' : '0');
         if (form.portadaFile) data.append('ruta', form.portadaFile);
         data.append('_method', 'PUT'); // Laravel espera PUT/PATCH
@@ -223,31 +225,52 @@ function edit({ post }: { post: Post }) {
                                 "
                             />
                         </div>
+                        { /* Descripcion */}
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
+                                Resumen / Descripción
+                            </label>
+                            <textarea
+                                name="descripcion"
+                                value={form.descripcion}
+                                onChange={handleChange}
+                                rows={4}
+                                placeholder="Escribe una breve descripción o resumen del post..."
+                                className="
+            w-full bg-[#F5EDD8] border border-[#EAD9B8]
+            text-[#3B2314] text-sm
+            px-4 py-3 rounded-lg
+            placeholder:text-[#8B5A2B]/30
+            focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
+            transition-all resize-none
+        "
+                            />
+                        </div>
 
                         {/* Publicado toggle */}
-                        <div className="flex items-center gap-3">
+                        {/* Publicado toggle */}
+                        <div className="flex items-center gap-3 py-2">
                             <button
                                 type="button"
                                 role="switch"
                                 aria-checked={form.publicado}
                                 onClick={() => setForm(prev => ({ ...prev, publicado: !prev.publicado }))}
                                 className={`
-                                    relative w-10 h-5 rounded-full transition-colors duration-300 shrink-0
-                                    ${form.publicado ? 'bg-[#3B2314]' : 'bg-[#EAD9B8]'}
-                                `}
+            relative w-10 h-5 rounded-full transition-colors duration-300 shrink-0
+            ${form.publicado ? 'bg-[#3B2314]' : 'bg-[#EAD9B8]'}
+        `}
                             >
                                 <span className={`
-                                    absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow
-                                    transition-transform duration-300
-                                    ${form.publicado ? 'translate-x-5' : 'translate-x-0'}
-                                `} />
+            absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow
+            transition-transform duration-300
+            ${form.publicado ? 'translate-x-5' : 'translate-x-0'}
+        `} />
                             </button>
-                            <span className="text-sm text-[#4A3020]">
-                                {form.publicado ? 'Publicado' : 'Borrador'}
-                            </span>
-                            <span className={`ml-auto text-[10px] font-bold px-2 py-1 rounded-full border ${form.publicado
-                                    ? 'text-green-700 bg-green-50 border-green-200'
-                                    : 'text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40'
+
+                            {/* Estado al lado del switch */}
+                            <span className={`text-[11px] font-bold px-3 py-1 rounded-full border transition-all duration-300 ${form.publicado
+                                ? 'text-green-700 bg-green-50 border-green-200'
+                                : 'text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40'
                                 }`}>
                                 {form.publicado ? 'Publicado' : 'Borrador'}
                             </span>
@@ -279,6 +302,12 @@ function edit({ post }: { post: Post }) {
                         >
                             Guardar cambios
                         </button>
+                        <a
+                            href={route('post.show', post.id)}
+                            className="text-sm text-[#8B5A2B]/60 hover:text-[#3B2314] transition-colors"
+                        >
+                            Ver Post
+                        </a>
                     </div>
 
                 </form>

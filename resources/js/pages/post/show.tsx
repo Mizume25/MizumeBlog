@@ -83,7 +83,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
 
         {/* Componente del SideBar Izquierdo */}
-        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} />
+        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} id={post.id}/>
 
         <PostContent post={post} contenido={contenido} index={index} selectedId={selectedId} />
 

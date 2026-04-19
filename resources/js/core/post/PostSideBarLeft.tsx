@@ -2,7 +2,8 @@ import { Index } from "@/pages/post/show";
 import LogoutButton from "../auth/LogoutButton";
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
-function PostSideBarLeft({ list, onFindID, menuAbierto }: { list: Index[], onFindID: (id: string) => void, menuAbierto: boolean }) {
+import EditBTN from "../auth/EditBTN";
+function PostSideBarLeft({ list, onFindID, menuAbierto , id}: { list: Index[], onFindID: (id: string) => void, menuAbierto: boolean, id:number }) {
     const { auth } = usePage<SharedData>().props;
     const handleID = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
@@ -44,7 +45,7 @@ function PostSideBarLeft({ list, onFindID, menuAbierto }: { list: Index[], onFin
                     <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
                     <a href={route('dashboard')} className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A HOME</a>
                 </li>
-
+                {auth.user?.role == 'admin' && <EditBTN id={id}/>}
                 {auth.user &&  <LogoutButton />}
             </ul>
         </aside>

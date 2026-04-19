@@ -57,9 +57,12 @@ function HomeSideBarLeft( {exist} : {exist:boolean} ) {
                 </ul>
                 <br />
                 
-                {auth.user &&  <LogoutButton />}
-                <br />
                 {auth.user?.role  == 'admin' && ( <PanelBTN />)}
+                <br />
+
+                {auth.user &&  <LogoutButton />}
+                
+                
 
             </section>
 
