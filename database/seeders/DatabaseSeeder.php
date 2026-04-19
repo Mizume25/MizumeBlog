@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
         if (!empty($posts)) {
             foreach ($posts as $data) {
-                Post::create($data);
+                Post::insert($data);
             }
         }
     }
