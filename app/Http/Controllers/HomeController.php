@@ -14,7 +14,7 @@ class HomeController extends Controller
 {
     //Variable de la classe
     private $posts;
-    
+
 
     //Inicializamos Cargado de Posts
     public function __construct()
@@ -40,8 +40,9 @@ class HomeController extends Controller
         //Recorremos la propiedad
         foreach ($this->posts as $post) {
             if ($post->destacado != 0) {
-
-                $featured->push($post);
+                if ($post->publicado) {
+                    $featured->push($post);
+                }
             }
         }
 
@@ -149,7 +150,9 @@ class HomeController extends Controller
     }
 
     public function archivador()
-    {
-        return Inertia::render('post/archivador');
+    {   
+        $posts = $this->getFeaturedPost()->toArray();
+
+        return Inertia::render('post/archivador',compact('posts'));
     }
 }

@@ -56,6 +56,7 @@ export interface DefaultSideBar {
 
 //Contenido del Home
 export default function Dashboard({ posts }: { posts: Post[] }) {
+    
     const MAX_POST: number = 6;
     const [menuAbierto, setMenuAbierto] = useState(false);
     const { auth } = usePage<SharedData>().props;
