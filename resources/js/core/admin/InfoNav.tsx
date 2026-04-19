@@ -33,12 +33,9 @@ function InfoNav({ onMenuOpen }: InfoNavProps) {
 
             {/* Botones — solo desktop */}
             <div className="hidden lg:flex items-center gap-4">
-                <button className="cursor-pointer px-4 py-2 text-sm border border-[#EAD9B8] rounded-md hover:border-[#A08050] hover:text-[#3B2314] transition-all">
-                    Vista previa
-                </button>
-                <button className="cursor-pointer px-4 py-2 text-sm bg-[#3B2314] text-[#E8D5A3] rounded-md hover:bg-[#6B3F1F] transition-colors shadow-sm">
+                <a href={route('post.create')} className="cursor-pointer px-4 py-2 text-sm bg-[#3B2314] text-[#E8D5A3] rounded-md hover:bg-[#6B3F1F] transition-colors shadow-sm">
                     + Nuevo post
-                </button>
+                </a>
             </div>
         </header>
     )

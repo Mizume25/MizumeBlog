@@ -1,28 +1,21 @@
 import { useState, FormEvent } from 'react';
-import { Post } from '@/types';
 import { router } from '@inertiajs/react';
 
+function create() {
 
-
-function edit({ post }: { post: Post }) {
-
-    // ── Estado local espeja los datos del post recibido desde Inertia/Laravel ──
-    // Equivalente al "old()" de Laravel: los valores iniciales vienen del servidor,
-    // y si hay un error de validación Inertia los reenvía con los valores anteriores.
     const [form, setForm] = useState({
-        titulo: post.titulo ?? '',
-        web_title: post.web_title ?? '',
-        categoria: post.categoria ?? '',
-        genero: post.genero ?? '',
-        fecha_publicacion: post.fecha_publicacion ?? '',
-        autor: post.autor ?? '',
-        descripcion: post.descripcion ?? '',
-        publicado: post.publicado ?? false,
-        ruta: post.ruta ?? '',   // URL actual
-        portadaFile: null as File | null,            // nuevo archivo (si lo cambian)
+        titulo: '',
+        web_title: '',
+        categoria: '',
+        autor: '',
+        genero: '',
+        fecha_publicacion: '',
+        descripcion: '',
+        publicado: false,
+        portadaFile: null as File | null,
     });
 
-    const [preview, setPreview] = useState<string | null>(post.ruta ?? null);
+    const [preview, setPreview] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -40,9 +33,6 @@ function edit({ post }: { post: Post }) {
         }
     };
 
-    // ── Envío con Inertia ──
-    // Inertia serializa el FormData automáticamente (incluido el File).
-    // Laravel recibe los campos igual que un form nativo.
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
@@ -50,15 +40,14 @@ function edit({ post }: { post: Post }) {
         data.append('titulo', form.titulo);
         data.append('web_title', form.web_title);
         data.append('categoria', form.categoria);
+        data.append('autor', form.autor);
         data.append('genero', form.genero);
         data.append('fecha_publicacion', form.fecha_publicacion);
-        data.append('autor' , form.autor);
         data.append('descripcion', form.descripcion);
         data.append('publicado', form.publicado ? '1' : '0');
         if (form.portadaFile) data.append('ruta', form.portadaFile);
-        data.append('_method', 'PUT'); // Laravel espera PUT/PATCH
 
-        router.post(`/post/edit/${post.id}`, data);
+        router.post(route('post.store'), data);
     };
 
     const CATEGORIAS = ['Literatura', 'AnimeManga', 'Reflexiones'];
@@ -69,7 +58,7 @@ function edit({ post }: { post: Post }) {
 
                 {/* ── Breadcrumb ── */}
                 <p className="inline-block bg-[#FFF9F0] px-4 py-2 rounded-2xl shadow-sm border border-[#8B5A2B]/10 text-[11px] uppercase tracking-widest text-[#8B5A2B]/60 mb-6">
-                    Panel · Posts · <span className="text-[#3B2314] font-bold">Editar</span>
+                    Panel · Posts · <span className="text-[#3B2314] font-bold">Nuevo</span>
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-0" encType="multipart/form-data">
@@ -83,7 +72,7 @@ function edit({ post }: { post: Post }) {
                         <label
                             htmlFor="portada-input"
                             className="relative group cursor-pointer sm:w-48 shrink-0 aspect-[3/4] sm:aspect-auto overflow-hidden"
-                            aria-label="Cambiar portada"
+                            aria-label="Subir portada"
                         >
                             {preview ? (
                                 <img
@@ -101,7 +90,9 @@ function edit({ post }: { post: Post }) {
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                 </svg>
-                                <span className="text-[10px] text-white/80 uppercase tracking-widest">Cambiar</span>
+                                <span className="text-[10px] text-white/80 uppercase tracking-widest">
+                                    {preview ? 'Cambiar' : 'Subir'}
+                                </span>
                             </div>
                             <input
                                 id="portada-input"
@@ -171,6 +162,7 @@ function edit({ post }: { post: Post }) {
                                     name="categoria"
                                     value={form.categoria}
                                     onChange={handleChange}
+                                    required
                                     className="
                                         w-full bg-[#F5EDD8] border border-[#EAD9B8]
                                         text-[#3B2314] text-sm
@@ -209,6 +201,7 @@ function edit({ post }: { post: Post }) {
                         </div>
 
                         {/* Fecha de publicación */}
+                        {/* Fecha de publicación + Autor */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
@@ -251,7 +244,8 @@ function edit({ post }: { post: Post }) {
                                 />
                             </div>
                         </div>
-                        { /* Descripcion */}
+
+                        {/* Descripción */}
                         <div>
                             <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
                                 Resumen / Descripción
@@ -263,17 +257,16 @@ function edit({ post }: { post: Post }) {
                                 rows={4}
                                 placeholder="Escribe una breve descripción o resumen del post..."
                                 className="
-            w-full bg-[#F5EDD8] border border-[#EAD9B8]
-            text-[#3B2314] text-sm
-            px-4 py-3 rounded-lg
-            placeholder:text-[#8B5A2B]/30
-            focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-            transition-all resize-none
-        "
+                                    w-full bg-[#F5EDD8] border border-[#EAD9B8]
+                                    text-[#3B2314] text-sm
+                                    px-4 py-3 rounded-lg
+                                    placeholder:text-[#8B5A2B]/30
+                                    focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
+                                    transition-all resize-none
+                                "
                             />
                         </div>
 
-                        {/* Publicado toggle */}
                         {/* Publicado toggle */}
                         <div className="flex items-center gap-3 py-2">
                             <button
@@ -282,18 +275,17 @@ function edit({ post }: { post: Post }) {
                                 aria-checked={form.publicado}
                                 onClick={() => setForm(prev => ({ ...prev, publicado: !prev.publicado }))}
                                 className={`
-            relative w-10 h-5 rounded-full transition-colors duration-300 shrink-0
-            ${form.publicado ? 'bg-[#3B2314]' : 'bg-[#EAD9B8]'}
-        `}
+                                    relative w-10 h-5 rounded-full transition-colors duration-300 shrink-0
+                                    ${form.publicado ? 'bg-[#3B2314]' : 'bg-[#EAD9B8]'}
+                                `}
                             >
                                 <span className={`
-            absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow
-            transition-transform duration-300
-            ${form.publicado ? 'translate-x-5' : 'translate-x-0'}
-        `} />
+                                    absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow
+                                    transition-transform duration-300
+                                    ${form.publicado ? 'translate-x-5' : 'translate-x-0'}
+                                `} />
                             </button>
 
-                            {/* Estado al lado del switch */}
                             <span className={`text-[11px] font-bold px-3 py-1 rounded-full border transition-all duration-300 ${form.publicado
                                 ? 'text-green-700 bg-green-50 border-green-200'
                                 : 'text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40'
@@ -326,14 +318,8 @@ function edit({ post }: { post: Post }) {
                                 touch-manipulation
                             "
                         >
-                            Guardar cambios
+                            Crear post
                         </button>
-                        <a
-                            href={route('post.show', post.id)}
-                            className="text-sm text-[#8B5A2B]/60 hover:text-[#3B2314] transition-colors"
-                        >
-                            Ver Post
-                        </a>
                     </div>
 
                 </form>
@@ -342,4 +328,4 @@ function edit({ post }: { post: Post }) {
     );
 }
 
-export default edit;
+export default create;

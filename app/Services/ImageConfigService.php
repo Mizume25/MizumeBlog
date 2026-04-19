@@ -13,7 +13,7 @@ class ImageConfigService
         $this->path = public_path('data/Formato.json');
 
         if (!file_exists($this->path)) {
-            file_put_contents($this->path, json_encode(new \stdClass(), JSON_PRETTY_PRINT));
+            file_put_contents($this->path, json_encode([], JSON_PRETTY_PRINT));
         }
 
         $this->data = json_decode(file_get_contents($this->path), true) ?? [];
@@ -27,22 +27,41 @@ class ImageConfigService
         );
     }
 
-    // Añadir o actualizar un post
+    private function findIndex(int $id): int|null
+    {
+        foreach ($this->data as $i => $item) {
+            if ($item['id'] === $id) return $i;
+        }
+        return null;
+    }
+
     public function set(int $id, array $config): void
     {
-        $this->data[(string)$id] = $config;
+        $index = $this->findIndex($id);
+        $entry = array_merge(['id' => $id], $config);
+
+        if ($index !== null) {
+            $this->data[$index] = $entry; // actualizar
+        } else {
+            $this->data[] = $entry; // insertar
+        }
+
         $this->save();
     }
 
     public function delete(int $id): void
     {
-        unset($this->data[(string)$id]);
-        $this->save();
+        $index = $this->findIndex($id);
+        if ($index !== null) {
+            array_splice($this->data, $index, 1);
+            $this->save();
+        }
     }
 
     public function get(int $id): ?array
     {
-        return $this->data[(string)$id] ?? null;
+        $index = $this->findIndex($id);
+        return $index !== null ? $this->data[$index] : null;
     }
 
     // Reasignar IDs (si los necesitas reordenar)

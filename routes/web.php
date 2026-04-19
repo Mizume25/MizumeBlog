@@ -42,8 +42,13 @@ Route::post('post/edit/{id}', [AdminController::class, 'update'])->name('post.up
 //Ruta de destruccion
 Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
 
-//Ruta a la destruccion de un Post
+//Ruta de la Edicion de Post
 Route::match(['post', 'put'], 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
+
+Route::get('post/create',[AdminController::class , 'create'])->name('post.create');
+
+Route::post('post/store', [AdminController::class, 'store'])->name('post.store');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

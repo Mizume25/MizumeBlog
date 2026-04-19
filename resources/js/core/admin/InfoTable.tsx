@@ -1,11 +1,16 @@
 import { Post } from '@/types'
 import { useState } from 'react'
 import { router } from '@inertiajs/react';
+import { confirmDelete } from '@/types/utils';
 function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], getCategoria: (id: string) => void, categoriaActual: string }) {
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
         getCategoria(e.currentTarget.id);
     };
+
+    const handleDelete = (id:number) => {
+        router.delete(route('post.destroy', id));
+    }
 
 
     return (
@@ -73,7 +78,11 @@ function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], ge
                                     <div className="flex gap-2">
                                         <a href={route('post.edit', post.id)} className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-[#A08050] transition-colors cursor-pointer">Editar</a>
                                         <button
-                                            onClick={() => router.delete(route('post.destroy', post.id))}
+                                            onClick={() => confirmDelete(
+                                                '¿Eliminar Post?',
+                                                'Esta acción borrará todos los datos permanentemente.',
+                                                 () => handleDelete(post.id) 
+                                            )}
                                             className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer"
                                         >
                                             Borrar

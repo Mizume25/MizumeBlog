@@ -15,14 +15,13 @@ class AdminController extends Controller
     private $posts;
     private $users;
     private $coments;
-   
+
 
     public function __construct(private ImageConfigService $imgConfig)
     {
         $this->posts = Post::all();
         $this->users = User::all();
         $this->coments = Comentario::all();
-        
     }
 
     private function getPosts()
@@ -75,6 +74,8 @@ class AdminController extends Controller
             'categoria'         => 'required|in:Literatura,AnimeManga,Reflexiones',
             'genero'            => 'required|string',
             'fecha_publicacion' => 'required|date',
+            'autor' => 'required |string|max:255',
+            'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
             'ruta'              => 'nullable|image|max:2048',
         ]);
@@ -131,14 +132,114 @@ class AdminController extends Controller
 
         $post = Post::findOrFail($id);;
 
-        //Colecccion de comentarios
-        $coments = $post->comentarios();
+        // Formatear título para construir la ruta
+        $newTitle = mb_strtolower($post->titulo, 'UTF-8');
+        $newTitle = str_replace(' ', '-', $newTitle);
+
+        // Borrar MD y JSON de contenido
+        $jsonPath = resource_path("blog/json/{$post->categoria}/{$newTitle}.json");
+        $mdPath   = resource_path("blog/markdown/{$post->categoria}/{$newTitle}.md");
+
+        if (file_exists($jsonPath)) unlink($jsonPath);
+        if (file_exists($mdPath))   unlink($mdPath);
+
+        // Borrar imagen física
+        if ($post->ruta) {
+            $imgPath = public_path($post->ruta);
+            if (file_exists($imgPath)) unlink($imgPath);
+        }
+
+        // Limpiar Formato.json
         $this->imgConfig->delete((int)$id);
+
+        $coments = $post->comentarios();
         //Borramos Contenido Relacionado
         $coments->delete();
         $post->delete();
 
 
         return redirect()->route('post.panel')->with('success', 'Post eliminado');
+    }
+
+    //Vista de registrar un post 
+    public function create()
+    {
+        return Inertia::render('post/create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'titulo'            => 'required|string|max:255',
+            'web_title'         => 'nullable|string|max:255',
+            'categoria'         => 'required|in:Literatura,AnimeManga,Reflexiones',
+            'genero'            => 'required|string',
+            'fecha_publicacion' => 'required|date',
+            'autor' => 'required |string|max:255',
+            'descripcion' => 'nullable|string',
+            'publicado'         => 'required|in:0,1',
+            'ruta'              => 'nullable|image|max:2048',
+        ]);
+
+        // 1. Crear el post en BD
+        $post = Post::create($request->except('ruta'));
+        if ($request->hasFile('ruta')) {
+
+            $file = $request->file('ruta');
+            $ext  = strtolower($file->getClientOriginalExtension());
+
+            $nameClean = mb_strtolower($request->titulo, 'UTF-8');
+            $nameClean = str_replace(
+                ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
+                ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
+                $nameClean
+            );
+            $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
+            $nameClean = trim($nameClean, '-');
+
+            $filename = "P-{$nameClean}.{$ext}";
+            $dest     = public_path("IMG/Portada/{$request->categoria}");
+
+            if (!file_exists($dest)) {
+                mkdir($dest, 0755, true);
+            }
+
+            $file->move($dest, $filename);
+            $post->update(['ruta' => "/IMG/Portada/{$request->categoria}/{$filename}"]);
+        }
+
+        // 2. Formatear título → slug
+        $newTitle = mb_strtolower($request->titulo, 'UTF-8');
+        $newTitle = str_replace(' ', '-', $newTitle);
+
+        // 3. Rutas de los archivos
+        $jsonPath = resource_path("blog/json/{$request->categoria}/{$newTitle}.json");
+        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");
+
+        // Crear directorios si no existen
+        foreach ([$jsonPath, $mdPath] as $path) {
+            $dir = dirname($path);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+        }
+
+        // 4. Crear JSON con plantilla mínima
+        $jsonContent = json_encode([
+            'id'    => $post->id,
+            'title' => 'Ejemplo',
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents($jsonPath, $jsonContent);
+
+        // 5. Crear MD con plantilla mínima
+        file_put_contents($mdPath, "## Ejemplo\n");
+
+        // 6. Registrar en el JSON de configuración de imagen
+        $this->imgConfig->set($post->id, [
+            'home_config' => null,
+            'article_config' => null,
+        ]);
+
+        return redirect()->route('post.panel')->with('success', 'Post creado correctamente');
     }
 }
