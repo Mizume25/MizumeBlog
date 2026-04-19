@@ -1,138 +1,182 @@
 [
     {
-        "id":1,
+        "id": 1,
         "titulo": "Shiki",
-        "web_title":"El vitalismo de Sotoba",
+        "web_title": "El vitalismo de Sotoba",
         "genero": "Novela Ligera,Terror, Misterio",
         "categoria": "AnimeManga",
         "autor": "Fuyumi Ono",
         "fecha_publicacion": "2025-04-09",
         "descripcion": "Recopilación de mis Notas de Marzo a Abril de lectura de Shiki una de las obras escritas por Fuyumi Ono, adaptada a anime y manga, artículo que desmenuza las figuras más importantes de la obra....",
-        "destacado": true,
-        "ruta":"/IMG/Portada/AnimeManga/P-shiki.jpg",
-        "publicado":true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/AnimeManga\/P-shiki.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":2,
+    {
+        "id": 2,
         "titulo": "Classroom of the elite",
-        "web_title":"COTE",
+        "web_title": "COTE",
         "genero": "Novela Ligera, Slice Of Life",
         "categoria": "AnimeManga",
         "autor": "Shōgo Kinugasa",
         "fecha_publicacion": "2026-01-10",
         "descripcion": "Como lector desde hace años, me he tomado el tiempo no solo de leer la obra, sino de analizarla volumen tras volumen, sacando conclusiones nuevas por cada arco culminado. Sin embargo, el reciente auge ha expuesto una preocupación que ya hace tiempo me tenía en ascuas...",
-        "destacado": true,
-        "ruta":"/IMG/Portada/AnimeManga/P-cote.jpg",
-        "publicado":true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/AnimeManga\/P-cote.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":3,
+    {
+        "id": 3,
         "titulo": "Antologia de Machado",
+        "web_title": null,
         "genero": "Poesia,Modernismo",
         "categoria": "Literatura",
         "autor": "Antonio Machado Ruiz",
         "fecha_publicacion": "2026-01-11",
         "descripcion": "Analisis y comentarios generales sobre algunos poemas de Antonio Machado",
-        "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-antologia-de-machado.jpg",
-        "publicado":true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-machado.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":4,
+    {
+        "id": 4,
         "titulo": "Antologia de Mallarme",
+        "web_title": null,
         "genero": "Poesía,Simbolismo",
         "categoria": "Literatura",
         "autor": "Stéphane Mallarmé",
         "fecha_publicacion": "2026-01-02",
         "descripcion": "Llegué a su obra cúspide del tan hablado poema de \"Herodias\". Para ser honesto analizar cada poema bajo una noción clara de ignorancia poética e interpretación es duro....",
-        "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-antologia-de-mallarme.jpg",
-        "publicado":true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-mallarme.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":5,
+    {
+        "id": 5,
         "titulo": "Antologia de Stendhal",
+        "web_title": null,
         "genero": "Novela, Realismo",
         "categoria": "Literatura",
         "autor": "Henri Beyle",
         "fecha_publicacion": "2026-01-12",
         "descripcion": "Comentarios sobre la obra de Stendhal.",
-        "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-antologia-de-stendhal.jpg",
-        "publicado":true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-stendhal.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":6,
+    {
+        "id": 6,
         "titulo": "Parasite in Love",
-        "web_title":"Los organismos deben seguir viviendo",
+        "web_title": "Los organismos deben seguir viviendo",
         "genero": "Novela Ligera, Romance, Misterio",
         "categoria": "AnimeManga",
         "autor": "Miaki Sugaru",
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis de la obra Parasite in love, conjunto de reflexiones primeras.",
-        "destacado": false,
-        "ruta":"/IMG/Portada/AnimeManga/P-parasite-love.jpg",
-        "publicado": false
+        "destacado": 0,
+        "ruta": "\/IMG\/Portada\/AnimeManga\/P-parasite-love.jpg",
+        "publicado": 0,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":7,
+    {
+        "id": 7,
         "titulo": "Shin Sekai Yori",
-        "web_title":"SSY",
+        "web_title": "SSY",
         "genero": "Novela,Ciencia Ficción, Misterio",
         "categoria": "AnimeManga",
         "autor": "Yusuke Kishi",
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios generales sobre la obra de Shin Sekai Yori.",
-        "destacado": false,
-        "ruta":"/IMG/Portada/AnimeManga/p-shin-sekai-yori.jpg",
-        "publicado": false
+        "destacado": 0,
+        "ruta": "\/IMG\/Portada\/AnimeManga\/p-shin-sekai-yori.jpg",
+        "publicado": 0,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":8,
+    {
+        "id": 8,
         "titulo": "UN-GO",
-        "web_title":"El Corazón al Desnudo",
+        "web_title": "El Corazón al Desnudo",
         "genero": "Anime, Misterio, Sobrenatural",
         "categoria": "AnimeManga",
         "autor": "J-ta Yamada",
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios sobre el anime de UN-GO: Inagron.",
-        "destacado": false,
-        "ruta":"/IMG/Portada/AnimeManga/P-un-go.jpg",
-        "publicado": false
+        "destacado": 0,
+        "ruta": "\/IMG\/Portada\/AnimeManga\/P-un-go.jpg",
+        "publicado": 0,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":9,
+    {
+        "id": 9,
         "titulo": "Colorful",
-        "web_title":"",
+        "web_title": "",
         "genero": "Anime,Slice Of Life",
         "categoria": "AnimeManga",
         "autor": "Eto Mori",
         "fecha_publicacion": "2026-01-16",
         "descripcion": "Analisis y comentarios de la pelicula Colorful",
-        "destacado": false,
-        "publicado": false
+        "destacado": 0,
+        "ruta": null,
+        "publicado": 0,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":10,
+    {
+        "id": 10,
         "titulo": "The Perfect Insider",
+        "web_title": null,
         "genero": "Novela, Misterio",
         "categoria": "AnimeManga",
         "autor": "Hiroshi Mori",
         "fecha_publicacion": "2026-01-17",
         "descripcion": "Analisis y comentarios sobre la obra de Hiroshi Mori",
-        "destacado": false,
-        "publicado": false
+        "destacado": 0,
+        "ruta": null,
+        "publicado": 0,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
     },
-    {   
-        "id":11,
+    {
+        "id": 11,
         "titulo": "Antologia de Giacomo Leopardi",
+        "web_title": null,
         "genero": "Poesia, Pesimismo",
         "categoria": "Literatura",
         "autor": "Giacomo Leopardi",
         "fecha_publicacion": "2026-01-25",
         "descripcion": "Análisis y esquemas sobre los escritos de Giacomo Leopardi.",
-        "destacado": true,
-        "ruta":"/IMG/Portada/Literatura/P-antologia-de-giacomo-leopardi.jpg",
-        "publicado": true
+        "destacado": 1,
+        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-giacomo-leopardi.jpg",
+        "publicado": 1,
+        "created_at": "2026-04-19T11:55:02.000000Z",
+        "updated_at": "2026-04-19T11:55:02.000000Z"
+    },
+    {
+        "id": 12,
+        "titulo": "Ejemplo",
+        "web_title": "Ejemplo",
+        "genero": "Ejemplo",
+        "categoria": "AnimeManga",
+        "autor": "Ejemplo",
+        "fecha_publicacion": "2026-02-12",
+        "descripcion": "Ejemplo",
+        "destacado": 1,
+        "ruta": null,
+        "publicado": 0,
+        "created_at": "2026-04-19T11:58:04.000000Z",
+        "updated_at": "2026-04-19T11:58:04.000000Z"
     }
 ]
