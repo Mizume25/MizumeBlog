@@ -28,6 +28,12 @@ class DatabaseSeeder extends Seeder
 
         if (!empty($posts)) {
             foreach ($posts as $data) {
+                $data['created_at'] = isset($data['created_at'])
+                    ? date('Y-m-d H:i:s', strtotime($data['created_at']))
+                    : now();
+                $data['updated_at'] = isset($data['updated_at'])
+                    ? date('Y-m-d H:i:s', strtotime($data['updated_at']))
+                    : now();
                 Post::insert($data);
             }
         }

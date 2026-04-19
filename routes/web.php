@@ -54,6 +54,9 @@ Route::post('post/store', [AdminController::class, 'store'])->name('post.store')
 //Ruta para generar un backup
 Route::get('post/backup',[AdminController::class, 'backup'])->name('post.backup');
 
+//Ruta para ir al archivador
+Route::get('post/archivador',[HomeController::class, 'archivador'])->name('post.archivador');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

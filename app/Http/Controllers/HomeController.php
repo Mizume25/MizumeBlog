@@ -147,4 +147,9 @@ class HomeController extends Controller
 
         return back()->with('success', 'Comentario eliminado.');
     }
+
+    public function archivador()
+    {
+        return Inertia::render('post/archivador');
+    }
 }
