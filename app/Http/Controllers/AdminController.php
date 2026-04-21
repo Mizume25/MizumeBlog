@@ -78,8 +78,8 @@ class AdminController extends Controller
             'autor' => 'required |string|max:255',
             'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'portada'              => 'nullable|image|max:2048',
-            'card' => 'nullable|image|max:2048'
+            'portada'              => 'nullable| string | max:255',
+            'card' => 'nullable| string | max:255'
         ]);
 
         $post  = Post::findOrFail($id);
@@ -167,8 +167,8 @@ class AdminController extends Controller
             'autor' => 'required |string|max:255',
             'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'portada'              => 'nullable|image|max:2048',
-            'card' => 'nullable| image | max:2048',
+            'portada'              => 'nullable|string|max:255',
+            'card' => 'nullable| string | max:255',
         ]);
 
         $datos = $request->except('portada', 'card');

@@ -96,4 +96,8 @@ export const getRoutePortada  = (categoria:string | undefined, portada:string |u
     return `/IMG/Portada/${categoria}/${portada}`
 }
 
+export const getRouteCard  = (categoria:string | undefined, card:string |undefined): string => {
+    return `/IMG/Cards/${categoria}/${card}`
+}
+
 
