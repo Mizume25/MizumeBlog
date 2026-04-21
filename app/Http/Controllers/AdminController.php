@@ -217,10 +217,10 @@ class AdminController extends Controller
     {
         $posts = Post::all()->toArray();
         $fecha = now()->format('Y-m-d');
-        $path  = storage_path("backups/posts_{$fecha}.json");
+        $path  = public_path("backups/posts_{$fecha}.json");
 
-        if (!file_exists(storage_path('backups'))) {
-            mkdir(storage_path('backups'), 0755, true);
+        if (!file_exists(public_path('backups'))) {
+            mkdir(public_path('backups'), 0755, true);
         }
 
         file_put_contents(

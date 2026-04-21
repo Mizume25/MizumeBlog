@@ -1,14 +1,47 @@
 import { Seccion } from '@/pages/post/archivador';
 import { Post } from '@/types';
-import { getRoutePortada, getRouteCard } from '@/types/utils';
+import { getRoutePortada, getRouteCard, getFormatoPost, Formato } from '@/types/utils';
+import { useEffect, useState } from 'react';
 // ── Card individual ──────────────────────────────────────────────
 interface CardProps {
     post: Post;
 }
 
+
+
 const Card = ({ post }: CardProps) => {
+
+
+    const formatDefault : Formato = {
+        id:post?.id,
+        card_config: "5%",
+    }
+
+
     const generos = post.genero?.split(',').map(g => g.trim()) ?? [];
-    const rutaCard : string = getRouteCard(post.categoria , post.card);
+    const rutaCard: string = getRouteCard(post.categoria, post.card);
+    const [format, setFormat] = useState<Formato | null>(formatDefault);
+
+   
+
+    useEffect(() => {
+        const fetchFormat = async () => {
+            if (post?.id) {
+                try {
+                    const data = await getFormatoPost(post.id);
+                    setFormat(data);
+                    console.log(data);
+                } catch (error) {
+                    console.error("Error cargando formato:", error);
+                }
+            }
+        };
+
+        fetchFormat();
+    }, [post?.id])
+    
+
+
     console.log(rutaCard)
     return (
         <a
@@ -53,7 +86,7 @@ const Card = ({ post }: CardProps) => {
                                 src={rutaCard}
                                 alt={`Portada de ${post.titulo}`}
                                 className="w-full h-full object-cover object-center "
-                                style={{ objectPosition: '5%' }}
+                                style={{ objectPosition: `${format?.card_config}` }}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-2xl opacity-30">
@@ -89,7 +122,7 @@ const Card = ({ post }: CardProps) => {
 // ── Screen — recibe posts ya filtrados ───────────────────────────
 
 
-const ArchiveScreen  = ({posts, seccionActiva} : {posts : Post[], seccionActiva:Seccion} ) => {
+const ArchiveScreen = ({ posts, seccionActiva }: { posts: Post[], seccionActiva: Seccion }) => {
 
     if (posts.length === 0) {
         return (
@@ -114,4 +147,4 @@ const ArchiveScreen  = ({posts, seccionActiva} : {posts : Post[], seccionActiva:
     );
 };
 
-export default ArchiveScreen ;
+export default ArchiveScreen;

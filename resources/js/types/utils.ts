@@ -1,8 +1,11 @@
 import Swal from 'sweetalert2';
+
+
 export interface Formato {
     id?:number,
     home_config?:string,
     article_config?:string,
+    card_config?:string,
 }
 
 
@@ -45,10 +48,12 @@ export interface Rutas {
     titulo:string
 }
 
+
+
 //Nombres aleatorios
 export const getName = async (max: number, omitId: number): Promise<Rutas[]> => {
   try {
-    const response = await fetch("/data/Contenido.json");
+    const response = await fetch('/@fs/storage/backups/posts_*.json');
     if (!response.ok) throw new Error('Error al cargar JSON');
     
     const datos = await response.json();

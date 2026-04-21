@@ -51,7 +51,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
     }, [post?.id])
 
     
-
+    console.log()
     
 
     return (
