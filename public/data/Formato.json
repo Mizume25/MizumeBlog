@@ -3,32 +3,31 @@
         "id": 1,
         "home_config": null,
         "article_config": "bg-[center_14%]",
-        "card_config":"10%"
-        
+        "card_config": "10%"
     },
     {
         "id": 2,
         "home_config": "center 12%",
         "article_config": "bg-[center_13%]",
-        "card_config":"10%"
+        "card_config": "10%"
     },
     {
         "id": 3,
         "home_config": "center 20%",
         "article_config": "bg-[center_35%]",
-        "card_config":"40%"
+        "card_config": "40%"
     },
     {
         "id": 4,
         "home_config": null,
         "article_config": "bg-[center_20%]",
-        "card_config":"40%"
+        "card_config": "40%"
     },
     {
         "id": 5,
         "home_config": null,
         "article_config": "bg-[center_40%]",
-        "card_config":"40%"
+        "card_config": "40%"
     },
     {
         "id": 6,
@@ -59,6 +58,11 @@
         "id": 11,
         "home_config": null,
         "article_config": "bg-[center_40%]",
-        "card_config":"40%"
+        "card_config": "40%"
+    },
+    {
+        "id": 12,
+        "home_config": null,
+        "article_config": null
     }
 ]
