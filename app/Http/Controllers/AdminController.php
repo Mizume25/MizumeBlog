@@ -144,7 +144,7 @@ class AdminController extends Controller
         return Inertia::render('post/create');
     }
 
-    private function cleanName(string $titulo) :string
+    private function cleanName(string $titulo): string
     {
         $nameClean = mb_strtolower($titulo, 'UTF-8');
         $nameClean = str_replace(
@@ -192,7 +192,7 @@ class AdminController extends Controller
 
         // 3. Rutas de los archivos
         $jsonPath = resource_path("blog/json/{$request->categoria}/{$newTitle}.json");
-        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");   
+        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");
 
         // 4. Crear JSON con plantilla mínima
         $jsonContent = json_encode([
@@ -228,24 +228,12 @@ class AdminController extends Controller
             json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
 
+        //Generamos una copia para Fronetend 
+        $json = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+        file_put_contents($path, $json);
+        file_put_contents(public_path('backups/posts.json'), $json);
+
         return back()->with('success', "Backup creado: posts_{$fecha}.json");
-    }
-
-    //Modificar Dinamismo Rutas - Portadas
-    private function routesPortada(string $categoria, string $titulo)
-    {
-        return public_path("/IMG/Portada/" . $categoria . "/" . $titulo);
-    }
-
-    //Modificar Dinamismo Rutas - Contenido
-    private function routesContent(string $categoria, string $titulo, string $format)
-    {
-        return resource_path("blog/" . $format  . "/" . $categoria . "/" . $titulo);
-    }
-
-    //Modificar Dinamismo Rutas - Cards
-    private function routesCards(string $categoria, string $titulo)
-    {
-        return public_path("/IMG/Cards/" . $categoria . "/" . $titulo);
     }
 }

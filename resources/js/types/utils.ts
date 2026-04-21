@@ -53,7 +53,7 @@ export interface Rutas {
 //Nombres aleatorios
 export const getName = async (max: number, omitId: number): Promise<Rutas[]> => {
   try {
-    const response = await fetch('/@fs/storage/backups/posts_*.json');
+    const response = await fetch('/backups/posts.json');
     if (!response.ok) throw new Error('Error al cargar JSON');
     
     const datos = await response.json();

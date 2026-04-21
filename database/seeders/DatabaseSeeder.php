@@ -12,12 +12,11 @@ class DatabaseSeeder extends Seeder
     private function seedCatalog(): void
     {
         // Buscar el backup más reciente
-        $backups = glob(storage_path('backups/posts_*.json'));
+        $backups = glob(public_path('backups/posts_*.json'));
 
         // Si no hay backups usar el archivo original como fallback
         if (empty($backups)) {
             $this->command->warn('No hay backups, usando Contenido.json como fallback');
-            $path = public_path('data/Contenido.json');
         } else {
             sort($backups);
             $path = end($backups);
