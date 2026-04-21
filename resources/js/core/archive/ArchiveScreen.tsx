@@ -1,6 +1,6 @@
 import { Seccion } from '@/pages/post/archivador';
 import { Post } from '@/types';
-
+import { getRoutePortada, getRouteCard } from '@/types/utils';
 // ── Card individual ──────────────────────────────────────────────
 interface CardProps {
     post: Post;
@@ -8,7 +8,8 @@ interface CardProps {
 
 const Card = ({ post }: CardProps) => {
     const generos = post.genero?.split(',').map(g => g.trim()) ?? [];
-
+    const rutaCard : string = getRouteCard(post.categoria , post.card);
+    console.log(rutaCard)
     return (
         <a
             href={route('post.show', post.id)}
@@ -47,11 +48,12 @@ const Card = ({ post }: CardProps) => {
 
                     {/* Sección de Imagen (Mantiene estructura original según tu pedido) */}
                     <section className="w-[35%] sm:w-[30%] shrink-0 bg-[#e5e5e5] border-r-[2px] border-black/20 overflow-hidden">
-                        {post.ruta ? (
+                        {rutaCard ? (
                             <img
-                                src={post.ruta}
+                                src={rutaCard}
                                 alt={`Portada de ${post.titulo}`}
-                                className="w-full h-full object-cover object-center"
+                                className="w-full h-full object-cover object-center "
+                                style={{ objectPosition: '5%' }}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-2xl opacity-30">
