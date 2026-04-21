@@ -3,6 +3,8 @@ import { router } from '@inertiajs/react';
 
 function create() {
 
+
+
     const [form, setForm] = useState({
         titulo: '',
         web_title: '',
@@ -12,10 +14,12 @@ function create() {
         fecha_publicacion: '',
         descripcion: '',
         publicado: false,
-        portadaFile: null as File | null,
+        portada: '',
+        card: '',
     });
 
     const [preview, setPreview] = useState<string | null>(null);
+    const [previewCard, setPreviewCard] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -28,8 +32,16 @@ function create() {
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         if (file) {
-            setForm(prev => ({ ...prev, portadaFile: file }));
+            setForm(prev => ({ ...prev, portada: file.name }));
             setPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null;
+        if (file) {
+            setForm(prev => ({ ...prev, card: file.name }));
+            setPreviewCard(URL.createObjectURL(file));
         }
     };
 
@@ -45,8 +57,8 @@ function create() {
         data.append('fecha_publicacion', form.fecha_publicacion);
         data.append('descripcion', form.descripcion);
         data.append('publicado', form.publicado ? '1' : '0');
-        if (form.portadaFile) data.append('ruta', form.portadaFile);
-
+        if (form.portada) data.append('portada', form.portada);
+        if (form.card) data.append('card', form.card);
         router.post(route('post.store'), data);
     };
 
@@ -61,7 +73,7 @@ function create() {
                     Panel · Posts · <span className="text-[#3B2314] font-bold">Nuevo</span>
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-0" encType="multipart/form-data">
+                <form onSubmit={handleSubmit} className="space-y-0" >
 
                     {/* ═══════════════════════════════════════
                         HERO: Portada (izq) + Título (der)
@@ -265,6 +277,40 @@ function create() {
                                     transition-all resize-none
                                 "
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
+                                Card
+                            </label>
+                            <label
+                                htmlFor="card-input"
+                                className="relative group cursor-pointer flex items-center gap-4 bg-[#F5EDD8] border border-[#EAD9B8] rounded-lg px-4 py-3 hover:border-[#C8AD7F] transition-all"
+                            >
+                                <div className="w-12 h-16 shrink-0 rounded overflow-hidden bg-[#EAD9B8] flex items-center justify-center">
+                                    {previewCard ? (
+                                        <img src={previewCard} alt="Card preview" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-xl opacity-30">🖼</span>
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-[#3B2314] font-medium truncate">
+                                        {form.card ?? 'Sin card asignada'}
+                                    </p>
+                                    <p className="text-[10px] text-[#8B5A2B]/50 mt-0.5">Click para añadir</p>
+                                </div>
+                                <svg className="w-4 h-4 text-[#8B5A2B]/40 group-hover:text-[#3B2314] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                </svg>
+                                <input
+                                    id="card-input"
+                                    type="file"
+                                    accept="image/*"
+                                    className="sr-only"
+                                    onChange={handleCard}
+                                />
+                            </label>
                         </div>
 
                         {/* Publicado toggle */}
