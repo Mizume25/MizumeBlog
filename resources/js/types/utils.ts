@@ -92,6 +92,8 @@ export const getFormatoPost = async (id:number): Promise<Formato | null> => {
     }
 };
 
-
+export const getRoutePortada  = (categoria:string | undefined, portada:string |undefined): string => {
+    return `/IMG/Portada/${categoria}/${portada}`
+}
 
 

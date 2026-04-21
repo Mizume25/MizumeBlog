@@ -3,6 +3,7 @@ import { Post } from '@/types';
 import { getFormatoPost } from '@/types/utils';
 import { useEffect, useState } from 'react';
 import { Formato } from '@/types/utils';
+import { getRoutePortada } from '@/types/utils';
 //GENERAR FECHA
 const getMounth = (data: string | undefined): string => {
     let d = new Date(data ?? "01-01-1999");
@@ -10,6 +11,7 @@ const getMounth = (data: string | undefined): string => {
     let name: string = new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(d);
     return name;
 }
+
 
 
 //Paneles dinamicos del Home
@@ -21,6 +23,8 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
         article_config:"bg-[center_18%]",
     }
 
+
+    const ruta: string = getRoutePortada(post?.categoria , post?.portada)
 
     //Generamos un array
     const arr_Tags: string[] | undefined = post?.genero.split(',').map(p => p.trim());
@@ -56,7 +60,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
             {left ? (
                 <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
                     <article style={{ 
-                        '--bg-image': `url('${post?.ruta}')` ,
+                        '--bg-image': `url('${ruta}')` ,
                         '--bg-format': `${format?.home_config}`} as React.CSSProperties}
                         className={styles.featuredPost}>
 
@@ -108,7 +112,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
                 </a>
             ) : (
                 <a href={route('post.show', post?.id)} className="no-underline block cursor-pointer group" data-id={post?.id}>
-                    <article style={{ '--bg-image': `url('${post?.ruta}')`,
+                    <article style={{ '--bg-image': `url('${ruta}')`,
                     '--bg-format': `${format?.home_config}` } as React.CSSProperties}
                         className={styles.featuredPost}>
 

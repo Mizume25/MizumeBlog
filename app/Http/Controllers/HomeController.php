@@ -53,8 +53,14 @@ class HomeController extends Controller
     private function modifiFiles($titulo): string
     {
         $titulo = mb_strtolower($titulo, 'UTF-8');
+        $titulo = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
+            $titulo
+        );
 
-        $index = str_replace(' ', '-', $titulo);
+        $index = preg_replace('/[^a-z0-9]+/', '-', $titulo);
+        $index = trim($index, '-');
 
         return $index;
     }
@@ -150,9 +156,9 @@ class HomeController extends Controller
     }
 
     public function archivador()
-    {   
+    {
         $posts = $this->getFeaturedPost()->toArray();
 
-        return Inertia::render('post/archivador',compact('posts'));
+        return Inertia::render('post/archivador', compact('posts'));
     }
 }

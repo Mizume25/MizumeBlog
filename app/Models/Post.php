@@ -16,7 +16,8 @@ class Post extends Model
         'fecha_publicacion',
         'descripcion',
         'destacado',
-        'ruta',
+        'portada',
+        'card',
         'publicado'
     ];
 

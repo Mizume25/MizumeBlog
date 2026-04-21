@@ -22,7 +22,8 @@ return new class extends Migration
             $table->date('fecha_publicacion');
             $table->text('descripcion')->nullable();
             $table->boolean('destacado')->default(true);
-            $table->string('ruta')->nullable();
+            $table->string('portada')->nullable();
+            $table->string('card')->nullable();
             $table->boolean('publicado')->default(false);
             $table->timestamps();
             

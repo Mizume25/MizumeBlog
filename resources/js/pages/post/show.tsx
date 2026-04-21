@@ -15,7 +15,7 @@ import Coments from '@/core/coments/Coments';
 import TopAuthBar from '@/core/auth/TopAuthBar';
 import { Formato } from '@/types/utils';
 import { getFormatoPost } from '@/types/utils';
-
+import { getRoutePortada } from '@/types/utils';
 
 export interface Index {
   id: string,
@@ -23,6 +23,8 @@ export interface Index {
 }
 
 function show({ post, index, contenido, coments }: { post: Post, index: Index[], contenido: string , coments:Comentario []  }) {
+
+  const ruta = getRoutePortada(post?.categoria , post?.portada);
 
   const formatDefault : Formato = {
           id:post?.id,
@@ -73,7 +75,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
         <Head title='Show'></Head>
         {!auth.user && <TopAuthBar />}
         {/* Componente imagen header */}
-        <PostHeader route={post?.ruta} title={post.titulo} format={format?.article_config} />
+        <PostHeader route={ruta} title={post.titulo} format={format?.article_config} />
 
         <PostBTN onButtonClick={handleButtonClick} />
         {/* Contenedor del Main */}

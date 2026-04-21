@@ -16,7 +16,7 @@ class AdminController extends Controller
     private $users;
     private $coments;
 
-
+    //Constructor de la Classe
     public function __construct(private ImageConfigService $imgConfig)
     {
         $this->posts = Post::all();
@@ -24,6 +24,7 @@ class AdminController extends Controller
         $this->coments = Comentario::all();
     }
 
+    //Getters
     private function getPosts()
     {
         return $this->posts;
@@ -43,9 +44,9 @@ class AdminController extends Controller
     public function panel()
     {
 
-        $users = $this->getUsers();
-        $coments = $this->getComents();
-        $posts = $this->getPosts();
+        $this->getUsers();
+        $this->getComents();
+        $this->getPosts();
 
 
         return Inertia::render('post/MizumeAdmin', [
@@ -60,7 +61,7 @@ class AdminController extends Controller
     //Vista de Edicion de Post
     public function edit($id)
     {
-        $post = $this->posts->findOrFail($id);
+        $post = Post::findOrFail($id);
 
         return Inertia::render('post/edit', compact('post'));
     }
@@ -77,48 +78,25 @@ class AdminController extends Controller
             'autor' => 'required |string|max:255',
             'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'ruta'              => 'nullable|image|max:2048',
+            'portada'              => 'nullable|image|max:2048',
+            'card' => 'nullable|image|max:2048'
         ]);
 
         $post  = Post::findOrFail($id);
-        $datos = $request->except('ruta');
+        $datos = $request->except('portada', 'card');
 
-        if ($request->hasFile('ruta')) {
+        // Portada → "P-" + nombre sin extensión en minúsculas
+        if ($request->hasFile('portada')) {
+            $portada        = $request->file('portada');
+            $nombrePortada    = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME)));
+            $datos['portada'] = $nombrePortada;
+        }
 
-            $file = $request->file('ruta');
-            $ext  = strtolower($file->getClientOriginalExtension());
-
-            // Limpiar el título
-            $nameClean = strtolower($request->titulo);
-            $nameClean = str_replace(
-                ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
-                ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
-                $nameClean
-            );
-            $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
-            $nameClean = trim($nameClean, '-');
-
-            $filename = "P-{$nameClean}.{$ext}";
-            $dest     = public_path("IMG/Portada/{$request->categoria}");
-            $newRuta  = "/IMG/Portada/{$request->categoria}/{$filename}";
-
-            // Crear el directorio si no existe
-            if (!file_exists($dest)) {
-                mkdir($dest, 0755, true);
-            }
-
-            // Mover primero la nueva imagen
-            $file->move($dest, $filename);
-
-            // Borrar la antigua solo si es diferente a la nueva
-            if ($post->ruta && $post->ruta !== $newRuta) {
-                $oldPath = public_path($post->ruta);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
-            }
-
-            $datos['ruta'] = $newRuta;
+        // Card → nombre completo en minúsculas con su extensión original
+        if ($request->hasFile('card')) {
+            $card           = $request->file('card');
+            $nombreCard    = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+            $datos['card']  = $nombreCard;
         }
 
         $post->update($datos);
@@ -133,8 +111,7 @@ class AdminController extends Controller
         $post = Post::findOrFail($id);;
 
         // Formatear título para construir la ruta
-        $newTitle = mb_strtolower($post->titulo, 'UTF-8');
-        $newTitle = str_replace(' ', '-', $newTitle);
+        $newTitle = $this->cleanName($post->titulo);
 
         // Borrar MD y JSON de contenido
         $jsonPath = resource_path("blog/json/{$post->categoria}/{$newTitle}.json");
@@ -144,8 +121,8 @@ class AdminController extends Controller
         if (file_exists($mdPath))   unlink($mdPath);
 
         // Borrar imagen física
-        if ($post->ruta) {
-            $imgPath = public_path($post->ruta);
+        if ($post->portada) {
+            $imgPath = public_path('/IMG/Portada/' . $post->categoria . '/' . $newTitle);
             if (file_exists($imgPath)) unlink($imgPath);
         }
 
@@ -167,6 +144,18 @@ class AdminController extends Controller
         return Inertia::render('post/create');
     }
 
+    private function cleanName(string $titulo) :string
+    {
+        $nameClean = mb_strtolower($titulo, 'UTF-8');
+        $nameClean = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
+            $nameClean
+        );
+        $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
+        return $nameClean = trim($nameClean, '-');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -178,51 +167,32 @@ class AdminController extends Controller
             'autor' => 'required |string|max:255',
             'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'ruta'              => 'nullable|image|max:2048',
+            'portada'              => 'nullable|image|max:2048',
+            'card' => 'nullable| image | max:2048',
         ]);
 
-        // 1. Crear el post en BD
-        $post = Post::create($request->except('ruta'));
-        if ($request->hasFile('ruta')) {
+        $datos = $request->except('portada', 'card');
 
-            $file = $request->file('ruta');
-            $ext  = strtolower($file->getClientOriginalExtension());
-
-            $nameClean = mb_strtolower($request->titulo, 'UTF-8');
-            $nameClean = str_replace(
-                ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
-                ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
-                $nameClean
-            );
-            $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
-            $nameClean = trim($nameClean, '-');
-
-            $filename = "P-{$nameClean}.{$ext}";
-            $dest     = public_path("IMG/Portada/{$request->categoria}");
-
-            if (!file_exists($dest)) {
-                mkdir($dest, 0755, true);
-            }
-
-            $file->move($dest, $filename);
-            $post->update(['ruta' => "/IMG/Portada/{$request->categoria}/{$filename}"]);
+        // Portada → "P-" + nombre sin extensión en minúsculas (espacios → guiones)
+        if ($request->hasFile('portada')) {
+            $portada          = $request->file('portada');
+            $datos['portada'] = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME)));
         }
 
+        // Card → nombre completo en minúsculas con su extensión original (espacios → guiones)
+        if ($request->hasFile('card')) {
+            $card          = $request->file('card');
+            $datos['card'] = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+        }
+
+        $post = Post::create($datos);
+
         // 2. Formatear título → slug
-        $newTitle = mb_strtolower($request->titulo, 'UTF-8');
-        $newTitle = str_replace(' ', '-', $newTitle);
+        $newTitle = $this->cleanName($request->titulo);
 
         // 3. Rutas de los archivos
         $jsonPath = resource_path("blog/json/{$request->categoria}/{$newTitle}.json");
-        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");
-
-        // Crear directorios si no existen
-        foreach ([$jsonPath, $mdPath] as $path) {
-            $dir = dirname($path);
-            if (!file_exists($dir)) {
-                mkdir($dir, 0755, true);
-            }
-        }
+        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");   
 
         // 4. Crear JSON con plantilla mínima
         $jsonContent = json_encode([
@@ -240,7 +210,7 @@ class AdminController extends Controller
             'article_config' => null,
         ]);
 
-       return back()->with('Success', "Post creado con exito");
+        return back()->with('Success', "Post creado con exito");
     }
 
     public function backup()
@@ -259,5 +229,23 @@ class AdminController extends Controller
         );
 
         return back()->with('success', "Backup creado: posts_{$fecha}.json");
+    }
+
+    //Modificar Dinamismo Rutas - Portadas
+    private function routesPortada(string $categoria, string $titulo)
+    {
+        return public_path("/IMG/Portada/" . $categoria . "/" . $titulo);
+    }
+
+    //Modificar Dinamismo Rutas - Contenido
+    private function routesContent(string $categoria, string $titulo, string $format)
+    {
+        return resource_path("blog/" . $format  . "/" . $categoria . "/" . $titulo);
+    }
+
+    //Modificar Dinamismo Rutas - Cards
+    private function routesCards(string $categoria, string $titulo)
+    {
+        return public_path("/IMG/Cards/" . $categoria . "/" . $titulo);
     }
 }

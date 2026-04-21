@@ -51,7 +51,8 @@ export interface Post {
     fecha_publicacion:string,
     descripcion?:string,
     destacado: 1 | 0
-    ruta?: string,
+    portada?:string,
+    card?:string,
     publicado: boolean
 }
 

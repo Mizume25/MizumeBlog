@@ -9,7 +9,8 @@
         "fecha_publicacion": "2025-04-09",
         "descripcion": "Recopilación de mis Notas de Marzo a Abril de lectura de Shiki una de las obras escritas por Fuyumi Ono, adaptada a anime y manga, artículo que desmenuza las figuras más importantes de la obra....",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/AnimeManga\/P-shiki.jpg",
+        "portada": "P-shiki.jpg",
+        "card": "shiki.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -24,7 +25,8 @@
         "fecha_publicacion": "2026-01-10",
         "descripcion": "Como lector desde hace años, me he tomado el tiempo no solo de leer la obra, sino de analizarla volumen tras volumen, sacando conclusiones nuevas por cada arco culminado. Sin embargo, el reciente auge ha expuesto una preocupación que ya hace tiempo me tenía en ascuas...",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/AnimeManga\/P-cote.jpg",
+        "portada": "P-classroom-of-the-elite.jpg",
+        "card":"classroom-of-the-elite.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -39,7 +41,8 @@
         "fecha_publicacion": "2026-01-11",
         "descripcion": "Analisis y comentarios generales sobre algunos poemas de Antonio Machado",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-machado.jpg",
+        "portada": "P-antologia-de-machado.jpg",
+        "card":"antologia-de-machado.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -54,7 +57,8 @@
         "fecha_publicacion": "2026-01-02",
         "descripcion": "Llegué a su obra cúspide del tan hablado poema de \"Herodias\". Para ser honesto analizar cada poema bajo una noción clara de ignorancia poética e interpretación es duro....",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-mallarme.jpg",
+        "portada": "P-antologia-de-mallarme.jpg",
+        "card":"antologia-de-mallarme.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -69,7 +73,8 @@
         "fecha_publicacion": "2026-01-12",
         "descripcion": "Comentarios sobre la obra de Stendhal.",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-stendhal.jpg",
+        "portada": "P-antologia-de-stendhal.jpg",
+        "card":"antologia-de-stendhal.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -84,7 +89,7 @@
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis de la obra Parasite in love, conjunto de reflexiones primeras.",
         "destacado": 0,
-        "ruta": "\/IMG\/Portada\/AnimeManga\/P-parasite-love.jpg",
+        "portada": "P-parasite-love.jpg",
         "publicado": 0,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -99,7 +104,7 @@
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios generales sobre la obra de Shin Sekai Yori.",
         "destacado": 0,
-        "ruta": "\/IMG\/Portada\/AnimeManga\/p-shin-sekai-yori.jpg",
+        "portada": "P-shin-sekai-yori.jpg",
         "publicado": 0,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -114,7 +119,7 @@
         "fecha_publicacion": "2026-01-15",
         "descripcion": "Analisis y comentarios sobre el anime de UN-GO: Inagron.",
         "destacado": 0,
-        "ruta": "\/IMG\/Portada\/AnimeManga\/P-un-go.jpg",
+        "portada": "P-un-go.jpg",
         "publicado": 0,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -129,7 +134,6 @@
         "fecha_publicacion": "2026-01-16",
         "descripcion": "Analisis y comentarios de la pelicula Colorful",
         "destacado": 0,
-        "ruta": null,
         "publicado": 0,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -144,7 +148,6 @@
         "fecha_publicacion": "2026-01-17",
         "descripcion": "Analisis y comentarios sobre la obra de Hiroshi Mori",
         "destacado": 0,
-        "ruta": null,
         "publicado": 0,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
@@ -159,7 +162,8 @@
         "fecha_publicacion": "2026-01-25",
         "descripcion": "Análisis y esquemas sobre los escritos de Giacomo Leopardi.",
         "destacado": 1,
-        "ruta": "\/IMG\/Portada\/Literatura\/P-antologia-de-giacomo-leopardi.jpg",
+        "portada": "P-antologia-de-giacomo-leopardi.jpg",
+        "card":"P-antologia-de-giacomo-leopardi.jpg",
         "publicado": 1,
         "created_at": "2026-04-19T11:55:02.000000Z",
         "updated_at": "2026-04-19T11:55:02.000000Z"
