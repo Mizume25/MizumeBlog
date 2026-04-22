@@ -122,8 +122,13 @@ class AdminController extends Controller
 
         // Borrar imagen física
         if ($post->portada) {
-            $imgPath = public_path('/IMG/Portada/' . $post->categoria . '/' . $newTitle);
+            $imgPath = public_path('IMG/Portada/' . $post->categoria . '/' . $newTitle);
             if (file_exists($imgPath)) unlink($imgPath);
+        }
+
+        if($post->card) {
+            $imgPath = public_path('IMG/Cards/' . $post->categoria . '/' . $newTitle);
+            if(file_exists($imgPath)) unlink($imgPath);
         }
 
         // Limpiar Formato.json
