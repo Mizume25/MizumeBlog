@@ -180,7 +180,8 @@ class AdminController extends Controller
 
         if ($request->hasFile('portada')) {
             $portada          = $request->file('portada');
-            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName())));
+             $extension  = $portada->getClientOriginalExtension();
+            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))). '.' . $extension;;
             $portada->move(public_path('IMG/Portada/' . $request->categoria . "/"), $nombre); 
             $datos['portada'] = $nombre;                             
         }
