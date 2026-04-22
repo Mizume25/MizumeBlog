@@ -59,5 +59,10 @@
         "home_config": null,
         "article_config": "bg-[center_40%]",
         "card_config": "40%"
+    },
+    {
+        "id": 17,
+        "home_config": null,
+        "article_config": null
     }
 ]
