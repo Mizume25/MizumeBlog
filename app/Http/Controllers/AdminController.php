@@ -164,25 +164,27 @@ class AdminController extends Controller
             'categoria'         => 'required|in:Literatura,AnimeManga,Reflexiones',
             'genero'            => 'required|string',
             'fecha_publicacion' => 'required|date',
-            'autor' => 'required |string|max:255',
-            'descripcion' => 'nullable|string',
+            'autor'             => 'required|string|max:255',
+            'descripcion'       => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'portada'              => 'nullable|string|max:255',
-            'card' => 'nullable| string | max:255',
+            'portada'           => 'nullable|file|mimes:jpg,jpeg,png,webp', // ✅
+            'card'              => 'nullable|file|mimes:jpg,jpeg,png,webp', // ✅
         ]);
 
         $datos = $request->except('portada', 'card');
 
-        // Portada → "P-" + nombre sin extensión en minúsculas (espacios → guiones)
         if ($request->hasFile('portada')) {
             $portada          = $request->file('portada');
-            $datos['portada'] = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME)));
+            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME)));
+            $portada->move(public_path('IMG/Portada/' . $request->categoria . "/"), $nombre); 
+            $datos['portada'] = $nombre;                             
         }
 
-        // Card → nombre completo en minúsculas con su extensión original (espacios → guiones)
         if ($request->hasFile('card')) {
             $card          = $request->file('card');
-            $datos['card'] = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+            $nombre        = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+            $card->move(public_path('IMG/Cards/' . $request->categoria . "/"), $nombre);       
+            $datos['card'] = $nombre;                               
         }
 
         $post = Post::create($datos);

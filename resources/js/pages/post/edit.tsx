@@ -5,7 +5,8 @@ import { getRouteCard, getRoutePortada } from '@/types/utils';
 
 
 function edit({ post }: { post: Post }) {
-
+    console.log(post.portada)
+    console.log(post.card)
     const ruta: string = getRoutePortada(post.categoria, post.portada);
     const rutaCard: string = getRouteCard(post.categoria, post.card);
 

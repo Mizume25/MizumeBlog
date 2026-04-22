@@ -20,6 +20,10 @@ function create() {
 
     const [preview, setPreview] = useState<string | null>(null);
     const [previewCard, setPreviewCard] = useState<string | null>(null);
+    const [files, setFiles] = useState<{ portada: File | null, card: File | null }>({
+        portada: null,
+        card: null
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -32,6 +36,7 @@ function create() {
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         if (file) {
+            setFiles(prev => ({ ...prev, portada: file }));
             setForm(prev => ({ ...prev, portada: file.name }));
             setPreview(URL.createObjectURL(file));
         }
@@ -40,6 +45,7 @@ function create() {
     const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         if (file) {
+            setFiles(prev => ({ ...prev, card: file }));
             setForm(prev => ({ ...prev, card: file.name }));
             setPreviewCard(URL.createObjectURL(file));
         }
@@ -57,8 +63,8 @@ function create() {
         data.append('fecha_publicacion', form.fecha_publicacion);
         data.append('descripcion', form.descripcion);
         data.append('publicado', form.publicado ? '1' : '0');
-        if (form.portada) data.append('portada', form.portada);
-        if (form.card) data.append('card', form.card);
+        if (files.portada) data.append('portada', files.portada);
+        if (files.card) data.append('card', files.card);
         router.post(route('post.store'), data);
     };
 
