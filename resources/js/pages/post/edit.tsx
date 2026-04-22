@@ -24,12 +24,12 @@ function edit({ post }: { post: Post }) {
         autor: post.autor ?? '',
         descripcion: post.descripcion ?? '',
         publicado: post.publicado ?? false,
-        portada: post.portada ?? null,
-        card: post.card ?? null,
     });
 
     const [preview, setPreview] = useState<string | null>(ruta ?? null);
     const [previewCard, setPreviewCard] = useState<string | null>(rutaCard ?? null);
+    const [portada, setPortada] = useState<File | null>(null);
+const [card, setCard]       = useState<File | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -42,7 +42,7 @@ function edit({ post }: { post: Post }) {
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         if (file) {
-            setForm(prev => ({ ...prev, portada: file.name }));
+            setPortada(file); // ✅
             setPreview(URL.createObjectURL(file));
         }
     };
@@ -50,8 +50,8 @@ function edit({ post }: { post: Post }) {
     const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         if (file) {
-            setForm(prev => ({ ...prev, card: file.name }));
-            setPreviewCard(URL.createObjectURL(file));
+             setCard(file); // ✅
+             setPreviewCard(URL.createObjectURL(file));
         }
     };
 
@@ -70,8 +70,8 @@ function edit({ post }: { post: Post }) {
         data.append('autor', form.autor);
         data.append('descripcion', form.descripcion);
         data.append('publicado', form.publicado ? '1' : '0');
-        if (form.portada) data.append('portada', form.portada);
-        if (form.card) data.append('card', form.card);
+       if (portada) data.append('portada', portada); // ✅ File real
+       if (card)    data.append('card', card);        // ✅ File real
         data.append('_method', 'PUT'); // Laravel espera PUT/PATCH
 
         router.post(`/post/edit/${post.id}`, data);
@@ -309,7 +309,7 @@ function edit({ post }: { post: Post }) {
                                 {/* Texto */}
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm text-[#3B2314] font-medium truncate">
-                                        {form.card ?? 'Sin card asignada'}
+                                        {card ? card.name : (post.card ?? 'Sin card asignada')}
                                     </p>
                                     <p className="text-[10px] text-[#8B5A2B]/50 mt-0.5">
                                         Click para cambiar

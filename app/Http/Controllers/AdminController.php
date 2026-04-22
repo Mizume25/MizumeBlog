@@ -78,8 +78,8 @@ class AdminController extends Controller
             'autor' => 'required |string|max:255',
             'descripcion' => 'nullable|string',
             'publicado'         => 'required|in:0,1',
-            'portada'              => 'nullable| string | max:255',
-            'card' => 'nullable| string | max:255'
+            'portada' => 'nullable|file|mimes:jpg,jpeg,png,webp',
+            'card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
         ]);
 
         $post  = Post::findOrFail($id);
