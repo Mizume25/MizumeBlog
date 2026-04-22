@@ -85,18 +85,35 @@ class AdminController extends Controller
         $post  = Post::findOrFail($id);
         $datos = $request->except('portada', 'card');
 
-        // Portada → "P-" + nombre sin extensión en minúsculas
         if ($request->hasFile('portada')) {
-            $portada        = $request->file('portada');
-            $nombrePortada    = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME)));
+            $portada       = $request->file('portada');
+            $extension     = $portada->getClientOriginalExtension();
+            $nombrePortada = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $extension;
+
+            // 1. Borrar la anterior si existe
+            $rutaAnterior = public_path('IMG/Portada/' . $request->categoria . '/' . $post->portada);
+            if ($post->portada && file_exists($rutaAnterior)) {
+                unlink($rutaAnterior);
+            }
+
+            // 2. Mover la nueva
+            $portada->move(public_path('IMG/Portada/' . $request->categoria . '/'), $nombrePortada);
             $datos['portada'] = $nombrePortada;
         }
 
-        // Card → nombre completo en minúsculas con su extensión original
         if ($request->hasFile('card')) {
-            $card           = $request->file('card');
-            $nombreCard    = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
-            $datos['card']  = $nombreCard;
+            $card       = $request->file('card');
+            $nombreCard = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+
+            // 1. Borrar la anterior si existe
+            $rutaAnterior = public_path('IMG/Cards/' . $request->categoria . '/' . $post->card);
+            if ($post->card && file_exists($rutaAnterior)) {
+                unlink($rutaAnterior);
+            }
+
+            // 2. Mover la nueva
+            $card->move(public_path('IMG/Cards/' . $request->categoria . '/'), $nombreCard);
+            $datos['card'] = $nombreCard;
         }
 
         $post->update($datos);
@@ -126,9 +143,9 @@ class AdminController extends Controller
             if (file_exists($imgPath)) unlink($imgPath);
         }
 
-        if($post->card) {
+        if ($post->card) {
             $imgPath = public_path('IMG/Cards/' . $post->categoria . '/' . $post->card);
-            if(file_exists($imgPath)) unlink($imgPath);
+            if (file_exists($imgPath)) unlink($imgPath);
         }
 
         // Limpiar Formato.json
@@ -180,17 +197,17 @@ class AdminController extends Controller
 
         if ($request->hasFile('portada')) {
             $portada          = $request->file('portada');
-             $extension  = $portada->getClientOriginalExtension();
-            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))). '.' . $extension;;
-            $portada->move(public_path('IMG/Portada/' . $request->categoria . "/"), $nombre); 
-            $datos['portada'] = $nombre;                             
+            $extension  = $portada->getClientOriginalExtension();
+            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $extension;;
+            $portada->move(public_path('IMG/Portada/' . $request->categoria . "/"), $nombre);
+            $datos['portada'] = $nombre;
         }
 
         if ($request->hasFile('card')) {
             $card          = $request->file('card');
             $nombre        = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
-            $card->move(public_path('IMG/Cards/' . $request->categoria . "/"), $nombre);       
-            $datos['card'] = $nombre;                               
+            $card->move(public_path('IMG/Cards/' . $request->categoria . "/"), $nombre);
+            $datos['card'] = $nombre;
         }
 
         $post = Post::create($datos);
