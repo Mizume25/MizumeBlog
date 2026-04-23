@@ -45,8 +45,8 @@ function PostSideBarLeft({ list, onFindID, menuAbierto , id}: { list: Index[], o
                     <span className="text-xl group-hover:scale-125 transition-transform">🐢</span>
                     <a href={route('dashboard')} className="text-lg font-medium group-hover:text-white transition-colors">VOLVER A HOME</a>
                 </li>
-                {auth.user?.role == 'admin' && <EditBTN id={id}/>}
-                {auth.user &&  <LogoutButton />}
+                {auth?.user?.role == 'admin' && <EditBTN id={id}/>}
+                {auth?.user &&  <LogoutButton />}
             </ul>
         </aside>
     );

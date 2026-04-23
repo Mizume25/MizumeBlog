@@ -73,7 +73,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
     <>
         {/* Pestaña de la Página */}
         <Head title='Show'></Head>
-        {!auth.user && <TopAuthBar />}
+        {!auth?.user && <TopAuthBar />}
         {/* Componente imagen header */}
         <PostHeader route={ruta} title={post.titulo} format={format?.article_config} />
 

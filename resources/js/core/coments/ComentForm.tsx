@@ -32,7 +32,7 @@ function ComentForm({ post_id }: { post_id: number }) {
 
     return (
         <>
-        {auth.user ? (
+        {auth?.user ? (
                 <form className="mt-8 space-y-4" onSubmit={handleSubmit} >
                     <div className="flex gap-4 items-start">
                         <ComentProfile />

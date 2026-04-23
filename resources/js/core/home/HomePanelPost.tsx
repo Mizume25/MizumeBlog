@@ -65,10 +65,10 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
                         className={styles.featuredPost}>
 
                         <div className="flex justify-end items-start mt-[-5px] mr-[10px]">
-                            <div className="flex gap-[15px] flex-wrap justify-end">
+                            <div className="hidden lg:flex gap-[15px] flex-wrap justify-end">
                                 {/* Iteramos tags*/}
                                 {arr_Tags?.map((p, index) => (
-                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm " key={index}>
+                                    <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm" key={index}>
                                         {p}
                                     </span>
 
@@ -117,7 +117,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
                         className={styles.featuredPost}>
 
                         <div className="flex justify-start items-start mt-[-5px] ml-[10px]">
-                            <div className="flex gap-[15px] flex-wrap justify-start">
+                            <div className="hidden lg:flex gap-[15px] flex-wrap justify-start">
                                 {/* Iteramos tags*/}
                                 {arr_Tags?.map((p, index) => (
                                     <span className="bg-[rgba(255,255,255,0.9)] text-[#333] px-[15px] py-[8px] rounded-[20px] text-[0.9rem] font-bold shadow-sm over:bg-[#4a4a4a]" key={index}>
