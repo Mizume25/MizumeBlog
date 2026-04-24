@@ -64,7 +64,7 @@ export interface Comentario {
     fecha:string,
     user_id:number,
     post_id:number,
-    name: string,
-    email:string,
+    name?: string,
+    email?:string,
 }
 

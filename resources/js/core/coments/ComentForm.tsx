@@ -23,10 +23,6 @@ function ComentForm({ post_id }: { post_id: number }) {
             preserveScroll: true,
             onSuccess: () => reset('body'),
         });
-
-
-
-
     };
 
 

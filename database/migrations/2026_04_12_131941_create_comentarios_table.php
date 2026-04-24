@@ -19,6 +19,7 @@ return new class extends Migration
             /* Campos Foreing Key*/
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
 
             //Definicion de user_id
             $table->foreign('user_id')
@@ -34,6 +35,12 @@ return new class extends Migration
             ->onUpdate('cascade')
             ->onDelete('restrict');
             $table->timestamps();
+
+            $table->foreign('parent_id')
+            ->references('id')
+            ->on('comentarios')
+            ->onUpdate('cascade')
+            ->onDelete('restrict');
         });
     }
 

@@ -7,6 +7,8 @@ import { SharedData } from '@/types';
 
 function ComentContent({ coments }:{ coments: Comentario[]}) {
 const { auth } = usePage<SharedData>().props;
+
+
 const ListaComentarios = (coments : Comentario []) => {
   return (
     <>
@@ -16,12 +18,7 @@ const ListaComentarios = (coments : Comentario []) => {
       <ComentProfile />
      
         <ComentText 
-          key={comentario.id} // Obligatorio en React para el rendimiento
-          id={comentario.id}
-          name={comentario.name} 
-          data={comentario.fecha}
-          comentario={comentario.descripcion}
-          user_id={comentario.user_id}
+         coment={comentario}
         />
         </div>
       ))}
