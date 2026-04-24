@@ -24,7 +24,7 @@ function HomeSideBarLeft({ isOpen = false, onClose }: HomeSideBarLeftProps) {
     const sidebarContent = (
         <section className="mb-[30px]">
             {/* Foto */}
-            <a href="#">
+            <a href={route('profile.edit')}>
             <div className="mb-4">
                 {auth?.user?.google_id ? (
 
@@ -70,7 +70,7 @@ function HomeSideBarLeft({ isOpen = false, onClose }: HomeSideBarLeftProps) {
                     </li>
                 ))}
             </ul>
-
+                <br />
             {/* ── DESKTOP: botones originales con texto ── */}
             {auth?.user?.role === 'admin' && (
                 <div className="hidden lg:block">

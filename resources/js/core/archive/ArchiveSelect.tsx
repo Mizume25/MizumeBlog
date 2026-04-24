@@ -44,7 +44,7 @@ function ArchiveSelect({ seccionActiva, getSection }: { seccionActiva: Seccion, 
             <div className="relative max-w-sm mx-auto">
                 <select
                     value={seccionActiva ?? ''}
-                    onChange={() => handleChange}
+                    onChange={handleChange}
                     className="w-full appearance-none bg-[#2A1B12]/95 border border-white/10 text-[#C8AD7F] text-sm font-medium uppercase tracking-widest px-5 py-3 rounded-2xl shadow-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]/40 transition-all"
                 >
                     <option value="">— Selecciona una sección —</option>

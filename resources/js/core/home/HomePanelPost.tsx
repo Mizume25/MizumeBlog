@@ -20,7 +20,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
     const formatDefault : Formato = {
         id:post?.id,
         home_config:"center",
-        article_config:"bg-[center_18%]",
+        article_config:"bg-[center_18%]"
     }
 
 
@@ -99,7 +99,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
 
                         <div className="relative self-start w-full mb-0 mt-auto">
                             <h2
-                                className="text-white text-[2.2rem] font-bold ml-[20px] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+                                className="text-white lg:text-[2.2rem] text-[1.5rem] md:text-[2.1rem]  font-bold ml-[20px] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
                                 {post?.titulo}
                             </h2>
 
@@ -136,7 +136,7 @@ function HomePanelPost({ post, left }: { post: Post | undefined, left: boolean})
 
                         <div className="relative self-end w-full mb-0 mt-auto text-right">
                             <h2
-                                className="text-white text-[2.2rem] font-bold mr-[20px] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+                                className="text-white lg:text-[2.2rem] text-[1.5rem] md:text-[2.1rem] font-bold mr-[20px] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
                                 {post?.titulo}
                             </h2>
 
