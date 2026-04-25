@@ -27,7 +27,7 @@ export default function HomeFooter() {
             <div className="py-6 overflow-hidden" style={{ borderBottom: "0.5px solid rgba(201,168,124,0.15)" }}>
                 <p style={{
                     color: "#c9a87c",
-                    fontSize: 10,
+                    fontSize: 13,
                     fontWeight: 500,
                     letterSpacing: "0.14em",
                     textTransform: "uppercase",
@@ -38,7 +38,7 @@ export default function HomeFooter() {
                     gap: 8,
                 }}>
                     <span style={{ display: "inline-block", width: 16, height: 1, background: "#c9a87c" }} />
-                    Obras favoritas
+                    Proximamente
                 </p>
 
                 <div ref={trackRef} style={{ overflow: "hidden", width: "100%" }}>
@@ -130,7 +130,7 @@ export default function HomeFooter() {
                         Cita del mes
                     </p>
                     <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontStyle: "italic", lineHeight: 1.65, margin: 0 }}>
-                        "La vida es sueño, y los sueños, sueños son."
+                        Cuando avanzaba perdido en mi propio avance, amante ciego, sin saber a quién amar, ni cómo, otros amantes sin duda, más antiguos que yo, me seguían con la mirada, velaban por mis pasos y ya me amaban a mis espaldas, a pesar de mí. Para que yo entrara en la reducción erótica, hacía falta que otro amante me hubiese precedido y, desde allí, me llamara en silencio."
                         <cite style={{ display: "block", fontStyle: "normal", fontSize: 10, color: "rgba(201,168,124,0.55)", marginTop: 4 }}>
                             — Calderón de la Barca
                         </cite>
@@ -183,7 +183,7 @@ export default function HomeFooter() {
                 borderTop: "0.5px solid rgba(255,255,255,0.05)",
                 letterSpacing: "0.06em",
             }}>
-                © {new Date().getFullYear()} · Tu biblioteca personal · Hecho con amor literario
+                © {new Date().getFullYear()} · Espacio Personal
             </div>
 
             {/* Keyframe de animación */}
