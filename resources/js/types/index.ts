@@ -62,9 +62,12 @@ export interface Comentario {
     id:number,
     descripcion:string,
     fecha:string,
-    user_id:number,
     post_id:number,
-    name?: string,
-    email?:string,
+    user:User
+    replies?: Respuesta[];
 }
 
+export interface Respuesta extends Omit<Comentario, 'replies'> {
+    parent_id: number;
+    user:User
+}

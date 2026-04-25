@@ -27,8 +27,14 @@ class Comentario extends Model
         return $this->belongsTo(Comentario::class, 'parent_id');
     }
 
-    public function isReply(): bool
+    public function reply(): bool
     {
         return !is_null($this->parent_id);
+    }
+
+    public function user() 
+    {
+        
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

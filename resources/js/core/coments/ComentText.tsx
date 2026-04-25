@@ -1,7 +1,10 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import { SharedData, Comentario } from '@/types';
-import { toast } from 'sonner';
+import { useState } from 'react';
+import ReplyBTN from './ReplyBTN';
+import ReplyComent from './ReplyComent';
+import ReplyContent from './ReplyContent';
 function ComentText({ coment }: { coment: Comentario }) {
     const { auth } = usePage<SharedData>().props;
 
@@ -12,21 +15,45 @@ function ComentText({ coment }: { coment: Comentario }) {
 
     };
 
+   
+
+    const [reply, setreply] = useState(false);
+
+    const openReply = () => {
+        setreply(prev => !prev);
+    };
+
+    const closeReply = () => {
+        setreply(false)
+    } 
 
 
     return (
-        <div className="flex-grow" key={coment.id}>
+        <div className="flex-grow" key={coment.user.id}>
             <div className="flex justify-between items-center mb-1">
-                <h4 className="font-bold text-[#d4a373]">{coment.name}</h4>
+                <h4 className="font-bold text-[#d4a373]">{coment.user.name}</h4>
+
                 <span className="text-xs text-[#8b5e3c]">{coment.fecha}</span>
             </div>
             <p className="text-sm leading-relaxed text-[#c8ad7f]">
                 {coment.descripcion}
             </p>
-           
+            
+            { auth.user.id != coment.user.id &&(
+                <ReplyBTN openAnswer={openReply} />
+            )} { /* Boton Respuesta */ }
 
-            {(auth.user.id == coment.user_id || auth.user.role == 'admin') && (
-                <div className="flex justify-end mt-2">
+            {reply && (
+
+                <ReplyComent closeReply={closeReply}  coment={coment}   />
+                
+            )}
+
+        
+            
+
+            {(auth.user.id == coment.user.id || auth.user.role == 'admin') && (
+                <div className="flex justify-start mt-2">
                     <button
                         onClick={handleDelete}
                         className="px-4 py-1 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white text-xs font-bold rounded-md transition-colors cursor-pointer"
