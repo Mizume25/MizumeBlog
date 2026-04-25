@@ -1,6 +1,6 @@
 import { Comentario, Respuesta } from '@/types';
 import { useForm } from '@inertiajs/react';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Comentario}) {
 
@@ -8,6 +8,8 @@ function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Co
     const handleClose = (e:React.MouseEvent<HTMLButtonElement>) => {
         closeReply()
     }
+
+   
 
     // Dentro de tu componente:
         const { data, setData, post, processing, errors, reset } = useForm({

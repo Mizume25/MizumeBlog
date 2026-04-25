@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ComentProfile from './ComentProfile'
 import ComentText from './ComentText'
 import ReplyContent from './ReplyContent';
@@ -10,6 +10,7 @@ function ComentContent({ coments, users }: { coments: Comentario[], users: User[
     const handlerUser = (userId: number) => {
         return users.find(u => u.id === userId);
     };
+
 
     const ListaComentarios = (coments: Comentario[]) => {
         return (
@@ -50,7 +51,7 @@ function ComentContent({ coments, users }: { coments: Comentario[], users: User[
     };
 
     return (
-        <div className="space-y-6 mb-10">
+        <div className="space-y-6 mb-10" id='contentForm'>
             {ListaComentarios(coments)}
         </div>
     );

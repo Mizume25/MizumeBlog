@@ -46,8 +46,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     //Ruta para generar un backup
     Route::get('post/backup',[AdminController::class, 'backup'])->name('post.backup');
 
-    //Ruta para ir al archivador
-    Route::get('post/archivador',[HomeController::class, 'archivador'])->name('post.archivador');
+    
 
 });
 
@@ -70,7 +69,8 @@ Route::get('/auth/google', [GoogleController::class, 'redirect']);
 
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
-
+//Ruta para ir al archivador
+Route::get('post/archivador',[HomeController::class, 'archivador'])->name('post.archivador');
 
 
 

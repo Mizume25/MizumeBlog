@@ -71,3 +71,12 @@ export interface Respuesta extends Omit<Comentario, 'replies'> {
     parent_id: number;
     user:User
 }
+
+export interface Book {
+    title:string,
+    author:string,
+    image?:string,
+    color1:string,
+    color2:string,
+    accent:string,
+}

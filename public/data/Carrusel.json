@@ -1,0 +1,8 @@
+[
+    { "title": "Kamisama Memochou",   "author": "Hikaru Sugii",   "image": "kamisama-memochou.jpg", "color1": "#3a1e06", "color2": "#7a3a10", "accent": "#c9a87c" },
+    { "title": "Parasite in Love", "author": "Sugaru Miaki",   "image": "parasite-in-love.jpg", "color1": "#060f22", "color2": "#102244", "accent": "#4a90d9" },
+    { "title": "Bungaku Shoujo",  "author": "Mizuki Nomura", "image": "bungaku-shoujo.jpg", "color1": "#120822", "color2": "#2e1250", "accent": "#9b59b6" },
+    { "title": "Zetsuen no tempest","author": " Kyō Shirodaira",     "image": "zetsuen-no-tempest.jpg", "color1": "#061a0e", "color2": "#0f4228", "accent": "#27ae60" },
+    { "title": "Beautiful Bones",  "author": "Shiori Ota",  "image": "beautiful-bones.jpg", "color1": "#1a0606", "color2": "#3a1010", "accent": "#e74c3c" },
+    { "title": "Tatakau Shisho", "author": "Ishio Yamagata",         "image": "tatakau-shisho.jpg", "color1": "#1a1000", "color2": "#4a3008", "accent": "#f39c12" }
+]

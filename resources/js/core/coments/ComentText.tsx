@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import { SharedData, Comentario } from '@/types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReplyBTN from './ReplyBTN';
 import ReplyComent from './ReplyComent';
 import ReplyContent from './ReplyContent';
@@ -15,7 +15,7 @@ function ComentText({ coment }: { coment: Comentario }) {
 
     };
 
-   
+
 
     const [reply, setreply] = useState(false);
 
@@ -25,11 +25,17 @@ function ComentText({ coment }: { coment: Comentario }) {
 
     const closeReply = () => {
         setreply(false)
-    } 
+    }
+
+    const replyRef = useRef(reply);
+
+    
+
+   
 
 
     return (
-        <div className="flex-grow" key={coment.user.id}>
+        <div className="flex-grow" key={coment.user.id} >
             <div className="flex justify-between items-center mb-1">
                 <h4 className="font-bold text-[#d4a373]">{coment.user.name}</h4>
 
@@ -38,19 +44,19 @@ function ComentText({ coment }: { coment: Comentario }) {
             <p className="text-sm leading-relaxed text-[#c8ad7f]">
                 {coment.descripcion}
             </p>
-            
-            { auth.user.id != coment.user.id &&(
+
+            {auth.user.id != coment.user.id && (
                 <ReplyBTN openAnswer={openReply} />
-            )} { /* Boton Respuesta */ }
+            )} { /* Boton Respuesta */}
 
             {reply && (
 
-                <ReplyComent closeReply={closeReply}  coment={coment}   />
-                
+                <ReplyComent closeReply={closeReply} coment={coment} />
+
             )}
 
-        
-            
+
+
 
             {(auth.user.id == coment.user.id || auth.user.role == 'admin') && (
                 <div className="flex justify-start mt-2">

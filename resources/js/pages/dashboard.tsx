@@ -12,6 +12,7 @@ import {
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import TopAuthBar from '@/core/auth/TopAuthBar';
+import HomeFooter from '@/core/home/HomeFooter';
  
 //INTERFACES PARA LOS COMPONENTES
 export interface SideBarChange { // HomeSideBarRight
@@ -90,6 +91,8 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                 <HomeSideBarRight sidebarPosts={sidebarPosts} />
 
             </main>
+
+                <HomeFooter />
         </>
     );
 }
