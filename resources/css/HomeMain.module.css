@@ -49,8 +49,14 @@
 
 @media (max-width: 480px) {
     .featuredPost {
-        min-height: 380px;
+        min-height: 190px;
         padding: 15px;
     }
 
+}
+
+@media (max-width: 360) {
+    .featuredPost {
+        min-height: 190px ;
+    }
 }

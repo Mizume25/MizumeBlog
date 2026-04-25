@@ -47,9 +47,9 @@ function ArchiveSelect({ seccionActiva, getSection }: { seccionActiva: Seccion, 
                     onChange={handleChange}
                     className="w-full appearance-none bg-[#2A1B12]/95 border border-white/10 text-[#C8AD7F] text-sm font-medium uppercase tracking-widest px-5 py-3 rounded-2xl shadow-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]/40 transition-all"
                 >
-                    <option value="">— Selecciona una sección —</option>
+                    
                     {secciones.map(({ id, label }) => (
-                        <option key={id} value={id ?? ''}>{label}</option>
+                        <option key={id} value={id ?? 'Literatura'}>{label ?? 'Literatura'}</option>
                     ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#C8AD7F]">

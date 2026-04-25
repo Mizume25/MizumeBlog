@@ -42,7 +42,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Iniciar Session" />
 
             {/* CONTENEDOR CENTRADO Y TARJETA MARRÓN */}
-            <div className="mx-auto w-full max-w-md rounded-lg bg-[#754C22] p-8 shadow-lg border border-border/50">
+            <div className="mx-auto w-full max-w-md rounded-lg bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
 
                 <form className="flex flex-col gap-6" onSubmit={submit}>
                     <div className="grid gap-6">
@@ -120,7 +120,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="flex items-center justify-center">
                             <a
                                 href="/auth/google"
-                                className="bg-white flex items-center justify-center gap-2 border px-4 py-2 rounded-lg hover:bg-gray-100 text-black w-[320px] pt-3 pb-3"
+                               className="bg-white flex items-center justify-center gap-2 border px-4 py-2 rounded-lg hover:bg-gray-100 text-black w-full pt-3 pb-3"
                             >
                                 <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
                                 <span className="leading-none">Continuar con Google</span>

@@ -9,7 +9,7 @@ const getCarrusel = async (): Promise<Book[]> => {
 export default function HomeFooter() {
     const trackRef = useRef<HTMLDivElement>(null);
 
-     const [books, setBooks] = useState<Book[]>([]);
+    const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
         getCarrusel()
@@ -62,7 +62,7 @@ export default function HomeFooter() {
                                     opacity: 1,
                                     transition: "transform 0.3s",
                                     cursor: "pointer",
-                                    backgroundImage:`url(/IMG/Carrusel/${book.image})`,
+                                    backgroundImage: `url(/IMG/Carrusel/${book.image})`,
                                     backgroundSize: "contain"
                                 }}
                                 onMouseEnter={e => {
@@ -82,7 +82,7 @@ export default function HomeFooter() {
                                     borderRadius: 6,
                                     overflow: "hidden",
                                     borderLeft: `4px solid ${book.accent}`,
-                                    
+
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "flex-end",
@@ -116,13 +116,17 @@ export default function HomeFooter() {
             </div>
 
             {/* ── Footer 3 columnas ── */}
-            <div style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 0.5px 1fr 0.5px 1fr",
-                gap: "1.5rem",
-                padding: "1.5rem 2rem 1rem",
+            {/* ── Footer 3 columnas ── */}
+            <div className="grid gap-6 px-8 pt-6 pb-4 footer-cols" style={{
+                gridTemplateColumns: "1fr",
                 alignItems: "start",
-            }}>
+            }} ref={undefined}>
+                <style>{`
+        @media (min-width: 640px) {
+            .footer-cols { grid-template-columns: 1fr 0.5px 1fr 0.5px 1fr !important; }
+            .footer-divider-el { display: block !important; }
+        }
+    `}</style>
                 {/* Cita */}
                 <div>
                     <div style={{ color: "#c9a87c", fontSize: 13, textAlign: "center", opacity: 0.5, marginBottom: 6 }}>✦</div>
@@ -132,17 +136,17 @@ export default function HomeFooter() {
                     <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontStyle: "italic", lineHeight: 1.65, margin: 0 }}>
                         Cuando avanzaba perdido en mi propio avance, amante ciego, sin saber a quién amar, ni cómo, otros amantes sin duda, más antiguos que yo, me seguían con la mirada, velaban por mis pasos y ya me amaban a mis espaldas, a pesar de mí. Para que yo entrara en la reducción erótica, hacía falta que otro amante me hubiese precedido y, desde allí, me llamara en silencio."
                         <cite style={{ display: "block", fontStyle: "normal", fontSize: 10, color: "rgba(201,168,124,0.55)", marginTop: 4 }}>
-                            — Calderón de la Barca
+                            — J. L. Marion
                         </cite>
                     </p>
                 </div>
 
                 {/* Divider */}
-                <div style={{ background: "rgba(201,168,124,0.18)", height: 60, alignSelf: "center" }} />
+                <div className="footer-divider-el" style={{ display: "none", background: "rgba(201,168,124,0.18)", height: 60, alignSelf: "center" }} />
 
                 {/* Secciones */}
                 <div>
-                    <div style={{ color: "#c9a87c", fontSize: 13, textAlign: "center", opacity: 0.5, marginBottom: 6 }}>✦</div>
+                    <div className="footer-divider-el" style={{ display: "none" , color: "#c9a87c", fontSize: 13, textAlign: "center", opacity: 0.5, marginBottom: 6 }}>✦</div>
                     <p style={{ fontSize: 10, fontWeight: 500, color: "#c9a87c", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
                         Secciones
                     </p>
@@ -156,11 +160,11 @@ export default function HomeFooter() {
                 </div>
 
                 {/* Divider */}
-                <div style={{ background: "rgba(201,168,124,0.18)", height: 60, alignSelf: "center" }} />
+                <div className="footer-divider-el" style={{ display: "none" , background: "rgba(201,168,124,0.18)", height: 60, alignSelf: "center" }} />
 
                 {/* Sígueme */}
                 <div>
-                    <div style={{ color: "#c9a87c", fontSize: 13, textAlign: "center", opacity: 0.5, marginBottom: 6 }}>✦</div>
+                    <div className="footer-divider-el" style={{ display: "none" , color: "#c9a87c", fontSize: 13, textAlign: "center", opacity: 0.5, marginBottom: 6 }}>✦</div>
                     <p style={{ fontSize: 10, fontWeight: 500, color: "#c9a87c", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
                         Sígueme
                     </p>
