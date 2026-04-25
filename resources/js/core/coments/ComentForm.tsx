@@ -1,14 +1,14 @@
 import React from 'react'
 import ComentProfile from './ComentProfile'
 import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
+import { SharedData, User } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 
-function ComentForm({ post_id }: { post_id: number }) {
+function ComentForm({ post_id }: { post_id: number}) {
 
 
-   
+    
 
     const { auth } = usePage<SharedData>().props;
     // Dentro de tu componente:
@@ -31,7 +31,7 @@ function ComentForm({ post_id }: { post_id: number }) {
         {auth?.user ? (
                 <form className="mt-8 space-y-4" onSubmit={handleSubmit} >
                     <div className="flex gap-4 items-start">
-                        <ComentProfile />
+                        <ComentProfile user={auth.user}/>
                         <div className="flex-grow space-y-3">
                             <textarea
                                 value={data.body} // Vinculamos el valor

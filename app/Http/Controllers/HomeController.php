@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comentario;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,11 +104,21 @@ class HomeController extends Controller
         //Comentarios sin respuesta 
         $coments = Comentario::with(['user', 'replies.user'])->get();
 
+
+        //Cargamos usuarios
+        $userIds = Comentario::where('post_id', $id)
+        ->pluck('user_id')
+        ->unique();
+
+        $users = User::whereIn('id', $userIds)->get();
+
         return Inertia::render('post/show', [
             'post'  => $post,
             'index' => $index,
             'contenido' => $contenido,
             'coments'  => $coments,
+            'users' => $users
+            
         ]);
     }
 

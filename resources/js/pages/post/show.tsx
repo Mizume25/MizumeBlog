@@ -1,4 +1,4 @@
-import { Comentario, Post } from '@/types'
+import { Comentario, Post, User } from '@/types'
 import { Head } from '@inertiajs/react'
 import { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
@@ -22,7 +22,7 @@ export interface Index {
   titulo: string,
 }
 
-function show({ post, index, contenido, coments }: { post: Post, index: Index[], contenido: string , coments:Comentario []  }) {
+function show({ post, index, contenido, coments, users }: { post: Post, index: Index[], contenido: string , coments:Comentario [],users:User[]  }) {
 
   const ruta = getRoutePortada(post?.categoria , post?.portada);
 
@@ -92,7 +92,7 @@ function show({ post, index, contenido, coments }: { post: Post, index: Index[],
         {/* Componente del SideBar Derecho */}
         <PostSideBarRight id={post.id} />
 
-        <Coments coments={coments} post_id={post.id}/>
+        <Coments coments={coments} post_id={post.id} users={users}/>
         
 
         </div>

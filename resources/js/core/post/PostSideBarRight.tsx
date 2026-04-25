@@ -4,15 +4,15 @@ import { getName } from "@/types/utils"
 import PostProfile from "./PostProfile"
 import { useEffect, useState } from "react";
 import { Rutas } from "@/types/utils";
-
-
-
+import HomeProfile from "../home/HomeProfile";
+import { usePage } from "@inertiajs/react";
+import { SharedData } from "@/types";
 //Indice de contenido
 function PostSideBarRight({ id }: { id: number }) {
     const MAX = 3;
     const [posts, setPosts] = useState<Rutas[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const { auth } = usePage<SharedData>().props;
     useEffect(() => {
         // 2. Definimos una función interna asíncrona
         const fetchPosts = async () => {
@@ -28,8 +28,38 @@ function PostSideBarRight({ id }: { id: number }) {
     console.log(posts)
     return (
         <aside className="lg:col-span-3 space-y-6 lg:sticky top-6 h-fit">
+            <div className="bg-[#2A1B12] p-8 rounded-xl border border-white/10 shadow-xl text-center">
+             <a href={route('profile.edit')}>
+                {auth?.user?.google_id ? (
 
-            <PostProfile />
+                    <img
+                        src={auth.user.avatar}
+                        alt="Perfil"
+                        className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover"
+                    />
+
+                ) : auth?.user ? (
+
+                    <HomeProfile name={auth.user.name} />
+
+                ) : (
+
+                    <img
+                        src="/IMG/Foto-Perfil.jpg"
+                        alt="Perfil"
+                        className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover"
+                    />
+                )}
+                </a>
+
+                {auth?.user ? (
+                    <p className="text-white mt-2">Hola {auth.user.name}</p>
+                ) : (
+                    <p className="text-white mt-2">Espero que te guste el post</p>
+                )}
+
+                <PostProfile />
+            </div>
 
             {/* POSTS DESTACADOS */}
             <div className="bg-[#EDEDED] p-6 rounded-xl shadow-lg">
