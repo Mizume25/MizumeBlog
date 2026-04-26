@@ -240,25 +240,31 @@ class AdminController extends Controller
 
     public function backup()
     {
-        $posts = Post::all()->toArray();
+        $posts     = Post::all()->toArray();
+        $users     = User::all()->toArray();
+        $coments   = Comentario::all()->toArray();
+
         $fecha = now()->format('Y-m-d');
-        $path  = public_path("backups/posts_{$fecha}.json");
 
         if (!file_exists(public_path('backups'))) {
             mkdir(public_path('backups'), 0755, true);
         }
 
-        file_put_contents(
-            $path,
-            json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-        );
+        // Posts
+        $postsJson = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents(public_path("backups/posts_{$fecha}.json"), $postsJson);
+        file_put_contents(public_path('backups/posts.json'), $postsJson);
 
-        //Generamos una copia para Fronetend 
-        $json = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // Users
+        $usersJson = json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents(public_path("backups/users_{$fecha}.json"), $usersJson);
+        file_put_contents(public_path('backups/users.json'), $usersJson);
 
-        file_put_contents($path, $json);
-        file_put_contents(public_path('backups/posts.json'), $json);
+        // Comentarios
+        $commentsJson = json_encode($coments, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents(public_path("backups/comentarios_{$fecha}.json"), $commentsJson);
+        file_put_contents(public_path('backups/comentarios.json'), $commentsJson);
 
-        return back()->with('success', "Backup creado: posts_{$fecha}.json");
+        return back()->with('success', "Backup creado: {$fecha}");
     }
 }

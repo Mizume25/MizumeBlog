@@ -1,7 +1,10 @@
 [
     {
-        "id":"titulo",
-        "titulo":"Ejemplo"
-
+        "id":"obras-morales",
+        "titulo":"Obras Morales"
+    }, 
+    {
+        "id":"zibaldone",
+        "titulo":"Zibaldone"
     }
 ]

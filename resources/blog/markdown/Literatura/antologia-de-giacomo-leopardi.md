@@ -203,11 +203,11 @@ Ve en los estados psico-físicos  que el hombre muestra cuando esta triste o ale
 ### Esquemas
 **Metafísica Leopardiana**
 
-![[Esquema de Giacomo Leopardi.png]]
+![Esquema de Giacomo Leopardi.png](/IMG/Contenido/Literatura/leopardi/Esquema-de-ideas-de-Leopardi.png)
 
 **Ontología Leopardiana**
-![[Esquema Metafísico de la ontología leopardiana.png]]
+![Esquema Metafísico de la ontología leopardiana.png](/IMG/Contenido/Literatura/leopardi/Cosmología-Leopardiana.png)
 
 **Sobre las pasiones**
-![[Realidad de las pasiones.png]]
+![Realidad de las pasiones.png](/IMG/Contenido/Literatura/leopardi/Esquema-Leopardiano-general.png)
 

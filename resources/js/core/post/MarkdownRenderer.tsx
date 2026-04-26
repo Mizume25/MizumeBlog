@@ -23,14 +23,14 @@ const components: Components = {
   h2: ({ children, ...props }) => (
   <h2
     {...props}
-    className="text-2xl font-bold text-white px-5 mx-7 my-7 border-b border-[#C8AD7F]/30 pb-3 mb-6 mt-10 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]"
+    className="text-sm sm:text-base md:text-lg font-bold text-[#C8AD7F] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]"
   >
     {children}
   </h2>
 ),
 
   h3: ({ children }) => (
-    <h3 className="text-lg font-bold text-[#C8AD7F] mb-2 mt- mx-7 my-7 px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]">
+    <h3 className="text-sm sm:text-base md:text-lg font-bold text-[#C8AD7F] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]">
       - {children}
     </h3>
   ),

@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "name": "Tester",
+        "email": "tester@test.es",
+        "email_verified_at": null,
+        "role": "admin",
+        "google_id": null,
+        "avatar": null,
+        "created_at": "2026-04-26T08:51:14.000000Z",
+        "updated_at": "2026-04-26T08:51:14.000000Z"
+    },
+    {
+        "id": 2,
+        "name": "Admin",
+        "email": "admin@admin.com",
+        "email_verified_at": null,
+        "role": "admin",
+        "google_id": null,
+        "avatar": null,
+        "created_at": "2026-04-26T08:51:14.000000Z",
+        "updated_at": "2026-04-26T08:51:14.000000Z"
+    },
+    {
+        "id": 3,
+        "name": "nuevotester",
+        "email": "nuevotester@gmail.com",
+        "email_verified_at": null,
+        "role": "user",
+        "google_id": null,
+        "avatar": null,
+        "created_at": "2026-04-26T08:57:39.000000Z",
+        "updated_at": "2026-04-26T08:57:39.000000Z"
+    }
+]

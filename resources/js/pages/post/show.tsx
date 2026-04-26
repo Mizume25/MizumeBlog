@@ -68,6 +68,10 @@ function show({ post, index, contenido, coments, users }: { post: Post, index: I
           
           setMenuAbierto(prev => !prev);
       }, []);
+
+  const isClose = () => {
+      setMenuAbierto(false)
+  }
  
   return (
     <>
@@ -83,9 +87,14 @@ function show({ post, index, contenido, coments, users }: { post: Post, index: I
 
         {/* Articulo */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
-
+        {menuAbierto && (
+        <div
+            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
+            onClick={() => setMenuAbierto(false)}
+        />
+    )}
         {/* Componente del SideBar Izquierdo */}
-        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} id={post.id}/>
+        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} id={post.id} isClose={isClose}/>
 
         <PostContent post={post} contenido={contenido} index={index} selectedId={selectedId} />
 
