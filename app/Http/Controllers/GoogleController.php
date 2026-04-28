@@ -25,6 +25,7 @@ class GoogleController extends Controller
                 'google_id'       => $googleUser->id,
                 'avatar'          => $googleUser->avatar,
                 'password'        => bcrypt(Str::random(24)),
+                'email_verified_at' => now(), 
             ]
         );
 

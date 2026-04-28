@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Settings\ProfileController;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
     
     //Funciones de contenido - Crear Comentario 
     Route::post('/comentarios', [HomeController::class, 'store'])->name('comments.store');
