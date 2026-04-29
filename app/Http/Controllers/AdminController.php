@@ -245,25 +245,31 @@ class AdminController extends Controller
         $coments   = Comentario::all()->toArray();
 
         $fecha = now()->format('Y-m-d');
+        $backupPath = public_path('backups');
 
-        if (!file_exists(public_path('backups'))) {
-            mkdir(public_path('backups'), 0755, true);
+        if (!file_exists($backupPath)) {
+            mkdir($backupPath, 0755, true);
+        }
+
+        // Borrar backups fechados antiguos
+        foreach (glob($backupPath . '/*_*.json') as $file) {
+            unlink($file);
         }
 
         // Posts
         $postsJson = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents(public_path("backups/posts_{$fecha}.json"), $postsJson);
-        file_put_contents(public_path('backups/posts.json'), $postsJson);
+        file_put_contents("{$backupPath}/posts_{$fecha}.json", $postsJson);
+        file_put_contents("{$backupPath}/posts.json", $postsJson);
 
         // Users
         $usersJson = json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents(public_path("backups/users_{$fecha}.json"), $usersJson);
-        file_put_contents(public_path('backups/users.json'), $usersJson);
+        file_put_contents("{$backupPath}/users_{$fecha}.json", $usersJson);
+        file_put_contents("{$backupPath}/users.json", $usersJson);
 
         // Comentarios
         $commentsJson = json_encode($coments, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents(public_path("backups/comentarios_{$fecha}.json"), $commentsJson);
-        file_put_contents(public_path('backups/comentarios.json'), $commentsJson);
+        file_put_contents("{$backupPath}/comentarios_{$fecha}.json", $commentsJson);
+        file_put_contents("{$backupPath}/comentarios.json", $commentsJson);
 
         return back()->with('success', "Backup creado: {$fecha}");
     }
