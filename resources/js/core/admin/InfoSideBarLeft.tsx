@@ -1,11 +1,13 @@
+import { usePage } from '@inertiajs/react';
 import React from 'react'
-
+import { SharedData } from '@/types';
 interface InfoSideBarLeftProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
 function InfoSideBarLeft({ isOpen, onClose }: InfoSideBarLeftProps) {
+    const { auth } = usePage<SharedData>().props;
     return (
         <>
             {/* Overlay — solo móvil */}
@@ -66,8 +68,8 @@ function InfoSideBarLeft({ isOpen, onClose }: InfoSideBarLeftProps) {
                     <div className="flex items-center gap-3 p-2 bg-[#C8AD7F]/10 rounded-lg">
                         <div className="w-9 h-9 rounded-full bg-[#A08050] flex items-center justify-center text-white border border-[#C8AD7F]">G</div>
                         <div className="leading-tight">
-                            <p className="text-sm font-semibold text-[#E8D5A3]">Gabriel</p>
-                            <span className="text-[11px] text-[#C8AD7F]/50 italic">Administrador</span>
+                            <p className="text-sm font-semibold text-[#E8D5A3]">{ auth.user.name }</p>
+                            <span className="text-[11px] text-[#C8AD7F]/50 italic">{ auth.user.role   }</span>
                         </div>
                     </div>
                 </div>
