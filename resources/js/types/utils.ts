@@ -36,7 +36,7 @@ export const confirmDelete = (title : string, text : string, onConfirm: () => vo
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            onConfirm(); // Ejecuta la función que le pases (el borrado)
+            onConfirm(); 
         }
     });
 };

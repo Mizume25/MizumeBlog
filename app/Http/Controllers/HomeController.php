@@ -14,29 +14,24 @@ use function Symfony\Component\String\s;
 
 class HomeController extends Controller
 {
-    //Variable de la classe
-    private $posts;
 
-
-    //Inicializamos Cargado de Posts
-    public function __construct()
-    {
-        $this->posts = Post::all();
-    }
-
-    
-
-    //Funcion que carga post destacados
+    /**
+     * Obtener Post Destacados
+     */
     private function getFeaturedPost()
     {
+        /**
+         * Creamos una coleccion y extraemos los post
+         */
         $featured = collect();
-        //Recorremos la propiedad
-        foreach ($this->posts as $post) {
-            if ($post->destacado != 0) {
-                if ($post->publicado) {
-                    $featured->push($post);
-                }
-            }
+        $posts = Post::all();
+
+        /**
+         * Construiremos los posts destacados y publicados
+         */
+        foreach ($posts as $post) 
+        {
+            if ($post->destacado != 0 && $post->publicado)  $featured->push($post);
         }
 
         return $featured;
@@ -70,7 +65,9 @@ class HomeController extends Controller
     }
 
 
-    // Cargar Index General
+    /**
+     * Vista que carga Dashboard Pirncipal con post Destacados
+     */
     public function index()
     {
         //Recibimos solo los post destacados
@@ -80,12 +77,14 @@ class HomeController extends Controller
         return Inertia::render('dashboard', compact('posts'));
     }
 
-    // Cargar un objeto Post
-    public function show($id)
+    /**
+     * Vista específica de post
+     */
+    public function show(int $id)
     {
         //BUSCAMOS ID
-        $post = $this->posts->findOrFail($id);
-        
+        $post = Post::findOrFail($id);
+
 
         //MODIFICAMOS EL ARCHIVO
         $title = $this->modifiFiles($post->titulo);
@@ -107,8 +106,8 @@ class HomeController extends Controller
 
         //Cargamos usuarios
         $userIds = Comentario::where('post_id', $id)
-        ->pluck('user_id')
-        ->unique();
+            ->pluck('user_id')
+            ->unique();
 
         $users = User::whereIn('id', $userIds)->get();
 
@@ -118,7 +117,7 @@ class HomeController extends Controller
             'contenido' => $contenido,
             'coments'  => $coments,
             'users' => $users
-            
+
         ]);
     }
 
@@ -151,15 +150,15 @@ class HomeController extends Controller
     {
         // 1. Buscar el comentario
         $comentario = Comentario::findOrFail($id);
-        
-        
+
+
         // 2. Verificar si existe y si pertenece al usuario autenticado
         if (!$comentario || ($comentario->user_id !== Auth::id() && Auth::user()->role !== 'admin')) {
             return back()->with('error', 'No tienes permiso para borrar esto.');
         }
 
-        if(!$comentario->parent_id){
-            $replys = Comentario::where('parent_id' , $id);
+        if (!$comentario->parent_id) {
+            $replys = Comentario::where('parent_id', $id);
             $replys->delete();
         }
 
@@ -168,7 +167,8 @@ class HomeController extends Controller
         return back()->with('success', 'Comentario eliminado.');
     }
 
-    public function removeReply($id) {
+    public function removeReply($id)
+    {
         $comentario = Comentario::where('id', '=', $id);
 
         $comentario->delete();

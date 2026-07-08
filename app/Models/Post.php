@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
@@ -21,8 +22,12 @@ class Post extends Model
         'publicado'
     ];
 
+    /**
+     * Relacion una categoria tiene varias categorias hijas
+     * @return HasMany  
+     */
     public function comentarios()
     {
-        return $this->hasMany(Comentario::class);
+        return $this->hasMany(Comentario::class, 'post_id');
     }
 }

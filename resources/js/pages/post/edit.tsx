@@ -10,7 +10,7 @@ function edit({ post }: { post: Post }) {
     const ruta: string = getRoutePortada(post.categoria, post.portada);
     const rutaCard: string = getRouteCard(post.categoria, post.card);
 
-    console.log(rutaCard);
+
 
     // ── Estado local espeja los datos del post recibido desde Inertia/Laravel ──
     // Equivalente al "old()" de Laravel: los valores iniciales vienen del servidor,
