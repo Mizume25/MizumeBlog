@@ -6,13 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    
     /**
      * Run the migrations.
      */
     public function up(): void
     {   
         /* Entidad de Comentarios*/
-        Schema::create('comentarios', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->text('description');
             $table->date('publish_date');
@@ -46,7 +47,7 @@ return new class extends Migration
 
             $table->foreign('parent_id')
             ->references('id')
-            ->on('comentarios')
+            ->on('comments')
             ->onUpdate('cascade')
             ->onDelete('restrict');
 
@@ -60,6 +61,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comentarios');
+        Schema::dropIfExists('comments');
     }
 };

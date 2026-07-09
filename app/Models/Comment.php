@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Comentario extends Model
+class Comment extends Model
 {
     //Modelo de Comentario
     protected $fillable = [
-        'descripcion',
-        'fecha',
+        'description',
+        'publish_date',
         'user_id',
         'post_id',
         'parent_id'
@@ -24,7 +24,7 @@ class Comentario extends Model
      */
     public function replies()
     {
-        return $this->hasMany(Comentario::class, 'parent_id');
+        return $this->hasMany(Comment::class, 'parent_id');
     }
 
     /**
@@ -33,7 +33,7 @@ class Comentario extends Model
      */
     public function parent()
     {
-        return $this->belongsTo(Comentario::class, 'parent_id');
+        return $this->belongsTo(Comment::class, 'parent_id');
     }
 
     
