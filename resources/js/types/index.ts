@@ -53,118 +53,96 @@ export interface SharedData {
 }
 
 /**
+ * Todos los campos comparten estas propieaddes
+ * @type field
+ */
+export type Field = {
+    id: number,
+    created_at: string,
+    updated_at: string,
+}
+
+
+
+/**
  * @interface
  * Interfaz de usuario   
  */
-export interface User {
-    id: number;
+export type User = Field & {
     name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
-    role:string;
-    google_id?:number
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    role: string;
+    google_id?: number
+}
+
+
+/***
+ * Lista de types de mi Página Web
+ */
+
+
+/**
+ * Enum de Category
+ * @type Category
+ */
+export type Category = 'literatura' | 'animemanga' | 'reflexiones';
+
+
+/**
+ * @type Post
+ * Propiedades de un Post
+ */
+export type Post = Field & {
+    title: string 
+    web_title?: string
+    gender: string,
+    category: Category,
+    author: string,
+    publish_date?: string,
+    description: string,
+    featured: boolean,
+    cover?:string,
+    cover_card?: string,
+}
+
+
+/**
+ *  @type Comentarios
+ * Propiedades de Comentarios
+ */
+
+export type Comment = Field & {
+    description: string,	
+    publish_date: string,	
+    user_id: number,	
+    post_id: number,	
+    parent_id: number,	
+}
+
+
+
+/**
+ * Types que utilizaremos
+ */
+
+/**
+ * Comentario con Respuestas
+ * @type ComentarioRecord
+ */
+export type CommentRecord = Comment & {
+    replies: Comment []
 }
 
 /**
- * Interfaces de Post
+ * Post con lista de Comentarios y Respuestas
+ * @type
  */
-export interface Post {
-    id:number,
-    titulo: string,
-    web_title?:string,
-    genero: string,
-    categoria: string,
-    autor: string,
-    fecha_publicacion:string,
-    descripcion?:string,
-    destacado: 1 | 0
-    portada?:string,
-    card?:string,
-    publicado: boolean
+export type PostRecord = Post & {
+    comentarios: CommentRecord []
 }
 
-/**
- * @interface Comentario
- * Interfaz de  Comentario a Comentario
- */
-export interface Comentario {
-    id:number,
-    descripcion:string,
-    fecha:string,
-    post_id:number,
-    user:User
-    replies?: Respuesta[];
-}
-
-/**
- * @interface Respuesta
- * Interfaz de  Respuesta a Comentario
- */
-export interface Respuesta extends Omit<Comentario, 'replies'> {
-    parent_id: number;
-    user:User
-}
-
-export interface Book {
-    title:string,
-    author:string,
-    image?:string,
-    color1:string,
-    color2:string,
-    accent:string,
-}
-
-
-
-/***  INTERFACES TEMPORALES   */
-export type PostTemp = {
-    id:number,
-    titulo: string,
-    web_title?:string,
-    genero: string,
-    categoria: string,
-    autor: string,
-    fecha_publicacion:string,
-    descripcion?:string,
-    destacado: 1 | 0
-    portada?:string,
-    card?:string,
-    publicado: boolean
-}
-
-export type PosRecord =  PostTemp & {
-    comentarios: ComentarioRecord[]
-    
-}
-
-export interface ComentarioTemp {
-    id:number,
-    descripcion:string,
-    fecha:string,
-    post_id:number,
-    user_id:number,
-    parent_id?: number,
-    created_at: string;
-    updated_at: string;
-}
-
-export type ComentarioRecord = ComentarioTemp & {
-    replies: ComentarioTemp[]
-}
-
-export type UserTemp =  {
-    id: number;
-    name: string;
-    email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    role:string;
-    google_id?:number
-    created_at: string;
-    updated_at: string;
-    comentarios: ComentarioRecord [];
-}
+export type UserRecord = User & {
+    coemntarios: Comment []
+} 
