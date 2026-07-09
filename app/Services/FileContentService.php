@@ -24,7 +24,7 @@ class FileContentService
      */
     public function getPath(int $id, string $title) : string 
     {
-        return resource_path('blog' . '/' . $id . '-' . Str::slug($title));
+        return storage_path('app/private/blog' . '/' . $id . '-' . Str::slug($title));
        
     }
 
@@ -37,7 +37,7 @@ class FileContentService
     /**
      * Modificar Archivos  y Rutas de Portadas y Imagenes
      * @param UploadedFile $file - Imagen
-     * @param string $type - Tipo de imagen Card , Portada , Banner
+     * @param ImageType $type - Tipo de imagen Card , Portada , Banner
      * 
      */
     public function modifyImages(ImageType $type, UploadedFile $file): string
