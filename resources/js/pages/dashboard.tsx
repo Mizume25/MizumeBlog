@@ -16,16 +16,19 @@ import HomeFooter from '@/core/home/HomeFooter';
 
 export default function Dashboard({ posts }: { posts: Post[] }) {
     
-    const MAX_POST: number = 6;
+   
     const [menu, setMenu] = useState(false);
     const { auth } = usePage<SharedData>().props;
 
+    /***
+     * Conteido Destacado
+     */
     const { mainPosts, sidebarPosts } = useMemo(() => {
-        const featured = getRandomPost(MAX_POST, posts);
         return {
-            mainPosts: featured?.slice(0, 3),
-            sidebarPosts: featured?.slice(3)
+            mainPosts: posts.slice(0, 3),
+            sidebarPosts: posts.slice(3)
         };
+
     }, [posts]);
 
 
@@ -54,6 +57,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             {/* Head de el Home*/}
             <Head title='Home' ></Head>
 
+            {/* Top bar de innicio de sessión */}
             {!auth?.user && <TopAuthBar />}
 
 

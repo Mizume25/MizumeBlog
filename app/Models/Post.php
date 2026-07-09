@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
+use Illuminate\Database\Eloquent\Builder;
 
 class Post extends Model
 {
@@ -14,7 +15,7 @@ class Post extends Model
         'web_title',
         'gender',
         'category',
-        'autor',
+        'author',
         'publish_date',
         'description',
         'featured',
@@ -29,5 +30,25 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id');
+    }
+
+
+    /**
+     * Filtra todos los posts "Destacados"
+     * @param Builder $query Consulta de destacados
+     */
+    public function scopeFeatured(Builder $query)
+    {
+        return $query->where('featured' , true);
+    }
+
+    /**
+     * 
+     * Filtra todos los posts "publicados"
+     * @param Builder $query
+     */
+    public function scopePublish(Builder $query)
+    {
+        return $query->where('publish_date', '!=' , null);
     }
 }

@@ -2,8 +2,9 @@ import React from 'react';
 import { type Post } from '@/types';
 import HomePanelPost from './HomePanelPost';
  
-function HomeContent({ mainPosts }: { mainPosts: Post[] | undefined }) {
+function HomeContent({ mainPosts }: { mainPosts: Post[] }) {
     return (
+        /** Es izquierdo los post pares */
         <div className="p-0 m-0 bg-transparent flex flex-col gap-[0px]">
             {mainPosts?.map((post, index) => (
                 <HomePanelPost

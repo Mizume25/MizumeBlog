@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Comment;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Services\FileContentService;
@@ -14,26 +14,6 @@ class HomeController extends Controller
 
     private FileContentService $files;
 
-    /**
-     * Obtener Post Destacados
-     */
-    private function getFeaturedPost()
-    {
-        /**
-         * Creamos una coleccion y extraemos los post
-         */
-        $featured = collect();
-        $posts = Post::all();
-
-        /**
-         * Construiremos los posts destacados y publicados
-         */
-        foreach ($posts as $post) {
-            if ($post->destacado != 0 && $post->publicado)  $featured->push($post);
-        }
-
-        return $featured;
-    }
 
 
 
@@ -45,7 +25,7 @@ class HomeController extends Controller
     public function index()
     {
         //Recibimos solo los post destacados
-        $posts = $this->getFeaturedPost();
+        Post::featured()->latest()->limit(6)->get();
 
         //Retornamos el objeto filtrado
         return Inertia::render('dashboard', compact('posts'));
@@ -61,6 +41,11 @@ class HomeController extends Controller
 
         $post = Post::with('comments')->findOrFail($id);
 
+        $comments = Comment::where('post_id', $post->id)
+        ->whereNull('parent_id')
+        ->with(['user', 'replies.user'])
+        ->get();
+
 
         $path = $this->files->getPath($post->id, $post->title);
 
@@ -75,7 +60,8 @@ class HomeController extends Controller
         $content = [
             "post" => $post,
             "index" => $index,
-            "body" => $md
+            "body" => $md,
+            "comments" => $comments,
         ];
 
         /** Renderizamos */
@@ -84,13 +70,13 @@ class HomeController extends Controller
 
 
 
-    
 
-   
+
+
 
     public function archivador()
     {
-        $posts = $this->getFeaturedPost()->toArray();
+        $posts = Post::publish()->get();
 
         return Inertia::render('post/archivador', compact('posts'));
     }

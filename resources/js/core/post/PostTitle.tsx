@@ -1,5 +1,7 @@
 
-const transformarFecha = (data :string) => {
+const transformarFecha = (data :string | undefined) => {
+
+    if(!data) return;
         // 1. Creamos el objeto fecha (asegurándote de que el string sea YYYY-MM-DD)
         const fecha = new Date(data);
 
@@ -12,10 +14,10 @@ const transformarFecha = (data :string) => {
 };
 
 //Titulo de el articulo
-function PostTitle({data, webtitle, autor }: { data: string, webtitle: string | undefined, autor: string }) {
+function PostTitle({data, webtitle, autor }: { data: string | undefined, webtitle: string | undefined, autor: string }) {
 
 
-    let newDate:string = transformarFecha(data);
+    let newDate: string  | undefined = transformarFecha(data);
 
     // Uso: transformarFecha("2025-04-09") -> "9 de abril de 2025"
 

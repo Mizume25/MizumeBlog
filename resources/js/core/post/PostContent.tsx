@@ -1,13 +1,12 @@
-import { Post } from '@/types'
-import React from 'react'
+import { IndexContent, Post } from '@/types'
 import PostTag from './PostTag';
 import PostTitle from './PostTitle';
 import MarkdownRenderer from './MarkdownRenderer';
-import { Index } from "@/pages/post/show";
-import rehypeSlug from 'rehype-slug';
-function PostContent({ post, contenido, index, selectedId }: { post: Post, contenido: string , index:Index[], selectedId:string }) {
 
-  const tags: string[] | undefined = post?.genero.split(',').map(p => p.trim());
+
+function PostContent({ post, contenido, selectedId }: { post: Post, contenido: string , selectedId:string }) {
+
+  const badge: string[] = post.gender.split(',').map(p => p.trim());
   
 
   return (
@@ -15,9 +14,9 @@ function PostContent({ post, contenido, index, selectedId }: { post: Post, conte
     <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden ps-4 pe-4">
 
       {/* Contenedor de Tags*/}
-      <PostTag tags={tags} />
+      <PostTag tags={badge} />
 
-      <PostTitle data={post.fecha_publicacion} webtitle={post.web_title} autor={post.autor} />
+      <PostTitle data={post.publish_date} webtitle={post.web_title} autor={post.author} />
 
       <MarkdownRenderer
         content={contenido}
