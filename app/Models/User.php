@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -49,8 +50,13 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function user()
+     /**
+     * Comentarios Respuesta Relacionado
+     * @return HasMany 
+     */
+    public function comentarios()
     {
-        return $this->belongsTo(User::class);
+       return $this->hasMany(Comentario::class, 'user_id');
     }
+    
 }

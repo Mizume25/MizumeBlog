@@ -121,6 +121,14 @@ class HomeController extends Controller
         ]);
     }
 
+    /**
+     * Vista individual de Post
+     */
+    public function showtemp (int $id) 
+    {
+
+    }
+
 
     public function store(Request $request)
     {
