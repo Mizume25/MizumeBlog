@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comentario;
+
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
@@ -12,7 +12,7 @@ use App\Services\ImageType;
 use App\Services\FileContentService;
 use App\Services\ImageConfigService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
+
 
 class AdminController extends Controller
 {

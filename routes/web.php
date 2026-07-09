@@ -5,44 +5,52 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 
+
+/**
+ * Rutas Restringidas par ausuarios verificados
+ */
 Route::middleware(['auth','verified'])->group(function () {
     
     //Funciones de contenido - Crear Comentario 
     Route::post('/comentarios', [HomeController::class, 'store'])->name('comments.store');
 
     //Funciones de contenido - Eliminar Comentario 
-    Route::delete('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy'); 
-
-    //Funcion de cotnenido - Eliminar Respuesta
-    Route::delete('/respuestas/{id}', [HomeController::class, 'removeReply'])->name('reply.destroy');
+    Route::delete('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy');
 });
 
+/**
+ * Rutas Restringidas para Admin
+ */
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    // ADMIN
+    /** Views */
 
-    //Ruta al panel principal
+       /** Panel Princiap */
     Route::get('post/MizumeAdmin', [AdminController::class , 'panel'])->name('post.panel');
 
-    //Ruta a la edición de Post
+    /** Vista de edición */
     Route::get('post/edit/{id}', [AdminController::class , 'edit'])->name('post.edit');
 
-    //Ruta de Actualizacion del post
-    //Route::post('post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
-
-    //Ruta de destruccion
-    Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
-
-    //Ruta de la Edicion de Post
-    Route::match(['post', 'put'], 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
-
-    //Ruta para ir al formulario de crear post
+        
     Route::get('post/create',[AdminController::class , 'create'])->name('post.create');
 
-    //Ruta para generar un post
+
+    /** Funciones */
+
+
+    /** Function de Borrado */
+    Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
+
+    
+    /** Funcion de borrador */
+    Route::match('put', 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
+
+
+    /** Crear un post */
     Route::post('post/store', [AdminController::class, 'store'])->name('post.store');
 
-    //Ruta para generar un backup
+
+    /** Crear Backup */
     Route::get('post/backup',[AdminController::class, 'backup'])->name('post.backup');
 
     
