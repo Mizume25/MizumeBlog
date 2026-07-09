@@ -20,7 +20,8 @@ import { getFormatoPost } from '@/types/utils';
 function show({ content }: { content: Content }) {
 
 
-
+    console.log(content.index);
+    
     const cover = `/IMG/Portada/${content.post.cover}`
 
     const formatDefault: Formato = {

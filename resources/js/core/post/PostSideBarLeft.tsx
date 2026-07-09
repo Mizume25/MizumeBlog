@@ -1,6 +1,6 @@
 import LogoutButton from "../auth/LogoutButton";
 import { usePage } from '@inertiajs/react';
-import { IndexContent, SharedData } from '@/types';
+import { type IndexContent, SharedData } from '@/types';
 import EditBTN from "../auth/EditBTN";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import { router } from "@inertiajs/react";
@@ -70,7 +70,7 @@ function PostSideBarLeft({ list, onFindID, menuAbierto, id, isClose }: { list: I
                 {list.map((p) =>
                     <li key={p.id} className="group flex items-center gap-2 sm:gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
                         <span className="text-base sm:text-xl group-hover:scale-125 transition-transform">🐢</span>
-                        <a href={`#${p.id}`} onClick={handleID} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">{p.title}</a>
+                        <a href={`#${p.id}`} onClick={handleID} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">{p.titulo}</a>
                     </li>
                 )}
 
