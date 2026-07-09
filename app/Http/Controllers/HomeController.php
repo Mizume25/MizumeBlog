@@ -15,7 +15,10 @@ class HomeController extends Controller
     private FileContentService $files;
 
 
-
+     public function __construct(FileContentService $files)
+    {
+        $this->files = $files;
+    }
 
 
 
@@ -25,7 +28,7 @@ class HomeController extends Controller
     public function index()
     {
         //Recibimos solo los post destacados
-        Post::featured()->latest()->limit(6)->get();
+        $posts = Post::featured()->latest()->limit(6)->get();
 
         //Retornamos el objeto filtrado
         return Inertia::render('dashboard', compact('posts'));

@@ -19,6 +19,12 @@ class AdminController extends Controller
 
     private FileContentService $files;
     private ImageConfigService $imgConfig;
+
+     public function __construct(FileContentService $files , ImageConfigService $imgConfig)
+    {
+        $this->files = $files;
+        $this->imgConfig = $imgConfig;
+    }
     
     /**
      * View a Fomrulario create

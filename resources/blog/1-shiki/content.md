@@ -9,7 +9,7 @@ En Shiki (me remito por entero a la novela) se puede identificar al menos 3 punt
 
 El eje de Kanemasa no es más que el misterio en el que se desenvolverá todas las subtramas abiertas en todas las familias por incidentes ocurridos (las cabezas desprendidas, el camión de mudanzas, los encuentros foráneos y finalmente los asesinatos más recientes ) poco o mucho el pueblo de Sotoba pone entre dicha a la casa de Kanemasa como principal sospecha de ese desencadenamiento de acontecimientos completamente sorprendentes.
 
-![Seishin y Sunako](/IMG/Contenido/AnimeManga/shiki/Foto1.jpg)
+![Seishin y Sunako](/storage/blog/1-shiki/Foto1.jpg)
 
 Ensayo de Seishin & Concepto de Sotoba.
 

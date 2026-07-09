@@ -166,7 +166,7 @@ export type UserRecord = User & {
 
 export type IndexContent = {
     id:string,
-    title: string,
+    titulo: string,
 }
 
 export type Content = {
