@@ -146,3 +146,20 @@ export type PostRecord = Post & {
 export type UserRecord = User & {
     coemntarios: Comment []
 } 
+
+
+/***
+ * 
+ * Contenido para la vista Show
+ */
+
+export type IndexContent = {
+    id:string,
+    title: string,
+}
+
+export type Content = {
+    post: PostRecord,
+    index: IndexContent [],
+    body:string,
+}
