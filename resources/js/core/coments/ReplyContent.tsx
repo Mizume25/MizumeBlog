@@ -1,7 +1,7 @@
 import React from 'react'
-import { Respuesta } from '@/types'
+import { Reply, type Comment} from '@/types'
 import { router } from '@inertiajs/react';
-function ReplyContent({ answer }: { answer: Respuesta }) {
+function ReplyContent({ answer }: { answer: Reply }) {
 
 
     const handleDeleteReply = () => {
@@ -19,10 +19,10 @@ function ReplyContent({ answer }: { answer: Respuesta }) {
             <div className="flex-grow bg-[#2a1d15]/40 p-3 rounded-r-lg" data-id={answer.id} >
                 <div className="flex justify-between items-center mb-1">
                     <h5 className="font-bold text-[#d4a373] text-xs">{answer.user.name}</h5>
-                    <span className="text-[10px] text-[#8b5e3c]">{answer.fecha}</span>
+                    <span className="text-[10px] text-[#8b5e3c]">{answer.publish_date}</span>
                 </div>
                 <p className="text-xs leading-relaxed text-[#c8ad7f]">
-                    {answer.descripcion}
+                    {answer.description}
                 </p>
 
                 <div className="flex justify-start mt-1">

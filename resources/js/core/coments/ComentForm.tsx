@@ -11,9 +11,9 @@ function ComentForm({ post_id }: { post_id: number}) {
     
 
     const { auth } = usePage<SharedData>().props;
-    // Dentro de tu componente:
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        body: '', // El contenido del comentario
+        body: '', 
         post_id: post_id,
     });
 
@@ -31,7 +31,7 @@ function ComentForm({ post_id }: { post_id: number}) {
         {auth?.user ? (
                 <form className="mt-8 space-y-4" onSubmit={handleSubmit} >
                     <div className="flex gap-4 items-start">
-                        <ComentProfile user={auth.user}/>
+                        <ComentProfile avatar={auth.user.avatar} />
                         <div className="flex-grow space-y-3">
                             <textarea
                                 value={data.body} // Vinculamos el valor
@@ -45,7 +45,7 @@ function ComentForm({ post_id }: { post_id: number}) {
 
                             <div className="flex justify-end">
                                 <button
-                                    disabled={processing} // Evita múltiples clics
+                                    disabled={processing} 
                                     type="submit"
                                     className="cursor-pointer bg-[#8b5e3c] hover:bg-[#a67c52] text-[#1e140f] font-bold py-2 px-6 rounded-md transition-all duration-200 shadow-lg active:scale-95 disabled:opacity-50"
                                 >

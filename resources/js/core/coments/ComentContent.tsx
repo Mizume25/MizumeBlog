@@ -2,57 +2,50 @@ import React, { useEffect } from 'react'
 import ComentProfile from './ComentProfile'
 import ComentText from './ComentText'
 import ReplyContent from './ReplyContent';
-import { Comentario, Respuesta, User } from '@/types'
+import { type CommentRecord , type Reply } from '@/types'
 
-function ComentContent({ coments, users }: { coments: Comentario[], users: User[] }) {
-
-    // Función de búsqueda para encontrar los datos del usuario en el array global
-    const handlerUser = (userId: number) => {
-        return users.find(u => u.id === userId);
-    };
+function ComentContent({ coments }: { coments: CommentRecord[] }) {
 
 
-    const ListaComentarios = (coments: Comentario[]) => {
+
+    const listComments = (coments: CommentRecord[]) => {
         return (
             <>
-                {coments
-                    .filter((comentario) => !(comentario as any).parent_id)
-                    .map((comentario) => {
-                        
-                        // 1. Buscamos el usuario específico dentro del ciclo map
-                        const u = handlerUser(comentario.user.id);
+                {coments.map((comment) => {
 
-                        return (
-                            <div key={comentario.id} className="space-y-2">
-                                <div className="flex gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
-                                    
-                                    
-                                    <ComentProfile user={u || comentario.user} />
+                    return (
+                        <div key={comment.id} className="space-y-2">
+                            <div className="flex gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
 
-                                    <ComentText coment={comentario} />
-                                </div>
 
-                                {/* Mapeo de Respuestas (Replies) */}
-                                {comentario.replies && comentario.replies.length > 0 && (
+                                <ComentProfile avatar={comment.user.avatar} />
+
+                                <ComentText coment={comment.description} />
+                            </div>
+
+                            {/* Mapeo de Respuestas (Replies) */}
+                            {comment.replies && comment.replies.length > 0 &&
+
+                                (
                                     <div className="ml-12 space-y-2">
-                                        {comentario.replies.map((respuesta: Respuesta) => (
-                                            <ReplyContent 
-                                                key={respuesta.id} 
-                                                answer={respuesta} 
+                                        {comment.replies.map((reply: Reply) => (
+                                            <ReplyContent
+                                                key={reply.id}
+                                                answer={reply}
                                             />
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                        );
-                    })}
+                        </div>
+                    );
+                })}
             </>
         );
     };
 
     return (
         <div className="space-y-6 mb-10" id='contentForm'>
-            {ListaComentarios(coments)}
+            {listComments(coments)}
         </div>
     );
 }

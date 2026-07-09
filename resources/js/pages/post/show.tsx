@@ -1,44 +1,41 @@
-import { Comentario, Post, User } from '@/types'
+import { IndexContent, type Content } from '@/types'
 import { Head } from '@inertiajs/react'
 import { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
-import { 
-    PostBTN, 
-    PostContent, 
-    PostHeader, 
-    PostSideBarLeft, 
-    PostSideBarRight,  
+import {
+    PostBTN,
+    PostContent,
+    PostHeader,
+    PostSideBarLeft,
+    PostSideBarRight,
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
 import TopAuthBar from '@/core/auth/TopAuthBar';
 import { Formato } from '@/types/utils';
 import { getFormatoPost } from '@/types/utils';
-import { getRoutePortada } from '@/types/utils';
 
-export interface Index {
-  id: string,
-  titulo: string,
-}
 
-function show({ post, index, contenido, coments, users }: { post: Post, index: Index[], contenido: string , coments:Comentario [],users:User[]  }) {
+function show({ content }: { content: Content }) {
 
-  const ruta = getRoutePortada(post?.categoria , post?.portada);
 
-  const formatDefault : Formato = {
-          id:post?.id,
-          home_config:"center",
-          article_config:"bg-[center_18%]",
-  }
 
-  const [format, setFormat] = useState<Formato | null>(formatDefault);
+    const cover = `/IMG/Portada/${content.post.cover}`
 
-  useEffect(() => {
+    const formatDefault: Formato = {
+        id: content.post.id,
+        home_config: "center",
+        article_config: "bg-[center_18%]",
+    }
+
+    const [format, setFormat] = useState<Formato | null>(formatDefault);
+
+    useEffect(() => {
         const fetchFormat = async () => {
-            if (post?.id) {
+            if (content.post.id) {
                 try {
-                    const data = await getFormatoPost(post.id);
+                    const data = await getFormatoPost(content.post.id);
                     setFormat(data);
                 } catch (error) {
                     console.error("Error cargando formato:", error);
@@ -47,69 +44,73 @@ function show({ post, index, contenido, coments, users }: { post: Post, index: I
         };
 
         fetchFormat();
-    }, [post?.id])
+    }, [content.post.id])
 
 
-  console.log(format)
+   
 
-  const list: Index[] = index;
-  const { auth } = usePage<SharedData>().props;
+    const index: IndexContent[] = content.index;
 
-  const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
-  const [menuAbierto, setMenuAbierto] = useState(false);
-  const handleFindID = (id: string) => {
-        console.log("El hijo me ha enviado el ID:", id);
-        setSelectedId(id); 
+
+    const { auth } = usePage<SharedData>().props;
+
+    const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
+    
+    const [menuAbierto, setMenuAbierto] = useState(false);
+
+
+    const handleFindID = (id: string) => {
+        setSelectedId(id);
     };
-  
-  const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          setMenuAbierto(prev => !prev);
-      }, []);
 
-  const isClose = () => {
-      setMenuAbierto(false)
-  }
- 
-  return (
-    <>
-        {/* Pestaña de la Página */}
-        <Head title='Show'></Head>
-        {!auth?.user && <TopAuthBar />}
-        {/* Componente imagen header */}
-        <PostHeader route={ruta} title={post.titulo} format={format?.article_config} />
+    const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        <PostBTN onButtonClick={handleButtonClick} />
-        {/* Contenedor del Main */}
-        <main className="mt-16 max-w-[1700px] mx-auto px-4 pb-20">
+        setMenuAbierto(prev => !prev);
+    }, []);
 
-        {/* Articulo */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
-        {menuAbierto && (
-        <div
-            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
-            onClick={() => setMenuAbierto(false)}
-        />
-    )}
-        {/* Componente del SideBar Izquierdo */}
-        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} id={post.id} isClose={isClose}/>
+    const isClose = () => {
+        setMenuAbierto(false)
+    }
 
-        <PostContent post={post} contenido={contenido} index={index} selectedId={selectedId} />
+    return (
+        <>
+            {/* Pestaña de la Página */}
+            <Head title='Show'></Head>
+            {!auth?.user && <TopAuthBar />}
+            {/* Componente imagen header */}
+            <PostHeader route={cover} title={content.post.title} format={format?.article_config} />
 
-        {/* Componente del SideBar Derecho */}
-        <PostSideBarRight id={post.id} />
+            <PostBTN onButtonClick={handleButtonClick} />
+            {/* Contenedor del Main */}
+            <main className="mt-16 max-w-[1700px] mx-auto px-4 pb-20">
 
-        <Coments coments={coments} post_id={post.id} users={users}/>
-        
+                {/* Articulo */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
+                    {menuAbierto && (
+                        <div
+                            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
+                            onClick={() => setMenuAbierto(false)}
+                        />
+                    )}
+                    {/* Componente del SideBar Izquierdo */}
+                    <PostSideBarLeft list={index} onFindID={handleFindID} menuAbierto={menuAbierto} id={content.post.id} isClose={isClose} />
 
-        </div>
+                    <PostContent post={content.post} contenido={content.body}  selectedId={selectedId} />
 
-      </main>
+                    {/* Componente del SideBar Derecho */}
+                    <PostSideBarRight id={content.post.id} />
 
-    </>
-  )
+                    <Coments coments={content.comments} post_id={content.post.id} />
+
+
+                </div>
+
+            </main>
+
+        </>
+    )
 }
 
 export default show

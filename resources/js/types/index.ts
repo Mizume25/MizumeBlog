@@ -77,6 +77,16 @@ export type User = Field & {
     google_id?: number
 }
 
+export interface Book {
+    title:string,
+    author:string,
+    image?:string,
+    color1:string,
+    color2:string,
+    accent:string,
+}
+
+
 
 /***
  * Lista de types de mi Página Web
@@ -121,7 +131,9 @@ export type Comment = Field & {
     parent_id: number,	
 }
 
-
+export type Reply = Comment & {
+    user: User;
+};
 
 /**
  * Types que utilizaremos
@@ -132,16 +144,15 @@ export type Comment = Field & {
  * @type ComentarioRecord
  */
 export type CommentRecord = Comment & {
-    replies: Comment []
+    replies: Reply []
+    user: User
 }
 
-/**
- * Post con lista de Comentarios y Respuestas
- * @type
- */
-export type PostRecord = Post & {
-    comentarios: CommentRecord []
-}
+
+
+
+
+
 
 export type UserRecord = User & {
     coemntarios: Comment []
@@ -159,7 +170,8 @@ export type IndexContent = {
 }
 
 export type Content = {
-    post: PostRecord,
+    post: Post,
     index: IndexContent [],
     body:string,
+    comments: CommentRecord []
 }

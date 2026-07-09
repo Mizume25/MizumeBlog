@@ -1,12 +1,12 @@
 import ComentsTitle from './ComentsTitle'
 import ComentContent from './ComentContent'
 import ComentForm from './ComentForm'
-import { Comentario, User } from '@/types'
+import { type CommentRecord } from '@/types'
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
 
-function Coments({ coments, post_id, users }: { coments: Comentario[], post_id: number,users:User[] }) {
+function Coments({ coments, post_id }: { coments: CommentRecord[], post_id: number}) {
     const { auth } = usePage<SharedData>().props;
     return (
        <section className="mt-12 lg:col-start-4 lg:col-span-6 bg-[#2c1e17] text-[#f3e5ab] p-8 rounded-lg shadow-2xl border border-[#4a3728] mx-auto max-w w-full">
@@ -17,7 +17,7 @@ function Coments({ coments, post_id, users }: { coments: Comentario[], post_id: 
                 <>
                 {coments.length != 0 ? (
 
-                        <ComentContent coments={coments} users={users}/>
+                        <ComentContent coments={coments} />
                         
 
                     ) : (
