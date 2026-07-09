@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('web_title')->nullable();
             $table->string('gender');
-            $table->enum('category', ['literatura', 'animeManga', 'reflexiones']);
+            $table->enum('category', ['literatura', 'animemanga', 'reflexiones']);
             $table->string('author');
             $table->date('publish_date')->nullable();
             $table->text('description')->nullable();
