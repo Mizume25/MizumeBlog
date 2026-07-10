@@ -51,4 +51,16 @@ class Post extends Model
     {
         return $query->where('publish_date', '!=' , null);
     }
+
+    /**
+     * Obtenemos todos los Generos Actuales
+     */
+    public static function genders()
+    {
+        return self::select('gender')
+            ->whereNotNull('gender')
+            ->distinct()
+            ->orderBy('gender')
+            ->pluck('gender');
+    }
 }

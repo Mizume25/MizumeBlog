@@ -51,27 +51,27 @@ function InfoTableMobile({ posts, getCategoria, categoriaActual }: { posts: Post
 
                         {/* Info */}
                         <div className="min-w-0 flex-1">
-                            <p className="text-sm font-semibold text-[#3B2314] truncate">{post.titulo}</p>
-                            <p className="text-[10px] text-gray-400 italic truncate">{post.genero} · {post.categoria}</p>
+                            <p className="text-sm font-semibold text-[#3B2314] truncate">{post.title}</p>
+                            <p className="text-[10px] text-gray-400 italic truncate">{post.gender} · {post.category}</p>
                         </div>
 
                         {/* Badge estado */}
-                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full border whitespace-nowrap shrink-0 ${post.publicado
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full border whitespace-nowrap shrink-0 ${post.publish_date
                             ? 'text-green-700 bg-green-50 border-green-200'
                             : 'text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40'
                             }`}>
-                            {post.publicado ? 'Publicado' : 'Borrador'}
+                            {post.publish_date ? 'Publicado' : 'Borrador'}
                         </span>
 
                         {/* Menú acciones */}
                         <div className="flex gap-1 shrink-0">
-                            <a href={route('post.edit', post.id)} aria-label={`Editar ${post.titulo}`}
+                            <a href={route('post.edit', post.id)} aria-label={`Editar ${post.title}`}
                                 className="text-[11px] px-2 py-1.5 border border-[#EAD9B8] rounded-md hover:border-[#A08050] hover:bg-[#F5EDD8] transition-colors touch-manipulation">
                                 ✎
                             </a>
                             <button
                                 onClick={() => router.delete(route('post.destroy', post.id))}
-                                aria-label={`Borrar ${post.titulo}`}
+                                aria-label={`Borrar ${post.title}`}
                                 className="text-[11px] px-2 py-1.5 border border-[#EAD9B8] rounded-md hover:border-red-400 hover:text-red-500 hover:bg-red-50 transition-colors touch-manipulation"
                             >
                                 ✕
