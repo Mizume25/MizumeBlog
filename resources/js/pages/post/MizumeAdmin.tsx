@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { User, Post, Comentario } from '@/types';
+import { User, Post, Comment, Data } from '@/types';
 import {
   InfoPanel, 
   InfoSideBarLeft,
@@ -34,15 +34,13 @@ const useMediaQuery = (query:string) => {
     };
 
 
-export interface Data {
-  users: User[],
-  posts: Post[],
-  coments: Comentario[]
-}
+
 
 function getLatestPosts(posts: Post[], limit: number): Post[] {
+  
   return [...posts]
-    .sort((a, b) => new Date(b.fecha_publicacion).getTime() - new Date(a.fecha_publicacion).getTime())
+    .filter((p): p is Post & { publish_date: string } => p.publish_date != null)
+    .sort((a, b) => new Date(b.publish_date).getTime() - new Date(a.publish_date).getTime())
     .slice(0, limit);
 }
 
@@ -56,13 +54,12 @@ const MizumeAdmin = ({ data }: { data: Data }) => {
 
   // 2. Esta es la función que "atrapa" el valor del hijo
   const handleFiltrado = (nombre: string): void => {
-    console.log("Cambiando a:", nombre);
     setCategoriaActual(nombre);
   };
 
-  const posts = categoriaActual === 'Todos' ? data.posts : data.posts.filter((p) => p.categoria === categoriaActual);
+  const posts = categoriaActual === 'Todos' ? data.posts : data.posts.filter((p) => p.category === categoriaActual);
 
-  const actualPost = getLatestPosts(data.posts,MAX_ACTUAL_POST)
+  const actualPost = getLatestPosts(data.posts ,MAX_ACTUAL_POST)
 
   const CONTENT = useMediaQuery("(max-width: 768px)");
 

@@ -149,11 +149,6 @@ export type CommentRecord = Comment & {
 }
 
 
-
-
-
-
-
 export type UserRecord = User & {
     coemntarios: Comment []
 } 
@@ -161,17 +156,34 @@ export type UserRecord = User & {
 
 /***
  * 
- * Contenido para la vista Show
+ * Gestor de contenidos web
  */
 
+/**
+ * 
+ * Indices de Post
+ */
 export type IndexContent = {
     id:string,
     titulo: string,
 }
 
+
+/**
+ * Contenido de Post
+ */
 export type Content = {
     post: Post,
     index: IndexContent [],
     body:string,
     comments: CommentRecord []
+}
+
+/**
+ * Datos a analizar
+ */
+export type Data =  {
+  users: User[],
+  posts: Post[],
+  coments: Comment[]
 }

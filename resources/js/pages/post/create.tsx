@@ -1,382 +1,414 @@
-import { useState, FormEvent } from 'react';
+import InputError from '@/components/input-error';
+import AuthLayout from '@/layouts/auth-layout';
+import { Input, Select, Button, Textarea, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Head } from '@inertiajs/react';
+import { Label } from '@radix-ui/react-dropdown-menu';
+import Switch from "react-switch";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PostSchema, type CreatePostSchemaOutput, type CreatePostSchemaInput } from "@/types/schemas";
+import { useState } from 'react';
+import { OPTION_CATEGORY } from '@/types/constants';
+import { LoaderCircle, Book, Computer, Tag, Calendar, User, Tags, Pencil, Image, ArrowBigLeft } from 'lucide-react'
+import { SubmitHandler, Controller } from 'react-hook-form'
 import { router } from '@inertiajs/react';
 
-function create() {
 
 
 
-    const [form, setForm] = useState({
-        titulo: '',
-        web_title: '',
-        categoria: '',
-        autor: '',
-        genero: '',
-        fecha_publicacion: '',
-        descripcion: '',
-        publicado: false,
-        portada: '',
-        card: '',
-    });
+function create({ genders }: { genders: string[] }) {
 
-    const [preview, setPreview] = useState<string | null>(null);
-    const [previewCard, setPreviewCard] = useState<string | null>(null);
-    const [files, setFiles] = useState<{ portada: File | null, card: File | null }>({
-        portada: null,
-        card: null
-    });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value, type } = e.target;
-        setForm(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-        }));
-    };
 
-    const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] ?? null;
-        if (file) {
-            setFiles(prev => ({ ...prev, portada: file }));
-            setForm(prev => ({ ...prev, portada: file.name }));
-            setPreview(URL.createObjectURL(file));
+
+
+    /**
+     *  Formulario para crear un Post
+     */
+    const { register, handleSubmit, formState: { errors }, reset, control, getValues, setValue } =
+        useForm<CreatePostSchemaInput, unknown, CreatePostSchemaOutput>({
+            resolver: zodResolver(PostSchema),
+        });
+
+
+    const [tag, setTag] = useState<string>("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const [error, seterror] = useState<string | null>(null);
+
+
+
+
+    /**
+     * Función para Obtener Datos
+     * @type CreatePostSchemaOutput  Tipado de Schema Post
+    */
+    const onSubmit: SubmitHandler<CreatePostSchemaOutput> = async (data) => {
+        try {
+
+
+
+            const formData = new FormData();
+
+            formData.append("title", data.title);
+            formData.append("author", data.author);
+            formData.append("category", data.category)
+            tags.forEach((g) => formData.append("gender[]", g));
+            formData.append("featured", data.featured ? "1" : "0");
+
+            if (data.web_title) formData.append("web_title", data.web_title);
+            if (data.description) formData.append("description", data.description);
+            if (data.publish_date) formData.append("publish_date", data.publish_date);
+
+
+            if (data.cover?.[0]) formData.append("cover", data.cover[0]);
+            if (data.cover_card?.[0]) formData.append("cover_card", data.cover_card[0]);
+
+            router.post(route('post.store'), formData);
+
+            reset();
+
+            setTags([]);
+
+
+
+        } catch (error) {
+
         }
-    };
 
-    const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] ?? null;
-        if (file) {
-            setFiles(prev => ({ ...prev, card: file }));
-            setForm(prev => ({ ...prev, card: file.name }));
-            setPreviewCard(URL.createObjectURL(file));
-        }
-    };
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
 
-        const data = new FormData();
-        data.append('titulo', form.titulo);
-        data.append('web_title', form.web_title);
-        data.append('categoria', form.categoria);
-        data.append('autor', form.autor);
-        data.append('genero', form.genero);
-        data.append('fecha_publicacion', form.fecha_publicacion);
-        data.append('descripcion', form.descripcion);
-        data.append('publicado', form.publicado ? '1' : '0');
-        if (files.portada) data.append('portada', files.portada);
-        if (files.card) data.append('card', files.card);
-        router.post(route('post.store'), data);
-    };
 
-    const CATEGORIAS = ['Literatura', 'AnimeManga', 'Reflexiones'];
+    }
+
+    const [tags, setTags] = useState<string[]>([]);
+
+    const refreshTags = (gender: string) => {
+
+        const normalize = gender.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        setTags((prev) => {
+            const current = prev.includes(normalize)
+                ? prev.filter((g) => g !== normalize) : [...prev, normalize];
+
+            setValue("gender", current);
+            return current;
+        });
+
+
+    }
+
+
+
+
+    const addGender = (gender: string | null) => {
+        if (gender == null) return alert("El genero no puede ser nulo");
+        if (gender.length == 0) return alert("El genero no puede ser vacío");
+        const normalize = gender.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        refreshTags(gender);
+
+        setTag("");
+
+        console.log("Despues de addGender la variable quedo asi:", tag);
+    }
+
+    const onInvalid = (errors: any) => {
+        console.log("", errors);
+    }
+
 
     return (
-        <main className="min-h-screen flex items-start justify-center px-4 py-12">
-            <div className="w-full max-w-2xl">
+        <AuthLayout title="MizumeBlog" description="Formulario Post">
+            <Head title="Iniciar Session" />
+            <div>
 
-                {/* ── Breadcrumb ── */}
-                <p className="inline-block bg-[#FFF9F0] px-4 py-2 rounded-2xl shadow-sm border border-[#8B5A2B]/10 text-[11px] uppercase tracking-widest text-[#8B5A2B]/60 mb-6">
-                    Panel · Posts · <span className="text-[#3B2314] font-bold">Nuevo</span>
-                </p>
 
-                <form onSubmit={handleSubmit} className="space-y-0" >
+                <div className="mx-auto lg:min-w-150 rounded-lg bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
+                    <form onSubmit={handleSubmit(onSubmit, onInvalid)}  >
+                        <div className='flex flex-row gap-2 justify-between text-center'>
 
-                    {/* ═══════════════════════════════════════
-                        HERO: Portada (izq) + Título (der)
-                    ═══════════════════════════════════════ */}
-                    <div className="bg-[#3B2314] rounded-t-2xl overflow-hidden flex flex-col sm:flex-row">
-
-                        {/* Portada */}
-                        <label
-                            htmlFor="portada-input"
-                            className="relative group cursor-pointer sm:w-48 shrink-0 aspect-[3/4] sm:aspect-auto overflow-hidden"
-                            aria-label="Subir portada"
-                        >
-                            {preview ? (
-                                <img
-                                    src={preview}
-                                    alt="Portada"
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                            ) : (
-                                <div className="w-full h-full min-h-[160px] bg-[#6B3F1F]/40 flex items-center justify-center">
-                                    <span className="text-4xl opacity-40">📖</span>
-                                </div>
-                            )}
-                            {/* Overlay al hover */}
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                </svg>
-                                <span className="text-[10px] text-white/80 uppercase tracking-widest">
-                                    {preview ? 'Cambiar' : 'Subir'}
-                                </span>
+                            <div className='flex flex-row'>
+                                <a
+                                    href={route('post.panel')}
+                                    className='flex items-center gap-2 transition-transform hover:-translate-x-1.5 cursor-pointer duration-150 text-white/30'
+                                >
+                                    <ArrowBigLeft size={26} className='text-white' />
+                                    Volver
+                                </a>
                             </div>
-                            <input
-                                id="portada-input"
-                                type="file"
-                                accept="image/*"
-                                className="sr-only"
-                                onChange={handleImage}
+
+                            <div className='flex justify-end flex-row gap-2'>
+                                <Label className="text-white text-right mb-2 hidden lg:inline">Destacado</Label>
+                                <Controller
+                                    name="featured"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Switch
+                                            lang='es'
+                                            onColor='#b39e00'
+                                            offColor='#454545'
+                                            checked={field.value ?? false}
+                                            onChange={field.onChange}
+                                            checkedIcon={false}
+                                            uncheckedIcon={false}
+                                        />
+                                    )}
+                                />
+
+                            </div>
+
+
+                            <InputError message={errors.author?.message} />
+
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6  lg:gap-10 text-left p-3">
+
+                            {/**  Titulo de la obra  */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Book size={20} />
+                                    <span>Titulo Obra</span>
+
+                                </Label>
+
+                                <Input
+                                    id="title"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    {...register("title")}
+                                    placeholder="Work Title..."
+                                    className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                />
+                                <InputError message={errors.title?.message} />
+
+                            </div>
+
+                            {/** Titulo Web */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Computer size={19} />
+                                    <span>Titulo Web</span>
+
+                                </Label>
+                                <Input
+                                    id="web_title"
+                                    type="text"
+                                    autoFocus
+                                    tabIndex={1}
+                                    {...register("web_title")}
+                                    placeholder="Web title work..."
+                                    className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                />
+                                <InputError message={errors.web_title?.message} />
+                            </div>
+
+                            {/** Genero */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Tags size={19} />
+                                    <span>Genero</span>
+
+                                </Label>
+                                <Button
+                                    type="button"
+                                    className="w-full bg-white text-[#754C22] hover:bg-white/90 font-bold h-12 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150"
+                                    tabIndex={4}
+                                    onClick={() => setIsOpen(true)}
+                                >
+                                    {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                                    Add Genders
+                                </Button>
+                                <InputError message={errors.gender?.message} />
+                            </div>
+
+                            {/*** Autor de la Obra */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <User size={19} />
+                                    <span>Autor</span>
+
+                                </Label>
+                                <Input
+                                    id="author"
+                                    type="text"
+                                    autoFocus
+                                    tabIndex={1}
+                                    {...register("author")}
+                                    placeholder="Author name..."
+                                    className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                />
+                                <InputError message={errors.author?.message} />
+                            </div>
+
+                            {/** Fecha Públicación */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Calendar size={19} />
+                                    <span>Fecha Públicación</span>
+
+                                </Label>
+                                <Input
+                                    id="publish_date"
+                                    type="date"
+                                    autoFocus
+                                    tabIndex={1}
+                                    {...register("publish_date")}
+                                    className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                />
+                                <InputError message={errors.publish_date?.message} />
+                            </div>
+
+                            {/*** Categorias */}
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Tag size={19} />
+                                    <span>Categorias</span>
+
+                                </Label>
+                                <Select
+                                    id='category'
+                                    {...register("category")}
+                                    className="bg-white/30 p-2 rounded-md capitalize text-gray-50">
+
+                                    {OPTION_CATEGORY.map((p) => (
+                                        <option value={p} key={p} className='capitalize bg-white/30 text-black'>{p}</option>
+                                    ))
+
+                                    }
+
+                                </Select>
+
+                                <InputError message={errors.category?.message} />
+                            </div>
+
+                            {/*** Cover */}
+                            <label className='h-50 flex flex-row items-center justify-center gap-2 bg-white/30 border-4 border-dotted border-white/50  rounded-2xl transition-transform hover:scale-105 duration-150 cursor-pointer'>
+
+                                <p className='text-white/50'>Cover</p>
+                                <Image className='text-white/50' />
+                                <Input id='cover'  {...register("cover")} type='file' className="hidden" accept=".jpg, .jpeg, .png" />
+                            </label>
+
+                            {/*** Card */}
+                            <label className='h-50 flex flex-row items-center justify-center gap-2 bg-white/30 border-4 border-dotted border-white/50  rounded-2xl transition-transform hover:scale-105 duration-150 cursor-pointer'>
+
+                                <p className='text-white/50'>Card</p>
+                                <Image className='text-white/50' />
+                                <Input id='cover_card' {...register("cover_card")} type='file' className="hidden" accept=".jpg, .jpeg, .png" />
+                            </label>
+                        </div>
+
+                        <div>
+                            <div className='flex flex-col gap-2'>
+                                <Label className="text-white flex items-center gap-2">
+                                    <Pencil size={19} />
+                                    <span>Descripcion</span>
+
+                                </Label>
+                                <Textarea
+                                    id="description"
+                                    autoFocus
+                                    tabIndex={1}
+                                    {...register("description")}
+                                    placeholder="This work is the..."
+                                    className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md h-30"
+                                />
+                                <InputError message={errors.description?.message} />
+                            </div>
+
+                        </div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 gap-x-4 text-left p-3 pr-5 overflow-y-auto flex-1 min-h-0 mt-2 scrollbar-gutter-stable">
+                            {tags.map((p) => (
+                                <Label
+                                    key={p}
+                                    className="rounded-lg text-center flex flex-row items-center justify-center bg-amber-100 transition-transform hover:scale-105 duration-150 text-xs cursor-pointer px-3 py-2"
+                                    onClick={() => refreshTags(p)}
+                                >
+                                    <Tags size={14} className='me-2 shrink-0' />
+                                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                                </Label>
+                            ))}
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="mt-4 w-full bg-[#e2d255] text-[#885200]  font-bold h-12 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150"
+                            tabIndex={4}
+                            disabled={processing}
+                        >
+                            {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            Create Post
+                        </Button>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                {/* Fondo oscuro */}
+                <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+
+                {/* Contenedor centrado */}
+                <div className="fixed inset-0 flex items-center justify-center overflow-y-auto  p-4">
+                    <DialogPanel className="w-full max-w-4xl max-h-[100vh] rounded-lg bg-white p-6">
+                        <DialogTitle className="text-lg font-bold">
+                            Add Genders Values
+                        </DialogTitle>
+                        <label className='w-full h-10'>
+                            <Input
+                                type="text"
+                                autoFocus
+                                value={tag}
+                                onChange={(e) => setTag(e.target.value)}
+                                tabIndex={1}
+                                placeholder="Type gender name..."
+                                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-400
+               rounded-md px-3 py-2 w-full
+               focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20
+               transition-colors duration-150 outline-none"
                             />
                         </label>
+                        <Button
+                            type="button"
+                            className="mt-2 w-25 bg-[#e2d255] text-[#885200]  font-bold h-6 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150 text-sm"
+                            tabIndex={4}
+                            onClick={() => addGender(tag)}
+                        >Add Tag</Button>
+                        <p className="mt-2 text-sm text-gray-600">
+                            Crea y/o seleciona los generós de la obra del post
+                        </p>
 
-                        {/* Título + subtítulo sobre el fondo oscuro */}
-                        <div className="flex-1 p-8 flex flex-col justify-center gap-6">
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#C8AD7F]/50 mb-1">
-                                    Título
-                                </label>
-                                <input
-                                    type="text"
-                                    name="titulo"
-                                    value={form.titulo}
-                                    onChange={handleChange}
-                                    placeholder="Título del post"
-                                    required
-                                    className="
-                                        w-full bg-transparent border-b border-[#C8AD7F]/30
-                                        text-[#E8D5A3] text-xl font-semibold
-                                        placeholder:text-[#C8AD7F]/25
-                                        focus:outline-none focus:border-[#C8AD7F]
-                                        transition-colors pb-1
-                                    "
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#C8AD7F]/50 mb-1">
-                                    Subtítulo / Web title
-                                </label>
-                                <input
-                                    type="text"
-                                    name="web_title"
-                                    value={form.web_title}
-                                    onChange={handleChange}
-                                    placeholder="Subtítulo o descripción corta"
-                                    className="
-                                        w-full bg-transparent border-b border-[#C8AD7F]/30
-                                        text-[#C8AD7F]/80 text-sm italic
-                                        placeholder:text-[#C8AD7F]/20
-                                        focus:outline-none focus:border-[#C8AD7F]/60
-                                        transition-colors pb-1
-                                    "
-                                />
-                            </div>
-                        </div>
-                    </div>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 gap-x-4 text-left p-3 pr-5 overflow-y-auto flex-1 min-h-0 mt-2 scrollbar-gutter-stable">
+                            {genders.map((p, i) => {
 
-                    {/* ═══════════════════════════════════════
-                        BODY: resto de campos
-                    ═══════════════════════════════════════ */}
-                    <div className="bg-white border-x border-[#EAD9B8] px-8 py-8 space-y-7">
+                                let check = tags.includes(p);
 
-                        {/* Categoría + Género */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                    Categoría
-                                </label>
-                                <select
-                                    name="categoria"
-                                    value={form.categoria}
-                                    onChange={handleChange}
-                                    required
-                                    className="
-                                        w-full bg-[#F5EDD8] border border-[#EAD9B8]
-                                        text-[#3B2314] text-sm
-                                        px-3 py-2 rounded-lg
-                                        focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-                                        transition-all cursor-pointer
-                                    "
-                                >
-                                    <option value="">— Selecciona —</option>
-                                    {CATEGORIAS.map(c => (
-                                        <option key={c} value={c}>{c}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                    Género(s)
-                                </label>
-                                <input
-                                    type="text"
-                                    name="genero"
-                                    value={form.genero}
-                                    onChange={handleChange}
-                                    placeholder="Ej: Novela, Realismo"
-                                    className="
-                                        w-full bg-[#F5EDD8] border border-[#EAD9B8]
-                                        text-[#3B2314] text-sm
-                                        px-3 py-2 rounded-lg
-                                        placeholder:text-[#8B5A2B]/30
-                                        focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-                                        transition-all
-                                    "
-                                />
-                            </div>
+                                return (
+                                    <Label
+                                        key={i}
+                                        onClick={() => refreshTags(p)}
+                                        className={`
+                rounded-lg text-center p-2 flex flex-row items-center justify-start text-sm
+                transition-transform hover:scale-105 duration-150 cursor-pointer
+                ${check ? "bg-[#b39e00] text-white" : "bg-amber-100 text-black"}
+            `}
+                                    >
+                                        <Tags size={16} className='me-3' /> {p}
+                                    </Label>
+                                );
+                            })}
                         </div>
 
-                        {/* Fecha de publicación */}
-                        {/* Fecha de publicación + Autor */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                    Fecha de publicación
-                                </label>
-                                <input
-                                    type="date"
-                                    name="fecha_publicacion"
-                                    value={form.fecha_publicacion}
-                                    onChange={handleChange}
-                                    required
-                                    className="
-                w-full bg-[#F5EDD8] border border-[#EAD9B8]
-                text-[#3B2314] text-sm
-                px-3 py-2 rounded-lg
-                focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-                transition-all cursor-pointer
-            "
-                                />
-                            </div>
 
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                    Autor
-                                </label>
-                                <input
-                                    type="text"
-                                    name="autor"
-                                    value={form.autor}
-                                    onChange={handleChange}
-                                    placeholder="Nombre del autor"
-                                    className="
-                w-full bg-[#F5EDD8] border border-[#EAD9B8]
-                text-[#3B2314] text-sm
-                px-3 py-2 rounded-lg
-                placeholder:text-[#8B5A2B]/30
-                focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-                transition-all
-            "
-                                />
-                            </div>
-                        </div>
 
-                        {/* Descripción */}
-                        <div>
-                            <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                Resumen / Descripción
-                            </label>
-                            <textarea
-                                name="descripcion"
-                                value={form.descripcion}
-                                onChange={handleChange}
-                                rows={4}
-                                placeholder="Escribe una breve descripción o resumen del post..."
-                                className="
-                                    w-full bg-[#F5EDD8] border border-[#EAD9B8]
-                                    text-[#3B2314] text-sm
-                                    px-4 py-3 rounded-lg
-                                    placeholder:text-[#8B5A2B]/30
-                                    focus:outline-none focus:ring-2 focus:ring-[#C8AD7F]
-                                    transition-all resize-none
-                                "
-                            />
-                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
 
-                        <div>
-                            <label className="block text-[10px] uppercase tracking-widest text-[#8B5A2B] mb-1.5">
-                                Card
-                            </label>
-                            <label
-                                htmlFor="card-input"
-                                className="relative group cursor-pointer flex items-center gap-4 bg-[#F5EDD8] border border-[#EAD9B8] rounded-lg px-4 py-3 hover:border-[#C8AD7F] transition-all"
-                            >
-                                <div className="w-12 h-16 shrink-0 rounded overflow-hidden bg-[#EAD9B8] flex items-center justify-center">
-                                    {previewCard ? (
-                                        <img src={previewCard} alt="Card preview" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-xl opacity-30">🖼</span>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-[#3B2314] font-medium truncate">
-                                        {form.card ?? 'Sin card asignada'}
-                                    </p>
-                                    <p className="text-[10px] text-[#8B5A2B]/50 mt-0.5">Click para añadir</p>
-                                </div>
-                                <svg className="w-4 h-4 text-[#8B5A2B]/40 group-hover:text-[#3B2314] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                </svg>
-                                <input
-                                    id="card-input"
-                                    type="file"
-                                    accept="image/*"
-                                    className="sr-only"
-                                    onChange={handleCard}
-                                />
-                            </label>
-                        </div>
-
-                        {/* Publicado toggle */}
-                        <div className="flex items-center gap-3 py-2">
-                            <button
-                                type="button"
-                                role="switch"
-                                aria-checked={form.publicado}
-                                onClick={() => setForm(prev => ({ ...prev, publicado: !prev.publicado }))}
-                                className={`
-                                    relative w-10 h-5 rounded-full transition-colors duration-300 shrink-0
-                                    ${form.publicado ? 'bg-[#3B2314]' : 'bg-[#EAD9B8]'}
-                                `}
-                            >
-                                <span className={`
-                                    absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow
-                                    transition-transform duration-300
-                                    ${form.publicado ? 'translate-x-5' : 'translate-x-0'}
-                                `} />
-                            </button>
-
-                            <span className={`text-[11px] font-bold px-3 py-1 rounded-full border transition-all duration-300 ${form.publicado
-                                ? 'text-green-700 bg-green-50 border-green-200'
-                                : 'text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40'
-                                }`}>
-                                {form.publicado ? 'Publicado' : 'Borrador'}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* ═══════════════════════════════════════
-                        FOOTER: guardar
-                    ═══════════════════════════════════════ */}
-                    <div className="bg-[#F5EDD8] border border-[#EAD9B8] rounded-b-2xl px-8 py-5 flex items-center justify-between gap-4">
-                        <a
-                            href={route('post.panel')}
-                            className="text-sm text-[#8B5A2B]/60 hover:text-[#3B2314] transition-colors"
-                        >
-                            ← Cancelar
-                        </a>
-                        <button
-                            type="submit"
-                            className="
-                                cursor-pointer
-                                px-6 py-2.5 text-sm font-semibold
-                                bg-[#3B2314] text-[#E8D5A3]
-                                rounded-lg shadow-sm
-                                hover:bg-[#6B3F1F]
-                                active:scale-95
-                                transition-all duration-150
-                                touch-manipulation
-                            "
-                        >
-                            Crear post
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </main>
+        </AuthLayout>
     );
 }
 

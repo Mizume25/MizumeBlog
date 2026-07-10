@@ -1,5 +1,4 @@
 import { Post } from '@/types'
-import React from 'react'
 
 function InfoSideBarRight( { posts }:{ posts: Post[]}) {
     return (
@@ -12,8 +11,8 @@ function InfoSideBarRight( { posts }:{ posts: Post[]}) {
                     <div key={i} className="flex gap-3 p-3 border-b border-[#EAD9B8]/40 last:border-0">
                         <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 bg-green-600`}></div>
                         <div>
-                            <p className="text-xs text-[#4A3020] leading-snug">{act.titulo}</p>
-                            <p className="text-[10px] text-gray-400 italic">{act.fecha_publicacion}</p>
+                            <p className="text-xs text-[#4A3020] leading-snug">{act.title}</p>
+                            <p className="text-[10px] text-gray-400 italic">{act.publish_date}</p>
                         </div>
                     </div>
                 ))}

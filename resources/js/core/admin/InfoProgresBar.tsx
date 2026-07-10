@@ -1,5 +1,4 @@
 import { Post } from '@/types'
-import React from 'react'
 
 function InfoProgresBar({ posts } : { posts:Post[]}) {
 

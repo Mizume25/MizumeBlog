@@ -20,18 +20,29 @@ class AdminController extends Controller
     private FileContentService $files;
     private ImageConfigService $imgConfig;
 
-     public function __construct(FileContentService $files , ImageConfigService $imgConfig)
+    public function __construct(FileContentService $files, ImageConfigService $imgConfig)
     {
         $this->files = $files;
         $this->imgConfig = $imgConfig;
     }
-    
+
     /**
      * View a Fomrulario create
      */
     public function create()
     {
-        return Inertia::render('post/create');
+        $items = Post::genders();
+        $genders = collect($items);
+
+        $genders = collect($items)
+            ->flatMap(fn($item) => explode(',', $item))
+            ->map(fn($g) => trim($g))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return Inertia::render('post/create', compact('genders'));
     }
 
     /**
@@ -60,6 +71,8 @@ class AdminController extends Controller
 
     /**
      * Función de Actualización de Post
+     * @param $request Peticion
+     * @param $id Id de Post
      */
     public function update(Request $request, int $id)
     {
@@ -70,7 +83,7 @@ class AdminController extends Controller
             'gender'            => 'required|string',
             'publish_date' => 'required|date',
             'autor' => 'required |string|max:255',
-            'description' => 'nullable|string', // Falta Destacado
+            'description' => 'nullable|string',
             'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
             'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
         ]);
@@ -92,14 +105,15 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'El Post se  actualizo correctamente');
     }
 
-    
+
 
 
 
 
     /**
      * 
-     * Eliminar
+     * Eliminar Post
+     * @param $id id del Post
      */
     public function destroy(int $id)
     {
@@ -135,7 +149,7 @@ class AdminController extends Controller
     }
 
 
-   
+
 
 
     /**
@@ -144,14 +158,18 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+
+        dd($request);
+
         $request->validate([
             'title'            => 'required|string|max:255',
             'web_title'         => 'nullable|string|max:255',
             'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'gender'            => 'required|string',
+            'gender'    => 'required|array|min:1|max:10',
+            'gender.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
             'publish_date' => 'required|date',
             'autor' => 'required |string|max:255',
-            'description' => 'nullable|string', 
+            'description' => 'nullable|string',
             'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
             'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
         ]);
@@ -161,29 +179,28 @@ class AdminController extends Controller
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
 
-            $name = $this->replaceImage($cover , ImageType::Cover, 'Portada' , null , null , $request->cover);
+            $name = $this->replaceImage($cover, ImageType::Cover, 'Portada', null, null, $request->cover);
 
             $data['cover'] = $name;
-            
         }
 
         if ($request->hasFile('cover_card')) {
             $cover = $request->file('cover_card');
 
-            $name = $this->replaceImage($cover , ImageType::Cover, 'Cards' , null , null , $request->cover_card);
+            $name = $this->replaceImage($cover, ImageType::Cover, 'Cards', null, null, $request->cover_card);
 
             $data['cover_card'] = $name;
         }
 
         $post = Post::create($data);
 
-        
+
 
         // 3. Rutas de los archivos
-        $path = $this->files->getPath($post->id , $post->title);
+        $path = $this->files->getPath($post->id, $post->title);
 
 
-        
+
         /**
          * Creamos json con plantilla minima
          */
@@ -191,13 +208,13 @@ class AdminController extends Controller
             'id'    => $post->id,
             'title' => 'Ejemplo',
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        
+
         file_put_contents($path . '/index.json', $jsonContent);
 
-      
-        file_put_contents($path . '/content.md', "## Ejemplo\n" );
 
-       
+        file_put_contents($path . '/content.md', "## Ejemplo\n");
+
+
         $this->imgConfig->set($post->id, [
             'home_config' => null,
             'article_config' => null,
@@ -257,7 +274,7 @@ class AdminController extends Controller
         $oldPath = public_path("IMG/{$folder}/{$img}");
 
         if ($img && file_exists($oldPath)) unlink($oldPath);
-        
+
 
         $name = $this->files->modifyImages($type, $file);
 

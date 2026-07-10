@@ -1,15 +1,13 @@
-import React from 'react'
-import { Data } from '@/pages/post/MizumeAdmin';
-import { Comentario, Post , User } from '@/types';
+import { Comment, Post , User , Data } from '@/types';
 
 
 function InfoPanel({ data } : { data:Data }) {
 
     const allPosts : Post[] = data.posts;
     const allUsers : User[] = data.users;
-    const allComents : Comentario [] = data.coments;
+    const allComents : Comment [] = data.coments;
 
-    const drafts = allPosts.filter((p: Post) => p.publicado == false);
+    const drafts = allPosts.filter((p: Post) => p.publish_date == null);
     const publish = allPosts.length - drafts.length;
 
 
