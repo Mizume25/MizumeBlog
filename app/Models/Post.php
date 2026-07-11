@@ -39,7 +39,7 @@ class Post extends Model
      */
     public function scopeFeatured(Builder $query)
     {
-        return $query->where('featured' , true);
+        return $query->where('featured', true);
     }
 
     /**
@@ -49,18 +49,25 @@ class Post extends Model
      */
     public function scopePublish(Builder $query)
     {
-        return $query->where('publish_date', '!=' , null);
+        return $query->where('publish_date', '!=', null);
     }
 
-    /**
-     * Obtenemos todos los Generos Actuales
-     */
+    private static function distinctValues(string $column)
+    {
+        return self::select($column)
+            ->whereNotNull($column)
+            ->distinct()
+            ->orderBy($column)
+            ->pluck($column);
+    }
+
     public static function tags()
     {
-        return self::select('tags')
-            ->whereNotNull('tags')
-            ->distinct()
-            ->orderBy('tags')
-            ->pluck('tags');
+        return self::distinctValues('tags');
+    }
+
+    public static function categories()
+    {
+        return self::distinctValues('category');
     }
 }

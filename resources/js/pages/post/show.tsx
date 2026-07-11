@@ -12,16 +12,16 @@ import {
     PostSideBarRight,
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
-import TopAuthBar from '@/core/auth/TopAuthBar';
 import { Formato } from '@/types/utils';
 import { getFormatoPost } from '@/types/utils';
-
+import BlogLayout from '@/layouts/app/blog-layout';
+import SideBarRight from '@/core/auth/SideBarRight';
 
 function show({ content }: { content: Content }) {
 
 
-    console.log(content.index);
-    
+
+
     const cover = `/IMG/Portada/${content.post.cover}`
 
     const formatDefault: Formato = {
@@ -48,7 +48,7 @@ function show({ content }: { content: Content }) {
     }, [content.post.id])
 
 
-   
+
 
     const index: IndexContent[] = content.index;
 
@@ -56,7 +56,7 @@ function show({ content }: { content: Content }) {
     const { auth } = usePage<SharedData>().props;
 
     const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
-    
+
     const [menuAbierto, setMenuAbierto] = useState(false);
 
 
@@ -75,42 +75,45 @@ function show({ content }: { content: Content }) {
         setMenuAbierto(false)
     }
 
+
+
     return (
-        <>
+        <BlogLayout post_id={content.post.id} index={content.index}>
+
+
             {/* Pestaña de la Página */}
             <Head title='Show'></Head>
-            {!auth?.user && <TopAuthBar />}
+
             {/* Componente imagen header */}
             <PostHeader route={cover} title={content.post.title} format={format?.article_config} />
 
             <PostBTN onButtonClick={handleButtonClick} />
             {/* Contenedor del Main */}
-            <main className="mt-16 max-w-[1700px] mx-auto px-4 pb-20">
-
-                {/* Articulo */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
+            <main className="mt-20 max-w-[1700px] mx-auto px-4 sm:px-6 pb-24">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative">
                     {menuAbierto && (
                         <div
                             className="lg:hidden fixed inset-0 z-[59] bg-black/50"
                             onClick={() => setMenuAbierto(false)}
                         />
                     )}
-                    {/* Componente del SideBar Izquierdo */}
+
                     <PostSideBarLeft list={index} onFindID={handleFindID} menuAbierto={menuAbierto} id={content.post.id} isClose={isClose} />
-
-                    <PostContent post={content.post} contenido={content.body}  selectedId={selectedId} />
-
-                    {/* Componente del SideBar Derecho */}
-                    <PostSideBarRight id={content.post.id} />
-
+                    <PostContent post={content.post} contenido={content.body} selectedId={selectedId} />
+                    
+                    <SideBarRight
+                        posts={content.features}
+                        featuredTitle="Artículos / Post Destacados"
+                        showProfile
+                        variant="light"
+                        sticky="lg:top-24"
+                        colSpan='lg:col-span-3'
+                    />
                     <Coments coments={content.comments} post_id={content.post.id} />
-
-
                 </div>
-
             </main>
 
-        </>
+        </BlogLayout>
     )
 }
 

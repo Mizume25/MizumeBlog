@@ -41,7 +41,7 @@ class HomeController extends Controller
      */
     public function show(int $id)
     {
-
+        $features = Post::featured()->latest()->limit(3)->get();
         $post = Post::with('comments')->findOrFail($id);
 
         $comments = Comment::where('post_id', $post->id)
@@ -65,6 +65,7 @@ class HomeController extends Controller
             "index" => $index,
             "body" => $md,
             "comments" => $comments,
+            "features" => $features,
         ];
 
         /** Renderizamos */
@@ -79,8 +80,10 @@ class HomeController extends Controller
 
     public function archivador()
     {
-        $posts = Post::publish()->get();
+        $posts = Post::all();
 
-        return Inertia::render('post/archivador', compact('posts'));
+        $categories = Post::categories();
+
+        return Inertia::render('post/library', compact('posts', 'categories'));
     }
 }

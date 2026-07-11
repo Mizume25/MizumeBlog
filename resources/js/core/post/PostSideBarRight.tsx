@@ -27,7 +27,7 @@ function PostSideBarRight({ id }: { id: number }) {
 
     console.log(posts)
     return (
-        <aside className="lg:col-span-3 space-y-6 lg:sticky top-6 h-fit">
+        <aside className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             <div className="bg-[#2A1B12] p-8 rounded-xl border border-white/10 shadow-xl text-center">
              <a href={route('profile.edit')}>
                 {auth?.user?.google_id ? (
@@ -62,7 +62,7 @@ function PostSideBarRight({ id }: { id: number }) {
             </div>
 
             {/* POSTS DESTACADOS */}
-            <div className="bg-[#EDEDED] p-6 rounded-xl shadow-lg">
+             <div className="bg-[#EDEDED] p-6 rounded-xl shadow-lg">
 
                 <h4 className="text-[#2A1B12] text-lg font-semibold mb-5">
                     Artículos / Post Destacados
