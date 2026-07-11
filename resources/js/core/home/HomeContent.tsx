@@ -2,10 +2,10 @@ import React from 'react';
 import { type Post } from '@/types';
 import HomePanelPost from './HomePanelPost';
  
-function HomeContent({ mainPosts }: { mainPosts: Post[] }) {
+function HomeContent({ mainPosts , className}: { mainPosts: Post[] , className:string }) {
     return (
         /** Es izquierdo los post pares */
-        <div className="p-0 m-0 bg-transparent flex flex-col gap-[0px]">
+        <div className={`p-0 m-0 bg-transparent flex flex-col flex-1 ${className} gap-[0px] order-1`}>
             {mainPosts?.map((post, index) => (
                 <HomePanelPost
                     key={post.id}

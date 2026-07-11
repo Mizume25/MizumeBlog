@@ -14,7 +14,7 @@ export const netWork: Seccion[] = [
 
 function HomeSideBarRight({ sidebarPosts }: { sidebarPosts: Post[] | undefined }) {
     return (
-        <aside className="hidden lg:block bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] sticky top-6">
+        <aside className="hidden lg:block bg-[rgb(45,29,13)] p-[35px] rounded-[5px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] sticky top-6 order-2">
 
             <section className="mb-[30px]">
                 <h3 className="text-xl text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">

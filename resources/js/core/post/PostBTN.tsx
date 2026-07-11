@@ -1,3 +1,4 @@
+import { ListTree } from 'lucide-react';
 import React from 'react'
 
 function PostBTN({ onButtonClick }: { onButtonClick?: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
@@ -9,11 +10,9 @@ function PostBTN({ onButtonClick }: { onButtonClick?: (e: React.MouseEvent<HTMLB
     return (
         <button
             onClick={handleClick}
-            className="lg:hidden fixed top-[58px] sm:top-[42px] right-2 z-40 bg-[#754C22] p-2.5 rounded-lg shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+            className="lg:hidden fixed top-[58px] sm:top-[42px] right-2 z-40 bg-[#754C22] p-2.5 rounded-lg shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer mt-10">
             <div className="space-y-1.5">
-                <span className="block w-5 h-0.5 bg-white"></span>
-                <span className="block w-5 h-0.5 bg-white"></span>
-                <span className="block w-5 h-0.5 bg-white"></span>
+                <ListTree size={22} className='text-white' />
             </div>
         </button>
     )

@@ -2,3 +2,44 @@
  * Categorias a escoger
  */
 export const OPTION_CATEGORY = ["literatura", "animemanga", "reflexiones"];
+
+
+export interface Route {
+    label: string,
+    url: string
+}
+
+/**
+ * Navegación de web
+ */
+export const WEB_ROUTE : Route [] = [
+    {
+        label: 'home',
+        url: route('home')
+    },
+    {
+        label:'archive',
+        url: route('post.archivador')
+    },
+    {
+        label:'profile',
+        url: '/seetings'
+    },
+    {
+        label:'Contacto',
+        url:'#'
+    }
+]
+
+
+/**
+ * 
+ * NetWorks
+ * 
+ */
+
+export const NETWORKS: Route[] = [
+    { label: "LinkedIn",  url: "https://www.linkedin.com/in/gabriel-nivicela-86733035a/" },
+    { label: "Instagram", url: "https://www.instagram.com/_mi_zume_/" },
+    { label: "GitHub",    url: "https://github.com/Mizume25" },
+];

@@ -176,7 +176,8 @@ export type Content = {
     post: Post,
     index: IndexContent [],
     body:string,
-    comments: CommentRecord []
+    comments: CommentRecord [],
+    features: Post[],
 }
 
 /**
