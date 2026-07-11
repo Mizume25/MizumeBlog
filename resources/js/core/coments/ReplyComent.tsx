@@ -1,8 +1,8 @@
-import { Comentario, Respuesta } from '@/types';
+import { Reply } from '@/types';
 import { useForm } from '@inertiajs/react';
 import React, { useEffect } from 'react'
 
-function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Comentario}) {
+function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Reply}) {
 
 
     const handleClose = (e:React.MouseEvent<HTMLButtonElement>) => {
@@ -13,7 +13,7 @@ function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Co
 
     // Dentro de tu componente:
         const { data, setData, post, processing, errors, reset } = useForm({
-            body: '', // El contenido del comentario
+            body: '', 
             parent_id: coment.id,
             post_id: coment.post_id,
         });

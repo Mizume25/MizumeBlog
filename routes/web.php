@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
+
 
 
 /**
@@ -12,10 +14,10 @@ use App\Http\Controllers\GoogleController;
 Route::middleware(['auth','verified'])->group(function () {
     
     //Funciones de contenido - Crear Comentario 
-    Route::post('/comentarios', [HomeController::class, 'store'])->name('comments.store');
+    Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
 
     //Funciones de contenido - Eliminar Comentario 
-    Route::delete('/comentarios/{id}', [HomeController::class, 'destroy'])->name('comments.destroy');
+    Route::delete('/comentarios/{id}', [ComentController::class, 'destroy'])->name('comments.destroy');
 });
 
 /**

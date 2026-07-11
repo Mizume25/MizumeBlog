@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dom\Comment;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -56,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function comentarios()
     {
-       return $this->hasMany(Comentario::class, 'user_id');
+       return $this->hasMany(Comment::class, 'user_id');
     }
     
 }

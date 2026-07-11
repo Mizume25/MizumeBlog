@@ -31,17 +31,23 @@ class CreateAdminUser extends Command
 
         $name = $this->ask('¿Name User?');
         $email = $this->ask('¿Email User?');
-        $password = $this->secret('¿Password User?'); 
-        $role = $this->askWithCompletion('Select  rol',
-        ['admin' , 'user' , 'editor']);
+        $password = $this->secret('¿Password User?');
+        $role = $this->askWithCompletion(
+            'Select  rol',
+            ['admin', 'user', 'editor']
+        );
 
-        User::create([
+        $user = User::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
-            'role' => $role, 
+            'role' => $role,
         ]);
 
+        $user->email_verified_at = now();
+        $user->save();
+
+        $this->info('Correo Verificado');
         $this->info('Administrador creado con éxito.');
     }
 }

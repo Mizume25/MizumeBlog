@@ -20,7 +20,7 @@ function ComentContent({ coments }: { coments: CommentRecord[] }) {
 
                                 <ComentProfile avatar={comment.user.avatar} />
 
-                                <ComentText coment={comment.description} />
+                                <ComentText coment={comment} />
                             </div>
 
                             {/* Mapeo de Respuestas (Replies) */}

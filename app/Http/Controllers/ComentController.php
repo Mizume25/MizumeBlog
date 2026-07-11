@@ -34,7 +34,7 @@ class ComentController extends Controller
         $request->validate([
             'body' => 'required|min:5',
             'post_id'   => 'required|exists:posts,id',
-            'parent_id'   => 'sometimes|nullable|exists:comentarios,id',
+            'parent_id'   => 'sometimes|nullable|exists:comments,id',
         ]);
 
         Comment::create([
