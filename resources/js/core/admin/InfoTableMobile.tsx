@@ -52,7 +52,7 @@ function InfoTableMobile({ posts, getCategoria, categoriaActual }: { posts: Post
                         {/* Info */}
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-semibold text-[#3B2314] truncate">{post.title}</p>
-                            <p className="text-[10px] text-gray-400 italic truncate">{post.gender} · {post.category}</p>
+                            <p className="text-[10px] text-gray-400 italic truncate">{post.tags} · {post.category}</p>
                         </div>
 
                         {/* Badge estado */}

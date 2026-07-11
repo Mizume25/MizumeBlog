@@ -13,7 +13,7 @@ class Post extends Model
     protected $fillable = [
         'title',
         'web_title',
-        'gender',
+        'tags',
         'category',
         'author',
         'publish_date',
@@ -55,12 +55,12 @@ class Post extends Model
     /**
      * Obtenemos todos los Generos Actuales
      */
-    public static function genders()
+    public static function tags()
     {
-        return self::select('gender')
-            ->whereNotNull('gender')
+        return self::select('tags')
+            ->whereNotNull('tags')
             ->distinct()
-            ->orderBy('gender')
-            ->pluck('gender');
+            ->orderBy('tags')
+            ->pluck('tags');
     }
 }

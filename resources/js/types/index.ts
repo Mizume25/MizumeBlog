@@ -107,7 +107,7 @@ export type Category = 'literatura' | 'animemanga' | 'reflexiones';
 export type Post = Field & {
     title: string 
     web_title?: string
-    gender: string,
+    tags: string,
     category: Category,
     author: string,
     publish_date?: string,

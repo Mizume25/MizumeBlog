@@ -26,7 +26,8 @@ function HomeSideBarLeft({ isOpen = false, onClose }: HomeSideBarLeftProps) {
             {/* Foto */}
             <a href={route('profile.edit')}>
             <div className="mb-4">
-                {auth?.user?.google_id ? (
+                
+                {auth?.user?.avatar ? (
 
                     <img
                         src={auth.user.avatar}
