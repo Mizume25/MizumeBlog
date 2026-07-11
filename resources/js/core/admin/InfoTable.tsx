@@ -18,7 +18,7 @@ function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], ge
             <div className="px-5 py-4 border-b border-[#EAD9B8] flex items-center justify-between bg-gradient-to-r from-[#C8AD7F]/10 to-transparent">
                 <h3 className="text-[#3B2314]">Tabla de Posts</h3>
                 <div className=" flex bg-[#F5EDD8] p-1.5 rounded-xl border border-[#EAD9B8] gap-2 shadow-inner">
-                    {['Todos', 'Literatura', 'Reflexiones', 'AnimeManga'].map((cat) => {
+                    {['Todos', 'literatura', 'reflexiones', 'animemanga'].map((cat) => {
                         // Variable para controlar el estado activo (puedes vincularla a tu useState)
                         const isActive = cat === categoriaActual;
 
@@ -61,17 +61,17 @@ function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], ge
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-[#F5EDD8] rounded flex items-center justify-center text-lg border border-[#EAD9B8]">📖</div>
                                         <div>
-                                            <p className="text-sm font-semibold text-[#3B2314]">{post.titulo}</p>
-                                            <p className="text-[11px] text-gray-400 italic">{post.genero}</p>
+                                            <p className="text-sm font-semibold text-[#3B2314]">{post.title}</p>
+                                            <p className="text-[11px] text-gray-400 italic">{post.tags}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-5 py-4">
-                                    <p className='text-[15px]'>{post.categoria}</p>
+                                    <p className='text-[15px]'>{post.category}</p>
                                 </td>
                                 <td className="px-5 py-4">
-                                    <span className={`text-[11px] font-bold px-2 py-1 rounded-full border ${post.publicado ? `text-green-700 bg-green-50 border-green-200` : `text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40`}`}>
-                                        {post.publicado ? "Publicado" : "Borrador"}
+                                    <span className={`text-[11px] font-bold px-2 py-1 rounded-full border ${post.publish_date ? `text-green-700 bg-green-50 border-green-200` : `text-[#6B3F1F] bg-[#C8AD7F]/20 border-[#C8AD7F]/40`}`}>
+                                        {post.publish_date ? "Publicado" : "Borrador"}
                                     </span>
                                 </td>
                                 <td className="px-5 py-4">

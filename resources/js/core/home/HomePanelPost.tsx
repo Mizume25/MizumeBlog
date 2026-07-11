@@ -31,7 +31,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
     const ruta: string = `/IMG/Portada/${post.cover}`
 
     /** Categorias Badge */
-    const badges: string[] = post?.gender.split(',').map((p) => p.trim());
+    const badges: string[] = post?.tags.split(',').map((p) => p.trim());
 
 
 

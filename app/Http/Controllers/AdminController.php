@@ -31,18 +31,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $items = Post::genders();
-        $genders = collect($items);
+        $tags = $this->buildTags();
 
-        $genders = collect($items)
-            ->flatMap(fn($item) => explode(',', $item))
-            ->map(fn($g) => trim($g))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
-
-        return Inertia::render('post/create', compact('genders'));
+        return Inertia::render('post/create', compact('tags'));
     }
 
     /**
@@ -66,7 +57,9 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        return Inertia::render('post/edit', compact('post'));
+         $tags = $this->buildTags();
+
+        return Inertia::render('post/edit', compact('post', 'tags'));
     }
 
     /**
@@ -80,7 +73,8 @@ class AdminController extends Controller
             'title'            => 'required|string|max:255',
             'web_title'         => 'nullable|string|max:255',
             'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'gender'            => 'required|string',
+            'tags'    => 'required|array|min:1|max:10',
+            'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
             'publish_date' => 'required|date',
             'autor' => 'required |string|max:255',
             'description' => 'nullable|string',
@@ -165,8 +159,8 @@ class AdminController extends Controller
             'title'            => 'required|string|max:255',
             'web_title'         => 'nullable|string|max:255',
             'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'gender'    => 'required|array|min:1|max:10',
-            'gender.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
+            'tags'    => 'required|array|min:1|max:10',
+            'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
             'publish_date' => 'required|date',
             'autor' => 'required |string|max:255',
             'description' => 'nullable|string',
@@ -281,5 +275,25 @@ class AdminController extends Controller
         $file->move(public_path("IMG/{$folder}"), $name);
 
         return $name;
+    }
+
+
+    /***
+     * Maquetar Etiquetas
+     */
+    private function buildTags()
+    {
+        $items = Post::tags();
+        $tags = collect($items);
+
+        $tags = collect($items)
+            ->flatMap(fn($item) => explode(',', $item))
+            ->map(fn($g) => trim($g))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return $tags;
     }
 }

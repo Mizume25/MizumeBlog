@@ -21,7 +21,7 @@ const TIPOS_VALIDOS = ["image/jpeg","image/jpg" , "image/png", "image/webp"];
 export const PostSchema = z.object({
     title: z.string().min(2, 'Necesitas un titulo minimo'),
     web_title: z.string().optional(),
-    gender: z.array(z.string()).min(1, "Selecciona al menos un género"),
+    tags: z.array(z.string()).min(1, "Selecciona al menos un género"),
     category: categorySchema,
     author: z.string().min(2, "Necesitas Establecer a un autor"),
     publish_date: z.string().optional(),

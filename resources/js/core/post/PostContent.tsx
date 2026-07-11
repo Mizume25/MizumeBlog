@@ -6,7 +6,7 @@ import MarkdownRenderer from './MarkdownRenderer';
 
 function PostContent({ post, contenido, selectedId }: { post: Post, contenido: string , selectedId:string }) {
 
-  const badge: string[] = post.gender.split(',').map(p => p.trim());
+  const badge: string[] = post.tags.split(',').map(p => p.trim());
   
 
   return (
