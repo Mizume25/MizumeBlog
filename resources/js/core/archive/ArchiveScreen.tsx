@@ -1,6 +1,6 @@
 import { Seccion } from '@/pages/post/archivador';
 import { Post } from '@/types';
-import { getRoutePortada, getRouteCard, getFormatoPost, Formato } from '@/types/utils';
+import { getFormatoPost, Formato } from '@/types/utils';
 import { useEffect, useState } from 'react';
 // ── Card individual ──────────────────────────────────────────────
 interface CardProps {
@@ -18,8 +18,7 @@ const Card = ({ post }: CardProps) => {
     }
 
 
-    const generos = post.genero?.split(',').map(g => g.trim()) ?? [];
-    const rutaCard: string = getRouteCard(post.categoria, post.card);
+    const tags = post.tags.split(',').map(g => g.trim()) ?? [];
     const [format, setFormat] = useState<Formato | null>(formatDefault);
 
    
@@ -42,7 +41,7 @@ const Card = ({ post }: CardProps) => {
     
 
 
-    console.log(rutaCard)
+
     return (
         <a
             href={route('post.show', post.id)}
@@ -62,10 +61,10 @@ const Card = ({ post }: CardProps) => {
                     flex items-center justify-between px-4 shrink-0 text-black
                 ">
                     <h2 className="text-sm font-bold truncate pr-2 uppercase tracking-tight">
-                        {post.titulo}
+                        {post.title}
                     </h2>
                     <div className="flex gap-1 shrink-0">
-                        {generos.slice(0, 1).map(g => (
+                        {tags.slice(0, 1).map(g => (
                             <span
                                 key={g}
                                 className="px-3 py-1 bg-[#8c6c44] text-white rounded-full text-[0.6rem] font-bold uppercase shadow-sm"
@@ -81,10 +80,10 @@ const Card = ({ post }: CardProps) => {
 
                     {/* Sección de Imagen (Mantiene estructura original según tu pedido) */}
                     <section className="w-[35%] sm:w-[30%] shrink-0 bg-[#e5e5e5] border-r-[2px] border-black/20 overflow-hidden">
-                        {rutaCard ? (
+                        {post.cover_card ? (
                             <img
-                                src={rutaCard}
-                                alt={`Portada de ${post.titulo}`}
+                                src={`/IMG/Cards/${post.cover_card}`}
+                                alt={`Portada de ${post.title}`}
                                 className="w-full h-full object-cover object-center "
                                 style={{ objectPosition: `${format?.card_config}` }}
                             />
@@ -104,13 +103,13 @@ const Card = ({ post }: CardProps) => {
                         [&::-webkit-scrollbar-thumb]:rounded-full
                     ">
                         <p className="text-[0.6rem] uppercase tracking-widest text-black/60 mb-1 font-medium">
-                            {post.autor} · {post.fecha_publicacion}
+                            {post.author} · {post.publish_date}
                         </p>
                         <h3 className="text-base font-extrabold mb-2 text-black leading-tight">
-                            {post.web_title || post.titulo}
+                            {post.web_title || post.title}
                         </h3>
                         <p className="text-xs leading-relaxed text-black/90 font-medium">
-                            {post.descripcion}
+                            {post.description}
                         </p>
                     </section>
                 </main>

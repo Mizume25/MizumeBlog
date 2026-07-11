@@ -20,9 +20,7 @@ const archivador = ({ posts }: { posts: Post[] }) => {
     const [list, setlist] = useState<Post[]>(posts.filter((p:any) => p.categoria === seccionActiva));
 
     useEffect( () => {
-
         setlist(filterPost(seccionActiva, posts))
-
     },[seccionActiva])
     
 
