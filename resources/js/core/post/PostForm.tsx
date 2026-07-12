@@ -337,7 +337,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 {list.map((p) => (
                                     <Label
                                         key={p}
-                                        className="rounded-lg text-center flex flex-row items-center justify-center bg-amber-100 transition-transform hover:scale-105 duration-150 text-xs cursor-pointer px-3 py-2"
+                                        className="rounded-lg text-center flex flex-row items-center justify-center bg-amber-100 transition-transform hover:scale-105 duration-150 text-xs cursor-pointer px-3 py-2 text-black"
                                         onClick={() => refreshTags(p)}
                                     >
                                         <Tags size={14} className='me-2 shrink-0' />

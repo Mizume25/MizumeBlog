@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import type { CreatePostSchemaOutput } from "@/types/schemas";
 import PostForm, { PostFormHandle } from '@/core/post/PostForm';
 import { useRef, useState } from 'react';
+import BlogLayout from '@/layouts/app/blog-layout';
 
 export default function Create({ tags }: { tags: string[] }) {
 
@@ -27,7 +28,7 @@ export default function Create({ tags }: { tags: string[] }) {
         data.tags.forEach((g) => formData.append("tags[]", g));
 
         formData.append("featured", data.featured ? "1" : "0");
-        
+
         if (data.web_title) formData.append("web_title", data.web_title);
         if (data.description) formData.append("description", data.description);
         if (data.publish_date) formData.append("publish_date", data.publish_date);
@@ -37,22 +38,24 @@ export default function Create({ tags }: { tags: string[] }) {
         /**
          * Emviamos informació
          */
-        router.post(route('post.store'), formData , {
+        router.post(route('post.store'), formData, {
             onSuccess: () => {
                 formRef.current?.resetForm();
             },
             onFinish: () => {
-                setProcessing(false); 
+                setProcessing(false);
             },
         });
 
-        
+
     };
 
     return (
-        <AuthLayout title="MizumeBlog" description="Formulario Post">
-            <Head title="Crear Post" />
-            <PostForm ref={formRef} tags={tags} onSubmit={handleCreate} submitLabel="Create Post" />
-        </AuthLayout>
+        <BlogLayout>
+            <AuthLayout title="MizumeBlog" description="Formulario Post">
+                <Head title="Crear Post" />
+                <PostForm ref={formRef} tags={tags} onSubmit={handleCreate} submitLabel="Create Post" />
+            </AuthLayout>
+        </BlogLayout>
     );
 }

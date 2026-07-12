@@ -1,43 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { User, Post, Comment, Data } from '@/types';
 import {
-  InfoPanel, 
+  InfoPanel,
   InfoSideBarLeft,
-  InfoNav, 
-  InfoTable, 
-  InfoSideBarRight, 
-  InfoProgresBar, 
-  InfoTableMobile, 
+  InfoNav,
+  InfoTable,
+  InfoSideBarRight,
+  InfoProgresBar,
+  InfoTableMobile,
 } from '../../core/admin';
+import BlogLayout from '@/layouts/app/blog-layout';
 
-const useMediaQuery = (query:string) => {
-        const [matches, setMatches] = useState(false);
+const useMediaQuery = (query: string) => {
+  const [matches, setMatches] = useState(false);
 
-        useEffect(() => {
-            const media = window.matchMedia(query);
+  useEffect(() => {
+    const media = window.matchMedia(query);
 
-            // Actualizar el estado inicial
-            if (media.matches !== matches) {
-                setMatches(media.matches);
-            }
+    // Actualizar el estado inicial
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
 
-            // Definir el listener para cambios de pantalla
-            const listener = () => setMatches(media.matches);
+    // Definir el listener para cambios de pantalla
+    const listener = () => setMatches(media.matches);
 
-            // Soporte para navegadores modernos y antiguos
-            media.addEventListener('change', listener);
+    // Soporte para navegadores modernos y antiguos
+    media.addEventListener('change', listener);
 
-            return () => media.removeEventListener('change', listener);
-        }, [matches, query]);
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
 
-        return matches;
-    };
+  return matches;
+};
 
 
 
 
 function getLatestPosts(posts: Post[], limit: number): Post[] {
-  
+
   return [...posts]
     .filter((p): p is Post & { publish_date: string } => p.publish_date != null)
     .sort((a, b) => new Date(b.publish_date).getTime() - new Date(a.publish_date).getTime())
@@ -59,45 +60,45 @@ const MizumeAdmin = ({ data }: { data: Data }) => {
 
   const posts = categoriaActual === 'Todos' ? data.posts : data.posts.filter((p) => p.category === categoriaActual);
 
-  const actualPost = getLatestPosts(data.posts ,MAX_ACTUAL_POST)
+  const actualPost = getLatestPosts(data.posts, MAX_ACTUAL_POST)
 
   const CONTENT = useMediaQuery("(max-width: 768px)");
 
   return (
-    <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
-      {/* ── SIDEBAR ── */}
-      <InfoSideBarLeft  
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}/>
+    <BlogLayout>
+      <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
+        {/* ── SIDEBAR ── */}
 
-      {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 ml-0 lg:ml-64 flex flex-col min-w-0">
-        {/* TOPBAR */}
-         <InfoNav onMenuOpen={() => setSidebarOpen(true)} />
 
-        <div className="p-4 lg:p-8 space-y-6 lg:space-y-8">
-          <InfoPanel data={data} />
+        {/* ── MAIN CONTENT ── */}
+        <main className="flex-1 ml-0  flex flex-col min-w-0">
+          {/* TOPBAR */}
+          <InfoNav onMenuOpen={() => setSidebarOpen(true)} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* POST TABLE */}
-            {!CONTENT ? (
-              <InfoTable posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual} />
-            ) : (
-              <InfoTableMobile posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual}/>
-            )}
+          <div className="p-4 lg:p-8 space-y-6 lg:space-y-8">
+            <InfoPanel data={data} />
 
-            {/* RIGHT COLUMN */}
-            <div className="space-y-6">
-              {/* ACTIVITY */}
-              <InfoSideBarRight posts={actualPost}/>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* POST TABLE */}
+              {!CONTENT ? (
+                <InfoTable posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual} />
+              ) : (
+                <InfoTableMobile posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual} />
+              )}
 
-              {/* PROGRESS STATS */}
-              <InfoProgresBar posts={data.posts}/>
+              {/* RIGHT COLUMN */}
+              <div className="space-y-6">
+                {/* ACTIVITY */}
+                <InfoSideBarRight posts={actualPost} />
+
+                {/* PROGRESS STATS */}
+                <InfoProgresBar posts={data.posts} />
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </BlogLayout>
   );
 };
 
