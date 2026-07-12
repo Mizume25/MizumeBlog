@@ -25,7 +25,7 @@ function BlogLayout({ children, post_id, index }: LayoutProps) {
     <>
       <TopAuthBar post_id={post_id} onToggle={onToogle} />
       <main>
-        <SideBarLeft isOpen={sidebar} onClose={handleClose} />
+        <SideBarLeft isOpen={sidebar} onClose={handleClose} id={post_id} />
           {children}
     
       </main>

@@ -1,9 +1,8 @@
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { router } from "@inertiajs/react";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { Image, LayoutDashboard, LogIn, LogOut, Pencil, UserPlus } from "lucide-react";
 import HomeProfile from '../home/HomeProfile';
-import { ReactNode } from 'react';
 import { netWork } from '../home/HomeSideBarRight';
 import { WEB_ROUTE } from '@/types/constants';
 
@@ -11,9 +10,10 @@ import { WEB_ROUTE } from '@/types/constants';
 interface SideBarLeftProps {
     isOpen?: boolean;
     onClose?: () => void;
+    id?: number | undefined
 }
 
-function SideBarLeft({ isOpen = false, onClose }: SideBarLeftProps) {
+function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
 
     const { auth } = usePage<SharedData>().props;
 
@@ -104,7 +104,7 @@ function SideBarLeft({ isOpen = false, onClose }: SideBarLeftProps) {
                 />
                 <aside
                     className={`
-                        fixed inset-y-0 left-0 z-50 w-72
+                        fixed inset-y-0 left-0 z-50 w-full
                         bg-[rgb(45,29,13)] p-[35px]
                         shadow-[4px_0_15px_rgba(0,0,0,0.3)]
                         transition-transform duration-300 ease-in-out
@@ -113,6 +113,7 @@ function SideBarLeft({ isOpen = false, onClose }: SideBarLeftProps) {
                     `}
                 >
                     {/* Fila superior: cerrar + iconos de acción */}
+                    {/* Fila superior: cerrar + iconos de acción */}
                     <div className="flex items-center justify-between mb-6">
                         <button
                             onClick={onClose}
@@ -120,17 +121,55 @@ function SideBarLeft({ isOpen = false, onClose }: SideBarLeftProps) {
                         >
                             ✕ Cerrar
                         </button>
-                        {auth?.user && (
-                            <div className="flex items-center gap-2">
-                                {auth?.user.role === 'admin' && (
-                                    <a
-                                        href={route('post.panel')}
+
+                        <div className="flex items-center gap-2">
+                            {auth?.user && (
+                                <>
+                                    <a href={route('post.panel')}
                                         title="Panel Admin"
                                         className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
                                     >
                                         <LayoutDashboard className="w-4 h-4 text-white" />
                                     </a>
-                                )}
+
+                                    <a href={route('posts.image-config')}
+                                        title="Format Image"
+                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
+                                    >
+                                        <Image className="w-4 h-4 text-white" />
+                                    </a>
+                                </>
+                            )}
+
+                            {auth.user.role === 'admin' && id != null && (
+
+                                <a href={route('post.edit', id)}
+                                    title="Editar"
+                                    className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
+                                >
+                                    <Pencil className="w-4 h-4 text-white" />
+                                </a>
+                            )}
+
+                            {!auth?.user ? (
+                                <>
+                                    <a
+                                        href={route('login')}
+                                        title="Iniciar Session"
+                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-blue-400 hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
+                                    >
+                                        <LogIn className="w-4 h-4 text-white" />
+                                    </a>
+
+                                    <a
+                                        href={route('register')}
+                                        title="Registrarse"
+                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-red-400 hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
+                                    >
+                                        <UserPlus className="w-4 h-4 text-white" />
+                                    </a>
+                                </>
+                            ) : (
                                 <button
                                     onClick={() => router.post(route('logout'))}
                                     title="Cerrar sesión"
@@ -138,12 +177,13 @@ function SideBarLeft({ isOpen = false, onClose }: SideBarLeftProps) {
                                 >
                                     <LogOut className="w-4 h-4 text-white" />
                                 </button>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
+
                     {sidebarContent}
-                </aside>
-            </div>
+                </aside >
+            </div >
         </>
     );
 }

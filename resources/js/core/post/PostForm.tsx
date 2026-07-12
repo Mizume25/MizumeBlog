@@ -1,7 +1,7 @@
 
 /*** @import Imports de Inerficies de Formularios y objetos submit */
 import InputError from '@/components/input-error';
-import { Label } from '@radix-ui/react-dropdown-menu';
+import { Label } from '@/components/ui/label';
 import Switch from "react-switch";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +35,7 @@ export interface PostFormHandle {
 }
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
-    ({ tags, defaultValues, onSubmit, submitLabel = false }, ref) => {
+    ({ tags, defaultValues, onSubmit, submitLabel = false , processing = false}, ref) => {
 
         /**
          * Hook Form con propiedades de control
@@ -58,10 +58,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          */
         const [isOpen, setIsOpen] = useState(false);
 
-        /**
-         * Procesamiento
-         */
-        const [processing, setprocesing] = useState(false);
+        
 
         /**
          * Lista de Tags Obtenidos

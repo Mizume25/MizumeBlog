@@ -1,16 +1,15 @@
 import { Link, usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import LogoutButton from './LogoutButton';
-import PanelBTN from './PanelBTN';
-import EditBTN from './EditBTN';
 import { WEB_ROUTE } from '@/types/constants';
-import { Menu } from 'lucide-react';
+import { Image, LayoutDashboard, Menu, Pencil } from 'lucide-react';
+import AuthButton from './AuthButton';
 
 
 
 interface TopAuthBarProps {
     post_id?: number;
-    onToggle: () => void;  
+    onToggle: () => void;
 }
 
 
@@ -27,7 +26,10 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                 {/* Nav: oculta en mobile */}
                 <nav className="hidden md:flex gap-6 text-sm font-medium justify-self-start">
                     {WEB_ROUTE.map((p, i) => (
-                        <Link key={i} href={p.url} className="hover:underline capitalize">{p.label}</Link>
+                        <a href={p.url} key={i} className="relative text-[#2d1d0d] font-bold text-sm uppercase tracking-wide group">
+                           {p.label}
+                            <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#8c6c44] transition-all duration-300 group-hover:w-full" />
+                        </a>
                     ))}
                 </nav>
 
@@ -49,9 +51,23 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                         </>
                     ) : (
                         <>
-                            {(auth.user.role === 'admin' || auth.user.role === 'editor') && <PanelBTN />}
+                            {(auth.user.role === 'admin' || auth.user.role === 'editor') &&
+                                <>
+                                    <AuthButton url={route('post.panel')} label='Panel'>
+                                        <LayoutDashboard size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
+                                    </AuthButton>
+
+                                    <AuthButton url={route('posts.image-config')} label='Format'>
+                                        <Image size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
+                                    </AuthButton>
+                                </>
+
+                            }
                             {(auth.user.role === 'admin' || auth.user.role === 'editor') && post_id && (
-                                <EditBTN id={post_id} />
+
+                                <AuthButton url={route('post.edit', post_id)} label='Edit'>
+                                    <Pencil size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
+                                </AuthButton>
                             )}
                             <LogoutButton />
                         </>

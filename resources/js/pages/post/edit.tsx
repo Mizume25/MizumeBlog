@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import PostForm, { type PostFormHandle } from "@/core/post/PostForm";
 import AuthLayout from '@/layouts/auth-layout';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import type { CreatePostSchemaOutput } from "@/types/schemas";
 import { useState } from 'react';
 import BlogLayout from '@/layouts/app/blog-layout';
@@ -47,8 +47,6 @@ export default function Edit({ post, tags }: { post: Post; tags: string[] }) {
 
         router.post(route('post.update', post.id), formData, {
             onSuccess: () => {
-                // normalmente en edit NO reseteas a vacío — el usuario espera
-                // seguir viendo sus datos actualizados, no un formulario en blanco
             },
             onFinish: () => {
                 setProcessing(false);

@@ -9,7 +9,9 @@ type PageProps = {
 };
 
 export default function PostsImageConfigPage({ posts }: PageProps) {
-    const handleChange = (postId: Post['id'], config: Config) => {
+
+
+    const handleChange = (postId: number, config: Config) => {
         router.patch(route('post.image-config.update', postId), config, {
             preserveScroll: true,
             preserveState: true,

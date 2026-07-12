@@ -25,11 +25,11 @@ class UpdatePostRequest extends FormRequest
         return [
             'title'    => 'required|string|max:255',
             'web_title' => 'nullable|string|max:255',
-            'category'  => 'required|in:Literatura,AnimeManga,Reflexiones',
+            'category'  => 'required|in:literatura,animeManga,reflexiones',
             'tags'    => 'required|array|min:1|max:10',
             'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
             'publish_date' => 'nullable|date',
-            'author ' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
             'description' => 'nullable|string',
             'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
             'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',

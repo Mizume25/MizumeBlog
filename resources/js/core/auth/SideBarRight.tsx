@@ -76,7 +76,7 @@ function SideBarRight({
                     {featuredTitle}
                 </h3>
 
-                <ul className={isDark ? "pl-0" : "space-y-0"}>
+                <ul className={`capitalize ${isDark} ? "pl-0" : "space-y-0`}>
                     {posts.map((post) => (
                         <li key={post.id} className={isDark
                             ? "group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]"

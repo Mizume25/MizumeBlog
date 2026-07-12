@@ -26,38 +26,9 @@ function PostSideBarLeft({ list, onFindID, menuAbierto, id, isClose }: { list: I
             className={`fixed inset-y-0 left-0 z-[60] w-72 sm:w-80 bg-[#2A1B12] p-6 sm:p-8 shadow-2xl transition-transform duration-300 ease-in-out
     ${menuAbierto ? 'translate-x-0' : '-translate-x-full'}
     lg:relative lg:translate-x-0 lg:col-span-3 lg:block lg:transform-none
-    lg:sticky lg:top-24 lg:h-fit lg:p-8 rounded-xl border border-white/10 shadow-xl`}
+    lg:sticky lg:top-24 lg:h-fit lg:p-8 border border-white/10 shadow-xl`}
         >
-            <div className="flex items-center justify-between mb-6 lg:hidden">
-                <button
-                    onClick={handleButton}
-                    className="text-white text-sm font-light opacity-70 hover:opacity-100 cursor-pointer"
-                >
-                    ✕ Cerrar
-                </button>
-
-                {auth?.user && (
-                    <div className="flex items-center gap-2 justify-center">
-                        {auth?.user.role === 'admin' && (
-                            <a
-                                href={route('post.edit', id)}
-                                title="Panel Admin"
-                                className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
-                            >
-                                <LayoutDashboard className="w-4 h-4 text-white" />
-                            </a>
-                        )}
-                        <button
-                            onClick={() => router.post(route('logout'))}
-                            title="Cerrar sesión"
-                            className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
-                        >
-                            <LogOut className="w-4 h-4 text-white" />
-                        </button>
-                    </div>
-                )}
-
-            </div>
+           
 
 
             <h3 className="text-white text-lg sm:text-2xl font-bold border-b-2 border-[#C8AD7F]/40 pb-2 sm:pb-3 mb-3 sm:mb-6 tracking-tight">

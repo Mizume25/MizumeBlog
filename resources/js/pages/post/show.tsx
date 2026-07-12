@@ -32,28 +32,14 @@ function show({ content }: { content: Content }) {
 
     const [format, setFormat] = useState<Formato | null>(formatDefault);
 
-    useEffect(() => {
-        const fetchFormat = async () => {
-            if (content.post.id) {
-                try {
-                    const data = await getFormatoPost(content.post.id);
-                    setFormat(data);
-                } catch (error) {
-                    console.error("Error cargando formato:", error);
-                }
-            }
-        };
-
-        fetchFormat();
-    }, [content.post.id])
+    useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
 
 
 
-
+    console.log(format)
     const index: IndexContent[] = content.index;
 
 
-    const { auth } = usePage<SharedData>().props;
 
     const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
 

@@ -67,7 +67,9 @@ class AdminController extends Controller
      * @param $id Id de Post
      */
     public function update(UpdatePostRequest $request, int $id)
-    {
+    {   
+        dd($request);
+        
         $post  = Post::findOrFail($id);
 
         $data = $request->validated();
