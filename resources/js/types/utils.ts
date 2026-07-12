@@ -42,17 +42,7 @@ export const confirmDelete = (title : string, text : string, onConfirm: () => vo
 };
 
 
-const deconstruct = (genders: string []) => {
-    const list : string []  = [];
 
-    genders.forEach((p) => {
-        const values = p.split(',');
-
-        values.forEach((v) => {
-            
-        })
-    })
-}
 
 
 

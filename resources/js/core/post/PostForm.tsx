@@ -43,6 +43,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const { register, handleSubmit, formState: { errors }, control, setValue, reset } =
             useForm<CreatePostSchemaInput, unknown, CreatePostSchemaOutput>({
                 resolver: zodResolver(PostSchema),
+               
                 defaultValues,
             })
 
@@ -134,7 +135,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             {/** Formulario */}
                 <div>
                     <div className="mx-auto lg:min-w-150 rounded-lg bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
-                        <form onSubmit={handleSubmit(onSubmit)}  >
+                        <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}  >
                             <div className='flex flex-row gap-2 justify-between text-center'>
                              {/** Link de Vuelta */}
                                 <div className='flex flex-row'>
@@ -246,6 +247,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         type="text"
                                         autoFocus
                                         tabIndex={1}
+                                        required
                                         {...register("author")}
                                         placeholder="Author name..."
                                         className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
