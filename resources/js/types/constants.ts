@@ -27,7 +27,7 @@ export const WEB_ROUTE : Route [] = [
     },
     {
         label:'Contacto',
-        url:'#'
+        url: route('posts.image-config')
     }
 ]
 

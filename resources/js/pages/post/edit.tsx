@@ -11,12 +11,12 @@ interface Post {
     title: string;
     author: string;
     category: "literatura" | "animemanga" | "reflexiones";
-    tags: string;              // "novela ligera,terror, misterio" — string plano de tu BD
+    tags: string;             
     web_title: string | null;
     description: string | null;
     publish_date: string | null;
-    featured: number;            // 0 | 1, viene así desde Laravel
-    cover: string | null;        // nombre de archivo actual
+    featured: number;           
+    cover: string | null;       
     cover_card: string | null;
 }
 

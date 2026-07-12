@@ -5,14 +5,13 @@ use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
-
-
+use App\Http\Controllers\PostImageConfigController;
 
 /**
  * Rutas Restringidas par ausuarios verificados
  */
-Route::middleware(['auth','verified'])->group(function () {
-    
+Route::middleware(['auth', 'verified'])->group(function () {
+
     //Funciones de contenido - Crear Comentario 
     Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
 
@@ -27,14 +26,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     /** Views */
 
-       /** Panel Princiap */
-    Route::get('post/MizumeAdmin', [AdminController::class , 'panel'])->name('post.panel');
+    /** Panel Princiap */
+    Route::get('post/MizumeAdmin', [AdminController::class, 'panel'])->name('post.panel');
 
     /** Vista de edición */
-    Route::get('post/edit/{id}', [AdminController::class , 'edit'])->name('post.edit');
+    Route::get('post/edit/{id}', [AdminController::class, 'edit'])->name('post.edit');
 
-        
-    Route::get('post/create',[AdminController::class , 'create'])->name('post.create');
+
+    Route::get('post/create', [AdminController::class, 'create'])->name('post.create');
 
 
     /** Funciones */
@@ -43,7 +42,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     /** Function de Borrado */
     Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
 
-    
+
     /** Funcion de borrador */
     Route::match('put', 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 
@@ -53,10 +52,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
     /** Crear Backup */
-    Route::get('post/backup',[AdminController::class, 'backup'])->name('post.backup');
+    Route::get('post/backup', [AdminController::class, 'backup'])->name('post.backup');
 
-    
 
+
+    // routes/web.php
+    Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
+
+    Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
 });
 
 
@@ -67,10 +70,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 //Renderizamos ruta dashboard - Redireccion general 
-Route::get('dashboard',[HomeController::class , 'index'])->name('dashboard');
+Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 //Renderizamos post - Renderizacion general
-Route::get('post/show/{id}',[HomeController::class, 'show'])->name('post.show');
+Route::get('post/show/{id}', [HomeController::class, 'show'])->name('post.show');
 
 
 //Api de google - Login de Google
@@ -79,9 +82,9 @@ Route::get('/auth/google', [GoogleController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 //Ruta para ir al archivador
-Route::get('post/archivador',[HomeController::class, 'archivador'])->name('post.archivador');
+Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post.archivador');
 
 
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

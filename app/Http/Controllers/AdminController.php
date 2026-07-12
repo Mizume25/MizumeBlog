@@ -56,7 +56,7 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
 
-         $tags = $this->buildTags();
+        $tags = $this->buildTags();
 
         return Inertia::render('post/edit', compact('post', 'tags'));
     }
@@ -71,7 +71,7 @@ class AdminController extends Controller
         $post  = Post::findOrFail($id);
 
         $data = $request->validated();
-        
+
         unset($data['cover'], $data['cover_card']);
 
         /**
@@ -140,9 +140,12 @@ class AdminController extends Controller
     public function store(StorePostRequest $request)
     {
 
+
         $data = $request->validated();
-        
+
         unset($data['cover'], $data['cover_card']);
+
+        $data['tags'] = implode(',', $data['tags']);
 
 
         if ($request->hasFile('cover')) {
@@ -168,7 +171,9 @@ class AdminController extends Controller
         // 3. Rutas de los archivos
         $path = $this->files->getPath($post->id, $post->title);
 
-
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true); 
+        }
 
         /**
          * Creamos json con plantilla minima
@@ -184,7 +189,7 @@ class AdminController extends Controller
         file_put_contents($path . '/content.md', "## Ejemplo\n");
 
 
-        
+
         return back()->with('Success', "Post creado con exito");
     }
 
@@ -267,4 +272,9 @@ class AdminController extends Controller
 
         return $tags;
     }
+
+
+    /**
+     * DesMaquetamos Tags
+     */
 }

@@ -18,12 +18,13 @@ export default function Create({ tags }: { tags: string[] }) {
 
     const handleCreate = (data: CreatePostSchemaOutput) => {
 
+        console.log("wfewfwefwef")
         /** Form Data */
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("author", data.author);
         formData.append("category", data.category);
-        data.tags.forEach((g) => formData.append("gender[]", g));
+        data.tags.forEach((g) => formData.append("tags[]", g));
 
         formData.append("featured", data.featured ? "1" : "0");
         
@@ -51,7 +52,7 @@ export default function Create({ tags }: { tags: string[] }) {
     return (
         <AuthLayout title="MizumeBlog" description="Formulario Post">
             <Head title="Crear Post" />
-            <PostForm tags={tags} onSubmit={handleCreate} submitLabel="Create Post" />
+            <PostForm ref={formRef} tags={tags} onSubmit={handleCreate} submitLabel="Create Post" />
         </AuthLayout>
     );
 }

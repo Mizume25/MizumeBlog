@@ -23,12 +23,12 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'            => 'required|string|max:255',
-            'web_title'         => 'nullable|string|max:255',
-            'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
+            'title'    => 'required|string|max:255',
+            'web_title' => 'nullable|string|max:255',
+            'category'  => 'required|in:Literatura,AnimeManga,Reflexiones',
             'tags'    => 'required|array|min:1|max:10',
             'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
-            'publish_date' => 'required|date',
+            'publish_date' => 'nullable|date',
             'author ' => 'required|string|max:255',
             'description' => 'nullable|string',
             'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',

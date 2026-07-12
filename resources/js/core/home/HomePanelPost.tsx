@@ -45,19 +45,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
     /**
      * Formato de Imagen
      */
-    useEffect(() => {
-        const fetchFormat = async () => {
-            if (post.id) {
-                try {
-                    const data = await getFormatoPost(post.id);
-                    setFormat(data);
-                } catch (error) {
-                    console.error("Error cargando formato:", error);
-                }
-            }
-        };
-        fetchFormat();
-    }, [post.id])
+    useEffect(() => setFormat(post.config ?? null) , [post.id]);
 
 
 

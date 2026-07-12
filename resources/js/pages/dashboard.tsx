@@ -1,30 +1,20 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { type Post } from '@/types';
-import { getRandomPost } from '@/lib/utils';
 import { useState, useMemo, useCallback } from 'react';
-import {
-    HomeHeader,
-    HomeSideBarLeft,
-    HomeSideBarRight,
-    HomeContent,
-    HomeButton,
-} from '../core/home';
-import { usePage } from '@inertiajs/react';
+import { HomeContent, } from '../core/home';
 import { SharedData } from '@/types';
-import TopAuthBar from '@/core/auth/TopAuthBar';
-import HomeFooter from '@/core/home/HomeFooter';
+
+/** Layouts Reciclables */
 import BlogLayout from '@/layouts/app/blog-layout';
-import SideBarLeft from '@/core/auth/SideBarLeft';
 import SideBarRight from '@/core/auth/SideBarRight';
 
 export default function Dashboard({ posts }: { posts: Post[] }) {
 
 
-    const [menu, setMenu] = useState(false);
-    const { auth } = usePage<SharedData>().props;
 
     /***
      * Conteido Destacado
+     * Dividmos el contendo 3 
      */
     const { mainPosts, sidebarPosts } = useMemo(() => {
         return {
@@ -34,26 +24,6 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
     }, [posts]);
 
-
-
-
-    /**
-     * @param e 
-     * Evento click que activa el menu responsive
-     */
-    const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        e.stopPropagation();
-
-        setMenu(prev => !prev)
-
-    }, []);
-
-    /***
-     * Cierra el menu tras la acivacion de una funcion
-     */
-    const handleClose = useCallback(() => setMenu(false), []);
 
     return (
         <BlogLayout>
@@ -71,7 +41,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
             </main>
 
-          
+
         </BlogLayout>
     );
 }
