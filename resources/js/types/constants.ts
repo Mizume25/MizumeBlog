@@ -23,7 +23,7 @@ export const WEB_ROUTE : Route [] = [
     },
     {
         label:'profile',
-        url: '/seetings'
+        url: route('profile.edit')
     },
     {
         label:'Contacto',
@@ -53,7 +53,7 @@ export type Section_Content =  {
 export const SECTION : Section_Content [] = [
     {
         label:"todos",
-        active: false
+        active: true
         
     },
     {
