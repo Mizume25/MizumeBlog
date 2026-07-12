@@ -1,7 +1,10 @@
+import { LibraryCardProps } from '@/pages/post/library';
 import { Post } from '@/types'
+import { Section_Content } from '@/types/constants';
 
-/** Funcion que Itra los Post */
-function LibraryCard({ post }: { post: Post }) {
+
+
+function LibraryCard({ post , section} : LibraryCardProps) {
 
     /** Tags  */
     const tags = post.tags.split(',').map(g => g.trim()) ?? [];
@@ -9,7 +12,8 @@ function LibraryCard({ post }: { post: Post }) {
     return (
         <a
             href={route('post.show', post.id)}
-            className="group relative block focus:outline-none"
+            className={`group relative  focus:outline-none ${ section.label === post.category || section.label === 'todos' ? 'block' : 'hidden' }`}
+            
         >
             <div className="
                 flex flex-col h-[280px] w-full
