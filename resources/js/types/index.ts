@@ -115,6 +115,7 @@ export type Post = Field & {
     featured: boolean,
     cover?:string,
     cover_card?: string,
+    config?: Config
 }
 
 
@@ -160,8 +161,19 @@ export type UserRecord = User & {
  */
 
 /**
- * 
+ * Formato de imagenes
+ * @type Formato de Imagenes 
+ */
+export type Config = {
+    home_config?: string,
+    article_config?: string,
+    card_config?: string
+}
+
+
+/**
  * Indices de Post
+ * @type Index 
  */
 export type IndexContent = {
     id:string,
@@ -171,6 +183,7 @@ export type IndexContent = {
 
 /**
  * Contenido de Post
+ * @type Contenido de web 
  */
 export type Content = {
     post: Post,

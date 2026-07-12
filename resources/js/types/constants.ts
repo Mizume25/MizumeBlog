@@ -33,13 +33,39 @@ export const WEB_ROUTE : Route [] = [
 
 
 /**
- * 
  * NetWorks
- * 
  */
-
 export const NETWORKS: Route[] = [
     { label: "LinkedIn",  url: "https://www.linkedin.com/in/gabriel-nivicela-86733035a/" },
     { label: "Instagram", url: "https://www.instagram.com/_mi_zume_/" },
     { label: "GitHub",    url: "https://github.com/Mizume25" },
 ];
+
+/** Secciones web */
+export type Section = "todos" | "literatura" | "animemanga" | "reflexiones";
+
+export type Section_Content =  {
+    label:Section,
+    active:boolean
+}
+
+
+export const SECTION : Section_Content [] = [
+    {
+        label:"todos",
+        active: false
+        
+    },
+    {
+        label:"literatura",
+        active: false
+    },
+    {
+        label:"animemanga",
+        active: false
+    },
+    {
+        label:"reflexiones",
+        active: false
+    }
+] 

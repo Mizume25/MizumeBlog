@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('featured')->default(true);
             $table->string('cover')->nullable();
             $table->string('cover_card')->nullable();
+            $table->json('config')->nullable();
             $table->timestamps();
             
         });

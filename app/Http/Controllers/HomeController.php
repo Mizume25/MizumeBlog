@@ -82,8 +82,6 @@ class HomeController extends Controller
     {
         $posts = Post::all();
 
-        $categories = Post::categories();
-
-        return Inertia::render('post/library', compact('posts', 'categories'));
+        return Inertia::render('post/library', compact('posts'));
     }
 }

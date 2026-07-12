@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
@@ -18,12 +19,10 @@ class AdminController extends Controller
 {
 
     private FileContentService $files;
-    private ImageConfigService $imgConfig;
 
-    public function __construct(FileContentService $files, ImageConfigService $imgConfig)
+    public function __construct(FileContentService $files)
     {
         $this->files = $files;
-        $this->imgConfig = $imgConfig;
     }
 
     /**
@@ -64,28 +63,16 @@ class AdminController extends Controller
 
     /**
      * Función de Actualización de Post
-     * @param $request Peticion
+     * @param $request Request Post Update 
      * @param $id Id de Post
      */
-    public function update(Request $request, int $id)
+    public function update(UpdatePostRequest $request, int $id)
     {
-        $request->validate([
-            'title'            => 'required|string|max:255',
-            'web_title'         => 'nullable|string|max:255',
-            'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'tags'    => 'required|array|min:1|max:10',
-            'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
-            'publish_date' => 'required|date',
-            'autor' => 'required |string|max:255',
-            'description' => 'nullable|string',
-            'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
-            'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
-        ]);
-
         $post  = Post::findOrFail($id);
 
-
-        $data = $request->except('cover', 'cover_card');
+        $data = $request->validated();
+        
+        unset($data['cover'], $data['cover_card']);
 
         /**
          * Actualiza, comprueba y remplaza imagenes
@@ -136,7 +123,7 @@ class AdminController extends Controller
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
 
-        $this->imgConfig->delete($id);
+
 
 
         return redirect()->route('post.panel')->with('success', 'Post eliminado');
@@ -148,27 +135,15 @@ class AdminController extends Controller
 
     /**
      * Funcion para crear un Post
-     * @param $request
+     * @param $request Request Post Store
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
 
-        dd($request);
+        $data = $request->validated();
+        
+        unset($data['cover'], $data['cover_card']);
 
-        $request->validate([
-            'title'            => 'required|string|max:255',
-            'web_title'         => 'nullable|string|max:255',
-            'category'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'tags'    => 'required|array|min:1|max:10',
-            'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
-            'publish_date' => 'required|date',
-            'autor' => 'required |string|max:255',
-            'description' => 'nullable|string',
-            'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
-            'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
-        ]);
-
-        $data = $request->except('cover', 'cover_card');
 
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
@@ -209,11 +184,7 @@ class AdminController extends Controller
         file_put_contents($path . '/content.md', "## Ejemplo\n");
 
 
-        $this->imgConfig->set($post->id, [
-            'home_config' => null,
-            'article_config' => null,
-        ]);
-
+        
         return back()->with('Success', "Post creado con exito");
     }
 
