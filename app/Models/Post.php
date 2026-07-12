@@ -8,7 +8,12 @@ use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
 
 class Post extends Model
-{
+{   
+    protected $casts = [
+        'config' => 'array',
+    ];
+
+    
     //Propiedades de Modelo
     protected $fillable = [
         'title',
@@ -21,6 +26,7 @@ class Post extends Model
         'featured',
         'cover',
         'cover_card',
+        'config'
     ];
 
     /**
@@ -61,13 +67,21 @@ class Post extends Model
             ->pluck($column);
     }
 
+    /** Obtener todos los tags */
     public static function tags()
     {
         return self::distinctValues('tags');
     }
 
+    /** Obtener todos las categorias */
     public static function categories()
     {
         return self::distinctValues('category');
+    }
+
+    /** Obtener todas las confgiuraciones */
+    public static function formats() 
+    {
+        return self::distinctValues('config');
     }
 }

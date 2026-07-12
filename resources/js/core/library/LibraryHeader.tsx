@@ -1,4 +1,6 @@
-function LibraryHeader({ categories }: { categories: string[] }) {
+import { SECTION } from "@/types/constants"
+
+function LibraryHeader() {
     return (
         <>
             <div className="px-4 sm:px-8 pt-10 pb-6  bg-[#e5c385] ">
@@ -12,11 +14,13 @@ function LibraryHeader({ categories }: { categories: string[] }) {
             </div>
 
             <div className="lg:hidden flex gap-2 overflow-x-auto px-4 py-4  bg-[#2B1D12]">
-                {categories.map((c) => (
-                    <button key={c} className="rounded-xl capitalize tab-btn tab-shape hover:bg-[#A23E2E] text-left pl-6 pr-8 py-3 text-white text-sm mb-1 flex justify-between items-center cursor-pointer">
-                        {c}
-                    </button>
+                <select name="section" id="section" className=" capitalize w-full h-full bg-[#b59379] rounded-xl p-4">
+                    {SECTION.map((c) => (
+                    <option key={c.label} value={c.label} className="rounded-xl capitalize tab-btn tab-shape hover:bg-[#A23E2E] text-left pl-6 pr-8 py-3 text-white text-sm mb-1 flex justify-between items-center cursor-pointer">
+                        {c.label}
+                    </option>
                 ))}
+                </select>
             </div>
         </>
     )

@@ -9,19 +9,19 @@ import LibraryContent from '@/core/library/LibraryContent';
 
 
 
-function Library({ posts , categories }: { posts: Post[] , categories : string[] }) {
+function Library({ posts }: { posts: Post[] }) {
 
  
   
     return (
         <BlogLayout>
             
-            <LibraryHeader categories={categories} />
+            <LibraryHeader />
 
             <main className="flex flex-col lg:flex-row gap-0 min-h-[calc(100vh-260px)]">
 
 
-                <LibrarySideBarLeft categories={categories} />
+                <LibrarySideBarLeft />
 
                 <LibraryContent posts={posts} />
                 
