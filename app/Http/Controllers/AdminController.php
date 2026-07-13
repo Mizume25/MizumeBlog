@@ -7,11 +7,9 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Services\ImageType;
 use App\Services\FileContentService;
-use App\Services\ImageConfigService;
 use Illuminate\Http\UploadedFile;
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\Comment;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,5 +60,21 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * HIstorial de Comentarios de Usuario
+     * 
+     */
+    public function history () 
+    {
+        $comments = Comment::with(['user', 'replies.user'])
+        ->where('user_id', Auth::id())
+        ->get();
+
+        
+
+
+        return Inertia::render('settings/history', compact('comments'));
     }
 }

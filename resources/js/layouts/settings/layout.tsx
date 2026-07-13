@@ -9,13 +9,17 @@ const sidebarNavItems: NavItem[] = [
     {
         title: 'Profile',
         url: '/settings/profile',
-        icon: null,
+        
     },
     {
         title: 'Password',
         url: '/settings/password',
-        icon: null,
+        
     },
+    {
+        title:'History',
+        url:'/settings/history'
+    }
 ];
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
@@ -48,8 +52,8 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
 
                 <Separator className="my-6 md:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-12">{children}</section>
+                <div className="flex-1 md:max-w-full">
+                    <section className="max-w-full space-y-12">{children}</section>
                 </div>
             </div>
         </div>

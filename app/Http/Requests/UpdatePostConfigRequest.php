@@ -26,6 +26,7 @@ class UpdatePostConfigRequest extends FormRequest
             'home_config'    => ['nullable', 'string'],
             'article_config' => ['nullable', 'string'],
             'card_config'    => ['nullable', 'string', 'regex:/^\d{1,3}%$/'],
+            'config.accent:' => ['nullable', 'string'],
         ];
     }
 }

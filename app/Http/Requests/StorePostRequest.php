@@ -38,6 +38,7 @@ class StorePostRequest extends FormRequest
             'config.home_config'  => ['nullable', 'string'],
             'config.article_config' => ['nullable', 'string'],
             'config.card_config' => ['nullable', 'string', 'regex:/^\d{1,3}%$/'],
+            'config.accent:' => ['nullable', 'string'],
         ];
     }
 }

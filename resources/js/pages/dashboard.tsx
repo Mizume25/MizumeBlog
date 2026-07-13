@@ -1,10 +1,10 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { type Post } from '@/types';
-import { useState, useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { HomeContent, } from '../core/home';
-import { SharedData } from '@/types';
 
-/** Layouts Reciclables */
+
+/** @imports Layouts Reciclables */
 import BlogLayout from '@/layouts/app/blog-layout';
 import SideBarRight from '@/core/auth/SideBarRight';
 
@@ -29,9 +29,6 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
         <BlogLayout>
             {/* Head de el Home*/}
             <Head title='Home' ></Head>
-
-
-
 
             <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 items-start">
 

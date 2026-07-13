@@ -147,6 +147,7 @@ export type Reply = Comment & {
 export type CommentRecord = Comment & {
     replies: Reply []
     user: User
+    post?:Post
 }
 
 
@@ -168,6 +169,16 @@ export type Config = {
     home_config?: string,
     article_config?: string,
     card_config?: string
+    accent?:string,
+}
+/**
+ * Formato Default de imagenes
+ */
+export const formatDefault : Config = {
+    home_config: "center",
+    article_config:"bg-[center_18%]",
+    card_config: "10%",
+    accent:"#fcfcfd",
 }
 
 

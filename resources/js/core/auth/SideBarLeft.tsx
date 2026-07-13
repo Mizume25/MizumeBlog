@@ -16,7 +16,7 @@ interface SideBarLeftProps {
 function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
 
     const { auth } = usePage<SharedData>().props;
-
+  
     const sidebarContent = (
         <>
             <section className="mb-[30px]">
@@ -141,7 +141,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                                 </>
                             )}
 
-                            {auth.user.role === 'admin' && id != null && (
+                            {auth?.user?.role === 'admin' && id != null && (
 
                                 <a href={route('post.edit', id)}
                                     title="Editar"

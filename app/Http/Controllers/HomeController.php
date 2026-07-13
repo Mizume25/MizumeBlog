@@ -46,7 +46,7 @@ class HomeController extends Controller
 
         $comments = Comment::where('post_id', $post->id)
         ->whereNull('parent_id')
-        ->with(['user', 'replies.user'])
+        ->with(['user', 'replies.user', 'post'])
         ->get();
 
 

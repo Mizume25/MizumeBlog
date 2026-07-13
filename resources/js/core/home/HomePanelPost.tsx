@@ -1,11 +1,13 @@
 import styles from '@/../css/HomeMain.module.css';
-import { Post } from '@/types';
-import { getFormatoPost } from '@/types/utils';
 import { useEffect, useState } from 'react';
 import { Formato } from '@/types/utils';
+import { formatDefault , type Post} from '@/types'
 
-
-
+/**
+ * Obtener fecha formateada
+ * @param data string Fecha de publicacion
+ * @returns fecha publicacion
+ */
 const getMounth = (data: string | undefined): string => {
     let d = new Date(data ?? "01-01-1999");
 
@@ -16,15 +18,9 @@ const getMounth = (data: string | undefined): string => {
 
 
 
-
-//Paneles dinamicos del Home
 function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
 
-    const formatDefault: Formato = {
-        id: post?.id,
-        home_config: "center",
-        article_config: "bg-[center_18%]"
-    }
+    
 
 
     /** Ruta Portada */

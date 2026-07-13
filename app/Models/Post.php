@@ -58,6 +58,16 @@ class Post extends Model
         return $query->where('publish_date', '!=', null);
     }
 
+    /**
+     * 
+     * Filtra todos los posts "publicados"
+     * @param Builder $query
+     */
+    public function scopeNotPublish(Builder $query)
+    {
+        return $query->where('publish_date', '=', null);
+    }
+
     private static function distinctValues(string $column)
     {
         return self::select($column)
