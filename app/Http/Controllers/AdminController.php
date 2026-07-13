@@ -37,10 +37,11 @@ class AdminController extends Controller
      * Vista a Panel
      */
     public function panel()
-    {
+    {   
+        $posts = Post::orderBy('publish_date', 'desc')->get();
         return Inertia::render('post/MizumeAdmin', [
             'data' => [
-                'posts'   => Post::all(),
+                'posts'   => $posts,
                 'users'   => User::all(['id', 'name', 'email', 'created_at']),
                 'coments' => Comment::all(),
             ]
