@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
 
     //Funciones de contenido - Eliminar Comentario 
-    Route::delete('/comentarios/{id}', [ComentController::class, 'destroy'])->name('comments.destroy');
+    Route::delete('/comentarios/{id?}/{post_id?}', [ComentController::class, 'destroy'])->name('comments.destroy');
 });
 
 /**
@@ -88,3 +88,4 @@ Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
+

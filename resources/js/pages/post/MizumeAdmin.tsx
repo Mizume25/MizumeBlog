@@ -4,6 +4,7 @@ import {
   InfoPanel,
   InfoTable,
   InfoProgresBar,
+  InfoNav,
 } from '../../core/admin';
 import BlogLayout from '@/layouts/app/blog-layout';
 
@@ -59,12 +60,9 @@ const MizumeAdmin = ({ data }: { data: Data }) => {
   return (
     <BlogLayout>
       <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
-        {/* ── SIDEBAR ── */}
-
-
         {/* ── MAIN CONTENT ── */}
         <main className="flex-1 ml-0  flex flex-col min-w-0">
-          {/* TOPBAR */}
+        <InfoNav />
 
 
           <div className="p-4 lg:p-8 space-y-6 lg:space-y-8">

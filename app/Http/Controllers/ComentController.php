@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,15 +76,42 @@ class ComentController extends Controller
     /**
      * Borra Comentarios y Respuestas
      */
-    public function destroy(string $id)
+    public function destroy(?string $id = null, ?string $post_id = null)
     {
-        $comment = Comment::findOrFail($id);
+        if ($id !== null) {
+            $comment = Comment::where('user_id', Auth::id())->findOrFail($id);
 
-        if ($comment->replies()->exists()) $comment->replies()->delete();
+            if ($comment->replies()->exists()) $comment->replies()->delete();
 
 
-        $comment->delete();
+            $comment->delete();
 
-        return back()->with('success', 'Comentario eliminado.');
+            return back()->with('success', 'Comentario eliminado.');
+        }
+
+        if ($post_id != null) {
+
+            $commentIds = Comment::where('post_id', $post_id)
+                ->where('user_id', Auth::id())
+                ->pluck('id');
+    
+            Comment::whereIn('parent_id', $commentIds)->delete();
+
+            Comment::whereIn('id', $commentIds)->delete();
+
+            return back()->with('success', 'Comentarios del Post eliminados.');
+        }
+
+
+
+        if ($id == null && $post_id == null) {
+            $comments = Comment::where('user_id', Auth::id())->pluck('id');
+
+            Comment::whereIn('parent_id', $comments)->delete();
+
+            Comment::whereIn('id', $comments)->delete();
+
+            return back()->with('success', 'Todos tus comentarios fueron eliminados.');
+        }
     }
 }

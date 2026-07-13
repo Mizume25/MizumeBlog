@@ -50,7 +50,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
 
         <>
             {left ? (
-                <a href={route('post.show', post.id)} className="no-underline block cursor-pointer group" data-id={post.id}>
+                <a href={route('post.show', post.id)} className=" capitalize no-underline block cursor-pointer group" data-id={post.id}>
                     <article style={{
                         '--bg-image': `url('${ruta}')`,
                         '--bg-format': `${format?.home_config}`
@@ -91,7 +91,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
                     </article>
                 </a>
             ) : (
-                <a href={route('post.show', post.id)} className="no-underline block cursor-pointer group" data-id={post.id}>
+                <a href={route('post.show', post.id)} className="capitalize no-underline block cursor-pointer group" data-id={post.id}>
                     <article style={{
                         '--bg-image': `url('${ruta}')`,
                         '--bg-format': `${format?.home_config}`

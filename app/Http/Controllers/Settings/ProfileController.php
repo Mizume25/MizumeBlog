@@ -66,14 +66,12 @@ class ProfileController extends Controller
      * HIstorial de Comentarios de Usuario
      * 
      */
-    public function history () 
+    public function history()
     {
-        $comments = Comment::with(['user', 'replies.user'])
-        ->where('user_id', Auth::id())
-        ->get();
-
-        
-
+        $comments = Comment::with(['user', 'replies.user', 'post'])
+            ->where('user_id', Auth::id())
+            ->get()
+            ->groupBy('post_id');
 
         return Inertia::render('settings/history', compact('comments'));
     }

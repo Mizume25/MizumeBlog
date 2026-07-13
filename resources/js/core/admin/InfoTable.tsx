@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { confirmDelete, SECTION, Section, Section_Content, type Post } from '@/types';
-
+import Switch from "react-switch";
+import { useState } from 'react';
 
 interface InfoTableProps {
     posts: Post[];
@@ -10,8 +11,8 @@ interface InfoTableProps {
 
 function InfoTable({ posts, onSection, section }: InfoTableProps) {
 
+    const [publish , setPublish ]  = useState(false);
 
-  
     const handleDelete = (id: number, title: string) => {
         confirmDelete(
             '¿Eliminar Post?',
@@ -25,14 +26,14 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
 
             {/* Header: título + filtro (botones en desktop, select en mobile) */}
             <div className="px-4 py-3 lg:px-5 lg:py-4 border-b border-[#EAD9B8] flex items-center justify-between gap-3 bg-gradient-to-r from-[#C8AD7F]/10 to-transparent">
-                <h3 className="text-[#3B2314] text-sm lg:text-base font-semibold shrink-0">
+                <h3 className="text-[#3B2314] text-sm lg:text-base font-semibold shrink-0 hidden lg:block">
                     Tabla de Posts
                 </h3>
 
                 {/* Filtro desktop: grupo de botones */}
                 <div className="hidden lg:flex bg-[#F5EDD8] p-1.5 rounded-xl border border-[#EAD9B8] gap-2 shadow-inner ">
                     {SECTION.map((s) => {
-                         const isActive = s.label === section.label;
+                        const isActive = s.label === section.label;
                         return (
                             <button
                                 key={s.label}
@@ -58,6 +59,7 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                     aria-label="Filtrar por categoría"
                     className="
                         lg:hidden
+                        capitalize
                         appearance-none
                         bg-[#F5EDD8] border border-[#EAD9B8]
                         text-[#3B2314] text-[13px] font-semibold
@@ -75,6 +77,17 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                         <option key={s.label} value={s.label} className='capitalize'>{s.label}</option>
                     ))}
                 </select>
+
+
+                <Switch
+                    lang='es'
+                    onColor='#059400'
+                    offColor='#454545'
+                    checked={publish}
+                    onChange={(e) => setPublish(prev => !prev)}
+                    checkedIcon={false}
+                    uncheckedIcon={false}
+                />
             </div>
 
             {/* Vista desktop: tabla */}
@@ -90,7 +103,10 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                     </thead>
                     <tbody className="divide-y divide-[#EAD9B8]/50">
                         {posts.map((post, i) => (
-                            <tr key={i} className={`hover:bg-[#C8AD7F]/5 capitalize transition-colors group ${ section.label === post.category || section.label === 'todos' ? '' : 'hidden' }`}>
+                            <tr key={i} className={`hover:bg-[#C8AD7F]/5 capitalize transition-colors group 
+                     
+                            ${(section.label === post.category || section.label === 'todos' ) && 
+                                (publish ? post.publish_date != null : (post.publish_date != null || post.publish_date == null) ) ? '' : 'hidden'}`}>
                                 <td className="px-5 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-[#F5EDD8] rounded flex items-center justify-center text-lg border border-[#EAD9B8]">📖</div>
@@ -128,7 +144,11 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
             {/* Vista mobile: lista de tarjetas */}
             <div className="lg:hidden divide-y divide-[#EAD9B8]/50">
                 {posts.map((post, i) => (
-                    <div key={i} className={`flex items-center gap-3 px-4 py-3 hover:bg-[#C8AD7F]/5 transition-colors ${ section.label === post.category || section.label === 'todos' ? 'block' : 'hidden' }` }>
+                    <div key={i} className={`capitalize flex items-center gap-3 px-4 py-3 hover:bg-[#C8AD7F]/5 transition-colors 
+                    
+                     ${(section.label === post.category || section.label === 'todos' ) && 
+                                (publish ? post.publish_date != null : (post.publish_date != null || post.publish_date == null) ) ? '' : 'hidden'}
+                    `}>
                         <div className="w-8 h-8 shrink-0 bg-[#F5EDD8] rounded flex items-center justify-center text-base border border-[#EAD9B8]">📖</div>
 
                         <div className="min-w-0 flex-1">

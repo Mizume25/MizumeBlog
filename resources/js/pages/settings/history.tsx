@@ -1,84 +1,139 @@
 import { Pencil, Trash2 } from 'lucide-react';
-import BookCard from '@/core/library/Book';
-import { type Book, type CommentRecord } from '@/types';
+import BookCard from '@/core/library/BookCard';
+import { confirmDelete, type CommentRecord, type Config } from '@/types';
 import BlogLayout from '@/layouts/app/blog-layout';
 import { Head } from '@inertiajs/react';
 import SettingsLayout from '@/layouts/settings/layout';
-
+import { router } from '@inertiajs/react';
 
 interface CommentListItemProps {
     comment: CommentRecord;
-    onEdit: (id: number) => void;
+
     onDelete: (id: number) => void;
 }
 
-function CommentListItem({ comment, onEdit, onDelete }: CommentListItemProps) {
+function CommentListItem({ comment, onDelete }: CommentListItemProps) {
+
     return (
-        <div className="w-full flex items-center gap-4 bg-[#f3e5ab] border border-black/10 rounded-xl shadow-sm p-3 ">
-            {/* Comentario a la izquierda */}
+        <div className=" max-w-[280px] flex items-center bg-[#f3e5ab] border border-black/10 rounded-xl shadow-sm p-3  mb-3">
+
             <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 mb-1">
-                    <span className="font-bold text-[#2d1d0d] text-sm">{comment.user.name}</span>
+                    <span className="font-bold text-[#2d1d0d] text-sm capitalize">{comment.user.name}</span>
                     <span className="text-black/40 text-xs">{comment.publish_date}</span>
                 </div>
                 <p className="text-black/70 text-sm leading-relaxed truncate">
                     {comment.description}
                 </p>
+
+                {comment.replies.length > 0 && (
+                    <small className='text-[12px] font-bold  '>
+                        {`Tiene ${comment.replies.length} respuestas`}
+                    </small>
+                )}
+
             </div>
 
             {/* Botones solo icono, pegados al comentario */}
             <div className="flex items-center gap-1.5 shrink-0 ">
-                <button
+                <a
                     type="button"
-                    onClick={() => onEdit(comment.id)}
+                    href={route('post.show', comment.post_id)}
                     title="Editar"
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(118,77,35)] text-white hover:bg-[#624a2e] transition-colors"
+                    className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(118,77,35)] text-white hover:bg-[#624a2e] transition-colors"
                 >
                     <Pencil size={14} />
-                </button>
+                </a>
                 <button
                     type="button"
                     onClick={() => onDelete(comment.id)}
                     title="Eliminar"
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-red-900/70 text-white hover:bg-red-800 transition-colors"
+                    className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-900/70 text-white hover:bg-red-800 transition-colors"
                 >
                     <Trash2 size={14} />
                 </button>
             </div>
 
-            {/* BookCard pequeño al final */}
-            <div className="shrink-0">
-                <BookCard
-                    title="Kamisama Memochou"
-                    author="Hikaru Sugii"
-                    image="kamisama-memochou.jpg"
-                    color1="#3a1e06"
-                    color2="#7a3a10"
-                    accent="#c9a87c"
-                />
-            </div>
+
         </div>
     );
 }
 
+
+type CommentsHistoryResponse = Record<string, CommentRecord[]>;
 interface CommentListProps {
-    comments: CommentRecord[];
-    onEdit: (id: number) => void;
-    onDelete: (id: number) => void;
+    comments: CommentsHistoryResponse;
 }
 
-function history({ comments, onEdit, onDelete }: CommentListProps) {
+function history({ comments }: CommentListProps) {
+
+
+
+    const onDelete = (id: number) => {
+        confirmDelete(
+            '¿Quieres Eliminar este comentario?',
+            `Esta acción borrará permanentemente.`,
+            () => router.delete(route('comment.destroy', id), {
+                  preserveScroll: true
+            })
+        );
+        
+    }
+
+    const onDeletePost = (post:string) => {
+        confirmDelete(
+            '¿Quieres eliminar todos los comentarios de este post?',
+            `Esta accion borrara permanetemente tus comentarios`,
+             () => router.delete(route('comment.destroy', {
+                post_id:post
+             }))
+        )
+    }
+
+
     return (
         <BlogLayout>
             <Head title="Perfil" />
 
             <SettingsLayout>
                 <div className="w-full flex flex-col gap-3">
-                    {comments.map((c) => (
-                        <CommentListItem key={c.id} comment={c} onEdit={onEdit} onDelete={onDelete} />
-                    ))}
-                    {comments.length === 0 && (
-                        <p className="text-black text-sm text-center py-8">Todavía no hay comentarios.</p>
+                    {Object.entries(comments).map(([post_id, records]) => {
+
+                        const post = records[0]?.post;
+
+
+                        return (
+                            <div key={post_id} className="mb-8">
+                                <h2 className="capitalize font-bold text-lg mb-2">{post?.title}</h2>
+                                <div className="flex gap-3">
+                                    <div className="shrink-0">
+                                        {post ? (
+                                            <>
+                                                <BookCard title={post.title} author={post.author} cover_card={post.cover_card} config={post.config} />
+                                         
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onDeletePost(post_id)}
+                                                    title="Eliminar Comnetarios Post"
+                                                    className="mt-2 cursor-pointer flex items-center justify-center w-full h-8 rounded-full bg-red-400  text-white hover:bg-red-400 transition-colors"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </>
+
+                                        ) : (
+                                            <BookCard title="title" author="unknow" cover_card="Icono.jpg" config={{} as Config} />
+                                        )}
+                                    </div>
+                                    <div className="flex-1 grid grid-cols-3 ">
+                                        {records.map(record => (
+                                            <CommentListItem key={record.id} comment={record} onDelete={onDelete} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    }
                     )}
                 </div>
             </SettingsLayout>

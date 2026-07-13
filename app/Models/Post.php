@@ -55,7 +55,7 @@ class Post extends Model
      */
     public function scopePublish(Builder $query)
     {
-        return $query->where('publish_date', '!=', null);
+        return $query->whereNotNull('publish_date');
     }
 
     /**
@@ -65,7 +65,7 @@ class Post extends Model
      */
     public function scopeNotPublish(Builder $query)
     {
-        return $query->where('publish_date', '=', null);
+        return $query->whereNull('publish_date');
     }
 
     private static function distinctValues(string $column)
