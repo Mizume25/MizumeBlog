@@ -1,7 +1,11 @@
-import { User } from '@/types'
+import React from 'react'
 
+/**
+ * Avatar Indiviudal de Comentario
+ * @param avatar string url de el avatar de usuario
+ * @returns JXS
+ */
 function ComentProfile({ avatar } : { avatar : string | undefined}) {
-   
     const userAvatar = avatar ? avatar : '/IMG/IconApp.png';
     return (
         <div className="flex-shrink-0">

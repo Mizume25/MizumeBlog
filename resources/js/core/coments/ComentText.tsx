@@ -1,10 +1,10 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import { SharedData, CommentRecord } from '@/types';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ReplyBTN from './ReplyBTN';
 import ReplyComent from './ReplyComent';
-import ReplyContent from './ReplyContent';
+
 function ComentText({ coment }: { coment: CommentRecord }) {
     const { auth } = usePage<SharedData>().props;
     console.log(coment)

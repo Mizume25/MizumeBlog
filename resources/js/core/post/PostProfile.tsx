@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { netWork } from "../home/HomeSideBarRight"
 
 function PostProfile() {

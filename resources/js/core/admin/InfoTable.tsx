@@ -1,7 +1,6 @@
-import { Post } from '@/types'
-import { useState } from 'react'
 import { router } from '@inertiajs/react';
-import { confirmDelete } from '@/types/utils';
+import { confirmDelete , type Post } from '@/types';
+
 function InfoTable({ posts, getCategoria, categoriaActual }: { posts: Post[], getCategoria: (id: string) => void, categoriaActual: string }) {
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>): void => {

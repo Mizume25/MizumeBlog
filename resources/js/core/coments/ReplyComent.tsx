@@ -1,6 +1,6 @@
 import { Reply } from '@/types';
 import { useForm } from '@inertiajs/react';
-import React, { useEffect } from 'react'
+import React from 'react'
 
 function ReplyComent( { closeReply , coment }:{ closeReply:() => void, coment:Reply}) {
 

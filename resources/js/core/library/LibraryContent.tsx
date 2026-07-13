@@ -1,7 +1,6 @@
 import { Post } from '@/types';
 import LibraryCard from './LibraryCard';
-import { LibraryCardProps } from '@/pages/post/library';
-import { Section_Content } from '@/types/constants';
+import { Section_Content } from '@/types';
 
 
 

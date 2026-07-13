@@ -1,15 +1,11 @@
 import React from 'react'
-import ComentProfile from './ComentProfile'
+import ComentProfile  from './ComentProfile';
 import { usePage } from '@inertiajs/react';
-import { SharedData, User } from '@/types';
+import { SharedData } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 
 function ComentForm({ post_id }: { post_id: number}) {
-
-
-    
-
     const { auth } = usePage<SharedData>().props;
 
     const { data, setData, post, processing, errors, reset } = useForm({

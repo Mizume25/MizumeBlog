@@ -1,6 +1,6 @@
 import styles from '@/../css/HomeMain.module.css';
 import { useEffect, useState } from 'react';
-import { Formato } from '@/types/utils';
+import { Formato } from '@/types';
 import { formatDefault , type Post} from '@/types'
 
 /**

@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import Switch from "react-switch";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PostSchema, type CreatePostSchemaOutput, type CreatePostSchemaInput } from "@/types/schemas";
 
 
 /*** @import Variables de Estado  y de referencia */
@@ -13,7 +12,7 @@ import { useState, useImperativeHandle, forwardRef } from 'react';
 
 /** @imports Interfaces y Diseño Web + Iconos */
 import { Input, Select, Button, Textarea, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { OPTION_CATEGORY } from '@/types/constants';
+import { OPTION_CATEGORY , PostSchema, type CreatePostSchemaOutput, type CreatePostSchemaInput } from '@/types';
 import { LoaderCircle, Book, Computer, Tag, Calendar, User, Tags, Pencil, Image, ArrowBigLeft } from 'lucide-react'
 
 /**

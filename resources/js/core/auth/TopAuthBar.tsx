@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import LogoutButton from './LogoutButton';
-import { WEB_ROUTE } from '@/types/constants';
+import { WEB_ROUTE } from '@/types';
 import { Image, LayoutDashboard, Menu, Pencil } from 'lucide-react';
 import AuthButton from './AuthButton';
 

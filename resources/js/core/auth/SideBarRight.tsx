@@ -1,9 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import { Post, SharedData } from '@/types';
-import { netWork } from '../home/HomeSideBarRight';
-import HomeProfile from '../home/HomeProfile';
-import PostProfile from '../post/PostProfile';
-import { NETWORKS } from '@/types/constants';
+import { HomeProfile }from '../home/index';
+import { PostProfile } from '../post/index'
+import { NETWORKS , type Post, type SharedData  } from '@/types';
 
 
 interface SideBarRightProps {

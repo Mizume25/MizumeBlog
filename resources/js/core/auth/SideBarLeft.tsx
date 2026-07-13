@@ -4,7 +4,7 @@ import { router } from "@inertiajs/react";
 import { Image, LayoutDashboard, LogIn, LogOut, Pencil, UserPlus } from "lucide-react";
 import HomeProfile from '../home/HomeProfile';
 import { netWork } from '../home/HomeSideBarRight';
-import { WEB_ROUTE } from '@/types/constants';
+import { WEB_ROUTE } from '@/types';
 
 
 interface SideBarLeftProps {
