@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostImageConfigController;
+use Dom\Comment;
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -16,7 +17,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
 
     //Funciones de contenido - Eliminar Comentario 
-    Route::delete('/comentarios/{id?}/{post_id?}', [ComentController::class, 'destroy'])->name('comments.destroy');
+    Route::delete('/comentarios/{id}', [ComentController::class, 'destroy'])->name('comments.destroy');
+
+
+    // Eliminar comentarios de un post realtivos  a un usuario
+    Route::delete('/comentarios/post/{post_id}', [ComentController::class, 'destroyByPost'])->name('comments.destroyByPost');
+
+
+    //Eliminar todos los comentarios de un usuario
+    Route::delete('/comentarios', [ComentController::class, 'deleteAll'])->name('comments.deleteAll');
+
 });
 
 /**

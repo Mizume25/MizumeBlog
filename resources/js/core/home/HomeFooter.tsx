@@ -107,14 +107,7 @@ export default function HomeFooter() {
                                         display: "block",
                                         
                                     }}>{card.title.length > 25 ? card.web_title : card.title}</span>
-                                    <span style={{
-                                        fontSize: 8,
-                                        color: "rgba(255,255,255,0.65)",
-                                        textAlign: "center",
-                                        marginTop: 2,
-                                        textShadow: "0 1px 3px rgba(0,0,0,0.9)",
-                                        display: "block",
-                                    }}>{card.title}</span>
+                                    
                                 </div>
                             </div>
                         ))}

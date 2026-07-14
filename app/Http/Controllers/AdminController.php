@@ -67,13 +67,16 @@ class AdminController extends Controller
      */
     public function update(UpdatePostRequest $request, int $id)
     {   
-        dd($request);
+        
         
         $post  = Post::findOrFail($id);
 
         $data = $request->validated();
 
+        
+
         unset($data['cover'], $data['cover_card']);
+        $data['tags'] = implode(',', $data['tags']);
 
         /**
          * Actualiza, comprueba y remplaza imagenes

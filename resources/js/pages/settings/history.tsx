@@ -6,6 +6,7 @@ import { Head } from '@inertiajs/react';
 import SettingsLayout from '@/layouts/settings/layout';
 import { router } from '@inertiajs/react';
 
+
 interface CommentListItemProps {
     comment: CommentRecord;
 
@@ -73,20 +74,20 @@ function history({ comments }: CommentListProps) {
         confirmDelete(
             '¿Quieres Eliminar este comentario?',
             `Esta acción borrará permanentemente.`,
-            () => router.delete(route('comment.destroy', id), {
+            () => router.delete(route('comments.destroy', id), {
                   preserveScroll: true
             })
         );
         
     }
 
-    const onDeletePost = (post:string) => {
+    const onDeletePost = (post_id:string) => {
         confirmDelete(
             '¿Quieres eliminar todos los comentarios de este post?',
             `Esta accion borrara permanetemente tus comentarios`,
-             () => router.delete(route('comment.destroy', {
-                post_id:post
-             }))
+             () => router.delete(route('comments.destroyByPost', post_id), {
+                preserveScroll: true
+             })
         )
     }
 
@@ -115,9 +116,9 @@ function history({ comments }: CommentListProps) {
                                                     type="button"
                                                     onClick={() => onDeletePost(post_id)}
                                                     title="Eliminar Comnetarios Post"
-                                                    className="mt-2 cursor-pointer flex items-center justify-center w-full h-8 rounded-full bg-red-400  text-white hover:bg-red-400 transition-colors"
+                                                    className="text-sm mt-2 cursor-pointer flex items-center justify-center w-full h-8 rounded-full bg-red-400  text-white hover:bg-red-400 transitation-transform duration-150 hover:scale-105 ease-in-out"
                                                 >
-                                                    <Trash2 size={14} />
+                                                    <Trash2 size={14} /> Borrar Todos
                                                 </button>
                                             </>
 

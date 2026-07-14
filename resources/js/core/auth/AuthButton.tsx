@@ -6,21 +6,22 @@ interface AuthButtonProps {
     label: string
     children: ReactNode
     url: string
+    className?:string
 }
 
 
-function AuthButton({label , children , url} : AuthButtonProps) {
+function AuthButton({label , children , url , className} : AuthButtonProps) {
 
 
 
     return (
         <a
             href={url}
-            className="group relative flex items-center justify-center gap-2 px-3 py-1.5
+            className={`group relative flex items-center justify-center gap-2 px-3 py-1.5
                        bg-[#2c1e17] border border-[#4a3728] rounded-md
                        text-[#f3e5ab]/80 text-sm font-medium transition-all duration-300
                        hover:bg-[#4a3728] hover:text-[#f3e5ab] hover:shadow-[inset_0_0_8px_rgba(0,0,0,0.5)]
-                       overflow-hidden cursor-pointer"
+                       overflow-hidden cursor-pointer ${className}`}
         >
             <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-[#f3e5ab]/5 group-hover:animate-shine" />
 

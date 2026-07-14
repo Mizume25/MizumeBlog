@@ -53,11 +53,11 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                         <>
                             {(auth.user.role === 'admin' || auth.user.role === 'editor') &&
                                 <>
-                                    <AuthButton url={route('post.panel')} label='Panel'>
+                                    <AuthButton url={route('post.panel')} label='Panel' >
                                         <LayoutDashboard size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
                                     </AuthButton>
 
-                                    <AuthButton url={route('posts.image-config')} label='Format'>
+                                    <AuthButton url={route('posts.image-config')} label='Format' >
                                         <Image size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
                                     </AuthButton>
                                 </>

@@ -44,7 +44,7 @@ function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps)
             <h3 className="text-white text-lg sm:text-2xl font-bold border-b-2 border-[#C8AD7F]/40 pb-2 sm:pb-3 mb-3 sm:mb-6 tracking-tight">
                 Índice de Contenido
             </h3>
-            
+
             {/** Contenido indice del contenido */}
             <ul className="space-y-7 sm:space-y-8 text-[#A18B75]">
                 {list.map((p) =>
@@ -53,6 +53,10 @@ function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps)
                         <a href={`#${p.id}`} onClick={handleID} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">{p.titulo}</a>
                     </li>
                 )}
+                <li className="group flex items-center gap-2 sm:gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
+                    <span className="text-base sm:text-xl group-hover:scale-125 transition-transform">🐢</span>
+                    <a href='#comentarios' onClick={handleID} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">Comentarios</a>
+                </li>
             </ul>
         </aside>
     );

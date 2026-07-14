@@ -74,44 +74,55 @@ class ComentController extends Controller
     }
 
     /**
-     * Borra Comentarios y Respuestas
+     * Borar 1 Comentario Indiviudal
      */
-    public function destroy(?string $id = null, ?string $post_id = null)
+    public function destroy(string $id)
     {
-        if ($id !== null) {
-            $comment = Comment::where('user_id', Auth::id())->findOrFail($id);
+        
+        $query = Comment::where('user_id', Auth::id())->findOrFail($id);
 
-            if ($comment->replies()->exists()) $comment->replies()->delete();
+        if ($query->replies()->exists()) $query->replies()->delete();
 
 
-            $comment->delete();
+        $query->delete();
 
-            return back()->with('success', 'Comentario eliminado.');
+        return back()->with('success', 'Comentario eliminado.');
+    }
+
+
+    /**
+     * Borrar todos los comentarios relativos a un usuario dentro de un post
+     */
+    public function destroyByPost(string $post_id)
+    {   
+        
+        $query = Comment::where('post_id', $post_id);
+
+        if(Auth::user()->role !== "admin") {
+            $query->where('user_id', Auth::id());
         }
 
-        if ($post_id != null) {
+        $ids = $query->pluck('id');
 
-            $commentIds = Comment::where('post_id', $post_id)
-                ->where('user_id', Auth::id())
-                ->pluck('id');
-    
-            Comment::whereIn('parent_id', $commentIds)->delete();
+        Comment::whereIn('parent_id', $ids)->delete();
 
-            Comment::whereIn('id', $commentIds)->delete();
+        Comment::whereIn('id', $ids)->delete();
 
-            return back()->with('success', 'Comentarios del Post eliminados.');
-        }
+        return back()->with('success', 'Comentarios del Post eliminados.');
+    }
 
+    /**
+     * Borrar todos los comentarios realtivos a un usuario
+     */
+    public function deleteAll()
+    {
 
+        $comments = Comment::where('user_id', Auth::id())->pluck('id');
 
-        if ($id == null && $post_id == null) {
-            $comments = Comment::where('user_id', Auth::id())->pluck('id');
+        Comment::whereIn('parent_id', $comments)->delete();
 
-            Comment::whereIn('parent_id', $comments)->delete();
+        Comment::whereIn('id', $comments)->delete();
 
-            Comment::whereIn('id', $comments)->delete();
-
-            return back()->with('success', 'Todos tus comentarios fueron eliminados.');
-        }
+        return back()->with('success', 'Todos tus comentarios fueron eliminados.');
     }
 }

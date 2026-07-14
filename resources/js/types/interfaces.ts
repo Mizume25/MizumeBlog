@@ -40,6 +40,12 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+
+export interface FlashMessage {
+    success?: string | null,
+    error?: string | null,
+}
+
 /**
  * @interface
  * Datos Compartidos
@@ -49,6 +55,7 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     [key: string]: unknown;
+    flash: FlashMessage
 }
 
 /**
