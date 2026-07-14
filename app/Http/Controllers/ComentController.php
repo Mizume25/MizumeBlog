@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Comment;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +30,8 @@ class ComentController extends Controller
      * @param $request Request
      */
     public function store(Request $request)
-    {
+    {   
+
         $request->validate([
             'body' => 'required|min:5',
             'post_id'   => 'required|exists:posts,id',

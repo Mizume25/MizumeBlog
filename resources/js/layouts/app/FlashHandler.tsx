@@ -42,15 +42,15 @@ function FlashHandler() {
                 }`}
         >
             <div
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-[260px] max-w-sm ${isSuccess
-                        ? 'bg-[#775a4b] text-[#f3e5ab] border-[#8c6c44]/40'
-                        : 'bg-[#3d1414] text-[#f3e5ab] border-[#8c4444]/40'
+                className={` capitalize flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-[260px] max-w-sm ${isSuccess
+                        ? 'bg-[#7ad35f] text-[#ffffff] border-[#8c6c44]/40'
+                        : 'bg-[#fc5353] text-[#ffffff] border-[#8c4444]/40'
                     }`}
             >
                 {isSuccess ? (
-                    <CheckCircle2 size={18} className="text-[#C8AD7F] shrink-0" />
+                    <CheckCircle2 size={18} className="text-[#C8AD7F] shrink-0" color='white' />
                 ) : (
-                    <XCircle size={18} className="text-[#e88a8a] shrink-0" />
+                    <XCircle size={18} className="text-[#e88a8a] shrink-0" color='white' />
                 )}
                 <p className="text-sm font-medium">{current?.message}</p>
             </div>

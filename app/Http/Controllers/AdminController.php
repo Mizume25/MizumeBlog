@@ -9,10 +9,11 @@ use App\Models\Comment;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Services\ImageType;
+use App\Services\PathType;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -77,12 +78,12 @@ class AdminController extends Controller
 
 
         /** Exceptaumos trato de card y cover */
-        unset($data['cover'], $data['cover_card']);
+        unset($data['cover'], $data['cover_card'], $data['content']);
 
 
         /*** Unimos tags */
         $data['tags'] = implode(',', $data['tags']);
-
+        
 
         if ($request->hasFile('content')) {
             $file    = $request->file('content');
@@ -96,7 +97,9 @@ class AdminController extends Controller
 
         $titles = MarkdownService::extract($content);
         $index  = json_encode($titles);
+        $data['content'] = $content;
 
+       
 
         /**
          * Actualiza, comprueba y remplaza imagenes
@@ -139,6 +142,7 @@ class AdminController extends Controller
         $path = $this->files->getPath($post->id, $post->title);
         $cover = $post->cover;
         $card = $post->cover_card;
+        $folder = basename($path);
 
 
         /*** Eliminamos todos los comentarios Asociados */
@@ -156,6 +160,10 @@ class AdminController extends Controller
         if (file_exists($path . '/' . 'content.md')) unlink($path . '/' . 'content.md');
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
+        
+        Storage::disk('public')->deleteDirectory('IMG/' . $folder);
+        Storage::disk('local')->deleteDirectory('blog/'. $folder);
+
 
 
 
@@ -199,6 +207,7 @@ class AdminController extends Controller
         $index  = json_encode($titles);
 
         $data['tags'] = implode(',', $data['tags']);
+        $data['content'] = $content;
 
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
@@ -216,12 +225,14 @@ class AdminController extends Controller
             $data['cover_card'] = $name;
         }
 
-
+       
         $post = Post::create($data);
 
 
 
         $path = $this->files->getPath($post->id, $post->title);
+        $images = basename($path);
+        $content = Storage::disk('public')->makeDirectory('IMG/' . $images); // Creamos una carpeta donde se guarde el contenido 
 
         if (!file_exists($path)) mkdir($path, 0755, true);
 

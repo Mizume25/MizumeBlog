@@ -11,11 +11,14 @@ enum ImageType: string
 }
 
 
+
 /**
  * Servcios de recogida / inyección de contenido 
  */
 class FileContentService 
-{
+{   
+    
+
     
     /**
      * Obtener contenido
