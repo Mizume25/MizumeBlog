@@ -1,18 +1,20 @@
-import { IndexContent, type Content } from '@/types'
+
+/** Interfaces web utilizadas */
+import { IndexContent, type Content , Formato , formatDefault } from '@/types'
+
+/** Eestados e iconos react */
 import { Head } from '@inertiajs/react'
+import { ListTree } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+
+/** COMPONENTES  */
 import {
     PostContent,
     PostSideBarLeft,
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
-import { Formato } from '@/types';
-import { formatDefault } from '@/types';
 import BlogLayout from '@/layouts/app/blog-layout';
 import SideBarRight from '@/core/auth/SideBarRight';
-import { ListTree } from 'lucide-react';
-
-
 
 /**
  * 
@@ -73,7 +75,7 @@ function show({ content }: { content: Content }) {
 
     /** Ruta de la Portada */
     const cover = `/IMG/Portada/${content.post.cover}`
-
+    
     
     /** Formato de la portada */
     const [format, setFormat] = useState<Formato | null>(formatDefault);
@@ -82,7 +84,7 @@ function show({ content }: { content: Content }) {
     useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
 
 
-
+    console.log(content)
     /** Indice de Contenido */
     const index: IndexContent[] = content.index;
 
@@ -111,7 +113,7 @@ function show({ content }: { content: Content }) {
 
 
     return (
-        <BlogLayout post_id={content.post.id} index={content.index}>
+        <BlogLayout post_id={content.post.id} >
 
 
             {/* Pestaña de la Página */}

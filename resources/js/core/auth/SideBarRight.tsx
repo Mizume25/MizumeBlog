@@ -1,4 +1,9 @@
 import { usePage } from '@inertiajs/react';
+
+
+
+
+/** Componentes */
 import { HomeProfile }from '../home/index';
 import { PostProfile } from '../post/index'
 import { NETWORKS , type Post, type SharedData  } from '@/types';

@@ -13,6 +13,7 @@ interface PostSidebarProps {
 
 function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps) {
 
+    /** Obtener id para viajar a secciones de la pagina */
     const handleID = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         const href = e.currentTarget.getAttribute('href');
@@ -28,10 +29,10 @@ function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps)
         <aside
             id="sidebarIndex"
             className={`fixed inset-y-0 left-0 z-[60] w-72 sm:w-80 bg-[#2A1B12] p-6 sm:p-8 shadow-2xl transition-transform duration-300 ease-in-out
-    ${sidebar ? 'translate-x-0' : '-translate-x-full'}
-    lg:translate-x-0 lg:col-span-3 lg:block lg:transform-none
-    lg:sticky lg:top-24 lg:h-fit lg:p-8 border border-white/10 shadow-xl`}
-        >
+            ${sidebar ? 'translate-x-0' : '-translate-x-full'}
+            lg:translate-x-0 lg:col-span-3 lg:block lg:transform-none
+            lg:sticky lg:top-24 lg:h-fit lg:p-8 border border-white/10 shadow-xl`}
+                >
 
 
             <button

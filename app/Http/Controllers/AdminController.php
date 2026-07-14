@@ -37,7 +37,7 @@ class AdminController extends Controller
      * Vista a Panel
      */
     public function panel()
-    {   
+    {
         $posts = Post::orderBy('publish_date', 'desc')->get();
         return Inertia::render('post/MizumeAdmin', [
             'data' => [
@@ -66,14 +66,14 @@ class AdminController extends Controller
      * @param $id Id de Post
      */
     public function update(UpdatePostRequest $request, int $id)
-    {   
-        
-        
+    {
+
+
         $post  = Post::findOrFail($id);
 
         $data = $request->validated();
 
-        
+
 
         unset($data['cover'], $data['cover_card']);
         $data['tags'] = implode(',', $data['tags']);
@@ -176,15 +176,17 @@ class AdminController extends Controller
         $path = $this->files->getPath($post->id, $post->title);
 
         if (!file_exists($path)) {
-            mkdir($path, 0755, true); 
+            mkdir($path, 0755, true);
         }
 
         /**
          * Creamos json con plantilla minima
          */
         $jsonContent = json_encode([
-            'id'    => $post->id,
-            'title' => 'Ejemplo',
+            [
+                'id'    => 'ejemplo',
+                'titulo' => 'Ejemplo',
+            ]
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         file_put_contents($path . '/index.json', $jsonContent);

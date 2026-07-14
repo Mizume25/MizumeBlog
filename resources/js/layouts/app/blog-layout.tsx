@@ -1,11 +1,13 @@
+
+/** Componentes */
 import SideBarLeft from '@/core/auth/SideBarLeft';
 import TopAuthBar from '@/core/auth/TopAuthBar'
 import HomeFooter from '@/core/home/HomeFooter';
-import { usePage } from '@inertiajs/react';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { SharedData, FlashMessage, IndexContent } from '@/types';
-import { CheckCircle2, XCircle } from 'lucide-react';
 import FlashHandler from './FlashHandler';
+
+/** ESTADOS REACT */
+import { ReactNode, useCallback, useState } from 'react';
+
 /**
  * Props de Layout
  */
@@ -25,10 +27,13 @@ interface FlashState {
 
 function BlogLayout({ children, post_id }: LayoutProps) {
 
+  /** Estado del sdiebar responsive */
   const [sidebar, setSideBar] = useState(false);
 
+  /** FUncion de cerrado */
   const handleClose = useCallback(() => setSideBar(false), []);
 
+  /** Cerrado dinamico */
   const onToogle = () => setSideBar(prev => !prev);;
 
 
@@ -36,11 +41,12 @@ function BlogLayout({ children, post_id }: LayoutProps) {
 
   return (
     <>
-      <FlashHandler />
-      <TopAuthBar post_id={post_id} onToggle={onToogle} />
+      <FlashHandler /> {/*** Mensaje de existo en acciones */}
+      <TopAuthBar post_id={post_id} onToggle={onToogle} />  {/*** Menu de Navegación */}
       <main>
-        <SideBarLeft isOpen={sidebar} onClose={handleClose} id={post_id} />
-        {children}
+        <SideBarLeft isOpen={sidebar} onClose={handleClose} id={post_id} />  {/*** Sidebar Responsive */}
+
+        {children}  {/*** Contenido */}
 
       </main>
       <HomeFooter />
