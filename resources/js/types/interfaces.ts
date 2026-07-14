@@ -197,6 +197,14 @@ export type IndexContent = {
     titulo: string,
 }
 
+/**
+ * Contenido Post
+ * @type
+ */
+export type ContentPost = {
+    index: IndexContent []
+    body: string
+}
 
 /**
  * Contenido de Post

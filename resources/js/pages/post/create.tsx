@@ -19,7 +19,7 @@ export default function Create({ tags }: { tags: string[] }) {
 
     const handleCreate = (data: CreatePostSchemaOutput) => {
 
-        console.log("wfewfwefwef")
+       
         /** Form Data */
         const formData = new FormData();
         formData.append("title", data.title);
@@ -34,6 +34,7 @@ export default function Create({ tags }: { tags: string[] }) {
         if (data.publish_date) formData.append("publish_date", data.publish_date);
         if (data.cover?.[0]) formData.append("cover", data.cover[0]);
         if (data.cover_card?.[0]) formData.append("cover_card", data.cover_card[0]);
+        if (data.content?.[0]) formData.append("content", data.content[0]);
 
         /**
          * Emviamos informació

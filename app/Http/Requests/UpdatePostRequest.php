@@ -25,7 +25,7 @@ class UpdatePostRequest extends FormRequest
         return [
             'title'    => 'required|string|max:255',
             'web_title' => 'nullable|string|max:255',
-            'category'  => 'required|in:literatura,animeManga,reflexiones',
+            'category'  => 'required|in:literatura,animemanga,reflexiones',
             'tags'    => 'required|array|min:1|max:10',
             'tags.*'  => ['required', 'string', 'min:2', 'max:50', 'distinct'],
             'publish_date' => 'nullable|date',
@@ -33,6 +33,13 @@ class UpdatePostRequest extends FormRequest
             'description' => 'nullable|string',
             'cover' => 'nullable|file|mimes:jpg,jpeg,png,webp',
             'cover_card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
+            'content' => [
+                'nullable',
+                'file',
+                'extensions:md',
+                'mimetypes:text/markdown,text/plain,text/x-markdown',
+                'max:5120',
+            ],
 
             'config'                    => ['nullable', 'array'],
             'config.home_config'        => ['nullable', 'string'],

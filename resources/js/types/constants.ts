@@ -4,6 +4,7 @@
 export const OPTION_CATEGORY = ["literatura", "animemanga", "reflexiones"];
 
 
+
 export interface Route {
     label: string,
     url: string

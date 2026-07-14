@@ -10,8 +10,9 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Services\ImageType;
 use App\Services\FileContentService;
+use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
-
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -68,15 +69,34 @@ class AdminController extends Controller
     public function update(UpdatePostRequest $request, int $id)
     {
 
-
+        /** Enotramos Post */
         $post  = Post::findOrFail($id);
 
+        /** Validamos peticion */
         $data = $request->validated();
 
 
-
+        /** Exceptaumos trato de card y cover */
         unset($data['cover'], $data['cover_card']);
+
+
+        /*** Unimos tags */
         $data['tags'] = implode(',', $data['tags']);
+
+
+        if ($request->hasFile('content')) {
+            $file    = $request->file('content');
+            $content = file_get_contents($file->getRealPath());
+
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
+        } else {
+
+            $content = MarkdownService::generate();
+        }
+
+        $titles = MarkdownService::extract($content);
+        $index  = json_encode($titles);
+
 
         /**
          * Actualiza, comprueba y remplaza imagenes
@@ -84,10 +104,20 @@ class AdminController extends Controller
         if ($request->hasFile('cover')) $data['cover'] = $this->replaceImage($request->file('cover'), ImageType::Cover, 'Portada', 'cover', $post);
         if ($request->hasFile('cover_card')) $data['cover_card'] = $this->replaceImage($request->file('cover_card'), ImageType::Card, 'Portada', 'cover_card', $post);
 
-
         $post->update($data);
 
-        return redirect()->back()->with('success', 'El Post se  actualizo correctamente');
+        $path = $this->files->getPath($post->id, $post->title);
+
+
+        if (!file_exists($path)) mkdir($path, 0755, true);
+
+        file_put_contents($path . '/index.json', $index);
+        file_put_contents($path . '/content.md', $content);
+
+
+
+
+        return redirect()->back()->with('success', 'El Post se actualizo correctamente');
     }
 
 
@@ -147,10 +177,28 @@ class AdminController extends Controller
 
         $data = $request->validated();
 
-        unset($data['cover'], $data['cover_card']);
+        unset($data['cover'], $data['cover_card'], $data['content']);
+
+        
+
+        if ($request->hasFile('content')) {
+            $file    = $request->file('content');
+            $content = file_get_contents($file->getRealPath());
+
+           
+
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
+        } else {
+
+            $content = MarkdownService::generate();
+        }
+
+
+
+        $titles = MarkdownService::extract($content);
+        $index  = json_encode($titles);
 
         $data['tags'] = implode(',', $data['tags']);
-
 
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
@@ -168,35 +216,19 @@ class AdminController extends Controller
             $data['cover_card'] = $name;
         }
 
+
         $post = Post::create($data);
 
 
 
-        // 3. Rutas de los archivos
         $path = $this->files->getPath($post->id, $post->title);
 
-        if (!file_exists($path)) {
-            mkdir($path, 0755, true);
-        }
+        if (!file_exists($path)) mkdir($path, 0755, true);
 
-        /**
-         * Creamos json con plantilla minima
-         */
-        $jsonContent = json_encode([
-            [
-                'id'    => 'ejemplo',
-                'titulo' => 'Ejemplo',
-            ]
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents($path . '/index.json', $index);
+        file_put_contents($path . '/content.md', $content);
 
-        file_put_contents($path . '/index.json', $jsonContent);
-
-
-        file_put_contents($path . '/content.md', "## Ejemplo\n");
-
-
-
-        return back()->with('Success', "Post creado con exito");
+        return back()->with('success', "Post creado con exito");
     }
 
     public function backup()
@@ -280,7 +312,5 @@ class AdminController extends Controller
     }
 
 
-    /**
-     * DesMaquetamos Tags
-     */
+    /** generateIndex */
 }

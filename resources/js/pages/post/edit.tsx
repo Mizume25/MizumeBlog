@@ -6,22 +6,16 @@ import { Head, router, usePage } from '@inertiajs/react';
 import type { CreatePostSchemaOutput } from "@/types/schemas";
 import { useState } from 'react';
 import BlogLayout from '@/layouts/app/blog-layout';
+import { Post } from '@/types';
 
-interface Post {
-    id: number;
-    title: string;
-    author: string;
-    category: "literatura" | "animemanga" | "reflexiones";
-    tags: string;
-    web_title: string | null;
-    description: string | null;
-    publish_date: string | null;
-    featured: number;
-    cover: string | null;
-    cover_card: string | null;
+
+interface EditProps {
+    post: Post,
+    tags: string [],
 }
 
-export default function Edit({ post, tags }: { post: Post; tags: string[] }) {
+
+export default function Edit({ post, tags }: EditProps) {
 
 
     const formRef = useRef<PostFormHandle>(null);
@@ -44,6 +38,7 @@ export default function Edit({ post, tags }: { post: Post; tags: string[] }) {
         if (data.publish_date) formData.append("publish_date", data.publish_date);
         if (data.cover?.[0]) formData.append("cover", data.cover[0]);
         if (data.cover_card?.[0]) formData.append("cover_card", data.cover_card[0]);
+        if (data.content?.[0]) formData.append("content", data.content[0]);
 
         router.post(route('post.update', post.id), formData, {
             onSuccess: () => {
@@ -70,7 +65,10 @@ export default function Edit({ post, tags }: { post: Post; tags: string[] }) {
                         description: post.description ?? undefined,
                         publish_date: post.publish_date ?? undefined,
                         featured: !!post.featured,
+                        
                     }}
+                    cover_url={post.cover} 
+                    card_url={post.cover_card} 
                     onSubmit={handleUpdate}
                     submitLabel="Actualizar Post"
                     processing={processing}

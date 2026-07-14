@@ -10,7 +10,9 @@ export const categorySchema = z.enum(["literatura", "animemanga", "reflexiones"]
  * Valores de las imagenes
  */
 const MAX_SIZE = 5 * 1024 * 1024;
-const TIPOS_VALIDOS = ["image/jpeg","image/jpg" , "image/png", "image/webp"];
+const TIPOS_VALIDOS = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+
 
 
 
@@ -29,14 +31,28 @@ export const PostSchema = z.object({
     featured: z.boolean().default(false),
     cover: z
         .instanceof(FileList)
-        .refine((files) => files.length === 0 ||files[0]?.size <= MAX_SIZE, "Máximo 5MB")
+        .refine((files) => files.length === 0 || files[0]?.size <= MAX_SIZE, "Máximo 5MB")
         .refine((files) => files.length === 0 || TIPOS_VALIDOS.includes(files[0]?.type), "Formato no válido")
         .optional(),
     cover_card: z
         .instanceof(FileList)
-        .refine((files) => files.length === 0  || files[0]?.size <= MAX_SIZE, "Máximo 5MB")
-        .refine((files) => files.length === 0  || TIPOS_VALIDOS.includes(files[0]?.type), "Formato no válido")
+        .refine((files) => files.length === 0 || files[0]?.size <= MAX_SIZE, "Máximo 5MB")
+        .refine((files) => files.length === 0 || TIPOS_VALIDOS.includes(files[0]?.type), "Formato no válido")
         .optional(),
+    content: z
+        .instanceof(FileList)
+        .optional()
+        .refine((files) => !files || files.length === 0 || files[0].name.endsWith('.md'), {
+            message: 'El archivo debe tener extensión .md',
+        })
+        .refine((files) => !files || files.length === 0 || files[0].size <= 5 * 1024 * 1024, {
+            message: 'El archivo no puede superar 5MB',
+        })
+        .refine((files) => !files || files.length === 0 || ['text/markdown', '', 'text/plain'].includes(files[0].type), {
+            message: 'Tipo de archivo no válido',
+        }),
+
+
 });
 
 
