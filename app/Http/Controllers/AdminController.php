@@ -83,7 +83,7 @@ class AdminController extends Controller
 
         /*** Unimos tags */
         $data['tags'] = implode(',', $data['tags']);
-        
+
 
         if ($request->hasFile('content')) {
             $file    = $request->file('content');
@@ -99,7 +99,7 @@ class AdminController extends Controller
         $index  = json_encode($titles);
         $data['content'] = $content;
 
-       
+
 
         /**
          * Actualiza, comprueba y remplaza imagenes
@@ -160,9 +160,9 @@ class AdminController extends Controller
         if (file_exists($path . '/' . 'content.md')) unlink($path . '/' . 'content.md');
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
-        
+
         Storage::disk('public')->deleteDirectory('IMG/' . $folder);
-        Storage::disk('local')->deleteDirectory('blog/'. $folder);
+        Storage::disk('local')->deleteDirectory('blog/' . $folder);
 
 
 
@@ -187,13 +187,13 @@ class AdminController extends Controller
 
         unset($data['cover'], $data['cover_card'], $data['content']);
 
-        
+
 
         if ($request->hasFile('content')) {
             $file    = $request->file('content');
             $content = file_get_contents($file->getRealPath());
 
-           
+
 
             if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
         } else {
@@ -225,7 +225,7 @@ class AdminController extends Controller
             $data['cover_card'] = $name;
         }
 
-       
+
         $post = Post::create($data);
 
 
@@ -244,38 +244,25 @@ class AdminController extends Controller
 
     public function backup()
     {
-        $posts     = Post::all()->toArray();
-        $users     = User::all()->toArray();
-        $coments   = Comment::all()->toArray();
+        $data = [
+            'posts'    => Post::all()->toArray(),
+            'users'    => User::all()->makeHidden(['password', 'remember_token'])->toArray(),
+            'comments' => Comment::all()->toArray(),
+        ];
 
-        $fecha = now()->format('Y-m-d');
-        $backupPath = public_path('backups');
 
-        if (!file_exists($backupPath)) {
-            mkdir($backupPath, 0755, true);
-        }
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        // Borrar backups fechados antiguos
-        foreach (glob($backupPath . '/*_*.json') as $file) {
-            unlink($file);
-        }
+        if ($json == false) return back()->with('error', 'Fallo el generar un backup' . json_last_error_msg());
 
-        // Posts
-        $postsJson = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/posts_{$fecha}.json", $postsJson);
-        file_put_contents("{$backupPath}/posts.json", $postsJson);
 
-        // Users
-        $usersJson = json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/users_{$fecha}.json", $usersJson);
-        file_put_contents("{$backupPath}/users.json", $usersJson);
 
-        // Comentarios
-        $commentsJson = json_encode($coments, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/comentarios_{$fecha}.json", $commentsJson);
-        file_put_contents("{$backupPath}/comentarios.json", $commentsJson);
+        $timestamp = now()->format('Y-m-d_His');
+        $path = "backups/backup_{$timestamp}.json";
 
-        return back()->with('success', "Backup creado: {$fecha}");
+        Storage::disk('local')->put($path, $json);
+
+        return back()->with('success', "Backup creado: {$path}");
     }
 
     /**
