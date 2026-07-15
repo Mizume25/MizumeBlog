@@ -6,12 +6,11 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostImageConfigController;
-use Dom\Comment;
 
 /**
  * Rutas Restringidas par ausuarios verificados
  */
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified' , 'throttle:comments'])->group(function () {
 
     //Funciones de contenido - Crear Comentario 
     Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
