@@ -97,7 +97,7 @@ function history({ comments }: CommentListProps) {
             <Head title="Perfil" />
 
             <SettingsLayout>
-                <div className="w-full flex flex-col gap-3">
+                <div className="w-full flex flex-col gap-3 ">
                     {Object.entries(comments).map(([post_id, records]) => {
 
                         const post = records[0]?.post;
