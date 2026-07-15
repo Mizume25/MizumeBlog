@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use Dom\Comment;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,4 +18,6 @@ Route::middleware('auth')->group(function () {
     Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::get('settings/history', [ProfileController::class, 'history'])->name('history');
+
+   
 });

@@ -11,3 +11,7 @@ Route::get('/user', function (Request $request) {
 Route::get('/upcoming', [ApiController::class, 'upcoming'])->name('api.upcoming');
 
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/posts/{post_id}/comments', [ApiController::class, 'apiComments'])->name('apiComments');
+});
+

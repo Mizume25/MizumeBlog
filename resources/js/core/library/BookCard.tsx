@@ -1,10 +1,12 @@
 import { Post } from '@/types';
+
+/** Props de Card Book */
 type BookCardProps = Pick<Post, "title" | "author" | "cover_card" | "config">
 
 function BookCard({ title, author, cover_card, config }: BookCardProps) {
     return (
         <div
-            className="relative shrink-0 w-[160px] h-[210px] bg-no-repeat bg-center bg-[#2a2a2a] url() bg-cover"
+            className="relative shrink-0 w-[160px] h-[210px] bg-no-repeat bg-center bg-[#2a2a2a] bg-cover"
             style={{ backgroundImage: `url(/IMG/Cards/${cover_card})`,
                      objectPosition: `${config?.card_config}`
                     }}

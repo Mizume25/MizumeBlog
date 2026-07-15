@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,16 +64,41 @@ class ProfileController extends Controller
     }
 
     /**
-     * HIstorial de Comentarios de Usuario
+     * Historial de Comentarios de Usuario
      * 
      */
     public function history()
     {
+        $ids = Comment::where('user_id', Auth::id())
+            ->select('post_id')
+            ->groupBy('post_id')
+            ->orderBy('publish_date', 'desc')
+            ->get();
+
+        $postIds = $ids->pluck('post_id');
+
+        $posts = Post::whereIn('id', $postIds)->get();
+
+        return Inertia::render('settings/history', compact('posts'));
+    }
+
+    /*public function history()
+    {
+        
+        $posts = Comment::where('user_id', Auth::id())
+            ->select('post_id')
+            ->groupBy('post_id')
+            ->orderBy('publish_date', 'desc')
+            ->paginate(10);
+
+       
         $comments = Comment::with(['user', 'replies.user', 'post'])
             ->where('user_id', Auth::id())
+            ->whereIn('post_id', $posts->pluck('post_id'))
             ->get()
             ->groupBy('post_id');
 
-        return Inertia::render('settings/history', compact('comments'));
-    }
+
+        
+    } */
 }
