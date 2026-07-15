@@ -9,7 +9,6 @@ use App\Models\Comment;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Services\ImageType;
-use App\Services\PathType;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
@@ -73,6 +72,10 @@ class AdminController extends Controller
         /** Enotramos Post */
         $post  = Post::findOrFail($id);
 
+        $this->authorize('update', $post);
+
+        
+
         /** Validamos peticion */
         $data = $request->validated();
 
@@ -134,9 +137,12 @@ class AdminController extends Controller
      * @param $id id del Post
      */
     public function destroy(int $id)
-    {
+    {   
+        
+        $post = Post::findOrFail($id);
+        
 
-        $post = Post::findOrFail($id);;
+        $this->authorize('delete', $post);
 
         /** Guardamos los valores */
         $path = $this->files->getPath($post->id, $post->title);
@@ -181,7 +187,7 @@ class AdminController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-
+        $this->authorize('create', Post::class);
 
         $data = $request->validated();
 

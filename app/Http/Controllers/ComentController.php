@@ -31,6 +31,7 @@ class ComentController extends Controller
      */
     public function store(Request $request)
     {   
+        $this->authorize('create', Comment::class);
 
         $request->validate([
             'body' => 'required|min:5',
@@ -78,13 +79,15 @@ class ComentController extends Controller
      */
     public function destroy(string $id)
     {
-        
-        $query = Comment::where('user_id', Auth::id())->findOrFail($id);
 
-        if ($query->replies()->exists()) $query->replies()->delete();
+        $comment = Comment::where('user_id', Auth::id())->findOrFail($id);
+
+        $this->authorize('delete', $comment);
+
+        if ($comment->replies()->exists()) $comment->replies()->delete();
 
 
-        $query->delete();
+        $comment->delete();
 
         return back()->with('success', 'Comentario eliminado.');
     }
