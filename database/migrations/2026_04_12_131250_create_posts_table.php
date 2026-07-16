@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('web_title')->nullable();
+            $table->string('web_title');
             $table->string('tags');
             $table->enum('category', ['literatura', 'animemanga', 'reflexiones']);
             $table->string('author');

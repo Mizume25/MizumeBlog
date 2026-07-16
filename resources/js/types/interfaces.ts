@@ -112,7 +112,7 @@ export type Category = 'literatura' | 'animemanga' | 'reflexiones';
  */
 export type Post = Field & {
     title: string 
-    web_title?: string
+    web_title: string
     tags: string,
     category: Category,
     author: string,

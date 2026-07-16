@@ -72,7 +72,7 @@ function LibraryCard({ post , section} : LibraryCardProps) {
                             {post.author} · {post.publish_date}
                         </p>
                         <h3 className="capitalize text-base font-extrabold mb-2 text-black leading-tight">
-                            {post.web_title || post.title}
+                            {post.web_title}
                         </h3>
                         <p className="text-xs leading-relaxed text-black/90 font-medium">
                             {post.description}

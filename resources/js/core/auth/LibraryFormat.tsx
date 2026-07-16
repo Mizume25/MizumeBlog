@@ -187,7 +187,7 @@ export function CardPreview({ post, previewImage, visible = true, x }: PreviewPr
                             {post.author} · {post.publish_date}
                         </p>
                         <h3 className="capitalize text-sm font-extrabold mb-1 text-black leading-tight">
-                            {post.web_title || post.title}
+                            {post.web_title}
                         </h3>
                         <p className="text-[0.65rem] leading-relaxed text-black/90 font-medium line-clamp-4">
                             {post.description}
@@ -215,7 +215,7 @@ export function HomePreview({ post, previewImage, visible = true, y }: PreviewPr
                         {post.title}
                     </h2>
                     <p className="text-white/90 italic text-xs text-right [text-shadow:_1px_1px_3px_rgba(0,0,0,0.6)]">
-                        {post.web_title || `Lectura de ${post.author}`}
+                        {post.web_title}
                     </p>
                 </div>
             </div>

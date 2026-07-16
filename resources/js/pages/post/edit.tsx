@@ -61,7 +61,7 @@ export default function Edit({ post, tags }: EditProps) {
                         author: post.author,
                         category: post.category,
                         tags: post.tags.split(',').map((g) => g.trim().toLowerCase()),
-                        web_title: post.web_title ?? undefined,
+                        web_title: post.web_title,
                         description: post.description ?? undefined,
                         publish_date: post.publish_date ?? undefined,
                         featured: !!post.featured,
