@@ -38,11 +38,13 @@ class DatabaseSeeder extends Seeder
                 $user['password'] = Hash::make(Str::random(32));
                 $userData['must_reset_password'] = empty($userData['google_id']);
                 User::insert($user);
-                if (empty($userData['google_id']) && app()->environment('production')) {
-                    Password::sendResetLink(['email' => $user->email]);
-                } else {
-                    $count++;
-                }
+                
+                //COMENTADO TEMPORAL - DESCOMENTAR CUANDO SE ASEGURE FUNCIONAMIENTO EN PRODUCCION
+                //if (empty($userData['google_id']) && app()->environment('production')) {
+                //   Password::sendResetLink(['email' => $user->email]);
+                // } else {
+                //    $count++;
+                //}
             }
 
             foreach ($data["comments"] as $comment) {
