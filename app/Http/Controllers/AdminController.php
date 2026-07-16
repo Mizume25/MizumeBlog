@@ -257,7 +257,7 @@ class AdminController extends Controller
         ];
 
 
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json == false) return back()->with('error', 'Fallo el generar un backup' . json_last_error_msg());
 
@@ -266,7 +266,10 @@ class AdminController extends Controller
         $timestamp = now()->format('Y-m-d_His');
         $path = "backups/backup_{$timestamp}.json";
 
-        Storage::disk('local')->put($path, $json);
+        Storage::disk('local')->put($path, $json);  
+
+        /** Sobre escribimos init App */
+        Storage::disk('local')->put('init.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         return back()->with('success', "Backup creado: {$path}");
     }

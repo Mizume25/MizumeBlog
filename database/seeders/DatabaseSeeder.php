@@ -2,10 +2,14 @@
 
 namespace Database\Seeders;
 
+
 use App\Models\Post;
-
-
+use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,27 +19,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = public_path("backups/InitApp.json");
+        $data = Storage::disk('local')->json('init.json');
 
 
-        if (!file_exists($path)) {
+        if (!$data) {
             $this->command->error('No se encontro el archivo');
             return;
         } else {
 
-            $posts = json_decode(file_get_contents($path), true);
-
-
-
-
-            foreach ($posts as $data) {
-                Post::create($data);
+            foreach ($data["posts"] as $post) {
+                Post::create($post);
             }
 
-            $this->command->info('Los posts se subieron correctamente');
+            foreach ($data["users"]  as $user) {
+                $user['password'] = Hash::make(Str::random(32));
+                 $userData['must_reset_password'] = empty($userData['google_id']);
+                User::insert($user);
+            }
+
+            foreach ($data["comments"] as $comment) {
+                Comment::create($comment);
+            }
 
 
-            
+
+
+
+
+            $this->command->info('Los datos se restablecieron correctamente');
         }
     }
 }

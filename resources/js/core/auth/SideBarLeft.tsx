@@ -123,7 +123,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                         </button>
 
                         <div className="flex items-center gap-2">
-                            {auth?.user && (
+                            {auth?.user?.role === 'admin' && (
                                 <>
                                     <a href={route('post.panel')}
                                         title="Panel Admin"

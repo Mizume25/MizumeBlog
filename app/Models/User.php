@@ -51,13 +51,18 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-     /**
+    /**
      * Comentarios Respuesta Relacionado
      * @return HasMany 
      */
     public function comentarios()
     {
-       return $this->hasMany(Comment::class, 'user_id');
+        return $this->hasMany(Comment::class, 'user_id');
     }
+
     
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }
