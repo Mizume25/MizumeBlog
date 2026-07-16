@@ -1,11 +1,10 @@
 import { Post } from '@/types'
-import React from 'react'
 
 function InfoProgresBar({ posts } : { posts:Post[]}) {
 
-    const v1 = posts.filter((p: any) => p.categoria === 'Literatura');
-    const v2 = posts.filter((p: any) => p.categoria === 'AnimeManga');
-    const v3 = posts.filter((p: any) => p.categoria === 'Reflexiones');
+    const v1 = posts.filter((p) => p.category === 'literatura');
+    const v2 = posts.filter((p) => p.category === 'animemanga');
+    const v3 = posts.filter((p) => p.category === 'reflexiones');
 
     const Literatura = (v1.length * 100) / posts.length;
     const AnimeManga = (v2.length * 100) / posts.length;

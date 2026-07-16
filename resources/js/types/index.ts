@@ -1,82 +1,15 @@
-import { LucideIcon } from 'lucide-react';
+/***
+ * @fileoverview Lista de Interfaces
+ * 
+ */
+/** Interfaces de toda la web */
+export * from './interfaces';
 
-export interface Auth {
-    user: User;
-}
+/** Objetos y constantes web */
+export * from './constants'
 
-export interface BreadcrumbItem {
-    title: string;
-    href: string;
-}
+/** Esquemas */
+export * from './schemas'
 
-export interface NavGroup {
-    title: string;
-    items: NavItem[];
-}
-
-export interface NavItem {
-    title: string;
-    url: string;
-    icon?: LucideIcon | null;
-    isActive?: boolean;
-}
-
-export interface SharedData {
-    name: string;
-    quote: { message: string; author: string };
-    auth: Auth;
-    [key: string]: unknown;
-}
-
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    role:string;
-    google_id?:number
-    created_at: string;
-    updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
-}
-
-//Interfaces para post Destacados
-export interface Post {
-    id:number,
-    titulo: string,
-    web_title?:string,
-    genero: string,
-    categoria: string,
-    autor: string,
-    fecha_publicacion:string,
-    descripcion?:string,
-    destacado: 1 | 0
-    portada?:string,
-    card?:string,
-    publicado: boolean
-}
-
-//Interfaz comentarios
-export interface Comentario {
-    id:number,
-    descripcion:string,
-    fecha:string,
-    post_id:number,
-    user:User
-    replies?: Respuesta[];
-}
-
-export interface Respuesta extends Omit<Comentario, 'replies'> {
-    parent_id: number;
-    user:User
-}
-
-export interface Book {
-    title:string,
-    author:string,
-    image?:string,
-    color1:string,
-    color2:string,
-    accent:string,
-}
+/** Funciones */
+export * from './utils'

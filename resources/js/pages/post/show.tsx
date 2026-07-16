@@ -1,115 +1,158 @@
-import { Comentario, Post, User } from '@/types'
-import { Head } from '@inertiajs/react'
-import { useCallback, useEffect, useState } from 'react';
-import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
 
-import { 
-    PostBTN, 
-    PostContent, 
-    PostHeader, 
-    PostSideBarLeft, 
-    PostSideBarRight,  
+/** Interfaces web utilizadas */
+import { IndexContent, type Content , Formato , formatDefault } from '@/types'
+
+/** Eestados e iconos react */
+import { Head } from '@inertiajs/react'
+import { ListTree } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+
+/** COMPONENTES  */
+import {
+    PostContent,
+    PostSideBarLeft,
 } from '../../core/post';
 import Coments from '@/core/coments/Coments';
-import TopAuthBar from '@/core/auth/TopAuthBar';
-import { Formato } from '@/types/utils';
-import { getFormatoPost } from '@/types/utils';
-import { getRoutePortada } from '@/types/utils';
+import BlogLayout from '@/layouts/app/blog-layout';
+import SideBarRight from '@/core/auth/SideBarRight';
 
-export interface Index {
-  id: string,
-  titulo: string,
-}
-
-function show({ post, index, contenido, coments, users }: { post: Post, index: Index[], contenido: string , coments:Comentario [],users:User[]  }) {
-
-  const ruta = getRoutePortada(post?.categoria , post?.portada);
-
-  const formatDefault : Formato = {
-          id:post?.id,
-          home_config:"center",
-          article_config:"bg-[center_18%]",
-  }
-
-  const [format, setFormat] = useState<Formato | null>(formatDefault);
-
-  useEffect(() => {
-        const fetchFormat = async () => {
-            if (post?.id) {
-                try {
-                    const data = await getFormatoPost(post.id);
-                    setFormat(data);
-                } catch (error) {
-                    console.error("Error cargando formato:", error);
-                }
-            }
-        };
-
-        fetchFormat();
-    }, [post?.id])
-
-
-  console.log(format)
-
-  const list: Index[] = index;
-  const { auth } = usePage<SharedData>().props;
-
-  const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
-  const [menuAbierto, setMenuAbierto] = useState(false);
-  const handleFindID = (id: string) => {
-        console.log("El hijo me ha enviado el ID:", id);
-        setSelectedId(id); 
-    };
-  
-  const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          setMenuAbierto(prev => !prev);
-      }, []);
-
-  const isClose = () => {
-      setMenuAbierto(false)
-  }
- 
+/**
+ * 
+ * @param routa Ruta de la imagen 
+ * @param title Titulo de el post
+ * @param formato Formato de imagen
+ * @returns 
+ */
+function PostHeader({ route, title, format }: { route: string | undefined, title: string, format?: string }) {
   return (
     <>
-        {/* Pestaña de la Página */}
-        <Head title='Show'></Head>
-        {!auth?.user && <TopAuthBar />}
-        {/* Componente imagen header */}
-        <PostHeader route={ruta} title={post.titulo} format={format?.article_config} />
+      {/* Imagen de la obra */}
+      <header
+        className={`w-full h-[35vh] bg-no-repeat bg-cover ${format}`}
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`
+        }}
+      >
+      </header>
 
-        <PostBTN onButtonClick={handleButtonClick} />
-        {/* Contenedor del Main */}
-        <main className="mt-16 max-w-[1700px] mx-auto px-4 pb-20">
-
-        {/* Articulo */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
-        {menuAbierto && (
-        <div
-            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
-            onClick={() => setMenuAbierto(false)}
-        />
-    )}
-        {/* Componente del SideBar Izquierdo */}
-        <PostSideBarLeft list={list} onFindID={handleFindID} menuAbierto={menuAbierto} id={post.id} isClose={isClose}/>
-
-        <PostContent post={post} contenido={contenido} index={index} selectedId={selectedId} />
-
-        {/* Componente del SideBar Derecho */}
-        <PostSideBarRight id={post.id} />
-
-        <Coments coments={coments} post_id={post.id} users={users}/>
-        
-
+      {/* Titulo de la obra */}
+      <div className="relative z-10 flex justify-center -mt-10 px-4">
+        <div className="w-full max-w-4xl bg-[#C8AD7F] py-4 rounded-xl shadow-lg border border-[#b39a6f] text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white tracking-wide uppercase drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+            {title}
+          </h1>
         </div>
-
-      </main>
-
+      </div>
     </>
   )
+}
+
+/**
+ * Boton Indice para Post 
+ * @param Function Funcion para abrir y cerrar SideBar
+ * @returns 
+ */
+function PostBTN({ onOpen }: { onOpen?: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => onOpen?.(e);
+
+
+    return (
+        <button
+            onClick={handleClick}
+            className="lg:hidden fixed top-[58px] sm:top-[42px] right-2 z-40 bg-[#754C22] p-2.5 rounded-lg shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer mt-10">
+            <div className="space-y-1.5">
+                <ListTree size={22} className='text-white' />
+            </div>
+        </button>
+    )
+}
+
+
+
+
+function show({ content }: { content: Content }) {
+
+    /** Ruta de la Portada */
+    const cover = `/IMG/Portada/${content.post.cover}`
+    
+    
+    /** Formato de la portada */
+    const [format, setFormat] = useState<Formato | null>(formatDefault);
+
+    /** Formato de la portada renderizada a estado  */
+    useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
+
+
+    console.log(content)
+    /** Indice de Contenido */
+    const index: IndexContent[] = content.index;
+
+
+    /** Punto del indice selecionado */
+    const [selectedId, setSelectedId] = useState<string>("puntos-capitales");
+
+    /** Sidebar del Indice */
+    const [sidebar, setSidebar] = useState(false);
+
+    /** Iteración de indice */
+    const handleFindID = (id: string) => setSelectedId(id);
+    
+    /** Toogle de cerrado */
+    const onOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setSidebar(prev => !prev);
+    }, []);
+
+    /** Cerrado de Indice */
+    const isClose = () => setSidebar(false)
+    
+
+
+
+    return (
+        <BlogLayout post_id={content.post.id} >
+
+
+            {/* Pestaña de la Página */}
+            <Head title='Show'></Head>
+
+            {/* Componente imagen header */}
+            <PostHeader route={cover} title={content.post.title} format={format?.article_config} />
+
+            {/** Componente para indice button */}
+            <PostBTN onOpen={onOpen} />
+            
+            {/* Contenedor del Main */}
+            <main className="mt-20 max-w-[1700px] mx-auto px-4 sm:px-6 pb-24">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative">
+                    {sidebar && (
+                        <div
+                            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
+                            onClick={() => setSidebar(false)}
+                        />
+                    )}
+
+                    <PostSideBarLeft list={index} onFindID={handleFindID} sidebar={sidebar} isClose={isClose} />
+                    
+                    <PostContent post={content.post} contenido={content.body} selectedId={selectedId} />
+                    
+                    <SideBarRight
+                        posts={content.features}
+                        featuredTitle="Artículos / Post Destacados"
+                        showProfile
+                        variant="light"
+                        sticky="lg:top-24"
+                        colSpan='lg:col-span-3'
+                    />
+                    <Coments coments={content.comments} post_id={content.post.id} />
+                </div>
+            </main>
+
+        </BlogLayout>
+    )
 }
 
 export default show

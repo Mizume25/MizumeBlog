@@ -2,275 +2,322 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comentario;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\User;
-use App\Services\ImageConfigService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Services\ImageType;
+use App\Services\FileContentService;
+use App\Services\MarkdownService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
 
-    private $posts;
-    private $users;
-    private $coments;
+    private FileContentService $files;
 
-    //Constructor de la Classe
-    public function __construct(private ImageConfigService $imgConfig)
+    public function __construct(FileContentService $files)
     {
-        $this->posts = Post::all();
-        $this->users = User::all();
-        $this->coments = Comentario::all();
+        $this->files = $files;
     }
 
-    //Getters
-    private function getPosts()
+    /**
+     * View a Fomrulario create
+     */
+    public function create()
     {
-        return $this->posts;
+        $tags = $this->buildTags();
+
+        return Inertia::render('post/create', compact('tags'));
     }
 
-    private function getUsers()
-    {
-        return $this->users;
-    }
-
-    private function getComents()
-    {
-        return $this->coments;
-    }
-
-
+    /**
+     * Vista a Panel
+     */
     public function panel()
     {
-
-        $this->getUsers();
-        $this->getComents();
-        $this->getPosts();
-
-
+        $posts = Post::orderBy('publish_date', 'desc')->get();
         return Inertia::render('post/MizumeAdmin', [
             'data' => [
-                'posts'   => $this->getPosts(),
-                'users'   => $this->getUsers(),
-                'coments' => $this->getComents(),
+                'posts'   => $posts,
+                'users'   => User::all(['id', 'name', 'email', 'created_at']),
+                'coments' => Comment::all(),
             ]
         ]);
     }
 
-    //Vista de Edicion de Post
-    public function edit($id)
+    /**
+     * Vista de edición de un post
+     */
+    public function edit(int $id)
     {
         $post = Post::findOrFail($id);
 
-        return Inertia::render('post/edit', compact('post'));
+        $tags = $this->buildTags();
+
+        return Inertia::render('post/edit', compact('post', 'tags'));
     }
 
-    //Vista de actualizacion de Post
-    public function update(Request $request, $id)
+    /**
+     * Función de Actualización de Post
+     * @param $request Request Post Update 
+     * @param $id Id de Post
+     */
+    public function update(UpdatePostRequest $request, int $id)
     {
-        $request->validate([
-            'titulo'            => 'required|string|max:255',
-            'web_title'         => 'nullable|string|max:255',
-            'categoria'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'genero'            => 'required|string',
-            'fecha_publicacion' => 'required|date',
-            'autor' => 'required |string|max:255',
-            'descripcion' => 'nullable|string',
-            'publicado'         => 'required|in:0,1',
-            'portada' => 'nullable|file|mimes:jpg,jpeg,png,webp',
-            'card'    => 'nullable|file|mimes:jpg,jpeg,png,webp',
-        ]);
 
+        /** Enotramos Post */
         $post  = Post::findOrFail($id);
-        $datos = $request->except('portada', 'card');
 
-        if ($request->hasFile('portada')) {
-            $portada       = $request->file('portada');
-            $extension     = $portada->getClientOriginalExtension();
-            $nombrePortada = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $extension;
+        $this->authorize('update', $post);
 
-            // 1. Borrar la anterior si existe
-            $rutaAnterior = public_path('IMG/Portada/' . $request->categoria . '/' . $post->portada);
-            if ($post->portada && file_exists($rutaAnterior)) {
-                unlink($rutaAnterior);
-            }
+        
 
-            // 2. Mover la nueva
-            $portada->move(public_path('IMG/Portada/' . $request->categoria . '/'), $nombrePortada);
-            $datos['portada'] = $nombrePortada;
+        /** Validamos peticion */
+        $data = $request->validated();
+
+
+        /** Exceptaumos trato de card y cover */
+        unset($data['cover'], $data['cover_card'], $data['content']);
+
+
+        /*** Unimos tags */
+        $data['tags'] = implode(',', $data['tags']);
+
+
+        if ($request->hasFile('content')) {
+            $file    = $request->file('content');
+            $content = file_get_contents($file->getRealPath());
+
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
+        } else {
+
+            $content = MarkdownService::generate();
         }
 
-        if ($request->hasFile('card')) {
-            $card       = $request->file('card');
-            $nombreCard = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
+        $titles = MarkdownService::extract($content);
+        $index  = json_encode($titles);
+        $data['content'] = $content;
 
-            // 1. Borrar la anterior si existe
-            $rutaAnterior = public_path('IMG/Cards/' . $request->categoria . '/' . $post->card);
-            if ($post->card && file_exists($rutaAnterior)) {
-                unlink($rutaAnterior);
-            }
 
-            // 2. Mover la nueva
-            $card->move(public_path('IMG/Cards/' . $request->categoria . '/'), $nombreCard);
-            $datos['card'] = $nombreCard;
-        }
 
-        $post->update($datos);
+        /**
+         * Actualiza, comprueba y remplaza imagenes
+         */
+        if ($request->hasFile('cover')) $data['cover'] = $this->replaceImage($request->file('cover'), ImageType::Cover, 'Portada', 'cover', $post);
+        if ($request->hasFile('cover_card')) $data['cover_card'] = $this->replaceImage($request->file('cover_card'), ImageType::Card, 'Portada', 'cover_card', $post);
 
-        return redirect()->back()->with('success', 'Post actualizado correctamente');
+        $post->update($data);
+
+        $path = $this->files->getPath($post->id, $post->title);
+
+
+        if (!file_exists($path)) mkdir($path, 0755, true);
+
+        file_put_contents($path . '/index.json', $index);
+        file_put_contents($path . '/content.md', $content);
+
+
+
+
+        return redirect()->back()->with('success', 'El Post se actualizo correctamente');
     }
 
-    //Vista de borrado de Post
-    public function destroy($id)
-    {
 
-        $post = Post::findOrFail($id);;
 
-        // Formatear título para construir la ruta
-        $newTitle = $this->cleanName($post->titulo);
 
-        // Borrar MD y JSON de contenido
-        $jsonPath = resource_path("blog/json/{$post->categoria}/{$newTitle}.json");
-        $mdPath   = resource_path("blog/markdown/{$post->categoria}/{$newTitle}.md");
 
-        if (file_exists($jsonPath)) unlink($jsonPath);
-        if (file_exists($mdPath))   unlink($mdPath);
 
-        // Borrar imagen física
-        if ($post->portada) {
-            $imgPath = public_path('IMG/Portada/' . $post->categoria . '/' . $post->portada);
-            if (file_exists($imgPath)) unlink($imgPath);
-        }
+    /**
+     * 
+     * Eliminar Post
+     * @param $id id del Post
+     */
+    public function destroy(int $id)
+    {   
+        
+        $post = Post::findOrFail($id);
+        
 
-        if ($post->card) {
-            $imgPath = public_path('IMG/Cards/' . $post->categoria . '/' . $post->card);
-            if (file_exists($imgPath)) unlink($imgPath);
-        }
+        $this->authorize('delete', $post);
 
-        // Limpiar Formato.json
-        $this->imgConfig->delete((int)$id);
+        /** Guardamos los valores */
+        $path = $this->files->getPath($post->id, $post->title);
+        $cover = $post->cover;
+        $card = $post->cover_card;
+        $folder = basename($path);
 
-        $coments = $post->comentarios();
-        //Borramos Contenido Relacionado
-        $coments->delete();
+
+        /*** Eliminamos todos los comentarios Asociados */
+        Comment::where('post_id', $post->id)->whereNotNull('parent_id')->delete();
+        Comment::where('post_id', $post->id)->whereNull('parent_id')->delete();
+
+
+
         $post->delete();
+
+        /***
+         * Eliminamos json md imagen y config img en ese orden
+         */
+        if (file_exists($path . '/' . 'index.json')) unlink($path . '/' . 'index.json');
+        if (file_exists($path . '/' . 'content.md')) unlink($path . '/' . 'content.md');
+        if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
+        if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
+
+        Storage::disk('public')->deleteDirectory('IMG/' . $folder);
+        Storage::disk('local')->deleteDirectory('blog/' . $folder);
+
+
+
 
 
         return redirect()->route('post.panel')->with('success', 'Post eliminado');
     }
 
-    //Vista de registrar un post 
-    public function create()
+
+
+
+
+    /**
+     * Funcion para crear un Post
+     * @param $request Request Post Store
+     */
+    public function store(StorePostRequest $request)
     {
-        return Inertia::render('post/create');
-    }
+        $this->authorize('create', Post::class);
 
-    private function cleanName(string $titulo): string
-    {
-        $nameClean = mb_strtolower($titulo, 'UTF-8');
-        $nameClean = str_replace(
-            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'],
-            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'],
-            $nameClean
-        );
-        $nameClean = preg_replace('/[^a-z0-9]+/', '-', $nameClean);
-        return $nameClean = trim($nameClean, '-');
-    }
+        $data = $request->validated();
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'titulo'            => 'required|string|max:255',
-            'web_title'         => 'nullable|string|max:255',
-            'categoria'         => 'required|in:Literatura,AnimeManga,Reflexiones',
-            'genero'            => 'required|string',
-            'fecha_publicacion' => 'required|date',
-            'autor'             => 'required|string|max:255',
-            'descripcion'       => 'nullable|string',
-            'publicado'         => 'required|in:0,1',
-            'portada'           => 'nullable|file|mimes:jpg,jpeg,png,webp', // ✅
-            'card'              => 'nullable|file|mimes:jpg,jpeg,png,webp', // ✅
-        ]);
+        unset($data['cover'], $data['cover_card'], $data['content']);
 
-        $datos = $request->except('portada', 'card');
 
-        if ($request->hasFile('portada')) {
-            $portada          = $request->file('portada');
-            $extension  = $portada->getClientOriginalExtension();
-            $nombre           = 'P-' . str_replace(' ', '-', strtolower(pathinfo($portada->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $extension;;
-            $portada->move(public_path('IMG/Portada/' . $request->categoria . "/"), $nombre);
-            $datos['portada'] = $nombre;
+
+        if ($request->hasFile('content')) {
+            $file    = $request->file('content');
+            $content = file_get_contents($file->getRealPath());
+
+
+
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
+        } else {
+
+            $content = MarkdownService::generate();
         }
 
-        if ($request->hasFile('card')) {
-            $card          = $request->file('card');
-            $nombre        = str_replace(' ', '-', strtolower($card->getClientOriginalName()));
-            $card->move(public_path('IMG/Cards/' . $request->categoria . "/"), $nombre);
-            $datos['card'] = $nombre;
+
+
+        $titles = MarkdownService::extract($content);
+        $index  = json_encode($titles);
+
+        $data['tags'] = implode(',', $data['tags']);
+        $data['content'] = $content;
+
+        if ($request->hasFile('cover')) {
+            $cover = $request->file('cover');
+
+            $name = $this->replaceImage($cover, ImageType::Cover, 'Portada', null, null, $request->cover);
+
+            $data['cover'] = $name;
         }
 
-        $post = Post::create($datos);
+        if ($request->hasFile('cover_card')) {
+            $cover = $request->file('cover_card');
 
-        // 2. Formatear título → slug
-        $newTitle = $this->cleanName($request->titulo);
+            $name = $this->replaceImage($cover, ImageType::Cover, 'Cards', null, null, $request->cover_card);
 
-        // 3. Rutas de los archivos
-        $jsonPath = resource_path("blog/json/{$request->categoria}/{$newTitle}.json");
-        $mdPath   = resource_path("blog/markdown/{$request->categoria}/{$newTitle}.md");
+            $data['cover_card'] = $name;
+        }
 
-        // 4. Crear JSON con plantilla mínima
-        $jsonContent = json_encode([
-            'id'    => $post->id,
-            'title' => 'Ejemplo',
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents($jsonPath, $jsonContent);
 
-        // 5. Crear MD con plantilla mínima
-        file_put_contents($mdPath, "## Ejemplo\n");
+        $post = Post::create($data);
 
-        // 6. Registrar en el JSON de configuración de imagen
-        $this->imgConfig->set($post->id, [
-            'home_config' => null,
-            'article_config' => null,
-        ]);
 
-        return back()->with('Success', "Post creado con exito");
+
+        $path = $this->files->getPath($post->id, $post->title);
+        $images = basename($path);
+        Storage::disk('public')->makeDirectory('IMG/' . $images); 
+
+        if (!file_exists($path)) mkdir($path, 0755, true);
+
+        file_put_contents($path . '/index.json', $index);
+        file_put_contents($path . '/content.md', $content);
+
+        return back()->with('success', "Post creado con exito");
     }
 
     public function backup()
     {
-        $posts     = Post::all()->toArray();
-        $users     = User::all()->toArray();
-        $coments   = Comentario::all()->toArray();
+        $data = [
+            'posts'    => Post::all()->toArray(),
+            'users'    => User::all()->makeHidden(['password', 'remember_token'])->toArray(),
+            'comments' => Comment::all()->toArray(),
+        ];
 
-        $fecha = now()->format('Y-m-d');
-        $backupPath = public_path('backups');
 
-        if (!file_exists($backupPath)) {
-            mkdir($backupPath, 0755, true);
-        }
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        // Borrar backups fechados antiguos
-        foreach (glob($backupPath . '/*_*.json') as $file) {
-            unlink($file);
-        }
+        if ($json == false) return back()->with('error', 'Fallo el generar un backup' . json_last_error_msg());
 
-        // Posts
-        $postsJson = json_encode($posts, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/posts_{$fecha}.json", $postsJson);
-        file_put_contents("{$backupPath}/posts.json", $postsJson);
 
-        // Users
-        $usersJson = json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/users_{$fecha}.json", $usersJson);
-        file_put_contents("{$backupPath}/users.json", $usersJson);
 
-        // Comentarios
-        $commentsJson = json_encode($coments, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        file_put_contents("{$backupPath}/comentarios_{$fecha}.json", $commentsJson);
-        file_put_contents("{$backupPath}/comentarios.json", $commentsJson);
+        $timestamp = now()->format('Y-m-d_His');
+        $path = "backups/backup_{$timestamp}.json";
 
-        return back()->with('success', "Backup creado: {$fecha}");
+        Storage::disk('local')->put($path, $json);  
+
+        /** Sobre escribimos init App */
+        Storage::disk('local')->put('init.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+
+        return back()->with('success', "Backup creado: {$path}");
     }
+
+    /**
+     * Procesa el card y la portada
+     * @param $post 
+     * @param UploadedFile $file
+     * @param ImageType $type
+     * @param string $folder
+     * @param string $field
+     */
+    private function replaceImage(UploadedFile $file, ImageType $type, string $folder, ?string $field = null, ?Post $post = null, ?string $imgName = null): string
+    {
+        $img = $post !== null ? $post->{$field} : $imgName;
+
+        $oldPath = public_path("IMG/{$folder}/{$img}");
+
+        if ($img && file_exists($oldPath)) unlink($oldPath);
+
+
+        $name = $this->files->modifyImages($type, $file);
+
+        $file->move(public_path("IMG/{$folder}"), $name);
+
+        return $name;
+    }
+
+
+    /***
+     * Maquetar Etiquetas
+     */
+    private function buildTags()
+    {
+        $items = Post::tags();
+        $tags = collect($items);
+
+        $tags = collect($items)
+            ->flatMap(fn($item) => explode(',', $item))
+            ->map(fn($g) => trim($g))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return $tags;
+    }
+
+
+    /** generateIndex */
 }

@@ -10,6 +10,7 @@ import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import BlogLayout from '@/layouts/app/blog-layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,11 +50,11 @@ export default function Password() {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <BlogLayout >
             <Head title="Profile settings" />
 
             <SettingsLayout>
-                <div className="space-y-6">
+                <div className="space-y-6 bg-[#f3e5ab] p-4">
                     <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
 
                     <form onSubmit={updatePassword} className="space-y-6">
@@ -123,6 +124,6 @@ export default function Password() {
                     </form>
                 </div>
             </SettingsLayout>
-        </AppLayout>
+        </BlogLayout>
     );
 }

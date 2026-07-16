@@ -36,10 +36,13 @@ export const confirmDelete = (title : string, text : string, onConfirm: () => vo
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            onConfirm(); // Ejecuta la función que le pases (el borrado)
+            onConfirm(); 
         }
     });
 };
+
+
+
 
 
 
@@ -97,8 +100,8 @@ export const getFormatoPost = async (id:number): Promise<Formato | null> => {
     }
 };
 
-export const getRoutePortada  = (categoria:string | undefined, portada:string |undefined): string => {
-    return `/IMG/Portada/${categoria}/${portada}`
+export const getRoutePortada  = (categoria:string | undefined, cover:string |undefined): string => {
+    return `/IMG/Portada/${cover}`
 }
 
 export const getRouteCard  = (categoria:string | undefined, card:string |undefined): string => {

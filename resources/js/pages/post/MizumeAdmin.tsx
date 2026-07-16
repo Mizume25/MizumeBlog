@@ -1,106 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import { User, Post, Comentario } from '@/types';
+import { useState } from 'react';
+import { Post, Data, Section, SECTION, Section_Content } from '@/types';
 import {
-  InfoPanel, 
-  InfoSideBarLeft,
-  InfoNav, 
-  InfoTable, 
-  InfoSideBarRight, 
-  InfoProgresBar, 
-  InfoTableMobile, 
+  InfoPanel,
+  InfoTable,
+  InfoProgresBar,
+  InfoNav,
 } from '../../core/admin';
+import BlogLayout from '@/layouts/app/blog-layout';
 
-const useMediaQuery = (query:string) => {
-        const [matches, setMatches] = useState(false);
-
-        useEffect(() => {
-            const media = window.matchMedia(query);
-
-            // Actualizar el estado inicial
-            if (media.matches !== matches) {
-                setMatches(media.matches);
-            }
-
-            // Definir el listener para cambios de pantalla
-            const listener = () => setMatches(media.matches);
-
-            // Soporte para navegadores modernos y antiguos
-            media.addEventListener('change', listener);
-
-            return () => media.removeEventListener('change', listener);
-        }, [matches, query]);
-
-        return matches;
-    };
-
-
-export interface Data {
-  users: User[],
-  posts: Post[],
-  coments: Comentario[]
+/**
+ * Sidebars comeplemtarios 
+ * @param posts 
+ * @returns 
+ */
+function InfoSideBarRight({ posts }: { posts: Post[] }) {
+  return (
+    <div className="bg-white border border-[#EAD9B8] rounded-xl shadow-sm">
+      <div className="px-5 py-4 border-b border-[#EAD9B8]">
+        <h3 className=" text-[#3B2314]">Actividad reciente</h3>
+      </div>
+      <div className="p-1 capitalize">
+        {posts.map((act, i) => (
+          <div key={i} className="flex gap-3 p-3 border-b border-[#EAD9B8]/40 last:border-0">
+            <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 bg-green-600`}></div>
+            <div>
+              <p className="text-xs text-[#4A3020] leading-snug">{act.title}</p>
+              <p className="text-[10px] text-gray-400 italic">{act.publish_date}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
-function getLatestPosts(posts: Post[], limit: number): Post[] {
-  return [...posts]
-    .sort((a, b) => new Date(b.fecha_publicacion).getTime() - new Date(a.fecha_publicacion).getTime())
-    .slice(0, limit);
-}
+
+
+
 
 const MizumeAdmin = ({ data }: { data: Data }) => {
 
-  //Variable de Estado
-  const MAX_ACTUAL_POST = 3;
 
-  const [categoriaActual, setCategoriaActual] = useState('Todos');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  /*** Secciones */
+  const [section, setSection] = useState<Section_Content>(SECTION[0]);
 
-  // 2. Esta es la función que "atrapa" el valor del hijo
-  const handleFiltrado = (nombre: string): void => {
-    console.log("Cambiando a:", nombre);
-    setCategoriaActual(nombre);
-  };
 
-  const posts = categoriaActual === 'Todos' ? data.posts : data.posts.filter((p) => p.categoria === categoriaActual);
 
-  const actualPost = getLatestPosts(data.posts,MAX_ACTUAL_POST)
+  /** Changes Section */
+  /** Changes Section */
+    const handleSection = (label : Section) => {
+        console.log(label)
+        section.active = false;
 
-  const CONTENT = useMediaQuery("(max-width: 768px)");
+        const sec  = SECTION.find((p) => p.label == label);
+
+        if(sec) setSection(sec);
+
+        section.active = true;
+
+        
+    }
 
   return (
-    <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
-      {/* ── SIDEBAR ── */}
-      <InfoSideBarLeft  
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}/>
+    <BlogLayout>
+      <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
+        {/* ── MAIN CONTENT ── */}
+        <main className="flex-1 ml-0  flex flex-col min-w-0">
+        <InfoNav />
 
-      {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 ml-0 lg:ml-64 flex flex-col min-w-0">
-        {/* TOPBAR */}
-         <InfoNav onMenuOpen={() => setSidebarOpen(true)} />
 
-        <div className="p-4 lg:p-8 space-y-6 lg:space-y-8">
-          <InfoPanel data={data} />
+          <div className="p-4 lg:p-8 space-y-6 lg:space-y-8">
+            <InfoPanel data={data} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* POST TABLE */}
-            {!CONTENT ? (
-              <InfoTable posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual} />
-            ) : (
-              <InfoTableMobile posts={posts} getCategoria={handleFiltrado} categoriaActual={categoriaActual}/>
-            )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* POST TABLE */}
+              <InfoTable posts={data.posts} section={section} onSection={handleSection} />
 
-            {/* RIGHT COLUMN */}
-            <div className="space-y-6">
-              {/* ACTIVITY */}
-              <InfoSideBarRight posts={actualPost}/>
+              {/* RIGHT COLUMN */}
+              <div className="space-y-6">
+                {/* ACTIVITY */}
+                <InfoSideBarRight posts={data.posts.slice(0, 3)} />
 
-              {/* PROGRESS STATS */}
-              <InfoProgresBar posts={data.posts}/>
+                {/* PROGRESS STATS */}
+                <InfoProgresBar posts={data.posts} />
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </BlogLayout>
   );
 };
 

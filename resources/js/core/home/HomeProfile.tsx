@@ -7,14 +7,14 @@ interface AvatarProps {
 // Genera un color de fondo único pero consistente según el nombre
 function getColorFromName(name: string): string {
     const palette = [
-        "#7B3F00", // café oscuro
-        "#5C4033", // marrón
-        "#4A235A", // púrpura oscuro
-        "#1A5276", // azul oscuro
-        "#1D6A39", // verde oscuro
-        "#784212", // naranja oscuro
-        "#6E2C00", // tostado
-        "#212F3C", // gris azulado
+        "#7B3F00",
+        "#5C4033", 
+        "#4A235A", 
+        "#1A5276", 
+        "#1D6A39", 
+        "#784212", 
+        "#6E2C00", 
+        "#212F3C", 
     ];
     let hash = 0;
     for (let i = 0; i < name.length; i++) {

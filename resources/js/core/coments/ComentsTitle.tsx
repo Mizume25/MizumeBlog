@@ -1,8 +1,8 @@
-import { Comentario } from '@/types'
+import { Comment } from '@/types'
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
-function ComentsTitle({ coments }:{ coments: Comentario[]}) {  
+function ComentsTitle({ coments }:{ coments: Comment[]}) {  
  const { auth } = usePage<SharedData>().props;
 
     return (

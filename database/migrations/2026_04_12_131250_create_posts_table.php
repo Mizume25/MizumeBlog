@@ -6,25 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
+    /*
+     * Tabla migracion de post
      */
     public function up(): void
     {   
         /*Tabla de Post*/
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->string('web_title')->nullable();
-            $table->string('genero');
-            $table->enum('categoria', ['Literatura', 'AnimeManga', 'Reflexiones']);
-            $table->string('autor');
-            $table->date('fecha_publicacion');
-            $table->text('descripcion')->nullable();
-            $table->boolean('destacado')->default(true);
-            $table->string('portada')->nullable();
-            $table->string('card')->nullable();
-            $table->boolean('publicado')->default(false);
+            $table->string('title');
+            $table->string('web_title');
+            $table->string('tags');
+            $table->enum('category', ['literatura', 'animemanga', 'reflexiones']);
+            $table->string('author');
+            $table->date('publish_date')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('featured')->default(true);
+            $table->string('cover')->nullable();
+            $table->string('cover_card')->nullable();
+            $table->json('config')->nullable();
             $table->timestamps();
             
         });

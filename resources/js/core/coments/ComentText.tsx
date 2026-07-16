@@ -1,13 +1,13 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
-import { SharedData, Comentario } from '@/types';
-import { useEffect, useRef, useState } from 'react';
+import { SharedData, CommentRecord } from '@/types';
+import { useRef, useState } from 'react';
 import ReplyBTN from './ReplyBTN';
 import ReplyComent from './ReplyComent';
-import ReplyContent from './ReplyContent';
-function ComentText({ coment }: { coment: Comentario }) {
-    const { auth } = usePage<SharedData>().props;
 
+function ComentText({ coment }: { coment: CommentRecord }) {
+    const { auth } = usePage<SharedData>().props;
+    console.log(coment)
     const handleDelete = () => {
         router.delete(route('comments.destroy', coment.id), {
             preserveScroll: true
@@ -39,10 +39,10 @@ function ComentText({ coment }: { coment: Comentario }) {
             <div className="flex justify-between items-center mb-1">
                 <h4 className="font-bold text-[#d4a373]">{coment.user.name}</h4>
 
-                <span className="text-xs text-[#8b5e3c]">{coment.fecha}</span>
+                <span className="text-xs text-[#8b5e3c]">{coment.publish_date}</span>
             </div>
             <p className="text-sm leading-relaxed text-[#c8ad7f]">
-                {coment.descripcion}
+                {coment.description}
             </p>
 
             {auth.user.id != coment.user.id && (

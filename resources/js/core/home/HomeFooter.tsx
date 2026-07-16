@@ -1,27 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import { Book } from "@/types";
-const getCarrusel = async (): Promise<Book[]> => {
-    const answer = await fetch('/data/Carrusel.json');
-    if (!answer.ok) throw new Error('No se ha podido cargar el Carrusel');
-    return answer.json();
+import { Book, type Post } from "@/types";
+
+
+const getPosts = async(): Promise<Post[]> => {
+    
+    const response = await fetch('/api/upcoming');
+
+    if(!response) throw new Error(`Error ${response}: no se han podido cargar los posts`);
+
+    return response.json();
+
 }
 
 export default function HomeFooter() {
     const trackRef = useRef<HTMLDivElement>(null);
 
-    const [books, setBooks] = useState<Book[]>([]);
+    const [cards, setCards] = useState<Post[]>([]);
 
     useEffect(() => {
-        getCarrusel()
-            .then(setBooks)
+        getPosts()
+            .then(setCards)
             .catch(e => console.log("Error en el carrusel", e));
     }, []);
 
     // Duplicamos para loop infinito
-    const doubled = [...books, ...books];
+    const doubled = [...cards, ...cards];
 
     return (
-        <footer className="w-full mt-8 overflow-hidden rounded-xl" style={{ background: "#0d0804" }}>
+        <footer className="w-full overflow-hidden rounded-xl" style={{ background: "#0d0804" }}>
 
             {/* ── Carrusel ── */}
             <div className="py-6 overflow-hidden" style={{ borderBottom: "0.5px solid rgba(201,168,124,0.15)" }}>
@@ -51,7 +57,7 @@ export default function HomeFooter() {
                         onMouseEnter={e => (e.currentTarget.style.animationPlayState = "paused")}
                         onMouseLeave={e => (e.currentTarget.style.animationPlayState = "running")}
                     >
-                        {doubled.map((book, i) => (
+                        {doubled.map((card, i) => (
                             <div
                                 key={i}
                                 style={{
@@ -62,7 +68,7 @@ export default function HomeFooter() {
                                     opacity: 1,
                                     transition: "transform 0.3s",
                                     cursor: "pointer",
-                                    backgroundImage: `url(/IMG/Carrusel/${book.image})`,
+                                    backgroundImage: `url(/IMG/Cards/${card.cover_card})`,
                                     backgroundSize: "contain"
                                 }}
                                 onMouseEnter={e => {
@@ -81,14 +87,14 @@ export default function HomeFooter() {
                                     height: "100%",
                                     borderRadius: 6,
                                     overflow: "hidden",
-                                    borderLeft: `4px solid ${book.accent}`,
+                                    borderLeft: `4px solid ${card.config?.accent}`,
 
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "flex-end",
                                     padding: "8px 6px",
                                 }}>
-                                    <span style={{
+                                    <span className="capitalize" style={{
                                         fontSize: 9,
                                         fontWeight: 500,
                                         color: "#fff",
@@ -99,15 +105,9 @@ export default function HomeFooter() {
                                         borderRadius: 3,
                                         padding: "3px 5px",
                                         display: "block",
-                                    }}>{book.title}</span>
-                                    <span style={{
-                                        fontSize: 8,
-                                        color: "rgba(255,255,255,0.65)",
-                                        textAlign: "center",
-                                        marginTop: 2,
-                                        textShadow: "0 1px 3px rgba(0,0,0,0.9)",
-                                        display: "block",
-                                    }}>{book.author}</span>
+                                        
+                                    }}>{card.title.length > 25 ? card.web_title : card.title}</span>
+                                    
                                 </div>
                             </div>
                         ))}
@@ -134,9 +134,9 @@ export default function HomeFooter() {
                         Cita del mes
                     </p>
                     <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontStyle: "italic", lineHeight: 1.65, margin: 0 }}>
-                        Cuando avanzaba perdido en mi propio avance, amante ciego, sin saber a quién amar, ni cómo, otros amantes sin duda, más antiguos que yo, me seguían con la mirada, velaban por mis pasos y ya me amaban a mis espaldas, a pesar de mí. Para que yo entrara en la reducción erótica, hacía falta que otro amante me hubiese precedido y, desde allí, me llamara en silencio."
+                       "It's the only NEET  things to do"
                         <cite style={{ display: "block", fontStyle: "normal", fontSize: 10, color: "rgba(201,168,124,0.55)", marginTop: 4 }}>
-                            — J. L. Marion
+                            — Kamisama Memochou Vol.1
                         </cite>
                     </p>
                 </div>

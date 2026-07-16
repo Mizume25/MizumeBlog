@@ -1,98 +1,44 @@
 import { Head } from '@inertiajs/react';
 import { type Post } from '@/types';
-import { getRandomInt, getRandomPost } from '@/lib/utils';
-import { useState, useEffect , useMemo , useCallback } from 'react';
-import { 
-    HomeHeader, 
-    HomeSideBarLeft, 
-    HomeSideBarRight, 
-    HomeContent, 
-    HomeButton, 
-} from '../core/home';
-import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
-import TopAuthBar from '@/core/auth/TopAuthBar';
-import HomeFooter from '@/core/home/HomeFooter';
- 
-//INTERFACES PARA LOS COMPONENTES
-export interface SideBarChange { // HomeSideBarRight
-    sidebar: string,
-    title: string,
-    list: Post[] | undefined,
-}
-
-//Interfaz de sidebar Defailt
-export interface DefaultSideBar {
-    title: string,
-    items: string[],
-    routes: string[],
-}
+import { useMemo } from 'react';
+import { HomeContent, } from '../core/home';
 
 
+/** @imports Layouts Reciclables */
+import BlogLayout from '@/layouts/app/blog-layout';
+import SideBarRight from '@/core/auth/SideBarRight';
 
-
-
-//Contenido del Home
 export default function Dashboard({ posts }: { posts: Post[] }) {
-    
-    const MAX_POST: number = 6;
-    const [menuAbierto, setMenuAbierto] = useState(false);
-    const { auth } = usePage<SharedData>().props;
 
+
+
+    /***
+     * Conteido Destacado
+     * Dividmos el contendo 3 
+     */
     const { mainPosts, sidebarPosts } = useMemo(() => {
-        const featured = getRandomPost(MAX_POST, posts);
         return {
-            mainPosts: featured?.slice(0, 3),
-            sidebarPosts: featured?.slice(3)
+            mainPosts: posts.slice(0, 3),
+            sidebarPosts: posts.slice(3)
         };
-    }, [posts]); // Solo se recalcula si 'posts' cambia
-    
-   // const CONTENT = useMediaQuery("(max-width: 1024px)");
 
-   
+    }, [posts]);
 
-    // Botón toggle simple
-    const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setMenuAbierto(prev => !prev)
-      // Contenido
-    }, []);
-
-    //Boton de solo cerrar 
-    const handleClose = useCallback(() => {
-    setMenuAbierto(false);
-    }, []);
-
-    const exist : boolean = auth?.user ? true : false;
 
     return (
-        <>
+        <BlogLayout>
             {/* Head de el Home*/}
             <Head title='Home' ></Head>
-            {!auth?.user && <TopAuthBar />}
-            {/* Bottton del Responsive */}
-            <HomeButton onButtonClick={handleButtonClick} />
-            <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[1fr_3fr_1fr] gap-8 items-start">
-             
-                {/*Header Layout*/}
-                <HomeHeader />
 
-                {/*SideBar izquierdo*/}
-                <HomeSideBarLeft isOpen={menuAbierto} onClose={handleClose} />
+            <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 items-start">
 
+                <HomeContent mainPosts={mainPosts} className="order-2 lg:order-1" />
 
-                {/*Contenido Body*/}
-                <HomeContent mainPosts={mainPosts} />
-
-                
-
-                {/*SideBar derecho*/}
-                <HomeSideBarRight sidebarPosts={sidebarPosts} />
+                <SideBarRight posts={sidebarPosts} showFollow sticky="lg:top-6" className="order-1 lg:order-2" />
 
             </main>
 
-                <HomeFooter />
-        </>
+
+        </BlogLayout>
     );
 }
