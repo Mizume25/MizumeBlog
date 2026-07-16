@@ -262,7 +262,7 @@ Schema::create('posts', function (Blueprint $table) {
             $table->timestamps();
 });
 
-Migraciond de Comentarios
+Migraciones de Comentarios
 Schema::create('comments', function (Blueprint $table) {
 
             $table->id();
@@ -304,7 +304,7 @@ Schema::create('comments', function (Blueprint $table) {
 
         });
 }
-````
+````````
 
 ### Modelos
 Partiendo de estas entidades he construido los siguientes modelos con las siguientes funciones 
