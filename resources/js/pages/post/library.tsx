@@ -42,8 +42,8 @@ function Library({ posts }: { posts: Post[] }) {
         section.active = true;
 
         
-    }
-  
+    }   
+    console.log(posts)
     return (
         <BlogLayout>
             

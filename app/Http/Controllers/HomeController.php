@@ -77,10 +77,13 @@ class HomeController extends Controller
 
 
 
-
+    /**
+     * Controlador de archivador 
+     */
     public function archivador()
     {
-        $posts = Post::all();
+       
+        $posts = Post::publish()->get();
 
         return Inertia::render('post/library', compact('posts'));
     }

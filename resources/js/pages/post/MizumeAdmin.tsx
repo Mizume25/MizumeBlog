@@ -8,7 +8,11 @@ import {
 } from '../../core/admin';
 import BlogLayout from '@/layouts/app/blog-layout';
 
-
+/**
+ * Sidebars comeplemtarios 
+ * @param posts 
+ * @returns 
+ */
 function InfoSideBarRight({ posts }: { posts: Post[] }) {
   return (
     <div className="bg-white border border-[#EAD9B8] rounded-xl shadow-sm">

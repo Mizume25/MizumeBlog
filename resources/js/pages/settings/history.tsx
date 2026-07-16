@@ -109,7 +109,7 @@ function RenderComents({ comments }: { comments: CommentRecord[] }) {
             {comments.length != 0 ? (comments.map((comment) => (
                 <div key={comment.id} className="max-w-full bg-amber-200 flex flex-row justify-between items-start rounded-2xl px-4 py-2 max-h-25 overflow-y-auto">
                     <p className="ms-1 min-w-0 flex-1 break-words break-all">
-                        {comment.description}
+                        🐢 {comment.description}
                     </p>
                     <div className="flex items-center justify-center gap-1.5 shrink-0">
 
@@ -133,7 +133,7 @@ function RenderComents({ comments }: { comments: CommentRecord[] }) {
 
             ) : (
                 <>
-                    <h2 className="text-white text-xl font-bold">No has Comentado en ningun Post</h2>
+                    <h2 className="text-white text-xl font-bold">No hay mas comentarios</h2>
                 </>
             )}
 
@@ -206,9 +206,8 @@ function history({ posts }: historyProps) {
 
     /** Api key commments */
     useEffect(() => {
-
+        if(posts.length === 0) return;
         const controller = new AbortController();
-
         fetch(`/api/posts/${posts[index].id}/comments?page=${page}`, {
             credentials: 'same-origin',
             headers: { 'Accept': 'application/json' },
@@ -232,56 +231,65 @@ function history({ posts }: historyProps) {
     return (
         <BlogLayout>
             <SettingsLayout>
+                {posts.length != 0 ? (
+                    <>
 
-                <div className="w-full h-15 -mb-1 rounded-t-xl  p-3 bg-gray-600/50 flex flex-start gap-3 overflow-hidden">
-                     <ButtonsRepo goNext={goNext} goPrev={goPrev} index={index} posts={posts} />
-                    <NavCommand
-                        loadBack={loadBack}
-                        loadMore={loadMore}
-                        page={page}
-                        hasMore={hasMore}
-                        onDeletePost={onDeletePost}
-                        post_id={posts[index].id}
-                    />
+                        <div className="w-full h-15 -mb-1 rounded-t-xl  p-3 bg-gray-600/50 flex flex-start gap-3 overflow-hidden">
+                            <ButtonsRepo goNext={goNext} goPrev={goPrev} index={index} posts={posts} />
+                            <NavCommand
+                                loadBack={loadBack}
+                                loadMore={loadMore}
+                                page={page}
+                                hasMore={hasMore}
+                                onDeletePost={onDeletePost}
+                                post_id={posts[index].id}
+                            />
 
-                </div>
-
-
-                <div className="w-full flex lg:flex-row flex-col h-full overflow-hidden ">
-
-
-                   
-                    <div className="w-full h-100 border-black bg-gray-700 flex items-end justify-between bg-no-repeat bg-cover p-1  ">
-
-                        <div
-                            className="hidden lg:block h-full w-70 bg-gray-100 bg-cover bg-center bg-no-repeat "
-                            style={{
-                                backgroundImage: `url(/IMG/Cards/${posts[index].cover_card})`,
-                                objectPosition: `${posts[index].config?.card_config}`,
-                            }}
-                        />
-
-
-                        <div className="w-full lg:columns-1 gap-1 p-2 auto-rows-min">
-                            <div className="w-full bg-amber-100/10 rounded-2xl">
-
-                                <RenderComents comments={comments} />
-
-                            </div>
-
-                            <div className="w-full bg-amber-100/10 rounded-2xl">
-
-
-                            </div>
                         </div>
 
 
-                        {/** Container de comentarios */}
-                        <div className="hidden min-lg:flex w-16 h-full flex-shrink-0 border-l border-gray-200 flex-col items-center justify-center gap-4 bg-gray-50">
-                            <Buttons goPrev={goPrev} goNext={goNext} index={index} posts={posts} />
+                        <div className="w-full flex lg:flex-row flex-col h-full overflow-hidden ">
+
+
+
+                            <div className="w-full h-100 border-black bg-gray-700 flex items-end justify-between bg-no-repeat bg-cover p-1  ">
+
+                                <div
+                                    className="hidden lg:block h-full w-70 bg-gray-100 bg-cover bg-center bg-no-repeat "
+                                    style={{
+                                        backgroundImage: `url(/IMG/Cards/${posts[index].cover_card})`,
+                                        objectPosition: `${posts[index].config?.card_config}`,
+                                    }}
+                                />
+
+
+                                <div className="w-full lg:columns-1 gap-1 p-2 auto-rows-min">
+                                    <div className="w-full bg-amber-100/10 rounded-2xl">
+
+                                        <RenderComents comments={comments} />
+
+                                    </div>
+
+                                    <div className="w-full bg-amber-100/10 rounded-2xl">
+
+
+                                    </div>
+                                </div>
+
+
+                                {/** Container de comentarios */}
+                                <div className="hidden min-lg:flex w-16 h-full flex-shrink-0 border-l border-gray-200 flex-col items-center justify-center gap-4 bg-gray-50">
+                                    <Buttons goPrev={goPrev} goNext={goNext} index={index} posts={posts} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                ) : (
+                    <>
+                    <h2>No hay Comentarios</h2>
+                    </>
+                )}
+
             </SettingsLayout>
         </BlogLayout >
     )

@@ -10,6 +10,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,10 +33,16 @@ class DatabaseSeeder extends Seeder
                 Post::create($post);
             }
 
+            $count = 0;
             foreach ($data["users"]  as $user) {
                 $user['password'] = Hash::make(Str::random(32));
-                 $userData['must_reset_password'] = empty($userData['google_id']);
+                $userData['must_reset_password'] = empty($userData['google_id']);
                 User::insert($user);
+                if (empty($userData['google_id']) && app()->environment('production')) {
+                    Password::sendResetLink(['email' => $user->email]);
+                } else {
+                    $count++;
+                }
             }
 
             foreach ($data["comments"] as $comment) {
@@ -45,7 +53,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-
+            $this->command->info('Estamos en pruebas locales, hemos detectado ' . $count . ' usuarios a revisar');
             $this->command->info('Los datos se restablecieron correctamente');
         }
     }

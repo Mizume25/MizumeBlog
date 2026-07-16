@@ -238,7 +238,7 @@ class AdminController extends Controller
 
         $path = $this->files->getPath($post->id, $post->title);
         $images = basename($path);
-        $content = Storage::disk('public')->makeDirectory('IMG/' . $images); // Creamos una carpeta donde se guarde el contenido 
+        Storage::disk('public')->makeDirectory('IMG/' . $images); 
 
         if (!file_exists($path)) mkdir($path, 0755, true);
 

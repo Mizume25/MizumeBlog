@@ -10,12 +10,9 @@ function LibraryHeader( { onSection , section} : NavContentProps) {
         <>
             <div className="px-4 sm:px-8 pt-10 pb-6  bg-[#e5c385] ">
                 <div className="flex items-baseline gap-4 flex-wrap">
-                    <h2 className="font-display text-3xl sm:text-7xl font-bold tracking-tight text-[#61452f]">Archivador</h2>
+                    <h2 className="font-display text-3xl sm:text-7xl font-bold tracking-tight text-[#61452f]">Archive</h2>
 
                 </div>
-                <p className="mt-3 text-[#61452f] max-w-xl text-sm sm:text-base">
-                    Cada categoría es un cajón. Cada post, una ficha. Busca por tema en el índice de la izquierda.
-                </p>
             </div>
 
             <div className="lg:hidden flex gap-2 overflow-x-auto px-4 py-4  bg-[#2B1D12]">
