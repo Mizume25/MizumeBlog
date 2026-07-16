@@ -128,12 +128,7 @@ function show({ content }: { content: Content }) {
             {/* Contenedor del Main */}
             <main className="mt-20 max-w-[1700px] mx-auto px-4 sm:px-6 pb-24">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative">
-                    {sidebar && (
-                        <div
-                            className="lg:hidden fixed inset-0 z-[59] bg-black/50"
-                            onClick={() => setSidebar(false)}
-                        />
-                    )}
+                  
 
                     <PostSideBarLeft list={index} onFindID={handleFindID} sidebar={sidebar} isClose={isClose} />
                     

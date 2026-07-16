@@ -17,5 +17,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/history', [ProfileController::class, 'history'])->name('history');
 
+    //Route::get('settings/appearance', [ProfileController::class , 'appearance'])->name('appearance');
+    
    
 });

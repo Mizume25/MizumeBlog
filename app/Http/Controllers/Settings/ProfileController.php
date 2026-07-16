@@ -63,6 +63,11 @@ class ProfileController extends Controller
         return redirect('/');
     }
 
+    public function appearance () 
+    {
+        return Inertia::render('settings/appearance');
+    }
+
     /**
      * Historial de Comentarios de Usuario
      * 
