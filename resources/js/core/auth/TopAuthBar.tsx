@@ -33,7 +33,7 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                     ))}
                 </nav>
 
-                <h1 className="md:justify-self-center text-[1.6rem] md:text-[2rem] lg:text-[2.2rem] font-bold text-white tracking-tight drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] truncate">
+                <h1 className="md:justify-self-center text-[1.6rem] md:text-[2rem] lg:text-[2.2rem] font-bold title">
                     Mizumeblog
                 </h1>
 

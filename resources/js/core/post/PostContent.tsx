@@ -31,15 +31,14 @@ type PostTitleProps = Pick<Post, "publish_date" | "web_title" | "author">;
 function PostTitle({publish_date, web_title, author }: PostTitleProps ) {
     let newDate: string  | undefined = formatDate(publish_date);
     return (
-        <header className="px-8 pb-4 text-center">
+        <header className="px-8  text-center">
             <div className="bg-[#C8AD7F] py-8 px-6 rounded-xl shadow-lg mb-6 relative">
-                <h1 className="capitalize text-3xl md:text-4xl font-bold text-white leading-tight drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+                <h3 className="capitalize text-3xl md:text-4xl font-bold text-white title">
                    { web_title || `Lectura de ${author}`}
-                </h1>
+                </h3>
 
             </div>
-            <p className="text-[#A18B75] italic text-sm mb-4">Publicado el {newDate}</p>
-            <div className="w-24 h-px bg-white/20 mx-auto mb-8"></div>
+            <p className="text-[#A18B75] italic text-sm underline">Publicado el {newDate}</p>
         </header>
     )
 }
@@ -48,7 +47,7 @@ function PostTitle({publish_date, web_title, author }: PostTitleProps ) {
 function PostTag({ tags }: { tags: string[] }) {
    return (
       //Mapeamos tags
-      <div className="flex justify-center gap-2 sm:gap-3 px-3 py-3 sm:px-6 sm:py-6 bg-[#2A1B12] capitalize">
+      <div className="flex justify-center gap-2 sm:gap-3 px-3  py-5 sm:px-6 sm:py-6 bg-[#2A1B12] capitalize">
          {tags.map((p, i) => (
             <span
                key={i}
@@ -69,10 +68,9 @@ function PostContent({ post, contenido, selectedId }: { post: Post, contenido: s
 
   return (
     /* Contenido Main*/
-    <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden ps-4 pe-4">
+    <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden p-4">
 
-      {/* Contenedor de Tags*/}
-      <PostTag tags={badge} />
+      
 
       {/** Titulo Header */}
       <PostTitle 
@@ -81,6 +79,9 @@ function PostContent({ post, contenido, selectedId }: { post: Post, contenido: s
       author={post.author}
       
       />
+      
+      {/* Contenedor de Tags*/}
+      <PostTag tags={badge} />
       
       {/** Renderizado de contenido */}
       <MarkdownRenderer
