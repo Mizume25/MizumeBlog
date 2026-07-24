@@ -1,5 +1,8 @@
 import { usePage } from '@inertiajs/react';
 
+/** Iconos */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 
 

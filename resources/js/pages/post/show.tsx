@@ -2,6 +2,7 @@
 /** Interfaces web utilizadas */
 import { IndexContent, type Content , Formato , formatDefault } from '@/types'
 
+
 /** Eestados e iconos react */
 import { Head } from '@inertiajs/react'
 import { ListTree } from 'lucide-react';
@@ -127,6 +128,7 @@ function show({ content }: { content: Content }) {
             
             {/* Contenedor del Main */}
             <main className="mt-20 max-w-[1700px] mx-auto px-4 sm:px-6 pb-24">
+           
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative">
                   
 

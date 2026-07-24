@@ -1,7 +1,6 @@
 import { Post } from '@/types'
 import MarkdownRenderer from './MarkdownRenderer';
 
-
 /**
  * Formatear Fecha
  * @param data 
@@ -69,8 +68,6 @@ function PostContent({ post, contenido, selectedId }: { post: Post, contenido: s
   return (
     /* Contenido Main*/
     <article className="lg:col-span-6 bg-[#2A1B12]/95 rounded-lg border border-white/10 shadow-2xl overflow-hidden p-4">
-
-      
 
       {/** Titulo Header */}
       <PostTitle 
