@@ -7,7 +7,7 @@ use App\Models\Post;
 use Inertia\Inertia;
 use App\Services\FileContentService;
 use Barryvdh\DomPDF\Facade\Pdf;
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Table\TableExtension;
@@ -96,6 +96,7 @@ class HomeController extends Controller
         $path = $this->files->getPath($post->id , $post->title);
 
         $content = file_get_contents($path . '/' . 'content.md');
+        $index = json_decode(file_get_contents($path . '/' . 'index.json'), true);
 
         $tags = $this->files->parseTags($post->tags);
 
@@ -107,14 +108,17 @@ class HomeController extends Controller
 
     
 
-        $converter = new CommonMarkConverter([$env]);
+        $converter = new MarkdownConverter($env);
 
         $html = $converter->convert($content)->getContent();
+
+        
 
         $pdf = Pdf::loadView('post.pdf', [
             'content' => $html,
             'post' => $post,
-            'tags' => $tags
+            'tags' => $tags,
+            'index' => $index
             ]);
 
          return $pdf->download("{$post->title}.pdf");

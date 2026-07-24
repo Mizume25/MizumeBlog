@@ -24,16 +24,9 @@ html, body {
     padding: 2px 8px;
     border-radius: 4px;
     margin-right: 4px;
-    font-size: 12px;
+    font-size: 15px;
 }
 
-
-
-img {
-    max-width: 100%;
-    max-height: 200px;
-    margin-bottom: 10px;
-}
 
 .info {
     text-transform: capitalize;
@@ -71,10 +64,11 @@ h2 {
   letter-spacing: 0.025em;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
   border-bottom: 2px solid #eeeeee;
+  text-align: center;
 }
 
 h3 {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #C8AD7F;
   margin: 1.75rem 1.75rem;
@@ -90,7 +84,7 @@ h3::before {
 }
 
 h4 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #A18B75;
   margin-bottom: 0.5rem;
@@ -98,6 +92,7 @@ h4 {
   padding-left: 1.25rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-align: center;
 }
 
 /* ── Párrafo ── */
@@ -174,17 +169,11 @@ td:first-child {
   font-style: normal;
 }
 
-/* ── Imagen ── */
-img {
-  margin: 1.5rem auto;
-  border-radius: 0.5rem;
-  display: block;
-  max-width: 100%;
-}
+
 
 /* ── Listas ── */
 ul {
-  list-style-type: disc;
+  list-style-image: url('/IMG/IconApp.png');
   list-style-position: outside;
   color: #e5e7eb;
   margin-bottom: 2rem;
@@ -192,7 +181,7 @@ ul {
   margin-right: 1.5rem;
 }
 ol {
-  list-style-type: decimal;
+  list-style-image: url('/IMG/IconApp.png');
   list-style-position: outside;
   color: #e5e7eb;
   margin-bottom: 2rem;
@@ -237,7 +226,7 @@ pre {
 /* ── Separador ── */
 hr {
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  page-break-before: always;
 }
 
 /* ── Negrita / cursiva ── */
@@ -253,6 +242,18 @@ em {
 /* ── Enlace ── */
 a {
   color: #C8AD7F;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  text-underline-offset: none;
+}
+
+
+.order-item {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.index {
+  list-style-image: none;
+  font-size: medium;
 }
