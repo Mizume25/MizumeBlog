@@ -4,7 +4,6 @@ import {
     defineConfig
 } from 'vite';
 import tailwindcss from "@tailwindcss/vite";
-
 export default defineConfig({
     plugins: [
         laravel({
@@ -19,6 +18,17 @@ export default defineConfig({
         jsx: 'automatic',
     },
     optimizeDeps: {
-            include: ['@headlessui/react'],
+        include: ['@headlessui/react'],
+    },
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        origin: 'http://localhost:5173',
+        hmr: {
+            protocol: 'ws',
+            host: 'localhost',
+            clientPort: 5173,
         },
+    },
 });
