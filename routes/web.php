@@ -26,6 +26,9 @@ Route::middleware(['auth', 'verified' , 'throttle:comments'])->group(function ()
     //Eliminar todos los comentarios de un usuario
     Route::delete('/comentarios', [ComentController::class, 'deleteAll'])->name('comments.deleteAll');
 
+    /** Exportacion PDF */
+    Route::get('/post/{id}/pdf', [HomeController::class, 'pdf'])->name('post.pdf');
+
 });
 
 /**

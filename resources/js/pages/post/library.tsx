@@ -43,7 +43,7 @@ function Library({ posts }: { posts: Post[] }) {
 
         
     }   
-    console.log(posts)
+
     return (
         <BlogLayout>
             

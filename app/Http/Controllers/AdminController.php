@@ -29,7 +29,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $tags = $this->buildTags();
+        $tags = $this->files->buildTags();
 
         return Inertia::render('post/create', compact('tags'));
     }
@@ -56,7 +56,7 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $tags = $this->buildTags();
+        $tags = $this->files->buildTags();
 
         return Inertia::render('post/edit', compact('post', 'tags'));
     }
@@ -299,25 +299,5 @@ class AdminController extends Controller
     }
 
 
-    /***
-     * Maquetar Etiquetas
-     */
-    private function buildTags()
-    {
-        $items = Post::tags();
-        $tags = collect($items);
-
-        $tags = collect($items)
-            ->flatMap(fn($item) => explode(',', $item))
-            ->map(fn($g) => trim($g))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
-
-        return $tags;
-    }
-
-
-    /** generateIndex */
+    
 }

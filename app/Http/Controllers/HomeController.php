@@ -6,8 +6,11 @@ use App\Models\Comment;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Services\FileContentService;
-
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\Table\TableExtension;
 
 class HomeController extends Controller
 {
@@ -72,11 +75,6 @@ class HomeController extends Controller
         return Inertia::render('post/show', compact('content'));
     }
 
-
-
-
-
-
     /**
      * Controlador de archivador 
      */
@@ -86,5 +84,39 @@ class HomeController extends Controller
         $posts = Post::publish()->get();
 
         return Inertia::render('post/library', compact('posts'));
+    }
+
+    /**
+     * Exportacion PDF
+     */
+    public function pdf(int $id) 
+    {   
+        $post = Post::findOrFail($id);
+
+        $path = $this->files->getPath($post->id , $post->title);
+
+        $content = file_get_contents($path . '/' . 'content.md');
+
+        $tags = $this->files->parseTags($post->tags);
+
+        $env = new Environment();
+
+        $env->addExtension(new CommonMarkCoreExtension());
+
+        $env->addExtension(new TableExtension());
+
+    
+
+        $converter = new CommonMarkConverter([$env]);
+
+        $html = $converter->convert($content)->getContent();
+
+        $pdf = Pdf::loadView('post.pdf', [
+            'content' => $html,
+            'post' => $post,
+            'tags' => $tags
+            ]);
+
+         return $pdf->download("{$post->title}.pdf");
     }
 }
