@@ -21,6 +21,7 @@ export default defineConfig({
         include: ['@headlessui/react'],
     },
     server: {
+	cors: true,
         host: '0.0.0.0',
         port: 5173,
         strictPort: true,
