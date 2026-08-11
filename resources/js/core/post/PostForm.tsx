@@ -1,19 +1,17 @@
-
 /*** @import Imports de Inerficies de Formularios y objetos submit */
 import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
-import Switch from "react-switch";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import Switch from 'react-switch';
 
 /*** @import Variables de Estado  y de referencia */
-import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 /** @imports Interfaces y Diseño Web + Iconos */
-import { Input, Select, Button, Textarea, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { OPTION_CATEGORY, PostSchema, type CreatePostSchemaOutput, type CreatePostSchemaInput } from '@/types';
-import { LoaderCircle, Book, Computer, Tag, Calendar, User, Tags, Pencil, Image, ArrowBigLeft, Dock, Notebook, Paperclip, CheckCircle, CheckCircle2 } from 'lucide-react'
+import { OPTION_CATEGORY, PostSchema, type CreatePostSchemaInput, type CreatePostSchemaOutput } from '@/types';
+import { Button, Dialog, DialogPanel, DialogTitle, Input, Select, Textarea } from '@headlessui/react';
+import { ArrowBigLeft, Book, Calendar, CheckCircle2, Computer, Image, LoaderCircle, Paperclip, Pencil, Tag, Tags, User , File} from 'lucide-react';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -24,9 +22,8 @@ interface PostFormProps {
     onSubmit: SubmitHandler<CreatePostSchemaOutput>;
     submitLabel?: string;
     processing?: boolean;
-    cover_url?: string,
-    card_url?: string,
-
+    cover_url?: string;
+    card_url?: string;
 }
 
 /**
@@ -38,37 +35,42 @@ export interface PostFormHandle {
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
     ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url }, ref) => {
-
         /**
          * Hook Form con propiedades de control
          */
-        const { register, handleSubmit, formState: { errors }, control, setValue, reset, watch, getValues } =
-            useForm<CreatePostSchemaInput, unknown, CreatePostSchemaOutput>({
-                resolver: zodResolver(PostSchema),
+        const {
+            register,
+            handleSubmit,
+            formState: { errors },
+            control,
+            setValue,
+            reset,
+            watch,
+            getValues,
+        } = useForm<CreatePostSchemaInput, unknown, CreatePostSchemaOutput>({
+            resolver: zodResolver(PostSchema),
 
-                defaultValues,
-            })
-
+            defaultValues,
+        });
 
         /**
          * Item individual para crear un etiqueta
          */
-        const [tag, setTag] = useState<string>("");
+        const [tag, setTag] = useState<string>('');
 
         /**
          * Variable para abrir un modal
          */
         const [isOpen, setIsOpen] = useState(false);
 
-
-
-        const cover = watch("cover");
-        const cover_card = watch("cover_card");
-        const content = watch("content");
+        const cover = watch('cover');
+        const cover_card = watch('cover_card');
+        const content = watch('content');
+        const images = watch('images');
 
         const [coverPreview, setCoverPreview] = useState<string | null>(null);
         const [coverCardPreview, setCoverCardPreview] = useState<string | null>(null);
-        const [contentPreview , setContentPreview] = useState<string | null>(null);
+        const [contentPreview, setContentPreview] = useState<string | null>(null);
 
         useEffect(() => {
             const file = cover?.[0];
@@ -79,7 +81,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             const url = URL.createObjectURL(file);
             setCoverPreview(url);
 
-          
             return () => URL.revokeObjectURL(url);
         }, [cover]);
 
@@ -94,48 +95,42 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             return () => URL.revokeObjectURL(url);
         }, [cover_card]);
 
-
         useEffect(() => {
-             const file = cover?.[0];
+            const file = cover?.[0];
             if (!file) {
                 setContentPreview(null);
                 return;
             }
 
-              setContentPreview(file.name);
-
-        })
+            setContentPreview(file.name);
+        });
 
         /**
          * Lista de Tags Obtenidos
          */
         const [list, setList] = useState<string[]>(defaultValues?.tags ?? []);
 
-        
-
         /**
          * Funcion reactiva que resetea formulario
          */
 
-
         /**
          * Funcion que refresca los tags
-         * @param tags 
+         * @param tags
          */
         const refreshTags = (tags: string) => {
-
-            const normalize = tags.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const normalize = tags
+                .toLowerCase()
+                .trim()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
             setList((prev) => {
-                const current = prev.includes(normalize)
-                    ? prev.filter((g) => g !== normalize) : [...prev, normalize];
+                const current = prev.includes(normalize) ? prev.filter((g) => g !== normalize) : [...prev, normalize];
 
-                setValue("tags", current);
+                setValue('tags', current);
                 return current;
             });
-
-
-        }
-
+        };
 
         const [fileInputKey, setFileInputKey] = useState(0);
 
@@ -147,67 +142,63 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             },
         }));
 
-
-
-
         /**
          * Funcion para añadir tags
          * @param nuevoTag
          */
         const addTag = (tag: string | null) => {
-
             /**
              * Comprobamos Valores
              */
-            if (tag == null) return alert("El tag no puede ser nulo");
+            if (tag == null) return alert('El tag no puede ser nulo');
 
             const clean = tag.trim();
 
-            if (clean.length === 0) return alert("El gentagero no puede ser vacío");
+            if (clean.length === 0) return alert('El gentagero no puede ser vacío');
 
             /**
              * Normalizamos Valores
              */
-            const normalize = clean.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const normalize = clean
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
 
             /** Refrescamos  */
             refreshTags(normalize);
 
             /** Limpiamos */
-            setTag("");
+            setTag('');
         };
-
-
-
 
         return (
             <>
                 {/** Formulario */}
                 <div>
-                    <div className="mx-auto lg:min-w-150 rounded-lg bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
-                        <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}  >
-                            <div className='flex flex-row gap-2 justify-between text-center'>
+                    <div className="border-border/50 mx-auto rounded-lg border bg-[#754C22] p-4 shadow-lg sm:p-8 lg:min-w-150">
+                        <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}>
+                            <div className="flex flex-row justify-between gap-2 text-center">
                                 {/** Link de Vuelta */}
-                                <div className='flex flex-row'>
+                                <div className="flex flex-row">
                                     <a
                                         href={route('post.panel')}
-                                        className='flex items-center gap-2 transition-transform hover:-translate-x-1.5 cursor-pointer duration-150 text-white/30'
+                                        className="flex cursor-pointer items-center gap-2 text-white/30 transition-transform duration-150 hover:-translate-x-1.5"
                                     >
-                                        <ArrowBigLeft size={26} className='text-white' />
+                                        <ArrowBigLeft size={26} className="text-white" />
                                         Volver
                                     </a>
                                 </div>
                                 {/** Header */}
-                                <div className='flex justify-end flex-row gap-2'>
-                                    <Label className="text-white text-right mb-2 hidden lg:inline">Destacado</Label>
+                                <div className="flex flex-row justify-end gap-2">
+                                    <Label className="mb-2 hidden text-right text-white lg:inline">Destacado</Label>
                                     <Controller
                                         name="featured"
                                         control={control}
                                         render={({ field }) => (
                                             <Switch
-                                                lang='es'
-                                                onColor='#b39e00'
-                                                offColor='#454545'
+                                                lang="es"
+                                                onColor="#b39e00"
+                                                offColor="#454545"
                                                 checked={field.value ?? false}
                                                 onChange={field.onChange}
                                                 checkedIcon={false}
@@ -215,22 +206,17 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                             />
                                         )}
                                     />
-
                                 </div>
 
-
                                 <InputError message={errors.featured?.message} />
-
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6  lg:gap-10 text-left p-3">
-
+                            <div className="grid grid-cols-1 gap-6 p-3 text-left lg:grid-cols-2 lg:gap-10">
                                 {/**  Titulo de la obra  */}
-                                <div className='flex flex-col gap-2'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Book size={20} />
                                         <span>Titulo Obra</span>
-
                                     </Label>
 
                                     <Input
@@ -239,43 +225,40 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         required
                                         autoFocus
                                         tabIndex={1}
-                                        {...register("title")}
+                                        {...register('title')}
                                         placeholder="Work Title..."
-                                        className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
                                     <InputError message={errors.title?.message} />
-
                                 </div>
 
                                 {/** Titulo Web */}
-                                <div className='flex flex-col gap-2'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Computer size={19} />
                                         <span>Titulo Web</span>
-
                                     </Label>
                                     <Input
                                         id="web_title"
                                         type="text"
                                         autoFocus
                                         tabIndex={1}
-                                        {...register("web_title")}
+                                        {...register('web_title')}
                                         placeholder="Web title work..."
-                                        className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
                                     <InputError message={errors.web_title?.message} />
                                 </div>
 
                                 {/** Tags */}
-                                <div className='flex flex-col gap-2'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Tags size={19} />
                                         <span>Tags</span>
-
                                     </Label>
                                     <Button
                                         type="button"
-                                        className="w-full bg-white text-[#754C22] hover:bg-white/90 font-bold h-12 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150"
+                                        className="h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
                                         tabIndex={4}
                                         onClick={() => setIsOpen(true)}
                                     >
@@ -286,11 +269,10 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 </div>
 
                                 {/*** Autor de la Obra */}
-                                <div className='flex flex-col gap-2'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <User size={19} />
                                         <span>Autor</span>
-
                                     </Label>
                                     <Input
                                         id="author"
@@ -298,49 +280,42 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         autoFocus
                                         tabIndex={1}
                                         required
-                                        {...register("author")}
+                                        {...register('author')}
                                         placeholder="Author name..."
-                                        className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
                                     <InputError message={errors.author?.message} />
                                 </div>
 
                                 {/** Fecha Públicación */}
-                                <div className='flex flex-col gap-2'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Calendar size={19} />
                                         <span>Fecha Públicación</span>
-
                                     </Label>
                                     <Input
                                         id="publish_date"
                                         type="date"
                                         autoFocus
                                         tabIndex={1}
-                                        {...register("publish_date")}
-                                        className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md"
+                                        {...register('publish_date')}
+                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
                                     <InputError message={errors.publish_date?.message} />
                                 </div>
 
                                 {/*** Categorias */}
-                                <div className='flex flex-col gap-2 mb-5'>
-                                    <Label className="text-white flex items-center gap-2">
+                                <div className="mb-5 flex flex-col gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Tag size={19} />
                                         <span>Categoria</span>
-
                                     </Label>
-                                    <Select
-                                        id='category'
-                                        {...register("category")}
-                                        className="bg-white/30 p-2 rounded-md capitalize text-gray-50">
-
+                                    <Select id="category" {...register('category')} className="rounded-md bg-white/30 p-2 text-gray-50 capitalize">
                                         {OPTION_CATEGORY.map((p) => (
-                                            <option value={p} key={p} className='capitalize bg-white/30 text-black'>{p}</option>
-                                        ))
-
-                                        }
-
+                                            <option value={p} key={p} className="bg-white/30 text-black capitalize">
+                                                {p}
+                                            </option>
+                                        ))}
                                     </Select>
 
                                     <InputError message={errors.category?.message} />
@@ -348,105 +323,136 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             </div>
 
                             {/*** Cover */}
-
-                            <div className='h-70 w-full justify-between items-center flex flex-row'>
-
+                            <Label className="flex items-center gap-2 text-white">
+                                <Tag size={19} />
+                                <span>Cover y Card</span>
+                            </Label>
+                            <div className="flex h-70 w-full flex-row items-center justify-between">
                                 {/* Card */}
 
-                                <label className='w-45 h-50 relative flex flex-col items-center justify-center gap-2 bg-white/30 border-4 border-dotted border-white/50 rounded-2xl transition-transform hover:scale-105 duration-150 cursor-pointer mb-5 overflow-hidden'>
-
+                                <label className="relative mb-5 flex h-50 w-45 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105">
                                     {card_url ? (
-                                        <img src={`/IMG/Cards/${card_url}`} alt="Cover actual" className="absolute inset-0 w-full h-full object-cover" />
-                                        
+                                        <img
+                                            src={`/IMG/Cards/${card_url}`}
+                                            alt="Cover actual"
+                                            className="absolute inset-0 h-full w-full object-cover"
+                                        />
                                     ) : cover_card?.length !== 0 ? (
                                         <>
-                                         <img src={coverCardPreview!} alt="Preview Cover" className="absolute inset-0 w-full h-full object-cover" />
+                                            <img
+                                                src={coverCardPreview!}
+                                                alt="Preview Cover"
+                                                className="absolute inset-0 h-full w-full object-cover"
+                                            />
                                         </>
                                     ) : (
                                         <>
-                                            <p className='text-white/50'>Card</p>
-                                            <Image className='text-white/50' />
+                                            <p className="text-white/50">Card</p>
+                                            <Image className="text-white/50" />
                                         </>
                                     )}
 
-                                    <Input id='cover_card' {...register("cover_card")} type='file' className="hidden" accept=".jpg, .jpeg, .png" />
+                                    <Input id="cover_card" {...register('cover_card')} type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp" />
                                 </label>
 
                                 {/* Cover */}
-                                <label className='w-75 h-50 relative flex flex-col items-center justify-center gap-2 bg-white/30 border-4 border-dotted border-white/50 rounded-2xl transition-transform hover:scale-105 duration-150 cursor-pointer mb-5 overflow-hidden'>
-
+                                <label className="relative mb-5 flex h-50 w-75 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105">
                                     {cover_url ? (
-                                        <img src={`/IMG/Portada/${cover_url}`} alt="Cover actual" className="absolute inset-0 w-full h-full object-cover" />
-
+                                        <img
+                                            src={`/IMG/Portada/${cover_url}`}
+                                            alt="Cover actual"
+                                            className="absolute inset-0 h-full w-full object-cover"
+                                        />
                                     ) : cover?.length !== 0 ? (
                                         <>
-                                         <img src={coverPreview!} alt="Preview Cover" className="absolute inset-0 w-full h-full object-cover" />
+                                            <img src={coverPreview!} alt="Preview Cover" className="absolute inset-0 h-full w-full object-cover" />
                                         </>
                                     ) : (
                                         <>
-                                            <p className='text-white/50'>Cover</p>
-                                            <Image className='text-white/50' />
+                                            <p className="text-white/50">Cover</p>
+                                            <Image className="text-white/50" />
                                         </>
                                     )}
 
-                                    <Input id='cover' {...register("cover")} type='file' className="hidden" accept=".jpg, .jpeg, .png" />
+                                    <Input id="cover" {...register('cover')} type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp" />
                                 </label>
-
                             </div>
-
-
-
-
 
                             {/*** Descripcion */}
                             <div>
-                                <div className='flex flex-col gap-2 mb-3'>
+                                <div className="mb-6 flex flex-col gap-2">
                                     {/** Descripcion */}
-                                    <Label className="text-white flex items-center gap-2">
+                                    <Label className="flex items-center gap-2 text-white">
                                         <Pencil size={19} />
                                         <span>Descripcion</span>
-
                                     </Label>
                                     <Textarea
                                         id="description"
                                         autoFocus
                                         tabIndex={1}
-                                        {...register("description")}
+                                        {...register('description')}
                                         placeholder="This work is the..."
-                                        className="bg-white/30 border-white/20 text-gray-50 placeholder:text-white/40 focus:bg-white/20 p-2 rounded-md h-30"
+                                        className="h-30 rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
                                     <InputError message={errors.description?.message} />
                                 </div>
-
                             </div>
-                            {/*** Archivo md */}
-                            <label className='h-20 flex flex-row items-center justify-start ps-4 gap-2 bg-white/30 border-4 border-dotted border-white/50  rounded-2xl transition-transform hover:scale-105 duration-150 cursor-pointer'>
 
+                            <Label className="flex items-center gap-2 text-white mb-3">
+                                <File size={19} />
+                                <span>Archivo MD</span>
+                            </Label>
+
+                            {/*** Archivo md */}
+                            <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105 mb-8">
                                 {content?.length != 0 ? (
                                     <>
-                                    <CheckCircle2 size={26} color='green' />
-                                     <p className='text-green-200'>Contenido Subido!</p>
+                                        <CheckCircle2 size={26} color="green" />
+                                        <p className="text-green-200">Contenido Subido!</p>
                                     </>
                                 ) : (
                                     <>
-                                    <Paperclip size={26} />
-                                     <p className='text-white/50'>Contenido Mardown</p>
+                                        <Paperclip size={26} />
+                                        <p className="text-white/50">Contenido Mardown</p>
                                     </>
                                 )}
 
-                                <Input id='content' type='file' className="hidden" accept=".md" {...register("content")} />
+                                <Input id="content" type="file" className="hidden" accept=".md" {...register('content')} />
                                 <InputError message={errors.content?.message} />
                             </label>
 
 
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 gap-x-4 text-left p-3 pr-5 overflow-y-auto flex-1 min-h-0 mt-2 scrollbar-gutter-stable">
+                            <Label className="flex items-center gap-2 text-white mb-3">
+                                <Image size={19} />
+                                <span>Imagenes</span>
+                            </Label>
+
+                            {/*  Imagenes de la obra  */}
+                             <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105">
+                                {images?.length != 0 ? (
+                                    <>
+                                        <CheckCircle2 size={26} color="green" />
+                                        <p className="text-green-200">Se han subido { images?.length } imagenes </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Paperclip size={26} />
+                                        <p className="text-white/50">Imagenes de la obra</p>
+                                    </>
+                                )}
+
+                                <Input id="images" type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp"  {...register('images')}  multiple/>
+                                <InputError message={errors.images?.message} />
+                            </label>
+
+                            <div className="scrollbar-gutter-stable mt-2 grid min-h-0 flex-1 grid-cols-2 gap-3 gap-x-4 overflow-y-auto p-3 pr-5 text-left lg:grid-cols-4">
                                 {list.map((p) => (
                                     <Label
                                         key={p}
-                                        className="rounded-lg text-center flex flex-row items-center justify-center bg-amber-100 transition-transform hover:scale-105 duration-150 text-xs cursor-pointer px-3 py-2 text-black"
+                                        className="flex cursor-pointer flex-row items-center justify-center rounded-lg bg-amber-100 px-3 py-2 text-center text-xs text-black transition-transform duration-150 hover:scale-105"
                                         onClick={() => refreshTags(p)}
                                     >
-                                        <Tags size={14} className='me-2 shrink-0' />
+                                        <Tags size={14} className="me-2 shrink-0" />
                                         {p.charAt(0).toUpperCase() + p.slice(1)}
                                     </Label>
                                 ))}
@@ -454,7 +460,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full bg-[#e2d255] text-[#885200]  font-bold h-12 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150"
+                                className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -463,8 +469,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             </Button>
                         </form>
                     </div>
-
-
                 </div>
 
                 {/** Modal */}
@@ -473,13 +477,11 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
                     {/* Contenedor centrado */}
-                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto  p-4">
-                        <DialogPanel className="w-full max-w-4xl max-h-[100vh] rounded-lg bg-white p-6">
-                            <DialogTitle className="text-lg font-bold">
-                                Add Tag Values
-                            </DialogTitle>
+                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+                        <DialogPanel className="max-h-[100vh] w-full max-w-4xl rounded-lg bg-white p-6">
+                            <DialogTitle className="text-lg font-bold">Add Tag Values</DialogTitle>
                             {/** Mapeado de Tags Disposinbles y actuales */}
-                            <label className='w-full h-10'>
+                            <label className="h-10 w-full">
                                 <Input
                                     type="text"
                                     autoFocus
@@ -487,50 +489,39 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     onChange={(e) => setTag(e.target.value)}
                                     tabIndex={1}
                                     placeholder="Type tags name..."
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-400
-               rounded-md px-3 py-2 w-full
-               focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20
-               transition-colors duration-150 outline-none"
+                                    className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900 transition-colors duration-150 outline-none placeholder:text-gray-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20"
                                 />
                             </label>
                             <Button
                                 type="button"
-                                className="mt-2 w-25 bg-[#e2d255] text-[#885200]  font-bold h-6 cursor-pointer rounded-2xl transition-transform hover:scale-105 duration-150 text-sm"
+                                className="mt-2 h-6 w-25 cursor-pointer rounded-2xl bg-[#e2d255] text-sm font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
                                 onClick={() => addTag(tag)}
-                            >Add Tag</Button>
-                            <p className="mt-2 text-sm text-gray-600">
-                                Crea y/o seleciona los generós de la obra del post
-                            </p>
+                            >
+                                Add Tag
+                            </Button>
+                            <p className="mt-2 text-sm text-gray-600">Crea y/o seleciona los generós de la obra del post</p>
 
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 gap-x-4 text-left p-3 pr-5 overflow-y-auto flex-1 min-h-0 mt-2 scrollbar-gutter-stable">
+                            <div className="scrollbar-gutter-stable mt-2 grid min-h-0 flex-1 grid-cols-2 gap-3 gap-x-4 overflow-y-auto p-3 pr-5 text-left lg:grid-cols-4">
                                 {tags.map((p, i) => {
-
                                     let check = list.includes(p);
 
                                     return (
                                         <Label
                                             key={i}
                                             onClick={() => refreshTags(p)}
-                                            className={`
-                rounded-lg text-center p-2 flex flex-row items-center justify-start text-sm
-                transition-transform hover:scale-105 duration-150 cursor-pointer
-                ${check ? "bg-[#b39e00] text-white" : "bg-amber-100 text-black"}
-            `}
+                                            className={`flex cursor-pointer flex-row items-center justify-start rounded-lg p-2 text-center text-sm transition-transform duration-150 hover:scale-105 ${check ? 'bg-[#b39e00] text-white' : 'bg-amber-100 text-black'} `}
                                         >
-                                            <Tags size={16} className='me-3' /> {p}
+                                            <Tags size={16} className="me-3" /> {p}
                                         </Label>
                                     );
                                 })}
                             </div>
-
-
-
                         </DialogPanel>
                     </div>
                 </Dialog>
             </>
         );
-    }
+    },
 );
-export default PostForm
+export default PostForm;

@@ -53,10 +53,16 @@ class AdminController extends Controller
      * Vista de edición de un post
      */
     public function edit(int $id)
-    {
+    {   
+        /** Obtenemos Post */
         $post = Post::findOrFail($id);
 
+        /** Construimos tags */
         $tags = $this->files->buildTags();
+
+        $path = $this->files->getPath__p($post->id , $post->title);
+ 
+        
 
         return Inertia::render('post/edit', compact('post', 'tags'));
     }
@@ -74,7 +80,7 @@ class AdminController extends Controller
 
         $this->authorize('update', $post);
 
-        
+
 
         /** Validamos peticion */
         $data = $request->validated();
@@ -137,10 +143,10 @@ class AdminController extends Controller
      * @param $id id del Post
      */
     public function destroy(int $id)
-    {   
-        
+    {
+
         $post = Post::findOrFail($id);
-        
+
 
         $this->authorize('delete', $post);
 
@@ -186,15 +192,18 @@ class AdminController extends Controller
      * @param $request Request Post Store
      */
     public function store(StorePostRequest $request)
-    {
+    {   
+        /**Autorizamos sentencia */
         $this->authorize('create', Post::class);
 
+        /**Validamos datos */
         $data = $request->validated();
+        
+        /**Excluimos Datos */
+        unset($data['cover'], $data['cover_card'], $data['content'], $data['images']);
 
-        unset($data['cover'], $data['cover_card'], $data['content']);
 
-
-
+        /** Guardamos el contenido, en caso de no haber generamos un ejemplo */
         if ($request->hasFile('content')) {
             $file    = $request->file('content');
             $content = file_get_contents($file->getRealPath());
@@ -210,11 +219,17 @@ class AdminController extends Controller
 
 
         $titles = MarkdownService::extract($content);
+
+        /** Construiremos un indice partiendo de los titulo de la obra */
         $index  = json_encode($titles);
 
+        /** Separamos los tags */
         $data['tags'] = implode(',', $data['tags']);
+
+        /** Obtenemos el contenido */
         $data['content'] = $content;
 
+        /** Guardamos el cover */
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
 
@@ -223,6 +238,7 @@ class AdminController extends Controller
             $data['cover'] = $name;
         }
 
+        /** Guardamos el card */
         if ($request->hasFile('cover_card')) {
             $cover = $request->file('cover_card');
 
@@ -231,14 +247,20 @@ class AdminController extends Controller
             $data['cover_card'] = $name;
         }
 
-
+        /**Creamos el post */
         $post = Post::create($data);
 
 
 
         $path = $this->files->getPath($post->id, $post->title);
-        $images = basename($path);
-        Storage::disk('public')->makeDirectory('IMG/' . $images); 
+        $container = basename($path);
+        Storage::disk('public')->makeDirectory('IMG/' . $container);
+
+        if($request->hasFile('images')){
+            $this->saveImages($request->file('images'), $container);
+        }
+
+
 
         if (!file_exists($path)) mkdir($path, 0755, true);
 
@@ -266,7 +288,7 @@ class AdminController extends Controller
         $timestamp = now()->format('Y-m-d_His');
         $path = "backups/backup_{$timestamp}.json";
 
-        Storage::disk('local')->put($path, $json);  
+        Storage::disk('local')->put($path, $json);
 
         /** Sobre escribimos init App */
         Storage::disk('local')->put('init.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
@@ -299,5 +321,18 @@ class AdminController extends Controller
     }
 
 
+    /**
+     * Poner imagenes publicas
+     */
+    private function saveImages(array $images, string $container)
+    {
+        $paths = [];
+
+        foreach ($images as $image) 
+        {
+            $paths[] = Storage::disk('public')->put('IMG/' . $container , $image);
+        }
+
     
+    }
 }

@@ -32,6 +32,11 @@ class FileContentService
         return storage_path('app/private/blog' . '/' . $id . '-' . Str::slug($title));
     }
 
+    public function getPath__p(int $id , string $title) : string 
+    {
+        return storage_path('app/public/IMG' . '/' . $id . '-' . Str::slug($title));
+    }
+
     /**
      * Modificar titulo
      * 
