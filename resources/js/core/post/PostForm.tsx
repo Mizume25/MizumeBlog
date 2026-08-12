@@ -25,7 +25,7 @@ interface PostFormProps {
     cover_url?: string;
     card_url?: string;
     container?: number;
-    pictures?: string [];
+    pictures?: string[];
     id?: number;
 }
 
@@ -37,7 +37,7 @@ export interface PostFormHandle {
 }
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
-    ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, pictures, id}, ref) => {
+    ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, pictures, id }, ref) => {
         /**
          * Hook Form con propiedades de control
          */
@@ -503,23 +503,29 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div
                         className={`fixed top-20 right-0 -z-10 h-full w-full bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-150 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
-                        <button className="_btn_secondary flex items-center justify-center cursor-pointer" onClick={onToogle} type='button'>
+                        <button className="_btn_secondary flex cursor-pointer items-center justify-center" onClick={onToogle} type="button">
                             X
                         </button>
 
                         <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
+                        <h3>Imagenes totales {container}</h3>
 
                         <div className="mt-5 h-190 w-full overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                                {pictures?.map((p, i) => (
-                                    <div
-                                        key={i}
-                                        className="relative aspect-square overflow-hidden rounded-lg border-2 border-white/30 bg-black/10"
-                                    >
-                                        <img src={`/storage/IMG/${id + '-' + defaultValues.title}/${p}`} alt="" className="h-full w-full object-cover" />
-                                    </div>
-                                )) }
+                            <div className="flex flex-col items-center justify-center gap-4">
+                                {/* Itemes de imagenes itereadas*/}
 
+                                {pictures?.map((p, i) => (
+                                    <>
+                                        <div className="flex h-25 w-full items-center justify-between rounded-2xl bg-amber-900">
+                                            <div className="h-full p-2">
+                                                <img src={`/storage/IMG/${id}-${defaultValues.title}/${p}`} alt={p} className="h-full w-full object-cover" />
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="text-white">{p}</h3>
+                                            </div>
+                                        </div>
+                                    </>
+                                ))}
                             </div>
                         </div>
                     </div>
