@@ -31,7 +31,7 @@ class HomeController extends Controller
     public function index()
     {
         //Recibimos solo los post destacados
-        $posts = Post::featured()->latest()->limit(6)->get();
+        $posts = Post::featured()->whereNotNull('publish_date')->latest()->limit(6)->get();
 
         //Retornamos el objeto filtrado
         return Inertia::render('dashboard', compact('posts'));

@@ -7,15 +7,18 @@ import type { CreatePostSchemaOutput } from "@/types/schemas";
 import { useState } from 'react';
 import BlogLayout from '@/layouts/app/blog-layout';
 import { Post } from '@/types';
+import { Container } from 'lucide-react';
 
 
 interface EditProps {
     post: Post,
     tags: string [],
+    container: number,
+    pictures: string[]
 }
 
 
-export default function Edit({ post, tags }: EditProps) {
+export default function Edit({ post, tags , container, pictures }: EditProps) {
 
 
     const formRef = useRef<PostFormHandle>(null);
@@ -39,6 +42,11 @@ export default function Edit({ post, tags }: EditProps) {
         if (data.cover?.[0]) formData.append("cover", data.cover[0]);
         if (data.cover_card?.[0]) formData.append("cover_card", data.cover_card[0]);
         if (data.content?.[0]) formData.append("content", data.content[0]);
+         if (data.images && data.images.length > 0) {
+            Array.from(data.images).forEach((file) => {
+                formData.append('images[]', file);
+            });
+        }
 
         router.post(route('post.update', post.id), formData, {
             onSuccess: () => {
@@ -48,6 +56,8 @@ export default function Edit({ post, tags }: EditProps) {
             },
         });
     };
+
+
 
     return (
         <BlogLayout>
@@ -72,6 +82,9 @@ export default function Edit({ post, tags }: EditProps) {
                     onSubmit={handleUpdate}
                     submitLabel="Actualizar Post"
                     processing={processing}
+                    container={container}
+                    pictures={pictures}
+                    id={post.id}
                 />
             </AuthLayout>
         </BlogLayout>

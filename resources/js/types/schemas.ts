@@ -48,7 +48,6 @@ export const PostSchema = z.object({
         }),
     images: z
         .instanceof(FileList)
-        .refine((files) => files.length > 0, 'Selecciona al menos una imagen')
         .refine((files) => Array.from(files).every((file) => file.size <= MAX_SIZE), 'Cada imagen debe pesar máximo 5MB')
         .refine((files) => Array.from(files).every((file) => VALID_TYPES.includes(file.type)), 'Formato inválido en una o más imágenes')
         .optional(),

@@ -11,7 +11,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 /** @imports Interfaces y Diseño Web + Iconos */
 import { OPTION_CATEGORY, PostSchema, type CreatePostSchemaInput, type CreatePostSchemaOutput } from '@/types';
 import { Button, Dialog, DialogPanel, DialogTitle, Input, Select, Textarea } from '@headlessui/react';
-import { ArrowBigLeft, Book, Calendar, CheckCircle2, Computer, Image, LoaderCircle, Paperclip, Pencil, Tag, Tags, User , File} from 'lucide-react';
+import { ArrowBigLeft, Book, Calendar, CheckCircle2, Computer, File, Image, LoaderCircle, Paperclip, Pencil, Tag, Tags, User } from 'lucide-react';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -24,6 +24,9 @@ interface PostFormProps {
     processing?: boolean;
     cover_url?: string;
     card_url?: string;
+    container?: number;
+    pictures?: string [];
+    id?: number;
 }
 
 /**
@@ -34,7 +37,7 @@ export interface PostFormHandle {
 }
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
-    ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url }, ref) => {
+    ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, pictures, id}, ref) => {
         /**
          * Hook Form con propiedades de control
          */
@@ -62,6 +65,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          * Variable para abrir un modal
          */
         const [isOpen, setIsOpen] = useState(false);
+        console.log(pictures);
+        const [isSidebar, setisSidebar] = useState(false);
 
         const cover = watch('cover');
         const cover_card = watch('cover_card');
@@ -170,6 +175,9 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             /** Limpiamos */
             setTag('');
         };
+
+        /** Gestionar Imagenes */
+        const onToogle = () => setisSidebar((prev) => !prev);
 
         return (
             <>
@@ -327,10 +335,10 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <Tag size={19} />
                                 <span>Cover y Card</span>
                             </Label>
-                            <div className="flex h-70 w-full flex-row items-center justify-between">
+                            <div className="flex h-auto w-full flex-col items-center gap-4 sm:h-70 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                                 {/* Card */}
 
-                                <label className="relative mb-5 flex h-50 w-45 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105">
+                                <label className="relative mb-5 flex h-50 w-full max-w-70 shrink-0 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105 sm:w-45 sm:max-w-none">
                                     {card_url ? (
                                         <img
                                             src={`/IMG/Cards/${card_url}`}
@@ -352,11 +360,17 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         </>
                                     )}
 
-                                    <Input id="cover_card" {...register('cover_card')} type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp" />
+                                    <Input
+                                        id="cover_card"
+                                        {...register('cover_card')}
+                                        type="file"
+                                        className="hidden"
+                                        accept=".jpg, .jpeg, .png, .webp"
+                                    />
                                 </label>
 
                                 {/* Cover */}
-                                <label className="relative mb-5 flex h-50 w-75 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105">
+                                <label className="relative mb-5 flex h-50 w-full shrink-0 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-dotted border-white/50 bg-white/30 transition-transform duration-150 hover:scale-105 sm:w-75">
                                     {cover_url ? (
                                         <img
                                             src={`/IMG/Portada/${cover_url}`}
@@ -398,13 +412,13 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 </div>
                             </div>
 
-                            <Label className="flex items-center gap-2 text-white mb-3">
+                            <Label className="mb-3 flex items-center gap-2 text-white">
                                 <File size={19} />
                                 <span>Archivo MD</span>
                             </Label>
 
                             {/*** Archivo md */}
-                            <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105 mb-8">
+                            <label className="mb-8 flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105">
                                 {content?.length != 0 ? (
                                     <>
                                         <CheckCircle2 size={26} color="green" />
@@ -421,29 +435,42 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <InputError message={errors.content?.message} />
                             </label>
 
-
-                            <Label className="flex items-center gap-2 text-white mb-3">
+                            <Label className="mb-3 flex items-center gap-2 text-white">
                                 <Image size={19} />
                                 <span>Imagenes</span>
                             </Label>
 
                             {/*  Imagenes de la obra  */}
-                             <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105">
-                                {images?.length != 0 ? (
+                            <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105">
+                                {(container ?? 0) === 0 && (!images || images.length === 0) ? (
                                     <>
-                                        <CheckCircle2 size={26} color="green" />
-                                        <p className="text-green-200">Se han subido { images?.length } imagenes </p>
+                                        <Paperclip size={26} />
+                                        <p className="text-white/50">No hay imágenes</p>
                                     </>
                                 ) : (
                                     <>
-                                        <Paperclip size={26} />
-                                        <p className="text-white/50">Imagenes de la obra</p>
+                                        <CheckCircle2 size={26} color="green" />
+                                        <p className="text-green-200">
+                                            {container ?? 0} imagenes guardadas
+                                            {images && images.length > 0 && ` · ${images.length} nuevas por subir`}
+                                        </p>
                                     </>
                                 )}
 
-                                <Input id="images" type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp"  {...register('images')}  multiple/>
+                                <Input
+                                    id="images"
+                                    type="file"
+                                    className="hidden"
+                                    accept=".jpg, .jpeg, .png, .webp"
+                                    {...register('images')}
+                                    multiple
+                                />
                                 <InputError message={errors.images?.message} />
                             </label>
+
+                            <button className="_btn_secondary ms-3 mt-3" onClick={onToogle} type="button">
+                                Gestionar Imagenes
+                            </button>
 
                             <div className="scrollbar-gutter-stable mt-2 grid min-h-0 flex-1 grid-cols-2 gap-3 gap-x-4 overflow-y-auto p-3 pr-5 text-left lg:grid-cols-4">
                                 {list.map((p) => (
@@ -465,11 +492,38 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 disabled={processing}
                             >
                                 {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                                Create Post
+                                {defaultValues == undefined ? 'Crear Post' : 'Actualizar Post'}
                             </Button>
                         </form>
                     </div>
                 </div>
+                {defaultValues == undefined ? (
+                    <></>
+                ) : (
+                    <div
+                        className={`fixed top-20 right-0 -z-10 h-full w-full bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-150 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                    >
+                        <button className="_btn_secondary flex items-center justify-center cursor-pointer" onClick={onToogle} type='button'>
+                            X
+                        </button>
+
+                        <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
+
+                        <div className="mt-5 h-190 w-full overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                {pictures?.map((p, i) => (
+                                    <div
+                                        key={i}
+                                        className="relative aspect-square overflow-hidden rounded-lg border-2 border-white/30 bg-black/10"
+                                    >
+                                        <img src={`/storage/IMG/${id + '-' + defaultValues.title}/${p}`} alt="" className="h-full w-full object-cover" />
+                                    </div>
+                                )) }
+
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/** Modal */}
                 <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">

@@ -53,18 +53,22 @@ class AdminController extends Controller
      * Vista de edición de un post
      */
     public function edit(int $id)
-    {   
+    {
         /** Obtenemos Post */
         $post = Post::findOrFail($id);
 
         /** Construimos tags */
         $tags = $this->files->buildTags();
 
-        $path = $this->files->getPath__p($post->id , $post->title);
- 
-        
+        $path = $this->files->getPath__p($post->id, $post->title);
 
-        return Inertia::render('post/edit', compact('post', 'tags'));
+        $container = count(glob($path . '/*'));
+
+        $pictures = array_map('basename' , glob($path . '/*'));
+
+
+
+        return Inertia::render('post/edit', compact('post', 'tags', 'container', 'pictures'));
     }
 
     /**
@@ -87,7 +91,7 @@ class AdminController extends Controller
 
 
         /** Exceptaumos trato de card y cover */
-        unset($data['cover'], $data['cover_card'], $data['content']);
+        unset($data['cover'], $data['cover_card'], $data['content'], $data['images']);
 
 
         /*** Unimos tags */
@@ -118,8 +122,14 @@ class AdminController extends Controller
 
         $post->update($data);
 
+        $post->refresh();
+
         $path = $this->files->getPath($post->id, $post->title);
 
+        if ($request->hasFile('images')) {
+            $container = basename($path);
+            $this->saveImages($request->file('images'), $container);
+        }
 
         if (!file_exists($path)) mkdir($path, 0755, true);
 
@@ -192,13 +202,15 @@ class AdminController extends Controller
      * @param $request Request Post Store
      */
     public function store(StorePostRequest $request)
-    {   
+    {
         /**Autorizamos sentencia */
         $this->authorize('create', Post::class);
 
         /**Validamos datos */
         $data = $request->validated();
-        
+
+
+
         /**Excluimos Datos */
         unset($data['cover'], $data['cover_card'], $data['content'], $data['images']);
 
@@ -256,7 +268,7 @@ class AdminController extends Controller
         $container = basename($path);
         Storage::disk('public')->makeDirectory('IMG/' . $container);
 
-        if($request->hasFile('images')){
+        if ($request->hasFile('images')) {
             $this->saveImages($request->file('images'), $container);
         }
 
@@ -328,11 +340,8 @@ class AdminController extends Controller
     {
         $paths = [];
 
-        foreach ($images as $image) 
-        {
-            $paths[] = Storage::disk('public')->put('IMG/' . $container , $image);
+        foreach ($images as $image) {
+            $paths[] = Storage::disk('public')->put('IMG/' . $container, $image);
         }
-
-    
     }
 }
