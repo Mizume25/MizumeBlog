@@ -10,11 +10,17 @@ class ArtworkImage extends Model
         'artwork_id',
         'num',
         'name',
+        'alt'
     ];
 
     /** Pertence a un Artwork especifico */
     public function artwork () 
     {
         return $this->belongsTo(Artwork::class );
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ArtworkImage::class);
     }
 }
