@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {   
@@ -26,7 +27,8 @@ class Post extends Model
         'featured',
         'cover',
         'cover_card',
-        'config'
+        'config',
+        'code'
     ];
 
     /**
@@ -36,6 +38,15 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id');
+    }
+
+    /**
+     * Tenemos varias imagenes
+     * @return HasMany
+     */
+    public function images()
+    {
+        return $this->hasMany(PostImage::class);
     }
 
 
@@ -93,5 +104,29 @@ class Post extends Model
     public static function formats() 
     {
         return self::distinctValues('config');
+    }
+
+    /** Genera codigo unico para contenido de post */
+    protected static function generate(string $title): string
+    {
+        do {
+
+            $pre = substr($title, 0, 2);
+            $suf = Str::random(4);
+
+            $code = strtoupper("{$pre}-{$suf}");
+        } while (static::where('code', $code)->exists());
+
+        return $code;
+    }
+
+    /** Genera codigo automaticamente */
+    protected static function booted()
+    {
+        static::creating(function ($post) {
+            if (empty($post->code)) {
+                $post->code = static::generate($post->title);
+            }
+        });
     }
 }
