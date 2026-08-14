@@ -23,4 +23,10 @@ class ArtworkImage extends Model
     {
         return $this->hasMany(ArtworkImage::class);
     }
+
+    
+    public function postImages()
+    {
+        return $this->hasMany(PostImage::class, 'artwork_image_id');
+    }
 }

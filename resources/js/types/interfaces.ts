@@ -142,8 +142,8 @@ export type ArtworkPictures = {
  * @type Artwork Image
  * Propeidades de Artwork Image
  */
-export type Artwork_Image = Field & {
-    num: number;
+export type Artwork_Image = Partial<Field> & {
+    num?: number;
     name: string;
     alt: string;
 };

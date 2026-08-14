@@ -66,3 +66,26 @@ export const PostSchema = z.object({
 
 export type CreatePostSchemaOutput = z.output<typeof PostSchema>;
 export type CreatePostSchemaInput = z.input<typeof PostSchema>;
+
+/**
+ * Schema para Artwork crado con zod
+ */
+
+export const PhotoSchema = z.object({
+    num: z.number().optional(),
+    name: z.string().min(1, 'Debe tener un nombre'),
+    alt: z.string().min(5,'Debe ser descriptivo'),
+});
+
+export const ArtworkSchema = z.object({
+    title: z.string().min(3, 'Debe escribir un titulo'),
+    images: z
+        .instanceof(FileList)
+        .refine((files) => Array.from(files).every((file) => file.size <= MAX_SIZE), 'Cada imagen debe pesar máximo 5MB')
+        .refine((files) => Array.from(files).every((file) => VALID_TYPES.includes(file.type)), 'Formato inválido en una o más imágenes')
+        .optional(),
+    photos: z.array(PhotoSchema),
+})
+
+export type CreateArtworkSchemaOutput = z.output<typeof ArtworkSchema>;
+export type CreateArtworktSchemaInput = z.input<typeof ArtworkSchema>;

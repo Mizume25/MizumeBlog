@@ -76,7 +76,30 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     
     /** Rutas Artworks */
-    Route::get('img/create', [ArtworkController::class, 'create'])->name('artwork.create');
+
+    /*** Crear Artwork */
+    Route::get('artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
+    
+    /** Listar Artworks */
+    Route::get('artwork/index', [ArtworkController::class, 'index'])->name('artwork.index');
+
+    /** Editar Artworks */
+    Route::get('artwork/edit/{id}', [ArtworkController::class, 'edit'])->name('artwork.edit');
+
+    /** Actualizar Artwork*/
+    Route::put('artwork/update', [ArtworkController::class, 'update'])->name('artwork.update');
+
+    /** Crear un Artwork */
+    Route::post('artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
+
+
+    /** Borrar un Artwork Completo */
+    Route::delete('artwork/{id}', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
+
+    /** Borrar una imagen especifica de Artwork */
+    Route::delete('artwork/{artworkId}/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
+    
+
 });
 
 

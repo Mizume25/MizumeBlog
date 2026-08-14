@@ -10,7 +10,7 @@ function create() {
                 <Head title="Subir Imagenes" />
                 <ImageForm />
             </AuthLayout>
-        </BlogLayout>
+      </BlogLayout>
   )
 }
 

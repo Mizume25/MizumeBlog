@@ -72,7 +72,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             defaultValues,
         });
 
-        console.log(container);
+    
         /**
          * Item individual para crear un etiqueta
          */

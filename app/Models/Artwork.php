@@ -12,10 +12,16 @@ class Artwork extends Model
         'code',
     ];
 
-    /** Relaciona varios artwokr image */
+    /** Relaciona varios artworks images */
     public function images()
     {
         return $this->hasMany(ArtworkImage::class, 'artwork_id');
+    }
+
+    /** Relaciona varios Post */
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'artwork_post')->withTimestamps();
     }
 
     /** Genera codigo unico para imagenes */

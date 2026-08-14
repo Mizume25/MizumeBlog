@@ -90,7 +90,7 @@ class AdminController extends Controller
     public function update(UpdatePostRequest $request, int $id)
     {
 
-        /** Enotramos Post */
+        /** Encontramos Post */
         $post  = Post::findOrFail($id);
 
         $this->authorize('update', $post);

@@ -1,3 +1,5 @@
+import { Image } from "lucide-react";
+
 function InfoNav() {
     return (
         <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[#EAD9B8] bg-[#F5EDD8] px-4 py-4 lg:px-8">
@@ -10,6 +12,13 @@ function InfoNav() {
                     className="_btn_secondary"
                 >
                     + Nuevo post
+                </a>
+
+                 <a
+                    href={route('artwork.index')}
+                    className="_btn_secondary flex flex-row items-center justify-center"
+                >
+                    <Image size={16} className="me-2"/>  Artworks
                 </a>
                 <a
                     href={route('post.backup')}
