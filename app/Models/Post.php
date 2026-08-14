@@ -10,12 +10,12 @@ use Illuminate\Support\Str;
 use App\Enums\ContentType;
 
 class Post extends Model
-{   
+{
     protected $casts = [
         'config' => 'array',
     ];
 
-    
+
     //Propiedades de Modelo
     protected $fillable = [
         'title',
@@ -48,6 +48,12 @@ class Post extends Model
     public function images()
     {
         return $this->hasMany(PostImage::class);
+    }
+
+    // En Post.php
+    public function artworks()
+    {
+        return $this->belongsToMany(Artwork::class, 'artwork_post')->withTimestamps();
     }
 
 
@@ -102,7 +108,7 @@ class Post extends Model
     }
 
     /** Obtener todas las confgiuraciones */
-    public static function formats() 
+    public static function formats()
     {
         return self::distinctValues('config');
     }

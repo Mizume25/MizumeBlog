@@ -13,9 +13,20 @@ const MAX_SIZE = 5 * 1024 * 1024;
 const VALID_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 /**
+ * Schema de artwork
+ */
+
+const artworkSchema = z.object({
+    id: z.number().nullable().optional(),
+    title: z.string().min(2, 'Mínimo debe haber un nombre'),
+    code: z.string().optional(),
+});
+
+/**
  * Schema para Post creado con zod
  */
 export const PostSchema = z.object({
+    works: z.array(artworkSchema).optional(),
     title: z.string().min(2, 'Necesitas un titulo minimo'),
     web_title: z.string().optional(),
     tags: z.array(z.string()).min(1, 'Selecciona al menos un género'),

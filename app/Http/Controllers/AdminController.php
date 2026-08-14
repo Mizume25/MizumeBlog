@@ -8,7 +8,8 @@ use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
 use Inertia\Inertia;
-use App\Services\ImageType;
+use App\Enums\ImageType;
+use App\Models\Artwork;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
@@ -31,7 +32,9 @@ class AdminController extends Controller
     {
         $tags = $this->files->buildTags();
 
-        return Inertia::render('post/create', compact('tags'));
+        $artworks = Artwork::all();
+
+        return Inertia::render('post/create', compact('tags', 'artworks'));
     }
 
     /**
@@ -60,15 +63,23 @@ class AdminController extends Controller
         /** Construimos tags */
         $tags = $this->files->buildTags();
 
-        $path = $this->files->getPath__p($post->id, $post->title);
+        $artworks = Artwork::all();
 
-        $container = count(glob($path . '/*'));
+        $post->load('artworks.images');
 
-        $pictures = array_map('basename' , glob($path . '/*'));
+        $container = $post->artworks->mapWithKeys(function ($artwork) {
+            return [
+                $artwork->code => $artwork->images->map(fn($img) => [
+                    'name' => $img->name,
+                    'alt' => $img->alt,
+                ])->toArray(),
+            ];
+        });
+
+        $galeries = $post->artworks;
 
 
-
-        return Inertia::render('post/edit', compact('post', 'tags', 'container', 'pictures'));
+        return Inertia::render('post/edit', compact('post', 'tags', 'container', 'artworks', 'galeries'));
     }
 
     /**
@@ -209,6 +220,8 @@ class AdminController extends Controller
         /**Validamos datos */
         $data = $request->validated();
 
+        dd($data);
+
 
 
         /**Excluimos Datos */
@@ -263,21 +276,23 @@ class AdminController extends Controller
         $post = Post::create($data);
 
 
+        /** Creamos el directorio de imagenes*/
+        Storage::disk('public')->makeDirectory($post->code);
 
-        $path = $this->files->getPath($post->id, $post->title);
-        $container = basename($path);
-        Storage::disk('public')->makeDirectory('IMG/' . $container);
+        /** Obtenemos Ruta */
+        $path = Storage::disk('public')->get($post->code);
 
-        if ($request->hasFile('images')) {
-            $this->saveImages($request->file('images'), $container);
-        }
+        /** En caso de existir imagenes las colocamos */
+        if ($request->hasFile('images')) $this->saveImages($request->file('images'), $path);
 
+        /** Creamos Directorio Local */
+        Storage::disk('local')->makeDirectory($post->code);
 
+        $container = Storage::disk('local')->get($post->code);
 
-        if (!file_exists($path)) mkdir($path, 0755, true);
-
-        file_put_contents($path . '/index.json', $index);
-        file_put_contents($path . '/content.md', $content);
+        /** Inyectamos contenido */
+        file_put_contents($container . '/index.json', $index);
+        file_put_contents($container . '/content.md', $content);
 
         return back()->with('success', "Post creado con exito");
     }
@@ -336,12 +351,13 @@ class AdminController extends Controller
     /**
      * Poner imagenes publicas
      */
-    private function saveImages(array $images, string $container)
+    private function saveImages(array $images, string $path)
     {
         $paths = [];
 
         foreach ($images as $image) {
-            $paths[] = Storage::disk('public')->put('IMG/' . $container, $image);
+
+            $paths[] = Storage::disk('public')->put('IMG/' . $path, $image);
         }
     }
 }

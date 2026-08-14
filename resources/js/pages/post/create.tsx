@@ -1,11 +1,17 @@
 import PostForm, { PostFormHandle } from '@/core/post/PostForm';
 import BlogLayout from '@/layouts/app/blog-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import { Artwork } from '@/types';
 import type { CreatePostSchemaOutput } from '@/types/schemas';
 import { Head, router } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
-export default function Create({ tags }: { tags: string[] }) {
+interface CreateProps {
+    tags: string[];
+    artworks: Artwork[];
+}
+
+export default function Create({ tags, artworks }: CreateProps) {
     /**
      * Variable de Refrencia
      */
@@ -38,6 +44,15 @@ export default function Create({ tags }: { tags: string[] }) {
             });
         }
 
+        if (data.works && data.works.length > 0) {
+            data.works.forEach((work, i) => {
+                if (work.id !== null && work.id !== undefined) {
+                    formData.append(`works[${i}][id]`, String(work.id));
+                }
+                formData.append(`works[${i}][title]`, work.title);
+            });
+        }
+
         /**
          * Emviamos informació
          */
@@ -55,7 +70,7 @@ export default function Create({ tags }: { tags: string[] }) {
         <BlogLayout>
             <AuthLayout title="MizumeBlog" description="Formulario Post">
                 <Head title="Crear Post" />
-                <PostForm ref={formRef} tags={tags} onSubmit={handleCreate} submitLabel="Create Post" />
+                <PostForm ref={formRef} tags={tags} onSubmit={handleCreate} submitLabel="Create Post" artworks={artworks} />
             </AuthLayout>
         </BlogLayout>
     );

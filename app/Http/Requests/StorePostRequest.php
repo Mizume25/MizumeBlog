@@ -42,12 +42,16 @@ class StorePostRequest extends FormRequest
             ],
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp',
-            
+
             'config' => ['nullable', 'array'],
             'config.home_config'  => ['nullable', 'string'],
             'config.article_config' => ['nullable', 'string'],
             'config.card_config' => ['nullable', 'string', 'regex:/^\d{1,3}%$/'],
             'config.accent:' => ['nullable', 'string'],
+
+            'works' => ['nullable', 'array'],
+            'works.*.id' => ['nullable', 'integer', 'exists:artworks,id'],
+            'works.*.title' => ['required', 'string' , 'min:2'],
         ];
     }
 }
