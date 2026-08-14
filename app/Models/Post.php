@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use App\Enums\ContentType;
 
 class Post extends Model
 {   
@@ -128,5 +129,11 @@ class Post extends Model
                 $post->code = static::generate($post->title);
             }
         });
+    }
+
+    /** Ruta de contenid */
+    public function path(ContentType $type): string
+    {
+        return "blog/{$this->code}/{$type->value}";
     }
 }

@@ -5,12 +5,7 @@ namespace App\Services;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
-
-enum ImageType: string
-{
-    case Cover = 'cover';
-    case Card = 'card';
-}
+use App\Enums\ImageType;
 
 
 

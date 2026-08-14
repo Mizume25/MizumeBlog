@@ -13,17 +13,16 @@ class PostImage extends Model
     ];
 
     /** Pertence a un post */
-    public function post() 
+    public function post()
     {
         return $this->belongsTo(Post::class);
     }
 
     /** Pertence a un artwork image */
-    public function images()
+    public function image()
     {
-        return $this->belongsTo(ArtworkImage::class);
-    } 
+        return $this->belongsTo(ArtworkImage::class, 'artwork_image_id');
+    }
 
-    
     
 }

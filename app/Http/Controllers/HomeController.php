@@ -11,6 +11,10 @@ use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Table\TableExtension;
+use App\Enums\ContentType;
+ 
+use App\Services\MarkdownService;
+use Storage;
 
 class HomeController extends Controller
 {
@@ -53,11 +57,10 @@ class HomeController extends Controller
         ->get();
 
 
-        $path = $this->files->getPath($post->id, $post->title);
+        $md = Storage::disk('local')->get($post->path(ContentType::Content));
+        $json = Storage::disk('local')->get($post->path(ContentType::Index));
 
-        /** Obtenemos el indice y el contenido */
-        $json = file_get_contents($path . '/' . 'index.json');
-        $md = file_get_contents($path . '/' . 'content.md');
+        $body = MarkdownService::resolveImages($md , $post);
 
 
         $index = json_decode($json, true);
@@ -66,7 +69,7 @@ class HomeController extends Controller
         $content = [
             "post" => $post,
             "index" => $index,
-            "body" => $md,
+            "body" => $body,
             "comments" => $comments,
             "features" => $features,
         ];
@@ -93,10 +96,8 @@ class HomeController extends Controller
     {   
         $post = Post::findOrFail($id);
 
-        $path = $this->files->getPath($post->id , $post->title);
-
-        $content = file_get_contents($path . '/' . 'content.md');
-        $index = json_decode(file_get_contents($path . '/' . 'index.json'), true);
+        $content = Storage::disk('local')->get($post->path(ContentType::Content));
+        $index = Storage::disk('local')->get($post->path(ContentType::Index));
 
         $tags = $this->files->parseTags($post->tags);
 

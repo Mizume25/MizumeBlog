@@ -68,7 +68,7 @@ class MarkdownService
             if (!$postImage) return "**[imagen no encontrada: {$key}]**";
             
 
-            $artworkImage = $postImage->artworkImage;
+            $artworkImage = $postImage->image;
             $url = static::build($artworkImage);
             $alt = $artworkImage->alt ?? '';
 
@@ -82,7 +82,7 @@ class MarkdownService
     protected static function build(ArtworkImage $AI): string
     {
         
-        return "/IMG/{$AI->artwork->code}/{$AI->name}";
+        return "/storage/IMG/{$AI->artwork->code}/{$AI->name}";
     }
 
     /** Devuelve los keys usados en el texto que no tienen PostImage asociado */
