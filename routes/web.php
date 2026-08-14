@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -72,6 +73,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
 
     Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
+
+    
+    /** Rutas Artworks */
+    Route::get('img/create', [ArtworkController::class, 'create'])->name('artwork.create');
 });
 
 

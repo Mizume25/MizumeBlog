@@ -566,6 +566,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     type="file"
                                     className="hidden"
                                     accept=".jpg, .jpeg, .png, .webp"
+                                    disabled={galeries != undefined && galeries.length > 0}
                                     {...register('images')}
                                     multiple
                                 />
@@ -662,13 +663,24 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div
                         className={`fixed top-20 right-0 z-10 h-full w-full bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-150 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
-                        <button className="_btn_secondary flex cursor-pointer items-center justify-center" onClick={onToogle} type="button">
-                            X
-                        </button>
+                        <div className="flex h-10 w-full flex-row items-start justify-start gap-4">
+                            <button
+                                className="flex h-10 w-12 cursor-pointer items-center justify-center rounded-2xl bg-red-400"
+                                onClick={onToogle}
+                                type="button"
+                            >
+                                X
+                            </button>
+
+                            <a className="_btn_secondary flex items-center justify-center transition-transform duration-150 ease-in-out hover:scale-110"
+                               href={route('artwork.create')}
+                            >
+                                Agregar
+                            </a>
+                        </div>
 
                         <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
-                        <h3>Total de Imagenes: { Object.values(container ?? {}).flat().length}</h3>
-                        
+                        <h3>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
 
                         <div className="mt-5 h-190 w-full overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
                             <div className="flex flex-col items-center justify-center gap-4">
