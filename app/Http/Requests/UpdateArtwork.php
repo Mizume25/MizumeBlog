@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateArtwork extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateArtwork extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,13 +23,17 @@ class UpdateArtwork extends FormRequest
      */
     public function rules(): array
     {
-        $artworkId = $this->route('artwork')?->id;
+        $artworkId = $this->route('id');
 
         return [
-            'title' => "required|string|max:255|unique:artworks,title,{$artworkId}",
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp',
-
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('artworks', 'title')->ignore($artworkId),
+            ],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp'],
             'photos' => ['nullable', 'array'],
             'photos.*.name' => ['required', 'string', 'max:255'],
             'photos.*.alt' => ['required', 'string', 'max:255'],

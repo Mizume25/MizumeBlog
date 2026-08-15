@@ -42,7 +42,7 @@ function FlashHandler() {
                 }`}
         >
             <div
-                className={` capitalize flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-[260px] max-w-sm ${isSuccess
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-[260px] max-w-sm ${isSuccess
                         ? 'bg-[#7ad35f] text-[#ffffff] border-[#8c6c44]/40'
                         : 'bg-[#fc5353] text-[#ffffff] border-[#8c4444]/40'
                     }`}

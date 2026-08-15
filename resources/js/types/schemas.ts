@@ -78,7 +78,7 @@ export const PhotoSchema = z.object({
 });
 
 export const ArtworkSchema = z.object({
-    title: z.string().min(3, 'Debe escribir un titulo'),
+    title: z.string({ message: 'El titulo es obligatorio'}).min(3, 'Debe escribir un titulo'),
     images: z
         .instanceof(FileList)
         .refine((files) => Array.from(files).every((file) => file.size <= MAX_SIZE), 'Cada imagen debe pesar máximo 5MB')

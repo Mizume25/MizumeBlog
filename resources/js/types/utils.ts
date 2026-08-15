@@ -24,7 +24,7 @@ const MySwal = Swal.mixin({
 /**
  * Función reutilizable para confirmar eliminaciones
  */
-export const confirmDelete = (title : string, text : string, onConfirm: () => void) => {
+export const confirmDelete = (title : string, text : string, onConfirm: () => void, onAfter?: () => void ) => {
     MySwal.fire({
         title: title || '¿Estás seguro?',
         text: text || 'Esta acción no se puede deshacer.',
@@ -36,7 +36,8 @@ export const confirmDelete = (title : string, text : string, onConfirm: () => vo
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            onConfirm(); 
+            onConfirm();
+            onAfter?.();
         }
     });
 };

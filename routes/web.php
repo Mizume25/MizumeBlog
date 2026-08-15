@@ -86,8 +86,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     /** Editar Artworks */
     Route::get('artwork/edit/{id}', [ArtworkController::class, 'edit'])->name('artwork.edit');
 
+    
+
     /** Actualizar Artwork*/
-    Route::put('artwork/update', [ArtworkController::class, 'update'])->name('artwork.update');
+    Route::put('artwork/update/{id}', [ArtworkController::class, 'update'])->name('artwork.update');
 
     /** Crear un Artwork */
     Route::post('artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
@@ -97,7 +99,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('artwork/{id}', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
 
     /** Borrar una imagen especifica de Artwork */
-    Route::delete('artwork/{artworkId}/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
+    Route::delete('artwork/{artworkId}/img/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
+
+    /** Actualizar una imagen especifica de Artwork */
+    Route::put('artwork/{artworkId}/img/{ImageId}', [ArtworkController::class, 'updateAlt'])->name('artwork.updateAlt');
     
 
 });

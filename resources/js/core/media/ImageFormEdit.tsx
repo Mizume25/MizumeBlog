@@ -3,7 +3,9 @@ import { Label } from '@/components/ui/label';
 /*** @import Variables de Estado  y de referencia */
 
 /** @imports Interfaces y Diseño Web + Iconos */
-import { Artwork, Artwork_Image, ArtworkSchema, CreateArtworkSchemaOutput } from '@/types';
+import InputError from '@/components/input-error';
+import { useImageLogic } from '@/hooks/use-image-logic';
+import { Artwork, Artwork_Image, ArtworkSchema, confirmDelete, CreateArtworkSchemaOutput } from '@/types';
 import { Button, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from '@inertiajs/react';
@@ -26,10 +28,17 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
         setValue,
     } = useForm({
         resolver: zodResolver(ArtworkSchema),
+        defaultValues: {
+            title: artwork.title,
+        },
     });
 
+    const [processing, setProcessing] = useState(false);
+
     const handleUpdate = (data: CreateArtworkSchemaOutput) => {
+        setProcessing(true);
         const formData = new FormData();
+        formData.append('_method', 'put');
         if (data.title) formData.append('title', data.title);
         if (data.images && data.images.length > 0) {
             Array.from(data.images).forEach((file) => {
@@ -48,63 +57,77 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
         }
 
         router.post(route('artwork.update', artwork.id), formData, {
-            onSuccess: () => {},
+            onSuccess: () => {
+                reset();
+            },
             onFinish: () => {
-              
+                setProcessing(false);
             },
         });
     };
 
+    const updateAlt = () => {
+        router.put(
+            `/artwork/${artwork.id}/img/${picture.id}`,
+            { alt: altValue },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
+    };
+
     const [picture, setPicture] = useState<Artwork_Image>(pictures[0] ?? null);
+
+    const [altValue, setAltValue] = useState(picture?.alt ?? '');
 
     const images = watch('images');
 
+    const { imageAlts, setAlt, allCompleted } = useImageLogic(images);
+
     const [alt, setalt] = useState(false);
 
-    const [completed, setcompleted] = useState(false);
+    useEffect(() => {
+        if (images && images.length > 0) setalt(true);
+    }, [images]);
 
-    const [imageAlts, setImageAlts] = useState<Artwork_Image[]>([]);
+    useEffect(() => {
+        setValue('photos', imageAlts);
+    }, [imageAlts]);
 
-    const setImageAlt = (index: number, value: string) => {
-        setImageAlts((prev) => {
-            const updated = [...prev];
-            updated[index].alt = value;
-            return updated;
-        });
+    useEffect(() => {
+        setAltValue(picture?.alt ?? '');
+    }, [picture]);
+
+    /** Borra Artworks */
+    const handleDelete = () => {
+        confirmDelete('¿Eliminar Artwork?', `Esta acción borrará "${artwork.title}" permanentemente.`, () =>
+            router.delete(route('artwork.destroy', artwork.id)),
+        );
     };
 
-    useEffect(() => {
-        Array.from(images ?? []).forEach((file, i) => {
-            setImageAlts((prev) => {
-                const updated = [...prev];
-                updated[i] = { ...updated[i], name: file.name };
-                setValue('photos', updated);
-                return updated;
+    /** Borra Imagenes Especificas */
+    const handleDeleteImage = (name: string, id: number | undefined) => {
+        if (id === undefined || name === undefined) return;
+        confirmDelete('¿Eliminar Imagen?', `Esta acción eliminara "${name}" permanentemente.`, () => {
+            router.delete(route('artwork.remove', [artwork.id, id]), {
+                onSuccess: () => {
+                    const rest = pictures.filter((p) => p.id !== id);
+                    setPicture(rest[0] ?? null);
+                },
             });
         });
-
-        setalt((prev) => !prev);
-    }, [images]);
-
-    useEffect(() => {
-        setImageAlts(new Array(images?.length ?? 0).fill(''));
-    }, [images]);
-
-    useEffect(() => {
-        if (imageAlts.length === 0) return;
-        const allCompleted = imageAlts.every((a) => a.name.trim().length > 0);
-
-        if (allCompleted) {
-            setcompleted(true);
-        }
-    }, [imageAlts]);
+    };
 
     return (
         <>
             <div>
                 <div>
                     <div className="mx-auto flex flex-row gap-4 rounded-lg p-4 shadow-lg sm:p-8 lg:min-w-150">
-                        <form className="h-140 w-100 rounded-2xl bg-[#754C22] p-6">
+                        <form
+                            onSubmit={handleSubmit(handleUpdate, (errors) => console.log('Errores de validación:', errors))}
+                            className="h-140 w-100 rounded-2xl bg-[#754C22] p-6"
+                        >
                             <div className="flex flex-row justify-between gap-2 text-center">
                                 {/** Link de Vuelta */}
                                 <div className="flex flex-row">
@@ -129,11 +152,12 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                         id="title"
                                         type="text"
                                         autoFocus
-                                        value={artwork.title}
                                         tabIndex={1}
+                                        {...register('title')}
                                         placeholder="Title work..."
                                         className="rounded-xl border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
+                                    <InputError message={errors.title?.message} className="bg-[#754C22]/40" />
                                 </div>
                                 {/*  Titulo de la carpeta   */}
                                 <div className="flex flex-col gap-2">
@@ -177,27 +201,31 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                     multiple
                                     {...register('images')}
                                 />
+                                <InputError message={errors.images?.message} className="bg-[#754C22]/40" />
+                                <InputError message={errors.photos?.message} className="bg-[#754C22]/40" />
                             </label>
 
                             <Button
                                 type="submit"
                                 className="mt-5 h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
+                                disabled={processing}
                             >
                                 Actualizar Artwork
                             </Button>
 
                             <Button
-                                type="submit"
-                                className="mt-5 h-12 w-full cursor-pointer rounded-2xl bg-[#df3a3a] font-bold text-white transition-transform duration-150 hover:scale-105"
+                                type="button"
+                                className="mt-5 flex h-12 w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-[#df3a3a] font-bold text-white transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
+                                onClick={handleDelete}
                             >
                                 Eliminar Artwork
                             </Button>
                         </form>
 
                         {/* Pantalla de preview, como hermano del form dentro del mismo flex */}
-                        <div className="h-130 w-140 flex-shrink-0 flex-col rounded-2xl bg-[#e5c385] p-7">
+                        <div className="h-130 pb-15 w-140 flex-shrink-0 flex-col rounded-2xl bg-[#e5c385] p-7">
                             {pictures.length === 0 || pictures === undefined ? (
                                 <>
                                     <p className="text-center text-xl text-black">No Hay Imagenes Disponibles</p>
@@ -209,11 +237,30 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                         alt={`${picture.alt}`}
                                         className="h-full w-full cursor-pointer rounded-2xl object-contain transition-transform duration-200 group-hover:scale-110"
                                     />
+                                
+                                    <Input
+                                        type="text"
+                                        value={altValue}
+                                        onChange={(e) => setAltValue(e.target.value)}
+                                        onBlur={updateAlt}
+                                        placeholder="Sin descripción"
+                                        className="-mt-2 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+                                    />
 
+                                     <Button
+                                        type="submit"
+                                        className="mt-10 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105"
+                                        tabIndex={4}
+                                        onClick={() => updateAlt()}
+                                    >
+                                        Actualizar {picture.name}
+                                    </Button>
+                               
                                     <Button
                                         type="submit"
-                                        className="mt-10 h-12 w-full cursor-pointer rounded-2xl bg-[#df3a3a] font-bold text-white transition-transform duration-150 hover:scale-105"
+                                        className="mt-2 h-12 w-full cursor-pointer rounded-2xl bg-[#df3a3a] font-bold text-white transition-transform duration-150 hover:scale-105"
                                         tabIndex={4}
+                                        onClick={() => handleDeleteImage(picture.name, picture.id)}
                                     >
                                         Eliminar {picture.name}
                                     </Button>
@@ -267,7 +314,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                         <input
                                             type="text"
                                             placeholder="Sin descripción"
-                                            onChange={(e) => setImageAlt(i, e.target.value)}
+                                            onChange={(e) => setAlt(i, e.target.value)}
                                             className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                                         />
                                     </div>
@@ -278,7 +325,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                             type="button"
                             className={`mt-10 h-12 w-100 cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40`}
                             tabIndex={4}
-                            disabled={!completed}
+                            disabled={!allCompleted}
                             onClick={() => setalt(false)}
                         >
                             Confirmar

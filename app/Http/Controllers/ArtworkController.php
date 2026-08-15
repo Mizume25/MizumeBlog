@@ -9,14 +9,15 @@ use App\Models\ArtworkImage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Storage;
+use Illuminate\Support\Str;
 
 class ArtworkController extends Controller
-{   
+{
 
     /**
      * Formulario de creacion de Artwork
      */
-    public function create () 
+    public function create()
     {
         return Inertia::render('IMG/create');
     }
@@ -25,8 +26,8 @@ class ArtworkController extends Controller
      * Formulario de Edicion
      */
 
-    public function edit (int $id)
-    {   
+    public function edit(int $id)
+    {
         $artwork = Artwork::findOrFail($id);
 
         $pictures = $artwork->images;
@@ -38,8 +39,8 @@ class ArtworkController extends Controller
      * Indice de contenido de Artwork
      */
 
-    public function index () 
-    {   
+    public function index()
+    {
 
         $artworks = Artwork::all();
 
@@ -49,13 +50,12 @@ class ArtworkController extends Controller
     /**
      * Crear un Artwork
      */
-    public function store(StoreArtwork $request) 
+    public function store(StoreArtwork $request)
     {
-        $data = $request->validated();
-
+        $request->validated();
 
         $artwork = Artwork::create([
-            'title' => $data->title,
+            'title' => $request->title,
         ]);
 
         /** Creamos el directorio */
@@ -64,23 +64,22 @@ class ArtworkController extends Controller
         /**
          * En caso de existir imagenes las pondremos en su carpeta
          */
-        if($data->hasFile('images')) $this->saveImages($data->file('images'), $artwork->code);
+        if ($request->hasFile('images')) $this->saveImages($request->file('images'), $request->photos, $artwork);
 
 
-       
+
         return redirect()->route('artwork.index')->with('success', 'Artwork creado correctamente');
-
     }
 
     /**
      * Actualizar un Artwork
      */
 
-    public function update (UpdateArtwork $request, int $id) 
+    public function update(UpdateArtwork $request, int $id)
     {
-        
+
         $artwork = Artwork::findOrFail($id);
-        
+
 
         $request->validated();
 
@@ -88,25 +87,23 @@ class ArtworkController extends Controller
         $artwork->update([
             'title' => $request->title,
         ]);
-        
-        if($request->hasFile('images')) {
-            
-            $this->saveImages($request->file('images'), $artwork);
 
+        if ($request->hasFile('images')) {
+
+            $this->saveImages($request->file('images'), $request->photos, $artwork);
         }
 
-        return back()->with('succes', 'El artwork se ha actualizado correctamente');
-        
+        return back()->with('success', 'El artwork se ha actualizado correctamente');
     }
 
     /**
      * Borrar un Artwork de BD
      */
-    public function destroy(int $id) 
+    public function destroy(int $id)
     {
         $artwork = Artwork::findOrFail($id);
 
-        if($artwork->posts()->exists()) {
+        if ($artwork->posts()->exists()) {
 
             return back()->with('error', 'Hay Post Relacionados, primero debes borrarlos');
         }
@@ -116,23 +113,21 @@ class ArtworkController extends Controller
         $artwork->delete();
 
         return back()->with('success', 'Se ha eliminado el artwork perfectamente');
-
     }
 
     /**
      * Eliminar imagen especifica de un artwork
      */
-    public function remove (int $artworkId , int $imageId) 
+    public function remove(int $artworkId, int $imageId)
     {
-        
-        $artwork = Artwork::findOrFail($artworkId);
-    
-        $image = ArtworkImage::
-        where('artwork_id', $artwork->id)
-        ->where('id', $imageId)
-        ->firstOrFail();
 
-        if($image->postImages()->exists()) {
+        $artwork = Artwork::findOrFail($artworkId);
+
+        $image = ArtworkImage::where('artwork_id', $artwork->id)
+            ->where('id', $imageId)
+            ->firstOrFail();
+
+        if ($image->postImages()->exists()) {
             return back()->with('error', 'Esta imagen pertence a un post, remplazala para poder eliminarla');
         }
 
@@ -141,6 +136,28 @@ class ArtworkController extends Controller
         $image->delete();
 
         return back()->with('success', 'Se ha borrado perfectamente la imagen');
+    }
+
+    /**
+     * Actualiza texto alternativo específico
+     */
+    public function updateAlt (Request $request, int $artworkId , int $id) 
+    {   
+        $request->validate([
+            'alt' => 'required|string|max:255',
+        ]);
+
+        $artwork = Artwork::findOrFail($artworkId);
+
+        $image = ArtworkImage::where('artwork_id', $artwork->id)
+        ->where('id', $id)
+        ->firstOrFail();
+
+        $image->update([
+            'alt' => $request->alt,
+        ]);
+
+        return back()->with('success', 'EL texto alternativo se ha actualizado correctamente');
 
 
     }
@@ -148,21 +165,32 @@ class ArtworkController extends Controller
     /**
      * Poner imagenes publicas
      */
-    private function saveImages(array $images, Artwork $artwork)
+    private function saveImages(array $images, array $photos, Artwork $artwork): void
     {
-        $paths = [];
+        $next = ($artwork->images()->max('num') ?? 0) + 1;
 
-        foreach ($images as $image) {
+        foreach ($images as $i => $image) {
+            $alt = $photos[$i]['alt'] ?? null;
+            $name = $this->hasName($image->getClientOriginalName());
 
-            $paths[] = Storage::disk('public')->put('IMG/' . $artwork->code, $image);
-            
-            
+            Storage::disk('public')->putFileAs("IMG/{$artwork->code}", $image , $name);
+
             ArtworkImage::create([
                 'artwork_id' => $artwork->id,
-                'num' => $artwork->images()->count() + 1,
-                'name' => $image->getClientOriginalName(),
-                'alt' => null,
+                'num' => $next + $i,
+                'name' => $name,
+                'alt' => $alt,
             ]);
         }
+    }
+
+    private function hasName(string $name): string
+    {
+        $path = pathinfo($name);
+        $base = $path['filename'];
+        $ext = $path['extension'] ?? '';
+        $hash = Str::random(6);
+
+        return "{$base}_{$hash}.{$ext}";
     }
 }
