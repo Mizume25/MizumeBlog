@@ -1,15 +1,21 @@
 /*** @import Imports de Inerficies de Formularios y objetos submit */
 import { Label } from '@/components/ui/label';
+import { Button, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
 /*** @import Variables de Estado  y de referencia */
 
-/** @imports Interfaces y Diseño Web + Iconos */
+/** @import Interfaces y Diseño Web + Iconos */
 import InputError from '@/components/input-error';
 import { useImageLogic } from '@/hooks/use-image-logic';
 import { Artwork, Artwork_Image, ArtworkSchema, confirmDelete, CreateArtworkSchemaOutput } from '@/types';
-import { Button, Dialog, DialogPanel, DialogTitle, Input } from '@headlessui/react';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+/** @import Routing */
 import { router } from '@inertiajs/react';
+
+/** @import Iconos de formulario */
 import { ArrowBigLeft, Book, CheckCircle2, Folder, Image, Upload } from 'lucide-react';
+
+/** @import Hooks utilizables */
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -19,6 +25,7 @@ interface ImageEditProps {
 }
 
 const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
+    /** Hook de Formulario */
     const {
         register,
         handleSubmit,
@@ -33,11 +40,41 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
         },
     });
 
+    /**
+     * Variables de Fomrularios
+     */
+    const images = watch('images');
+
+    /**
+     * Hook personalizado
+     */
+
+    const { imageAlts, setAlt, allCompleted } = useImageLogic(images);
+
+    /**
+     * @global Variables utilizadas
+     */
+
+    /** Variable de procesamiento */
     const [processing, setProcessing] = useState(false);
 
+    /** Variable de imagen actual seleccionada */
+    const [picture, setPicture] = useState<Artwork_Image>(pictures[0] ?? null);
+
+    /** Variable de texto alternativo de la imagen escogida */
+    const [altValue, setAltValue] = useState(picture?.alt ?? '');
+
+    /** Variable para abrir y cerrar el modal */
+    const [isOpen, setIsOpen] = useState(false);
+
+    /**
+     * Funcion para Actalizar artwork
+     * @param data
+     */
     const handleUpdate = (data: CreateArtworkSchemaOutput) => {
         setProcessing(true);
         const formData = new FormData();
+
         formData.append('_method', 'put');
         if (data.title) formData.append('title', data.title);
         if (data.images && data.images.length > 0) {
@@ -66,47 +103,44 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
         });
     };
 
-    const updateAlt = () => {
-        router.put(
-            `/artwork/${artwork.id}/img/${picture.id}`,
-            { alt: altValue },
-            {
-                preserveScroll: true,
-                preserveState: true,
-            },
-        );
-    };
+    /**
+     * Estado reactivo
+     * Vigalancia de varaibles
+     */
 
-    const [picture, setPicture] = useState<Artwork_Image>(pictures[0] ?? null);
-
-    const [altValue, setAltValue] = useState(picture?.alt ?? '');
-
-    const images = watch('images');
-
-    const { imageAlts, setAlt, allCompleted } = useImageLogic(images);
-
-    const [alt, setalt] = useState(false);
-
+    /**
+     * En caso de qeu suba imagenes, se abrira el modal
+     */
     useEffect(() => {
-        if (images && images.length > 0) setalt(true);
+        if (images && images.length > 0) setIsOpen(true);
     }, [images]);
 
+    /**
+     * Seteara los textos alternativo una vez completos
+     */
     useEffect(() => {
         setValue('photos', imageAlts);
     }, [imageAlts]);
 
+    /**
+     * Itera textos alternativos
+     */
     useEffect(() => {
         setAltValue(picture?.alt ?? '');
     }, [picture]);
 
-    /** Borra Artworks */
+    /**
+     * Borra Artworks completos con confirmacion
+     */
     const handleDelete = () => {
         confirmDelete('¿Eliminar Artwork?', `Esta acción borrará "${artwork.title}" permanentemente.`, () =>
             router.delete(route('artwork.destroy', artwork.id)),
         );
     };
 
-    /** Borra Imagenes Especificas */
+    /**
+     * Borra Imagenes Especificas de artwork
+     */
     const handleDeleteImage = (name: string, id: number | undefined) => {
         if (id === undefined || name === undefined) return;
         confirmDelete('¿Eliminar Imagen?', `Esta acción eliminara "${name}" permanentemente.`, () => {
@@ -119,14 +153,31 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
         });
     };
 
+    /**
+     * Funcion para actualizar texto alternativo
+     */
+    const updateAlt = () => {
+        router.put(
+            `/artwork/${artwork.id}/img/${picture.id}`,
+            { alt: altValue },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
+    };
+
+  
+
     return (
         <>
             <div>
                 <div>
-                    <div className="mx-auto flex flex-row gap-4 rounded-lg p-4 shadow-lg sm:p-8 lg:min-w-150">
+                    <div className="mx-auto flex flex-col lg:flex-row gap-4 rounded-lg p-4 shadow-lg sm:p-8 lg:min-w-150">
+                        {/* Formulario  de Artworks */}
                         <form
                             onSubmit={handleSubmit(handleUpdate, (errors) => console.log('Errores de validación:', errors))}
-                            className="h-140 w-100 rounded-2xl bg-[#754C22] p-6"
+                            className="h-auto w-full lg:h-140 lg:w-100 rounded-2xl bg-[#754C22] p-6"
                         >
                             <div className="flex flex-row justify-between gap-2 text-center">
                                 {/** Link de Vuelta */}
@@ -225,7 +276,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                         </form>
 
                         {/* Pantalla de preview, como hermano del form dentro del mismo flex */}
-                        <div className="h-130 pb-15 w-140 flex-shrink-0 flex-col rounded-2xl bg-[#e5c385] p-7">
+                        <div className="h-auto w-full lg:h-130 lg:w-140 flex-shrink-0 flex-col rounded-2xl bg-[#e5c385] p-7 pb-15">
                             {pictures.length === 0 || pictures === undefined ? (
                                 <>
                                     <p className="text-center text-xl text-black">No Hay Imagenes Disponibles</p>
@@ -237,7 +288,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                         alt={`${picture.alt}`}
                                         className="h-full w-full cursor-pointer rounded-2xl object-contain transition-transform duration-200 group-hover:scale-110"
                                     />
-                                
+
                                     <Input
                                         type="text"
                                         value={altValue}
@@ -247,7 +298,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                         className="-mt-2 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
                                     />
 
-                                     <Button
+                                    <Button
                                         type="submit"
                                         className="mt-10 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105"
                                         tabIndex={4}
@@ -255,7 +306,7 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                                     >
                                         Actualizar {picture.name}
                                     </Button>
-                               
+
                                     <Button
                                         type="submit"
                                         className="mt-2 h-12 w-full cursor-pointer rounded-2xl bg-[#df3a3a] font-bold text-white transition-transform duration-150 hover:scale-105"
@@ -269,10 +320,8 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                         </div>
 
                         <div
-                            className={`h-130 w-100 overflow-y-auto rounded-2xl bg-[#754C22] p-6 ${pictures === undefined || pictures.length === 0 ? 'hidden' : ''}`}
+                            className={`h-auto w-full lg:h-130 lg:w-100 max-h-64 lg:max-h-none overflow-y-auto rounded-2xl bg-[#754C22] p-6 ${pictures === undefined || pictures.length === 0 ? 'hidden' : ''}`}
                         >
-                            {/* contenido que puede exceder la altura */}
-
                             <div className="flex w-full flex-col gap-4">
                                 <div
                                     className={`scrollbar-gutter-stable mt-2 flex min-h-0 flex-col gap-4 gap-x-4 overflow-y-auto p-3 pr-5 text-left`}
@@ -295,9 +344,8 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                 </div>
             </div>
 
-            {/* Modal para elegir obra */}
             {/* Modal para gestionar alt de imágenes */}
-            <Dialog open={alt} onClose={() => {}} className="relative z-50">
+            <Dialog open={isOpen} onClose={() => {}} className="relative z-50">
                 <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
                 <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
@@ -323,10 +371,10 @@ const ImageFormEdit = ({ artwork, pictures }: ImageEditProps) => {
                         </div>
                         <Button
                             type="button"
-                            className={`mt-10 h-12 w-100 cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40`}
+                            className={`mt-10 h-12 w-full lg:w-100 cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40`}
                             tabIndex={4}
                             disabled={!allCompleted}
-                            onClick={() => setalt(false)}
+                            onClick={() => setIsOpen(false)}
                         >
                             Confirmar
                         </Button>

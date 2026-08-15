@@ -137,7 +137,7 @@ class Post extends Model
         });
     }
 
-    /** Ruta de contenid */
+    /** Ruta de contenido */
     public function path(ContentType $type): string
     {
         return "blog/{$this->code}/{$type->value}";

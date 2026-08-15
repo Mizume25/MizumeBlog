@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContentType;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
@@ -57,27 +58,32 @@ class AdminController extends Controller
      */
     public function edit(int $id)
     {
-        /** Obtenemos Post */
-        $post = Post::findOrFail($id);
+        /** Obtenemos Post con todas las relaciones necesarias en una sola carga */
+        $post = Post::with(['artworks.images', 'images.image'])->findOrFail($id);
 
         /** Construimos tags */
         $tags = $this->files->buildTags();
 
         $artworks = Artwork::all();
 
-        $post->load('artworks.images');
-
-        $container = $post->artworks->mapWithKeys(function ($artwork) {
-            return [
-                $artwork->code => $artwork->images->map(fn($img) => [
-                    'name' => $img->name,
-                    'alt' => $img->alt,
-                ])->toArray(),
-            ];
-        });
-
+        /** Obras ya relacionadas al post, para el selector */
         $galeries = $post->artworks;
 
+        /** Catálogo de imágenes agrupado por code, para el sidebar de gestión */
+        $ids = $post->images()->pluck('artwork_image_id');
+
+        $container = $post->artworks->mapWithKeys(function ($artwork) use ($ids) {
+            return [
+                $artwork->code => $artwork->images
+                    ->whereIn('id', $ids)
+                    ->sortBy('num')
+                    ->map(fn($img) => [
+                        'id' => $img->id,
+                        'name' => $img->name,
+                        'alt' => $img->alt,
+                    ])->values()->toArray(),
+            ];
+        });
 
         return Inertia::render('post/edit', compact('post', 'tags', 'container', 'artworks', 'galeries'));
     }
@@ -108,12 +114,18 @@ class AdminController extends Controller
         /*** Unimos tags */
         $data['tags'] = implode(',', $data['tags']);
 
-
         if ($request->hasFile('content')) {
             $file    = $request->file('content');
             $content = file_get_contents($file->getRealPath());
 
             if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
+
+            Storage::disk('local')->put($post->path(ContentType::Content), $content);
+            
+            $keys = MarkdownService::syncKeys($content, $post);
+
+            if(!empty($keys)) return back()->with('error', 'Existe claves no conocidas, expanda el slot para actualizar el post');
+           
         } else {
 
             $content = MarkdownService::generate();
@@ -135,20 +147,9 @@ class AdminController extends Controller
 
         $post->refresh();
 
-        $path = $this->files->getPath($post->id, $post->title);
 
-        if ($request->hasFile('images')) {
-            $container = basename($path);
-            $this->saveImages($request->file('images'), $container);
-        }
-
-        if (!file_exists($path)) mkdir($path, 0755, true);
-
-        file_put_contents($path . '/index.json', $index);
-        file_put_contents($path . '/content.md', $content);
-
-
-
+        Storage::disk('local')->put($post->path(ContentType::Content), $content);
+        Storage::disk('local')->put($post->path(ContentType::Index), $index);
 
         return redirect()->back()->with('success', 'El Post se actualizo correctamente');
     }

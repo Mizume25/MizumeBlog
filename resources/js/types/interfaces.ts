@@ -121,6 +121,8 @@ export type Post = Field & {
     cover?: string;
     cover_card?: string;
     config?: Config;
+    images?:PostImageWithImage []
+    
 };
 
 /**
@@ -128,12 +130,18 @@ export type Post = Field & {
  * Propiedades de un Artwork
  */
 
-export type Artwork = Partial<Field> & {
+export type Artwork = Field & {
     title: string;
-    code?: string;
+    code: string;
+};
+
+export type ArtworkInput = {
+    id: number | null;
+    title: string;
 };
 
 export type ArtworkPictures = {
+    id: number
     name: string;
     alt: string | null;
 };
@@ -146,6 +154,16 @@ export type Artwork_Image = Partial<Field> & {
     num?: number;
     name: string;
     alt: string;
+};
+
+export type PostImage = Field & {
+    post_id: number;
+    artwork_image_id: number;
+    key: string;
+};
+
+export type PostImageWithImage = PostImage & {
+    image: Artwork_Image;
 };
 
 /**

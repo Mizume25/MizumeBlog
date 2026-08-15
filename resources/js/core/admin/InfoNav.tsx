@@ -28,12 +28,22 @@ function InfoNav() {
                 </a>
             </div>
             <div className="flex items-center lg:hidden gap-4">
+
+                 <a
+                    href={route('artwork.index')}
+                    className="flex h-8 w-12 cursor-pointer items-center justify-center rounded-md bg-[#3B2314] px-4 py-2 text-xl text-[#E8D5A3] shadow-sm transition-colors hover:bg-[#6B3F1F] lg:hidden"
+                >
+                    <Image size={16} />
+                </a>
+                
                 <a
                     href={route('post.create')}
                     className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-[#3B2314] px-4 py-2 text-xl text-[#E8D5A3] shadow-sm transition-colors hover:bg-[#6B3F1F] lg:hidden"
                 >
                     +
                 </a>
+
+                 
 
                 <a
                     href={route('post.backup')}

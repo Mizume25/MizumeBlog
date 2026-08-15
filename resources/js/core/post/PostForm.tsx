@@ -9,7 +9,17 @@ import Switch from 'react-switch';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 /** @imports Interfaces y Diseño Web + Iconos */
-import { Artwork, ArtworkPictures, OPTION_CATEGORY, PostSchema, type CreatePostSchemaInput, type CreatePostSchemaOutput } from '@/types';
+import {
+    Artwork,
+    Artwork_Image,
+    ArtworkInput,
+    ArtworkPictures,
+    OPTION_CATEGORY,
+    PostImageWithImage,
+    PostSchema,
+    type CreatePostSchemaInput,
+    type CreatePostSchemaOutput,
+} from '@/types';
 import { Button, Dialog, DialogPanel, DialogTitle, Input, Select, Textarea } from '@headlessui/react';
 import {
     ArrowBigLeft,
@@ -24,6 +34,7 @@ import {
     LoaderCircle,
     Paperclip,
     Pencil,
+    Settings,
     Tag,
     Tags,
     User,
@@ -43,6 +54,8 @@ interface PostFormProps {
     container?: Record<string, ArtworkPictures[]>;
     artworks: Artwork[];
     galeries?: Artwork[];
+    post_id: number;
+    photos: PostImageWithImage[] | undefined;
 }
 
 /**
@@ -53,7 +66,23 @@ export interface PostFormHandle {
 }
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
-    ({ tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, artworks, galeries }, ref) => {
+    (
+        {
+            tags,
+            defaultValues,
+            onSubmit,
+            submitLabel = false,
+            processing = false,
+            cover_url,
+            card_url,
+            container,
+            artworks,
+            galeries,
+            post_id,
+            photos,
+        },
+        ref,
+    ) => {
         /**
          * Hook Form con propiedades de control
          */
@@ -71,8 +100,19 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
             defaultValues,
         });
+        console.log(container);
+        /**
+         * Variables de contenido
+         */
+        const cover = watch('cover');
+        const cover_card = watch('cover_card');
+        const content = watch('content');
+        const images = watch('images');
 
-    
+        /**
+         * @global Varaibles Generales
+         */
+
         /**
          * Item individual para crear un etiqueta
          */
@@ -85,15 +125,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const [galery, setGalery] = useState('');
 
         /**
-         * Variable para abrir un modal de tags
+         * Variables de control para abrir/cerrar un MODAL
          */
-        const [isOpen, setIsOpen] = useState(false);
+        /** Mostrar tags, artworks , replace*/
+        const [modaltags, setModalTags] = useState(false);
+        const [modalartwork, setModalArtwork] = useState(false);
+        const [modalreplace, setModalReplace] = useState<boolean>(false);
+        const [modalslot, setModalSlot] = useState(false);
 
-        /**
-         * Varaible para abrir un modal de catalogos
-         */
-        const [catalog, setCatalog] = useState(false);
-
+        /** Varaible para expandir informacion */
         /**
          * Variable para mostrar artworks selecionados
          */
@@ -102,23 +142,40 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         /**
          * Variable para mostrar tags selecionados
          */
-
         const [showTags, setShowTags] = useState(false);
 
         /**
-         * Control de Imagenes
+         * Variable para mostrar sidebar de imagenes
          */
         const [isSidebar, setisSidebar] = useState(false);
 
-        const cover = watch('cover');
-        const cover_card = watch('cover_card');
-        const content = watch('content');
-        const images = watch('images');
+        /**
+         * Lista de Tags Obtenidos
+         */
+        const [list, setList] = useState<string[]>(defaultValues?.tags ?? []);
 
+        /**
+         * Varaibles de Gestion de imagenes
+         */
+
+        /** Representacion de carpetas relacionadas */
+        const [folders, setFolders] = useState<ArtworkInput[]>(galeries ?? []);
+
+        /** Representacion de 1 solo artwork */
+        const [artwork, setArtwork] = useState<Artwork | null>(galeries?.[0] ?? null);
+
+        /** Representacion 1 sola imagen */
+        const [picture, setPicture] = useState<number>(-1);
+
+        /** Imagenes Disponibles a remplazar */
+        const [avaliables, setavAvaliables] = useState<Artwork_Image[]>([]);
+
+        /** Control de imagen y contenido */
         const [coverPreview, setCoverPreview] = useState<string | null>(null);
         const [coverCardPreview, setCoverCardPreview] = useState<string | null>(null);
         const [contentPreview, setContentPreview] = useState<string | null>(null);
 
+        /** Funcion para el preview de cover */
         useEffect(() => {
             const file = cover?.[0];
             if (!file) {
@@ -131,6 +188,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             return () => URL.revokeObjectURL(url);
         }, [cover]);
 
+        /** Funcion para el preview de card */
         useEffect(() => {
             const file = cover_card?.[0];
             if (!file) {
@@ -142,6 +200,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             return () => URL.revokeObjectURL(url);
         }, [cover_card]);
 
+        /** Funcion para inicializar preview cover */
         useEffect(() => {
             const file = cover?.[0];
             if (!file) {
@@ -160,20 +219,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             if (id == null) return null;
             return artworks.find((p) => p.id == id) ?? null;
         };
-
-        /**
-         * Lista de Tags Obtenidos
-         */
-        const [list, setList] = useState<string[]>(defaultValues?.tags ?? []);
-
-        /**
-         * Lista de Artwork Obtenido y vacio
-         */
-        const [folders, setFolders] = useState<Artwork[]>(galeries ?? []);
-
-        /**
-         * Funcion reactiva que resetea formulario
-         */
 
         /**
          * Funcion que refresca los tags
@@ -195,10 +240,9 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
         /**
          * Funcion que refresca los folders
-         * @type galery
+         * @type artwork
          */
-
-        const refreshFolder = (artwork: Artwork) => {
+        const refreshFolder = (artwork: ArtworkInput) => {
             setFolders((prev) => {
                 const key = artwork.id ?? artwork.title;
                 const exists = prev.some((a) => (a.id ?? a.title) === key);
@@ -212,6 +256,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
         const [fileInputKey, setFileInputKey] = useState(0);
 
+        /** Variable Imperativa */
         useImperativeHandle(ref, () => ({
             resetForm: () => {
                 reset();
@@ -222,7 +267,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
         /**
          * Funcion para añadir tags
-         * @param nuevoTag
+         * @param tag
          */
         const addTag = (tag: string | null) => {
             /**
@@ -249,6 +294,11 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             setTag('');
         };
 
+        /**
+         * Funcion para añadir artworks
+         * @param galery
+         * @returns
+         */
         const addArtwork = (galery: string | null) => {
             if (galery == null) return alert('La galeria no puede ser nulo');
 
@@ -256,8 +306,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
             if (clean.length === 0) return alert('La galeria no puede ser vacío');
 
-            const temp: Artwork = {
-                id: undefined,
+            const temp: ArtworkInput = {
+                id: null,
                 title: clean,
             };
 
@@ -268,8 +318,102 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             setGalery('');
         };
 
-        /** Gestionar Imagenes */
+        /** Abre y cierra sidebar */
         const onToogle = () => setisSidebar((prev) => !prev);
+
+        /** Cambia de artwork */
+        const changeArtwork = (id: number | undefined) => {
+            if (id === undefined) return;
+            let artwork = getArtwork(id);
+
+            setArtwork(artwork);
+        };
+
+        /**
+         * Api para obtener imagenes validas
+         */
+        const getAvaliablePicture = async (): Promise<Artwork_Image[]> => {
+            const answer = await fetch(`/api/post/${post_id}/artwork/${artwork?.id}`);
+
+            if (!answer.ok) throw new Error('Ha habido un problema');
+
+            const response = await answer.json();
+
+            return response;
+        };
+
+        /**
+         * Funcion para Remplazar
+         */
+        const handleOpenReplace = async () => {
+            const valids = await getAvaliablePicture();
+            setavAvaliables(valids);
+            setModalReplace(true);
+        };
+
+        /**
+         * Varaible reactiva para poder abrir el modal de remplazo
+         */
+        useEffect(() => {
+            if (artwork == undefined) return;
+            if (picture === -1 || picture === undefined) return;
+            setModalReplace(false);
+            setavAvaliables([]);
+        }, [picture]);
+
+        /**
+         * Remplazo accion
+         */
+        useEffect(() => {
+            if (!artwork || picture === -1) return;
+            handleOpenReplace();
+        }, [picture]);
+
+        const handleReplaceConfirm = async (newImage: Artwork_Image) => {
+            if (newImage === undefined) return;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(`/api/post/${post_id}/replace/${picture}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken ?? '',
+                },
+                body: JSON.stringify({ artwork_image_id: newImage.id }),
+            });
+
+            if (!response.ok) throw new Error('No se pudo reemplazar la imagen con id:' + picture);
+
+            setModalReplace(false);
+            window.location.reload();
+        };
+
+        const onExpand = async () => {
+            const valids = await getAvaliablePicture();
+            setavAvaliables(valids);
+            setModalSlot(true);
+        };
+
+        const [selectedSlotImage, setSelectedSlotImage] = useState<Artwork_Image | null>(null);
+        const [slotKey, setSlotKey] = useState('');
+
+        const handleExpandConfirm = async () => {
+            if (!selectedSlotImage || !slotKey.trim()) return;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            const response = await fetch(`/api/post/${post_id}/assign-key`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken ?? '' },
+                body: JSON.stringify({ key: slotKey, artwork_image_id: selectedSlotImage.id }),
+            });
+
+            if (!response.ok) throw new Error('No se pudo asignar la clave');
+
+            setModalSlot(false);
+            setSelectedSlotImage(null);
+            setSlotKey('');
+            window.location.reload();
+        };
 
         return (
             <>
@@ -316,7 +460,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     type="button"
                                     className="h-full w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
                                     tabIndex={4}
-                                    onClick={() => setCatalog(true)}
+                                    onClick={() => setModalArtwork(true)}
                                 >
                                     {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                     Add Artwork
@@ -372,7 +516,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         type="button"
                                         className="h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
                                         tabIndex={4}
-                                        onClick={() => setIsOpen(true)}
+                                        onClick={() => setModalTags(true)}
                                     >
                                         {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                         Add Tags
@@ -637,6 +781,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 })}
                             </div>
 
+                            <a
+                                type="button"
+                                className={`mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600 ${defaultValues == undefined ? 'hidden' : ''}`}
+                                tabIndex={4}
+                                href={route('post.show', post_id)}
+                            >
+                                Ver Post
+                            </a>
+
                             <Button
                                 type="button"
                                 className={`mt-5 h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90 ${defaultValues == undefined ? 'hidden' : ''}`}
@@ -661,19 +814,20 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <></>
                 ) : (
                     <div
-                        className={`fixed top-20 right-0 z-10 h-full w-full bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-150 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                        className={`fixed top-20 right-0 z-10 flex h-full w-full flex-col overflow-hidden bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-120 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
                         <div className="flex h-10 w-full flex-row items-start justify-start gap-4">
                             <button
-                                className="flex h-10 w-12 cursor-pointer items-center justify-center rounded-2xl bg-red-400"
-                                onClick={onToogle}
+                                className="flex h-10 w-full cursor-pointer flex-row items-start justify-start gap-4"
                                 type="button"
+                                onClick={() => setisSidebar(false)}
                             >
                                 X
                             </button>
 
-                            <a className="_btn_secondary flex items-center justify-center transition-transform duration-150 ease-in-out hover:scale-110"
-                               href={route('artwork.create')}
+                            <a
+                                className="_btn_secondary flex items-center justify-center transition-transform duration-150 ease-in-out hover:scale-110"
+                                href={route('artwork.create')}
                             >
                                 Agregar
                             </a>
@@ -682,34 +836,63 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                         <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
                         <h3>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
 
-                        <div className="mt-5 h-190 w-full overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
+                        <select
+                            name="artworks"
+                            id="artworks"
+                            value={artwork?.id ?? ''}
+                            onChange={(e) => changeArtwork(Number(e.target.value))}
+                            className="text- w-full cursor-pointer rounded-xl bg-white/30 p-2 outline-none focus:bg-white/20"
+                        >
+                            {galeries?.map((gal) => (
+                                <option key={gal.id} value={gal.id} className="bg-white text-black">
+                                    {gal.title}
+                                </option>
+                            ))}
+                        </select>
+                        <a
+                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-400 px-4 py-2 text-lg text-white transition-colors hover:bg-green-500"
+                            href={route('artwork.edit', artwork?.id)}
+                        >
+                            <Image size={20} className="text-white" />
+                            Agregar
+                        </a>
+
+                        <Button
+                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-800 px-4 py-2 text-lg text-white transition-colors hover:bg-amber-900"
+                            onClick={onExpand}
+                        >
+                            <Settings size={20} className="text-white" />
+                            Expandir Slot
+                        </Button>
+
+                        <div className="mt-5 min-h-0 flex-1 overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
                             <div className="flex flex-col items-center justify-center gap-4">
-                                {Object.entries(container ?? {}).map(([code, images]) => (
-                                    <div key={code} className="mb-6">
-                                        <h4 className="mb-3 text-sm font-bold tracking-wide text-black uppercase">{code}</h4>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {images.map((img) => (
-                                                <div key={img.name} className="group relative aspect-square overflow-hidden rounded-xl bg-black/20">
-                                                    <img
-                                                        src={`/storage/IMG/${code}/${img.name}`}
-                                                        alt={img.alt ?? ''}
-                                                        className="h-full w-full cursor-pointer object-cover transition-transform duration-200 group-hover:scale-110"
-                                                    />
-                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
-                                                        <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
-                                                    </div>
+                                {artwork && container?.[artwork?.code] ? (
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {container[artwork?.code].map((img) => (
+                                            <div key={img.id} className="group relative aspect-square overflow-hidden rounded-xl bg-black/20">
+                                                <img
+                                                    src={`/storage/IMG/${artwork.code}/${img.name}`}
+                                                    alt={img.alt ?? ''}
+                                                    className="h-full w-full cursor-pointer object-cover transition-transform duration-200 group-hover:scale-110"
+                                                    onClick={() => setPicture(img.id)}
+                                                />
+                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                    <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
                                                 </div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                ) : (
+                                    <p className="text-center text-white/50">Esta obra no tiene imágenes catalogadas</p>
+                                )}
                             </div>
                         </div>
                     </div>
                 )}
 
                 {/** Modal de Tags */}
-                <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                <Dialog open={modaltags} onClose={() => setModalTags(false)} className="relative z-50">
                     {/* Fondo oscuro */}
                     <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
@@ -759,7 +942,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                 </Dialog>
 
                 {/* Modal para elegir obra */}
-                <Dialog open={catalog} onClose={() => setCatalog(false)} className="relative z-50">
+                <Dialog open={modalartwork} onClose={() => setModalArtwork(false)} className="relative z-50">
                     {/* Fondo oscuro */}
                     <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
@@ -804,6 +987,100 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     );
                                 })}
                             </div>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
+
+                {/* Modal para elegir obra */}
+                <Dialog open={modalreplace} onClose={() => setModalReplace(false)} className="relative z-50">
+                    <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+
+                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+                        <DialogPanel className="max-h-[90vh] w-full max-w-4xl rounded-2xl bg-white p-6">
+                            <DialogTitle className="text-lg font-bold">Reemplazar imagen</DialogTitle>
+
+                            <div className="scrollbar-gutter-stable grid max-h-[60vh] grid-cols-3 gap-3 overflow-y-auto p-1 sm:grid-cols-4">
+                                {avaliables.length === 0 ? (
+                                    <p className="col-span-full text-center text-sm text-gray-500">
+                                        No hay imágenes disponibles para reemplazar. Todas están en uso en este post.
+                                    </p>
+                                ) : (
+                                    avaliables.map((img) => (
+                                        <button
+                                            key={img.id}
+                                            type="button"
+                                            onClick={() => handleReplaceConfirm(img)}
+                                            className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105"
+                                        >
+                                            <img
+                                                src={`/storage/IMG/${artwork?.code}/${img.name}`}
+                                                alt={img.alt ?? ''}
+                                                className="h-full w-full object-cover"
+                                            />
+                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
+                                            </div>
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
+
+                {/* Expandir Slot */}
+                <Dialog open={modalslot} onClose={() => setModalSlot(false)} className="relative z-50">
+                    <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+
+                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+                        <DialogPanel className="max-h-[90vh] w-full max-w-4xl rounded-2xl bg-white p-6">
+                            <DialogTitle className="text-lg font-bold">Expandir Slot</DialogTitle>
+                            <p className="mt-1 mb-4 text-sm text-gray-600">Selecciona una imagen y escribe la clave que usaste en el markdown</p>
+
+                            <div className="scrollbar-gutter-stable grid max-h-[60vh] grid-cols-3 gap-3 overflow-y-auto p-1 sm:grid-cols-4">
+                                {avaliables.length === 0 ? (
+                                    <p className="col-span-full text-center text-sm text-gray-500">
+                                        No hay imágenes disponibles. Ve a la obra y agrega imágenes primero.
+                                    </p>
+                                ) : (
+                                    avaliables.map((img) => (
+                                        <button
+                                            key={img.id}
+                                            type="button"
+                                            onClick={() => setSelectedSlotImage(img)}
+                                            className={`group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 ${
+                                                selectedSlotImage?.id === img.id ? 'ring-4 ring-green-500' : ''
+                                            }`}
+                                        >
+                                            <img
+                                                src={`/storage/IMG/${artwork?.code}/${img.name}`}
+                                                alt={img.alt ?? ''}
+                                                className="h-full w-full object-cover"
+                                            />
+                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
+                                            </div>
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+
+                            <input
+                                type="text"
+                                value={slotKey}
+                                onChange={(e) => setSlotKey(e.target.value)}
+                                placeholder="Clave usada en el markdown (ej: foto-5)"
+                                className="mt-4 w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                            />
+
+                            <Button
+                                type="button"
+                                disabled={!selectedSlotImage || slotKey.trim().length === 0}
+                                onClick={handleExpandConfirm}
+                                className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                Confirmar
+                            </Button>
                         </DialogPanel>
                     </div>
                 </Dialog>
