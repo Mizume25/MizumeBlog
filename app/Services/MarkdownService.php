@@ -98,7 +98,7 @@ class MarkdownService
      * Recorre el markdown, sincroniza post_images con las keys reales del texto,
      * y devuelve las keys nuevas que aún no tienen imagen asignada.
      */
-    public static function syncKeys(string $content, Post $post): array
+    public static function syncKeys(string $content, Post $post, bool $dryRun = false): array
     {
         preg_match_all('/\{\{img:([\w-]+)\}\}/', $content, $matches);
         $keysEnTexto = collect($matches[1])->unique();
@@ -106,9 +106,12 @@ class MarkdownService
         $keysExistentes = $post->images()->pluck('key');
 
         // Keys que ya no están en el texto -> se borran de post_images
-        $keysHuerfanas = $keysExistentes->diff($keysEnTexto);
-        if ($keysHuerfanas->isNotEmpty()) {
-            $post->images()->whereIn('key', $keysHuerfanas)->delete();
+        // Solo si NO estamos en modo "dry run" (solo consulta)
+        if (!$dryRun) {
+            $keysHuerfanas = $keysExistentes->diff($keysEnTexto);
+            if ($keysHuerfanas->isNotEmpty()) {
+                $post->images()->whereIn('key', $keysHuerfanas)->delete();
+            }
         }
 
         // Keys nuevas en el texto que aún no tienen fila en post_images

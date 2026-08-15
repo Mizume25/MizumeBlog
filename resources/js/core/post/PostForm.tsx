@@ -15,7 +15,6 @@ import {
     ArtworkInput,
     ArtworkPictures,
     OPTION_CATEGORY,
-    PostImageWithImage,
     PostSchema,
     type CreatePostSchemaInput,
     type CreatePostSchemaOutput,
@@ -54,8 +53,7 @@ interface PostFormProps {
     container?: Record<string, ArtworkPictures[]>;
     artworks: Artwork[];
     galeries?: Artwork[];
-    post_id: number;
-    photos: PostImageWithImage[] | undefined;
+    post_id?: number;
 }
 
 /**
@@ -67,20 +65,7 @@ export interface PostFormHandle {
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
     (
-        {
-            tags,
-            defaultValues,
-            onSubmit,
-            submitLabel = false,
-            processing = false,
-            cover_url,
-            card_url,
-            container,
-            artworks,
-            galeries,
-            post_id,
-            photos,
-        },
+        { tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, artworks, galeries, post_id },
         ref,
     ) => {
         /**
@@ -107,7 +92,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const cover = watch('cover');
         const cover_card = watch('cover_card');
         const content = watch('content');
-        const images = watch('images');
 
         /**
          * @global Varaibles Generales
@@ -131,7 +115,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const [modaltags, setModalTags] = useState(false);
         const [modalartwork, setModalArtwork] = useState(false);
         const [modalreplace, setModalReplace] = useState<boolean>(false);
-        const [modalslot, setModalSlot] = useState(false);
 
         /** Varaible para expandir informacion */
         /**
@@ -387,33 +370,9 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             window.location.reload();
         };
 
-        const onExpand = async () => {
-            const valids = await getAvaliablePicture();
-            setavAvaliables(valids);
-            setModalSlot(true);
-        };
+    
 
-        const [selectedSlotImage, setSelectedSlotImage] = useState<Artwork_Image | null>(null);
-        const [slotKey, setSlotKey] = useState('');
-
-        const handleExpandConfirm = async () => {
-            if (!selectedSlotImage || !slotKey.trim()) return;
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-            const response = await fetch(`/api/post/${post_id}/assign-key`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken ?? '' },
-                body: JSON.stringify({ key: slotKey, artwork_image_id: selectedSlotImage.id }),
-            });
-
-            if (!response.ok) throw new Error('No se pudo asignar la clave');
-
-            setModalSlot(false);
-            setSelectedSlotImage(null);
-            setSlotKey('');
-            window.location.reload();
-        };
+     
 
         return (
             <>
@@ -688,35 +647,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <span>Imagenes</span>
                             </Label>
 
-                            {/*  Imagenes de la obra  */}
-                            <label className="flex h-20 cursor-pointer flex-row items-center justify-start gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 ps-4 transition-transform duration-150 hover:scale-105">
-                                {(container ?? 0) === 0 && (!images || images.length === 0) ? (
-                                    <>
-                                        <Paperclip size={26} />
-                                        <p className="text-white/50">No hay imágenes</p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <CheckCircle2 size={26} color="green" />
-                                        <p className="text-green-200">
-                                            {/* container ?? 0 */} imagenes guardadas
-                                            {images && images.length > 0 && ` · ${images.length} nuevas por subir`}
-                                        </p>
-                                    </>
-                                )}
-
-                                <Input
-                                    id="images"
-                                    type="file"
-                                    className="hidden"
-                                    accept=".jpg, .jpeg, .png, .webp"
-                                    disabled={galeries != undefined && galeries.length > 0}
-                                    {...register('images')}
-                                    multiple
-                                />
-                                <InputError message={errors.images?.message} />
-                            </label>
-
                             {/* Lista de tags */}
                             <div className="flex h-8 w-full flex-row items-center justify-start">
                                 <h3 className="mt-3 text-lg text-white">{`Tags Seleccionados (${list.length})`}</h3>
@@ -769,26 +699,26 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     const normalize = readable.charAt(0).toUpperCase() + readable.slice(1);
 
                                     return (
-                                        <Label
+                                        <a
                                             key={i}
                                             className="flex cursor-pointer flex-row items-center justify-center rounded-lg bg-amber-100 px-3 py-2 text-center text-[10px] text-black transition-transform duration-150 hover:scale-105"
-                                            onClick={() => refreshFolder(p)}
+                                            {...(p.id != null ? { href: route('artwork.edit', p.id) } : {})}
                                         >
                                             <Book size={14} className="me-2 shrink-0" />
                                             {normalize}
-                                        </Label>
+                                        </a>
                                     );
                                 })}
                             </div>
 
-                            <a
-                                type="button"
-                                className={`mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600 ${defaultValues == undefined ? 'hidden' : ''}`}
-                                tabIndex={4}
-                                href={route('post.show', post_id)}
-                            >
-                                Ver Post
-                            </a>
+                            {defaultValues !== undefined && post_id && (
+                                <a
+                                    className="flex h-12 w-full items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600"
+                                    href={route('post.show', post_id)}
+                                >
+                                    Ver Post
+                                </a>
+                            )}
 
                             <Button
                                 type="button"
@@ -857,13 +787,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             Agregar
                         </a>
 
-                        <Button
-                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-800 px-4 py-2 text-lg text-white transition-colors hover:bg-amber-900"
-                            onClick={onExpand}
-                        >
-                            <Settings size={20} className="text-white" />
-                            Expandir Slot
-                        </Button>
+                        
+
 
                         <div className="mt-5 min-h-0 flex-1 overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
                             <div className="flex flex-col items-center justify-center gap-4">
@@ -951,25 +876,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                         <DialogPanel className="max-h-[100vh] w-full max-w-4xl rounded-2xl bg-white p-6">
                             <DialogTitle className="text-lg font-bold">Add Artwork</DialogTitle>
                             {/** Mapeado de Tags Disposinbles y actuales */}
-                            <label className="h-10 w-full">
-                                <Input
-                                    type="text"
-                                    autoFocus
-                                    value={galery}
-                                    onChange={(e) => setGalery(e.target.value)}
-                                    tabIndex={1}
-                                    placeholder="Type work name..."
-                                    className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900 transition-colors duration-150 outline-none placeholder:text-gray-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20"
-                                />
-                            </label>
-                            <Button
+
+                            <a
                                 type="button"
-                                className="mt-2 h-6 w-35 cursor-pointer rounded-2xl bg-[#e2d255] text-sm font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                                className="mt-2 flex h-6 w-35 cursor-pointer flex-row items-center justify-center rounded-2xl bg-[#e2d255] text-sm font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
-                                onClick={() => addArtwork(galery)}
+                                href={route('artwork.create')}
                             >
                                 Add Artwork
-                            </Button>
+                            </a>
                             <p className="mt-2 text-sm text-gray-600">Crea y/o seleciona la galeria del post</p>
 
                             <div className="scrollbar-gutter-stable mt-2 grid min-h-0 flex-1 grid-cols-2 gap-3 gap-x-4 overflow-y-auto p-3 pr-5 text-left lg:grid-cols-4">
@@ -1028,62 +943,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     </div>
                 </Dialog>
 
-                {/* Expandir Slot */}
-                <Dialog open={modalslot} onClose={() => setModalSlot(false)} className="relative z-50">
-                    <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-
-                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
-                        <DialogPanel className="max-h-[90vh] w-full max-w-4xl rounded-2xl bg-white p-6">
-                            <DialogTitle className="text-lg font-bold">Expandir Slot</DialogTitle>
-                            <p className="mt-1 mb-4 text-sm text-gray-600">Selecciona una imagen y escribe la clave que usaste en el markdown</p>
-
-                            <div className="scrollbar-gutter-stable grid max-h-[60vh] grid-cols-3 gap-3 overflow-y-auto p-1 sm:grid-cols-4">
-                                {avaliables.length === 0 ? (
-                                    <p className="col-span-full text-center text-sm text-gray-500">
-                                        No hay imágenes disponibles. Ve a la obra y agrega imágenes primero.
-                                    </p>
-                                ) : (
-                                    avaliables.map((img) => (
-                                        <button
-                                            key={img.id}
-                                            type="button"
-                                            onClick={() => setSelectedSlotImage(img)}
-                                            className={`group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 ${
-                                                selectedSlotImage?.id === img.id ? 'ring-4 ring-green-500' : ''
-                                            }`}
-                                        >
-                                            <img
-                                                src={`/storage/IMG/${artwork?.code}/${img.name}`}
-                                                alt={img.alt ?? ''}
-                                                className="h-full w-full object-cover"
-                                            />
-                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
-                                                <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
-                                            </div>
-                                        </button>
-                                    ))
-                                )}
-                            </div>
-
-                            <input
-                                type="text"
-                                value={slotKey}
-                                onChange={(e) => setSlotKey(e.target.value)}
-                                placeholder="Clave usada en el markdown (ej: foto-5)"
-                                className="mt-4 w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                            />
-
-                            <Button
-                                type="button"
-                                disabled={!selectedSlotImage || slotKey.trim().length === 0}
-                                onClick={handleExpandConfirm}
-                                className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                                Confirmar
-                            </Button>
-                        </DialogPanel>
-                    </div>
-                </Dialog>
+              
             </>
         );
     },

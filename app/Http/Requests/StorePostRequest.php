@@ -40,9 +40,6 @@ class StorePostRequest extends FormRequest
                 'mimetypes:text/markdown,text/plain,text/x-markdown',
                 'max:5120',
             ],
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp',
-
             'config' => ['nullable', 'array'],
             'config.home_config'  => ['nullable', 'string'],
             'config.article_config' => ['nullable', 'string'],

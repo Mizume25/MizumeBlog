@@ -7,12 +7,20 @@ use App\Http\Requests\UpdateArtwork;
 use App\Models\Artwork;
 use App\Models\ArtworkImage;
 use Illuminate\Http\Request;
+use App\Services\FileContentService;
 use Inertia\Inertia;
 use Storage;
 use Illuminate\Support\Str;
 
 class ArtworkController extends Controller
 {
+
+    private FileContentService $files;
+
+    public function __construct(FileContentService $files)
+    {
+        $this->files = $files;
+    }
 
     /**
      * Formulario de creacion de Artwork
@@ -32,7 +40,9 @@ class ArtworkController extends Controller
 
         $pictures = $artwork->images;
 
-        return Inertia::render('IMG/edit', compact('artwork', 'pictures'));
+        $posts = $artwork->posts;
+
+        return Inertia::render('IMG/edit', compact('artwork', 'pictures', 'posts'));
     }
 
     /**
@@ -64,7 +74,9 @@ class ArtworkController extends Controller
         /**
          * En caso de existir imagenes las pondremos en su carpeta
          */
-        if ($request->hasFile('images')) $this->saveImages($request->file('images'), $request->photos, $artwork);
+        if ($request->hasFile('images')) {
+            $this->files->saveImages($request->file('images'), $request->photos, $artwork);
+        }
 
 
 
@@ -80,7 +92,7 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::findOrFail($id);
 
-
+        
         $request->validated();
 
 
@@ -90,7 +102,10 @@ class ArtworkController extends Controller
 
         if ($request->hasFile('images')) {
 
-            $this->saveImages($request->file('images'), $request->photos, $artwork);
+            $unassociated = $this->files->saveImages($request->file('images'), $request->photos, $artwork, $request->post_id);
+            if (!empty($unassociated)) {
+                return back()->with('warning', 'Algunas imágenes se catalogaron pero no se pudieron asociar (no había claves pendientes suficientes): ' . implode(', ', $unassociated));
+            }
         }
 
         return back()->with('success', 'El artwork se ha actualizado correctamente');
@@ -141,8 +156,8 @@ class ArtworkController extends Controller
     /**
      * Actualiza texto alternativo específico
      */
-    public function updateAlt (Request $request, int $artworkId , int $id) 
-    {   
+    public function updateAlt(Request $request, int $artworkId, int $id)
+    {
         $request->validate([
             'alt' => 'required|string|max:255',
         ]);
@@ -150,39 +165,19 @@ class ArtworkController extends Controller
         $artwork = Artwork::findOrFail($artworkId);
 
         $image = ArtworkImage::where('artwork_id', $artwork->id)
-        ->where('id', $id)
-        ->firstOrFail();
+            ->where('id', $id)
+            ->firstOrFail();
 
         $image->update([
             'alt' => $request->alt,
         ]);
 
         return back()->with('success', 'EL texto alternativo se ha actualizado correctamente');
-
-
     }
 
-    /**
-     * Poner imagenes publicas
-     */
-    private function saveImages(array $images, array $photos, Artwork $artwork): void
-    {
-        $next = ($artwork->images()->max('num') ?? 0) + 1;
 
-        foreach ($images as $i => $image) {
-            $alt = $photos[$i]['alt'] ?? null;
-            $name = $this->hasName($image->getClientOriginalName());
 
-            Storage::disk('public')->putFileAs("IMG/{$artwork->code}", $image , $name);
 
-            ArtworkImage::create([
-                'artwork_id' => $artwork->id,
-                'num' => $next + $i,
-                'name' => $name,
-                'alt' => $alt,
-            ]);
-        }
-    }
 
     private function hasName(string $name): string
     {

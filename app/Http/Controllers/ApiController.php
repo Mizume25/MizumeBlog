@@ -95,6 +95,8 @@ class ApiController extends Controller
             'key' => $request->key
         ]);
 
+        
+
         return response()->json([
             'message' => 'Se ha registrado una nueva imagen asociada',
         ]);

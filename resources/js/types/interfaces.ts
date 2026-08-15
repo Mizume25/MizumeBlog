@@ -43,6 +43,7 @@ export interface NavItem {
 export interface FlashMessage {
     success?: string | null;
     error?: string | null;
+    warning?: string | null
 }
 
 /**

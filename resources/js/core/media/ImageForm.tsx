@@ -44,7 +44,7 @@ const ImageForm = () => {
     /**
      * Logica de agregado de texto alternativos a imagenes
      */
-    const { imageAlts, setAlt, allCompleted } = useImageLogic(images);
+    const { imageAlts, setAlt, allCompleted, moveImage } = useImageLogic(images);
 
     /**
      * @global Variables de Estado Usadas
@@ -107,32 +107,32 @@ const ImageForm = () => {
 
     return (
         <>
-            <div className="w-full px-2 sm:px-4">
-                <div className="mx-auto flex w-full flex-col gap-4 p-2 sm:p-4 lg:max-w-4xl lg:flex-row lg:p-8">
+            <div className="w-full p-4">
+                <div className="mx-auto flex w-full max-w-6xl flex-wrap items-stretch justify-center gap-6">
                     {/*   Contendor de Formulario   */}
                     <form
                         onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}
-                        className="w-full rounded-2xl bg-[#754C22] p-3 sm:p-4 lg:w-100"
+                        className="min-w-80 flex-1 basis-100 rounded-2xl bg-[#754C22] p-6 shadow-lg"
                     >
                         <div className="flex flex-row justify-between gap-2 text-center">
                             {/** Link de Vuelta */}
                             <div className="flex flex-row">
-                                
-                              <a      href={route('post.panel')}
+                                <a
+                                    href={route('post.panel')}
                                     className="flex cursor-pointer items-center gap-2 text-white/30 transition-transform duration-150 hover:-translate-x-1.5"
                                 >
-                                    <ArrowBigLeft size={26} className="text-white" />
-                                    Volver
+                                    <ArrowBigLeft size={24} className="text-white" />
+                                    <span>Volver</span>
                                 </a>
                             </div>
                         </div>
 
-                        <div className="mt-6 flex w-full flex-col gap-5 sm:mt-10 sm:gap-8">
+                        <div className="mt-8 flex w-full flex-col gap-6">
                             {/*  Titulo de la obra   */}
                             <div className="flex flex-col gap-2">
-                                <Label className="flex items-center gap-2 text-lg text-white sm:text-xl">
+                                <Label className="flex items-center gap-2 text-lg whitespace-nowrap text-white">
                                     <Book size={19} />
-                                    <span>Titlo de la obra</span>
+                                    <span>Título de la obra</span>
                                 </Label>
                                 <Input
                                     id="title"
@@ -141,13 +141,13 @@ const ImageForm = () => {
                                     tabIndex={1}
                                     {...register('title')}
                                     placeholder="Title work..."
-                                    className="rounded-xl border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                    className="rounded-xl border-white/20 bg-white/30 p-3 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                 />
                                 <InputError message={errors.title?.message} className="bg-[#754C22]/40" />
                             </div>
                             {/*  Titulo de la carpeta   */}
                             <div className="flex flex-col gap-2">
-                                <Label className="flex items-center gap-2 text-lg text-white sm:text-xl">
+                                <Label className="flex items-center gap-2 text-lg whitespace-nowrap text-white">
                                     <Folder size={19} />
                                     <span>Carpeta</span>
                                 </Label>
@@ -157,13 +157,13 @@ const ImageForm = () => {
                                     autoFocus
                                     tabIndex={1}
                                     placeholder="System Folder Name..."
-                                    className="rounded-xl border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                    className="rounded-xl border-white/20 bg-white/30 p-3 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                 />
                             </div>
 
                             <Button
                                 type="submit"
-                                className="h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                                className="h-14 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -173,27 +173,21 @@ const ImageForm = () => {
                     </form>
 
                     {/* Screen para subir imagenes */}
-                    <div className="h-60 w-full flex-shrink-0 flex-col rounded-2xl bg-[#e5c385] p-3 sm:h-80 sm:p-7 lg:w-100">
-                        <label className="flex h-full cursor-pointer flex-row items-center justify-center gap-2 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 px-4 text-center transition-transform duration-150 hover:scale-105">
+                    <div className="min-w-80 flex-1 basis-100 flex-col rounded-2xl bg-[#e5c385] p-6 shadow-lg">
+                        <label className="flex h-full min-h-70 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-4 border-dotted border-white/50 bg-white/30 px-6 text-center transition-transform duration-150 hover:scale-[1.02]">
                             {images === undefined || images.length === 0 ? (
                                 <>
-                                    <Upload size={26} />
-                                    <p className="text-black">Subir Imagenes</p>
+                                    <Upload size={40} />
+                                    <p className="text-xl text-black">Subir Imágenes</p>
+                                    <p className="text-sm text-black/50">Arrastra tus archivos aquí o haz click para seleccionar</p>
                                 </>
                             ) : (
                                 <>
-                                    <CheckCircle2 size={26} color="green" />
-                                    <p className="text-green-800">{`${images.length} Imagenes por subir`}</p>
+                                    <CheckCircle2 size={40} color="green" />
+                                    <p className="text-xl text-green-800">{`${images.length} Imágenes por subir`}</p>
                                 </>
                             )}
-                            <Input
-                                id="images"
-                                type="file"
-                                className="hidden"
-                                accept=".jpg, .jpeg, .png, .webp"
-                                multiple
-                                {...register('images')}
-                            />
+                            <Input id="images" type="file" className="hidden" accept=".jpg, .jpeg, .png, .webp" multiple {...register('images')} />
                             <InputError message={errors.images?.message} />
                             <InputError message={errors.photos?.message} />
                         </label>
@@ -204,38 +198,60 @@ const ImageForm = () => {
             <Dialog open={isOpen} onClose={() => {}} className="relative z-50">
                 <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
 
-                <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-2 sm:p-4">
-                    <DialogPanel className="max-h-[95vh] w-full max-w-4xl rounded-2xl bg-white p-4 sm:p-6">
-                        <DialogTitle className="text-base font-bold sm:text-lg">Descripciones de Imágenes</DialogTitle>
-                        <p className="mt-1 mb-4 text-xs text-gray-600 sm:text-sm">
-                            Añade una descripción para cada imagen antes de subirla
+                <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+                    <DialogPanel className="max-h-[90vh] w-full max-w-4xl rounded-2xl bg-white p-6">
+                        <DialogTitle className="text-lg font-bold">Descripciones de Imágenes</DialogTitle>
+                        <p className="mt-1 mb-4 text-sm text-gray-600">
+                            Añade una descripción y ordena las imágenes según el orden de las claves en tu markdown
                         </p>
 
-                        <div className="scrollbar-gutter-stable flex max-h-[60vh] flex-col gap-3 overflow-y-auto pr-1 sm:pr-2">
-                            {Array.from(images ?? []).map((file, i) => (
-                                <div
-                                    key={file.name}
-                                    className="flex flex-col items-start gap-3 rounded-xl bg-gray-100 p-3 sm:flex-row sm:items-center"
-                                >
-                                    <img
-                                        src={URL.createObjectURL(file)}
-                                        className="h-16 w-16 shrink-0 self-center rounded-lg object-cover sm:self-auto"
-                                    />
-                                    <div className="min-w-0 w-full flex-1">
-                                        <p className="truncate text-sm font-bold text-black">{file.name}</p>
-                                        <input
-                                            type="text"
-                                            placeholder="Sin descripción"
-                                            onChange={(e) => setAlt(i, e.target.value)}
-                                            className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                                        />
+                        <div className="scrollbar-gutter-stable flex max-h-[60vh] flex-col gap-3 overflow-y-auto pr-2">
+                            {imageAlts.map((item, i) => {
+                                const file = Array.from(images ?? []).find((f) => f.name === item.name);
+                                if (!file) return null;
+
+                                return (
+                                    <div key={item.name} className="flex items-center gap-3 rounded-xl bg-gray-100 p-3">
+                                        <div className="flex flex-col gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => moveImage(i, -1)}
+                                                disabled={i === 0}
+                                                className="cursor-pointer rounded bg-gray-300 px-2 py-0.5 text-xs disabled:cursor-not-allowed disabled:opacity-30"
+                                            >
+                                                ▲
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => moveImage(i, 1)}
+                                                disabled={i === imageAlts.length - 1}
+                                                className="cursor-pointer rounded bg-gray-300 px-2 py-0.5 text-xs disabled:cursor-not-allowed disabled:opacity-30"
+                                            >
+                                                ▼
+                                            </button>
+                                        </div>
+
+                                        <img src={URL.createObjectURL(file)} className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm font-bold text-black">
+                                                {i + 1}. {item.name}
+                                            </p>
+                                            <input
+                                                type="text"
+                                                value={item.alt}
+                                                placeholder="Sin descripción"
+                                                onChange={(e) => setAlt(i, e.target.value)}
+                                                className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                         <Button
                             type="button"
-                            className="mt-6 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 sm:mt-10"
+                            className="mt-10 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 lg:w-100"
                             tabIndex={4}
                             disabled={!allCompleted}
                             onClick={() => setIsOpen(false)}

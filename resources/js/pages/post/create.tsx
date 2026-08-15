@@ -38,12 +38,6 @@ export default function Create({ tags, artworks }: CreateProps) {
         if (data.cover?.[0]) formData.append('cover', data.cover[0]);
         if (data.cover_card?.[0]) formData.append('cover_card', data.cover_card[0]);
         if (data.content?.[0]) formData.append('content', data.content[0]);
-        if (data.images && data.images.length > 0) {
-            Array.from(data.images).forEach((file) => {
-                formData.append('images[]', file);
-            });
-        }
-
         if (data.works && data.works.length > 0) {
             data.works.forEach((work, i) => {
                 if (work.id !== null && work.id !== undefined) {
