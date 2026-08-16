@@ -8,6 +8,8 @@ import {
 } from '../../core/admin';
 import BlogLayout from '@/layouts/app/blog-layout';
 
+import { Head } from '@inertiajs/react';
+
 /**
  * Sidebars comeplemtarios 
  * @param posts 
@@ -62,6 +64,7 @@ const MizumeAdmin = ({ data }: { data: Data }) => {
 
   return (
     <BlogLayout>
+      <Head title='Panel Admin'  />
       <div className="flex min-h-screen bg-[#F5EDD8] text-[#1C1008]">
         {/* ── MAIN CONTENT ── */}
         <main className="flex-1 ml-0  flex flex-col min-w-0">

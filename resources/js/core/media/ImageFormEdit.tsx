@@ -7,7 +7,6 @@ import { Button, Dialog, DialogPanel, DialogTitle, Input, Select } from '@headle
 import InputError from '@/components/input-error';
 import { useImageLogic } from '@/hooks/use-image-logic';
 import { Artwork, Artwork_Image, ArtworkSchema, confirmDelete, CreateArtworkSchemaOutput, Post } from '@/types';
-import Switch from 'react-switch';
 
 /** @import Routing */
 import { router } from '@inertiajs/react';
@@ -72,9 +71,6 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
     /** Variable para abrir y cerrar el modal */
     const [isOpen, setIsOpen] = useState(false);
 
-    /** Control de post asociado */
-    const [showAssociate, setShowAssociate] = useState(true);
-
     /**
      * Funcion para Actalizar artwork
      * @param data
@@ -85,7 +81,6 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
 
         formData.append('_method', 'put');
         if (data.title) formData.append('title', data.title);
-        if (data.post_id) formData.append('post_id', String(data.post_id));
 
         const originalFiles = Array.from(data.images ?? []);
         const photos = data.photos ?? [];
@@ -178,30 +173,14 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
     };
 
     useEffect(() => {
-        if (posts.length > 0) {
-            setPost(posts[0].id);
-            setValue('post_id', posts[0].id);
-        }
+        if (posts.length > 0) setPost(posts[0].id);
     }, []);
-
-    const onAsociate = () => {
-
-        setShowAssociate((prev) => !prev);
-        console.log(showAssociate)
-        if(showAssociate) {
-            setPost(posts[0].id);
-        } else {
-            setPost(null)
-        }
-    };
 
     const onChangePost = (id: number) => {
         setPost(id);
-        setValue('post_id', id);
     };
 
-    
-    console.log(post);
+  
     return (
         <>
             <div>
@@ -261,33 +240,27 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
                                 </div>
 
                                 {/*  Titulo de la carpeta   */}
-                                <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-lg whitespace-nowrap text-white">
-                                        <Folder size={19} />
-                                        <span>Posts</span>
-                                    </Label>
-                                    <Select
-                                        disabled={!showAssociate}
-                                        id="post"
-                                        className="rounded-2xl bg-white/30 p-2 text-gray-50 capitalize"
-                                        onChange={(e) => onChangePost(Number(e.target.value))}
-                                    >
-                                        {posts.map((p) => (
-                                            <option value={p.id} key={p.id} className="bg-white/30 text-black capitalize">
-                                                {p.title}
-                                            </option>
-                                        ))}
-                                    </Select>
-
-                                    <Switch
-                                        checked={showAssociate}
-                                        onChange={onAsociate}
-                                        onColor="#07a202"
-                                        offColor="#454545"
-                                        checkedIcon={false}
-                                        uncheckedIcon={false}
-                                    />
-                                </div>
+                                {posts.length != 0 ? (
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="flex items-center gap-2 text-lg whitespace-nowrap text-white">
+                                            <Folder size={19} />
+                                            <span>Posts</span>
+                                        </Label>
+                                        <Select
+                                            id="post"
+                                            className="rounded-2xl bg-white/30 p-2 text-gray-50 capitalize"
+                                            onChange={(e) => onChangePost(Number(e.target.value))}
+                                        >
+                                            {posts.map((p) => (
+                                                <option value={p.id} key={p.id} className="bg-white/30 text-black capitalize">
+                                                    {p.title}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
 
                             <Label className="mt-5 flex items-center gap-2 text-xl text-white">
@@ -317,17 +290,16 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
                                 <InputError message={errors.images?.message} className="bg-[#754C22]/40" />
                                 <InputError message={errors.photos?.message} className="bg-[#754C22]/40" />
                             </label>
-                            {showAssociate ? (
+                            {post != null ? (
                                 <a
                                     type="submit"
                                     className="mt-5 flex h-12 w-full cursor-pointer flex-row items-center justify-center rounded-2xl bg-blue-400 font-bold text-white transition-transform duration-150 hover:scale-105"
                                     href={route('post.show', String(post))}
                                 >
-                                    Ver Post
+                                    Ver {posts.find((p) => p.id === post)?.title}
                                 </a>
                             ) : (
-                                <>
-                                </>
+                                <></>
                             )}
 
                             <Button

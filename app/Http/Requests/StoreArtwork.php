@@ -30,7 +30,6 @@ class StoreArtwork extends FormRequest
             'photos' => ['nullable', 'array'],
             'photos.*.name' => ['required', 'string', 'max:255'],
             'photos.*.alt' => ['required', 'string', 'max:255'],
-            'post_id' => 'nullable|integer|exists:posts,id',
         ];
     }
 }

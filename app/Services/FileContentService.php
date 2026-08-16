@@ -96,47 +96,22 @@ class FileContentService
     /**
      * Funcion para guardar imagenes 
      */
-    public function saveImages(array $images, array $photos, Artwork $artwork, ?int $post_id = null): array
+    public function saveImages(array $images, array $photos, Artwork $artwork): void
     {
         $next = ($artwork->images()->max('num') ?? 0) + 1;
-
-        $pendingKeys = [];
-        $post = null;
-
-        if ($post_id) {
-            $post = Post::findOrFail($post_id);
-            $content = Storage::disk('local')->get($post->path(ContentType::Content));
-            $pendingKeys = MarkdownService::syncKeys($content, $post, dryRun: true);
-        }
-
-        $unassociated = [];
-
         foreach ($images as $i => $image) {
             $alt = $photos[$i]['alt'] ?? null;
             $name = $this->hashName($image->getClientOriginalName());
 
             Storage::disk('public')->putFileAs("IMG/{$artwork->code}", $image, $name);
 
-            $artworkImage = ArtworkImage::create([
+            ArtworkImage::create([
                 'artwork_id' => $artwork->id,
                 'num' => $next + $i,
                 'name' => $name,
                 'alt' => $alt,
             ]);
-
-            if ($post && isset($pendingKeys[$i])) {
-                PostImage::create([
-                    'post_id' => $post->id,
-                    'artwork_image_id' => $artworkImage->id,
-                    'key' => $pendingKeys[$i],
-                ]);
-            } elseif ($post_id) {
-                $unassociated[] = $image->getClientOriginalName();
-            }
         }
-
-
-        return $unassociated;
     }
 
     /**

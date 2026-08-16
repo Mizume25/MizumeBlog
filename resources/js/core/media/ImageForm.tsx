@@ -58,7 +58,7 @@ const ImageForm = ( { posts } : { posts: Post[]}) => {
     const [isOpen, setIsOpen] = useState(false);
 
      const [showAssociate, setShowAssociate] = useState(true);
-    const [post, setPost] = useState<number | null>(null);
+
 
     /**
      * Variable de control para abrir en caso de que se suban imagenes
@@ -83,7 +83,6 @@ const ImageForm = ( { posts } : { posts: Post[]}) => {
 
         const formData = new FormData();
         if (data.title) formData.append('title', data.title);
-        if (data.post_id) formData.append('post_id', String(data.post_id));
         if (data.images && data.images.length > 0) {
             Array.from(data.images).forEach((file) => {
                 formData.append('images[]', file);
@@ -110,27 +109,7 @@ const ImageForm = ( { posts } : { posts: Post[]}) => {
         });
     };
 
-    useEffect(() => {
-        if (posts.length > 0) {
-            setPost(posts[0].id);
-            setValue('post_id', posts[0].id);
-        }
-    }, []);
-
-    const onAsociate = () => {
-        setShowAssociate((prev) => !prev);
-        console.log(showAssociate);
-        if (showAssociate) {
-            setPost(posts[0].id);
-        } else {
-            setPost(null);
-        }
-    };
-
-    const onChangePost = (id: number) => {
-        setPost(id);
-        setValue('post_id', id);
-    };
+    
 
     return (
         <>
@@ -188,33 +167,7 @@ const ImageForm = ( { posts } : { posts: Post[]}) => {
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <Label className="flex items-center gap-2 text-lg whitespace-nowrap text-white">
-                                    <Folder size={19} />
-                                    <span>Posts</span>
-                                </Label>
-                                <Select
-                                    disabled={!showAssociate}
-                                    id="post"
-                                    className="rounded-2xl bg-white/30 p-2 text-gray-50 capitalize"
-                                    onChange={(e) => onChangePost(Number(e.target.value))}
-                                >
-                                    {posts.map((p) => (
-                                        <option value={p.id} key={p.id} className="bg-white/30 text-black capitalize">
-                                            {p.title}
-                                        </option>
-                                    ))}
-                                </Select>
-
-                                <Switch
-                                    checked={showAssociate}
-                                    onChange={onAsociate}
-                                    onColor="#07a202"
-                                    offColor="#454545"
-                                    checkedIcon={false}
-                                    uncheckedIcon={false}
-                                />
-                            </div>
+                            
 
                             <Button
                                 type="submit"

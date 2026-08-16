@@ -16,7 +16,8 @@ import { PostContent, PostSideBarLeft } from '../../core/post';
 import { Folder, FolderOpen } from 'lucide-react';
 
 /** @import Componenetes Modal */
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import ModalOperation from '@/components/modal-operation';
+import { DialogTitle } from '@headlessui/react';
 
 /**
  *
@@ -110,7 +111,6 @@ function show({ content, artworks }: ShowProps) {
         setIsOpen(true);
     };
 
-
     return (
         <BlogLayout post_id={content.post.id}>
             {/* Pestaña de la Página */}
@@ -141,52 +141,46 @@ function show({ content, artworks }: ShowProps) {
                 </div>
             </main>
 
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
-
-                <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
-                    <DialogPanel className="max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl">
-                        {/* Header */}
-                        <div className="bg-[#754C22] px-6 py-5">
-                            <DialogTitle className="text-xl font-bold text-white">Obras</DialogTitle>
-                            <p className="mt-1 text-sm text-white/70">Selecciona una obra para gestionar su catálogo</p>
-                        </div>
-
-                        {/* Grid de carpetas */}
-                        <div className="scrollbar-gutter-stable max-h-[60vh] overflow-y-auto p-6">
-                            {artworks.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-3 py-16">
-                                    <FolderOpen size={40} className="text-gray-300" />
-                                    <p className="text-gray-500">Aún no hay obras catalogadas</p>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                                    {artworks.map((artwork) => (
-                                        <a
-                                            key={artwork.id}
-                                            href={route('artwork.edit', artwork.id)}
-                                            className="group flex flex-col items-center gap-2 rounded-2xl bg-[#f5ecd8] p-4 transition-all duration-150 hover:-translate-y-1 hover:bg-[#e8d9b8]"
-                                        >
-                                            <Folder
-                                                size={44}
-                                                className="text-[#a3792f] transition-transform duration-200 group-hover:scale-110"
-                                                fill="currentColor"
-                                                fillOpacity={0.2}
-                                            />
-                                            <div className="w-full text-center">
-                                                <h3 className="truncate text-sm font-bold text-gray-800">{artwork.title}</h3>
-                                                <span className="mt-0.5 inline-block rounded-full bg-black/10 px-2 py-0.5 text-[9px] tracking-wide text-gray-500 uppercase">
-                                                    {artwork.code}
-                                                </span>
-                                            </div>
-                                        </a>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </DialogPanel>
+            <ModalOperation isOpen={isOpen} onClose={() => setIsOpen(false)} title="Artworks">
+                {/* Header */}
+                <div className="bg-[#754C22] px-6 py-5">
+                    <DialogTitle className="text-xl font-bold text-white">Imagenes</DialogTitle>
+                    <p className="mt-1 text-sm text-white/70">Selecciona una carpeta para gestionar su catálogo</p>
                 </div>
-            </Dialog>
+
+                {/* Grid de carpetas */}
+                <div className="scrollbar-gutter-stable max-h-[60vh] overflow-y-auto p-6">
+                    {artworks.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center gap-3 py-16">
+                            <FolderOpen size={40} className="text-gray-300" />
+                            <p className="text-gray-500">Aún no hay catalogo asociado</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                            {artworks.map((artwork) => (
+                                <a
+                                    key={artwork.id}
+                                    href={route('artwork.edit', artwork.id)}
+                                    className="group flex flex-col items-center gap-2 rounded-2xl bg-[#f5ecd8] p-4 transition-all duration-150 hover:-translate-y-1 hover:bg-[#e8d9b8]"
+                                >
+                                    <Folder
+                                        size={44}
+                                        className="text-[#a3792f] transition-transform duration-200 group-hover:scale-110"
+                                        fill="currentColor"
+                                        fillOpacity={0.2}
+                                    />
+                                    <div className="w-full text-center">
+                                        <h3 className="truncate text-sm font-bold text-gray-800">{artwork.title}</h3>
+                                        <span className="mt-0.5 inline-block rounded-full bg-black/10 px-2 py-0.5 text-[9px] tracking-wide text-gray-500 uppercase">
+                                            {artwork.code}
+                                        </span>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </ModalOperation>
         </BlogLayout>
     );
 }

@@ -5,6 +5,7 @@ import LibraryHeader from '@/core/library/LibraryHeader';
 import LibrarySideBarLeft from '@/core/library/LibrarySideBarLeft';
 import LibraryContent from '@/core/library/LibraryContent';
 import { Section, SECTION, Section_Content } from '@/types';
+import { Head } from '@inertiajs/react';
 
 
 /**
@@ -45,8 +46,8 @@ function Library({ posts }: { posts: Post[] }) {
     }   
 
     return (
-        <BlogLayout>
-            
+        <BlogLayout>    
+            <Head  title='Archive' />
             <LibraryHeader onSection={handleSection}  section={section} />
 
             <main className="flex flex-col lg:flex-row gap-0 min-h-[calc(100vh-260px)]">

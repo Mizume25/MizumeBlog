@@ -67,7 +67,7 @@ export default function Password() {
                                 value={data.current_password}
                                 onChange={(e) => setData('current_password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-white"
                                 autoComplete="current-password"
                                 placeholder="Current password"
                             />
@@ -84,9 +84,9 @@ export default function Password() {
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-white"
                                 autoComplete="new-password"
-                                placeholder="New password"
+                                placeholder="New password "
                             />
 
                             <InputError message={errors.password} />
@@ -100,7 +100,7 @@ export default function Password() {
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-white"
                                 autoComplete="new-password"
                                 placeholder="Confirm password"
                             />
@@ -109,7 +109,9 @@ export default function Password() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save password</Button>
+                            <Button disabled={processing}
+                            className='bg-amber-600 rounded-2xl cursor-pointer transition-transform duration-150 hover:scale-105 hover:bg-amber-700'
+                            >Guardar Contraseña</Button>
 
                             <Transition
                                 show={recentlySuccessful}

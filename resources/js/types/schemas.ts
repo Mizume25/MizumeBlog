@@ -84,8 +84,7 @@ export const ArtworkSchema = z.object({
         .refine((files) => Array.from(files).every((file) => file.size <= MAX_SIZE), 'Cada imagen debe pesar máximo 5MB')
         .refine((files) => Array.from(files).every((file) => VALID_TYPES.includes(file.type)), 'Formato inválido en una o más imágenes')
         .optional(),
-    photos: z.array(PhotoSchema),
-    post_id: z.number().nullable().optional(),
+    photos: z.array(PhotoSchema)
 })
 
 export type CreateArtworkSchemaOutput = z.output<typeof ArtworkSchema>;

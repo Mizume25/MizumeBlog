@@ -83,13 +83,8 @@ class ArtworkController extends Controller
          * En caso de existir imagenes las pondremos en su carpeta
          */
         if ($request->hasFile('images')) {
-            
-           $unassociated =  $this->files->saveImages($request->file('images'), $request->photos, $artwork, $request->post_id);
 
-            if (!empty($unassociated)) {
-                return redirect()->route('artwork.index')
-                    ->with('warning', 'Artwork creado, pero algunas imágenes no se pudieron asociar: ' . implode(', ', $unassociated));
-            }
+            $this->files->saveImages($request->file('images'), $request->photos, $artwork);
         }
 
 
@@ -119,10 +114,7 @@ class ArtworkController extends Controller
 
         if ($request->hasFile('images')) {
 
-            $unassociated = $this->files->saveImages($request->file('images'), $request->photos, $artwork, $request->post_id);
-            if (!empty($unassociated)) {
-                return back()->with('warning', 'Algunas imágenes se catalogaron pero no se pudieron asociar (no había claves pendientes suficientes): ' . implode(', ', $unassociated));
-            }
+            $this->files->saveImages($request->file('images'), $request->photos, $artwork);
         }
 
         return back()->with('success', 'El artwork se ha actualizado correctamente');
