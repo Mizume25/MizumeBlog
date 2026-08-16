@@ -104,4 +104,25 @@ class ApiController extends Controller
 
         return response()->json(['message' => 'Imagen asociada correctamente']);
     }
+
+
+    /**
+     * Asociar o Desasociar works
+     */
+    public function symlink(Request $request, int $post_id)
+    {
+        $request->validate([
+            'works' => ['nullable', 'array'],
+            'works.*.id' => ['required', 'integer', 'exists:artworks,id'],
+        ]);
+
+        $post = Post::findOrFail($post_id);
+        $this->authorize('update', $post);
+
+        $ids = collect($request->works ?? [])->pluck('id')->all();
+
+        $post->artworks()->sync($ids);
+
+        return response()->json(['message' => 'Asociaciones de post actualizadas']);
+    }
 }

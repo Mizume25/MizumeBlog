@@ -1,3 +1,4 @@
+import { ToastType } from '@/hooks/use-toast';
 import { SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { AlertTriangleIcon, CheckCircle2, XCircle } from 'lucide-react';
@@ -8,6 +9,8 @@ interface FlashState {
     type: FlashType;
     message: string;
 }
+
+
 
 function FlashHandler() {
     const { flash } = usePage<SharedData>().props;

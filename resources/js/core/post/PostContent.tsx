@@ -1,10 +1,10 @@
-import { Post } from '@/types';
+import { Post, SharedData } from '@/types';
 import { Button } from '@headlessui/react';
+import { router, usePage } from '@inertiajs/react';
+import MDEditor from '@uiw/react-md-editor';
+import { useState } from 'react';
+import Switch from 'react-switch';
 import MarkdownRenderer from './MarkdownRenderer';
-
-import { SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
-
 /**
  * Formatear Fecha
  * @param data
@@ -62,13 +62,44 @@ function PostTag({ tags }: { tags: string[] }) {
 interface PostContentProps {
     post: Post;
     contenido: string;
+    raw: string;
     selectedId: string;
     handlerCick: () => void;
 }
 
-function PostContent({ post, contenido, selectedId, handlerCick }: PostContentProps) {
+function PostContent({ post, contenido, selectedId, handlerCick, raw }: PostContentProps) {
+
+
+    const [content, setContent] = useState<string>(raw);
+
+    const [edit, setEdit] = useState<boolean>(false);
+
     const badge: string[] = post.tags.split(',').map((p) => p.trim());
     const { auth } = usePage<SharedData>().props;
+
+    const handleSaveContent = async () => {
+        const formData = new FormData();
+        formData.append('_method', 'put');
+        formData.append('title', post.title);
+        formData.append('category', post.category);
+        formData.append('author', post.author);
+        const tagsArray = post.tags.split(',').map((tag) => tag.trim());
+        tagsArray.forEach((tag, i) => formData.append(`tags[${i}]`, tag));
+
+        const blob = new Blob([content], { type: 'text/markdown' });
+        formData.append('content', blob, 'content.md');
+
+        router.post(route('post.update', post.id), formData, {
+            onSuccess: () => {
+                alert('Contenido actualizado');
+            },
+            onError: (errors) => {
+                console.error('Errores de validación:', errors);
+                alert('No se pudo actualizar: revisa la consola');
+            },
+        });
+    };
+
     return (
         /* Contenido Main*/
         <article className="overflow-hidden rounded-lg border border-white/10 bg-[#2A1B12]/95 p-4 shadow-2xl lg:col-span-6">
@@ -78,15 +109,41 @@ function PostContent({ post, contenido, selectedId, handlerCick }: PostContentPr
             {/* Contenedor de Tags*/}
             <PostTag tags={badge} />
             {auth.user.role === 'admin' ? (
-                <Button className="text-md ms-4 h-15 w-60 cursor-pointer rounded-2xl bg-amber-200 p-4" onClick={handlerCick}>
-                    Gestor de Imagenes
-                </Button>
+                <div className="flex h-20 w-full flex-row items-center justify-start gap-4 lg:flex-row">
+                    <Button
+                        className="text-md ms-4 mb-4 h-12 w-50 cursor-pointer rounded-2xl bg-amber-200 p-4 transition-transform duration-150 hover:scale-105"
+                        onClick={handlerCick}
+                    >
+                        Gestor de Imagenes
+                    </Button>
+
+                    <div className="mb-4 flex flex-col items-center gap-1 text-white">
+                        <p className="text-sm">Editar</p>
+                        <Switch checked={edit} onChange={setEdit} onColor="#a79101" offColor="#454545" checkedIcon={false} uncheckedIcon={false} />
+                    </div>
+                </div>
             ) : (
                 <></>
             )}
-
+            <div className="h-12 w-full lg:hidden"></div>
             {/** Renderizado de contenido */}
-            <MarkdownRenderer content={contenido} className="mb-12" selectedId={selectedId} />
+
+            {edit ? (
+                <MDEditor value={content} onChange={(val) => setContent(val ?? '')} data-color-mode="dark" height="auto" preview="edit" />
+            ) : (
+                <MarkdownRenderer content={contenido} className="mb-12" selectedId={selectedId} />
+            )}
+
+            {edit ? (
+                <button
+                    onClick={handleSaveContent}
+                    className="mt-4 rounded-xl bg-green-400 px-4 py-2 font-bold text-white transition-transform duration-150 hover:scale-105"
+                >
+                    Guardar cambios
+                </button>
+            ) : (
+                <></>
+            )}
         </article>
     );
 }

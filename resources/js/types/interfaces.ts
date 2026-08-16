@@ -265,6 +265,7 @@ export type Content = {
     body: string;
     comments: CommentRecord[];
     features: Post[];
+    raw: string,
 };
 
 /**

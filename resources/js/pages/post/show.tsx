@@ -127,7 +127,7 @@ function show({ content, artworks }: ShowProps) {
                 <div className="relative grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10">
                     <PostSideBarLeft list={index} onFindID={handleFindID} sidebar={sidebar} isClose={isClose} post_id={content.post.id} />
 
-                    <PostContent post={content.post} contenido={content.body} selectedId={selectedId} handlerCick={handlerClick} />
+                    <PostContent post={content.post} contenido={content.body} raw={content.raw} selectedId={selectedId} handlerCick={handlerClick} />
 
                     <SideBarRight
                         posts={content.features}

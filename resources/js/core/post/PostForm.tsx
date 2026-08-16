@@ -5,14 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Switch from 'react-switch';
 
+import { artworkApi } from '@/types/api';
 /*** @import Variables de Estado  y de referencia */
+import { ToastType, useToast } from '@/hooks/use-toast';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 /** @imports Interfaces y Diseño Web + Iconos */
 import {
     Artwork,
     Artwork_Image,
-    ArtworkInput,
     ArtworkPictures,
     OPTION_CATEGORY,
     PostSchema,
@@ -63,6 +64,30 @@ export interface PostFormHandle {
     resetForm: () => void;
 }
 
+function ApiToast({ toast }: { toast: { type: ToastType; message: string } | null }) {
+    if (!toast) return null;
+
+    return (
+        <div
+            className={`fixed top-5 right-5 z-[100] transition-all duration-500 ease-out ${
+                toast ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-8 opacity-0'
+            }`}
+        >
+            <div
+                className={`flex min-w-[260px] items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
+                    toast?.type === 'success'
+                        ? 'bg-[#7ad35f] text-white'
+                        : toast?.type === 'warning'
+                          ? 'bg-[#e0a11a] text-white'
+                          : 'bg-[#fc5353] text-white'
+                }`}
+            >
+                <p className="text-sm font-medium">{toast?.message}</p>
+            </div>
+        </div>
+    );
+}
+
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
     (
         { tags, defaultValues, onSubmit, submitLabel = false, processing = false, cover_url, card_url, container, artworks, galeries, post_id },
@@ -97,11 +122,11 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          * @global Varaibles Generales
          */
 
+        const { showToast, toast } = useToast();
         /**
          * Item individual para crear un etiqueta
          */
         const [tag, setTag] = useState<string>('');
-
         /**
          * Item individual para crear un instancia de artwork
          */
@@ -143,7 +168,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          */
 
         /** Representacion de carpetas relacionadas */
-        const [folders, setFolders] = useState<ArtworkInput[]>(galeries ?? []);
+        const [folders, setFolders] = useState<Artwork[]>(galeries ?? []);
 
         /** Representacion de 1 solo artwork */
         const [artwork, setArtwork] = useState<Artwork | null>(galeries?.[0] ?? null);
@@ -232,16 +257,25 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          * Funcion que refresca los folders
          * @type artwork
          */
-        const refreshFolder = (artwork: ArtworkInput) => {
+        const refreshFolder = (artwork: Artwork) => {
             setFolders((prev) => {
                 const key = artwork.id ?? artwork.title;
                 const exists = prev.some((a) => (a.id ?? a.title) === key);
 
                 const current = exists ? prev.filter((a) => (a.id ?? a.title) !== key) : [...prev, artwork];
 
-                setValue('works', current);
+                const workIds = current.map((f) => f.id).filter((id): id is number => id != null);
+                artworkApi
+                    .syncWorks(post_id, workIds)
+                    .then((data) => showToast('success', data.message))
+                    .catch((err) => showToast('error', err.message));
+
                 return current;
             });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         };
 
         const [fileInputKey, setFileInputKey] = useState(0);
@@ -284,30 +318,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             setTag('');
         };
 
-        /**
-         * Funcion para añadir artworks
-         * @param galery
-         * @returns
-         */
-        const addArtwork = (galery: string | null) => {
-            if (galery == null) return alert('La galeria no puede ser nulo');
-
-            const clean = galery.trim();
-
-            if (clean.length === 0) return alert('La galeria no puede ser vacío');
-
-            const temp: ArtworkInput = {
-                id: null,
-                title: clean,
-            };
-
-            /** Refrescamos  */
-            refreshFolder(temp);
-
-            /** Limpiamos */
-            setGalery('');
-        };
-
         /** Abre y cierra sidebar */
         const onToogle = () => setisSidebar((prev) => !prev);
 
@@ -320,31 +330,16 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         };
 
         /**
-         * Api para obtener imagenes validas
-         */
-        const getAvaliablePicture = async (): Promise<Artwork_Image[]> => {
-            const answer = await fetch(`/api/post/${post_id}/artwork/${artwork?.id}`);
-
-            if (!answer.ok) throw new Error('Ha habido un problema');
-
-            const response = await answer.json();
-
-            console.log(response);
-
-            return response;
-        };
-
-        /**
          * Funcion para Remplazar
          */
         const handleOpenReplace = async () => {
-            const valids = await getAvaliablePicture();
+            const valids = await artworkApi.getAvailable(post_id, artwork?.id);
             setavAvaliables(valids);
             setModalReplace(true);
         };
 
         const handleOpenAdd = async () => {
-            const valids = await getAvaliablePicture();
+            const valids = await artworkApi.getAvailable(post_id, artwork?.id);
             setavAvaliables(valids);
             setModalAdd(true);
         };
@@ -367,52 +362,33 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             handleOpenReplace();
         }, [picture]);
 
-        const handleReplaceConfirm = async (newImage: Artwork_Image) => {
-            if (newImage === undefined) return;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const response = await fetch(`/api/post/${post_id}/replace/${picture}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken ?? '',
-                },
-                body: JSON.stringify({ artwork_image_id: newImage.id }),
-            });
+        const onReplaceImage = async (post_id: number | undefined, image_id: number | undefined) => {
+            artworkApi
+                .replaceImage(post_id, image_id, artwork?.id)
+                .then((data) => showToast('success', data.message))
+                .catch((err) => showToast('error', err.message));
 
-            if (!response.ok) throw new Error('No se pudo reemplazar la imagen con id:' + picture);
-
-            setModalReplace(false);
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         };
 
-        const handleCreateConfirm = async (newImage: Artwork_Image, key: string) => {
-            if (newImage === undefined || !key.trim()) return;
+        const onAddImage = async (post_id: number | undefined, key: string) => {
+            artworkApi
+                .associateImage(post_id, selectedForAdd?.id, key)
+                .then((data) => showToast('success', data.message))
+                .catch((err) => showToast('error', err.message));
 
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-            const response = await fetch(`/api/post/${post_id}/associate/${newImage.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken ?? '',
-                },
-                body: JSON.stringify({ key }),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                alert(data.message ?? 'No se pudo asociar la imagen');
-                return;
-            }
-
-            setModalAdd(false);
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         };
 
         return (
             <>
                 {/** Formulario */}
                 <div>
+                    <ApiToast toast={toast} />
                     <div className="border-border/50 mx-auto rounded-lg border bg-[#754C22] p-4 shadow-lg sm:p-8 lg:min-w-150">
                         <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}>
                             <div className="flex flex-row justify-between gap-2 text-center">
@@ -746,6 +722,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 })}
                             </div>
 
+                            <div className="h-8 w-full"></div>
+
                             {defaultValues !== undefined && post_id && (
                                 <a
                                     className="flex h-12 w-full items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600"
@@ -755,14 +733,18 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 </a>
                             )}
 
-                            <Button
-                                type="button"
-                                className={`mt-5 h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90 ${defaultValues == undefined ? 'hidden' : ''}`}
-                                tabIndex={4}
-                                onClick={onToogle}
-                            >
-                                Gestionar Imagenes
-                            </Button>
+                            {folders.length === 0 ? (
+                                <></>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    className={`mt-5 h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90 ${defaultValues == undefined ? 'hidden' : ''}`}
+                                    tabIndex={4}
+                                    onClick={onToogle}
+                                >
+                                    Gestionar Imagenes
+                                </Button>
+                            )}
                             <Button
                                 type="submit"
                                 className="mt-5 h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
@@ -915,7 +897,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     {/* Contenedor centrado */}
                     <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
                         <DialogPanel className="max-h-[100vh] w-full max-w-4xl rounded-2xl bg-white p-6">
-                            <DialogTitle className="text-lg font-bold">Add Artwork</DialogTitle>
+                            <DialogTitle className="text-lg font-bold">Agrega un Artwork</DialogTitle>
                             {/** Mapeado de Tags Disposinbles y actuales */}
 
                             <a
@@ -924,7 +906,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 tabIndex={4}
                                 href={route('artwork.create')}
                             >
-                                Add Artwork
+                                Crear Artwork
                             </a>
                             <p className="mt-2 text-sm text-gray-600">Crea y/o seleciona la galeria del post</p>
 
@@ -965,7 +947,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         <button
                                             key={img.id}
                                             type="button"
-                                            onClick={() => handleReplaceConfirm(img)}
+                                            onClick={() => onReplaceImage(post_id, img.id)}
                                             className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105"
                                         >
                                             <img
@@ -1043,7 +1025,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <Button
                                 type="button"
                                 disabled={!selectedForAdd || addKey.trim().length === 0}
-                                onClick={() => selectedForAdd && handleCreateConfirm(selectedForAdd, addKey)}
+                                onClick={() => selectedForAdd && onAddImage(post_id, addKey)}
                                 className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Agregar

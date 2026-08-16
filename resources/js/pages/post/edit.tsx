@@ -7,6 +7,7 @@ import type { CreatePostSchemaOutput } from '@/types/schemas';
 import { Head, router } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
+
 interface EditProps {
     post: Post;
     tags: string[];
@@ -42,14 +43,7 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
             });
         }
 
-        if (data.works && data.works.length > 0) {
-            data.works.forEach((work, i) => {
-                if (work.id !== null && work.id !== undefined) {
-                    formData.append(`works[${i}][id]`, String(work.id));
-                }
-                formData.append(`works[${i}][title]`, work.title);
-            });
-        }
+       
 
         router.post(route('post.update', post.id), formData, {
             onSuccess: () => {},
@@ -63,6 +57,7 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
         <BlogLayout>
             <AuthLayout title="MizumeBlog" description="Editar Post">
                 <Head title="Editar Post" />
+               
                 <PostForm
                     ref={formRef}
                     tags={tags}

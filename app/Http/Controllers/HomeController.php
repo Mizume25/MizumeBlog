@@ -61,6 +61,7 @@ class HomeController extends Controller
         $json = Storage::disk('local')->get($post->path(ContentType::Index));
 
         $body = MarkdownService::resolveImages($md , $post);
+        $raw = Storage::disk('local')->get($post->path(ContentType::Content));
 
 
         $index = json_decode($json, true);
@@ -74,6 +75,7 @@ class HomeController extends Controller
             "body" => $body,
             "comments" => $comments,
             "features" => $features,
+            "raw" => $raw,
         ];
 
         /** Renderizamos */

@@ -97,11 +97,15 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
         $this->authorize('update', $post);
-
+        
         $data = $request->validated();
+
+        
         unset($data['cover'], $data['cover_card'], $data['content'], $data['works']);
 
         $data['tags'] = implode(',', $data['tags']);
+
+        $pendingKeys = [];
 
         if ($request->hasFile('content')) {
             $file = $request->file('content');
@@ -111,12 +115,7 @@ class AdminController extends Controller
                 return back()->with('error', 'El archivo MD no es válido');
             }
 
-            $pendingKeys = MarkdownService::syncKeys($content, $post, dryRun: true);
 
-            if (!empty($pendingKeys)) {
-                return back()->with('pendingKeys', $pendingKeys)
-                    ->with('warning', 'Hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
-            }
 
             $titles = MarkdownService::extract($content);
             $index = json_encode($titles);
@@ -124,7 +123,7 @@ class AdminController extends Controller
             Storage::disk('local')->put($post->path(ContentType::Content), $content);
             Storage::disk('local')->put($post->path(ContentType::Index), $index);
 
-            MarkdownService::syncKeys($content, $post);
+            $pendingKeys = MarkdownService::syncKeys($content, $post);
         }
 
         if ($request->hasFile('cover')) $data['cover'] = $this->replaceImage($request->file('cover'), ImageType::Cover, 'Portada', 'cover', $post);
@@ -135,6 +134,10 @@ class AdminController extends Controller
 
         if ($request->has('works')) {
             $this->register($request->input('works', []), $post);
+        }
+
+        if (!empty($pendingKeys)) {
+            return redirect()->back()->with('warning', 'El post se actualizó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
         }
 
         return redirect()->back()->with('success', 'El Post se actualizó correctamente');
