@@ -20,7 +20,6 @@ function FlashHandler() {
         if (flash?.success) {
             setCurrent({ type: 'success', message: flash.success });
             setView(true);
-            console.log(flash.success);
         } else if (flash?.error) {
             setCurrent({ type: 'error', message: flash.error });
             setView(true);

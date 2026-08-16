@@ -152,41 +152,28 @@ class AdminController extends Controller
      */
     public function destroy(int $id)
     {
-
         $post = Post::findOrFail($id);
-
 
         $this->authorize('delete', $post);
 
-        /** Guardamos los valores */
-        $path = $this->files->getPath($post->id, $post->title);
         $cover = $post->cover;
         $card = $post->cover_card;
-        $folder = basename($path);
-
 
         /*** Eliminamos todos los comentarios Asociados */
         Comment::where('post_id', $post->id)->whereNotNull('parent_id')->delete();
         Comment::where('post_id', $post->id)->whereNull('parent_id')->delete();
 
-
-
-        $post->delete();
-
         /***
          * Eliminamos json md imagen y config img en ese orden
          */
-        if (file_exists($path . '/' . 'index.json')) unlink($path . '/' . 'index.json');
-        if (file_exists($path . '/' . 'content.md')) unlink($path . '/' . 'content.md');
+        Storage::disk('local')->delete($post->path(ContentType::Content));
+        Storage::disk('local')->delete($post->path(ContentType::Index));
+
+
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
 
-        Storage::disk('public')->deleteDirectory('IMG/' . $folder);
-        Storage::disk('local')->deleteDirectory('blog/' . $folder);
-
-
-
-
+        $post->delete();
 
         return redirect()->route('post.panel')->with('success', 'Post eliminado');
     }
@@ -331,8 +318,4 @@ class AdminController extends Controller
         $ids = collect($works)->pluck('id')->filter()->all();
         $post->artworks()->sync($ids);
     }
-
-
-
-
 }

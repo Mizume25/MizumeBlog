@@ -81,7 +81,6 @@ function show({ content, artworks }: ShowProps) {
     /** Formato de la portada renderizada a estado  */
     useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
 
-    console.log(content);
     /** Indice de Contenido */
     const index: IndexContent[] = content.index;
 
@@ -111,7 +110,7 @@ function show({ content, artworks }: ShowProps) {
         setIsOpen(true);
     };
 
-    console.log(artworks);
+
     return (
         <BlogLayout post_id={content.post.id}>
             {/* Pestaña de la Página */}

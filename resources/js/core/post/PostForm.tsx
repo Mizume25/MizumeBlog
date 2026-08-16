@@ -85,7 +85,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
             defaultValues,
         });
-        console.log(container);
+
         /**
          * Variables de contenido
          */

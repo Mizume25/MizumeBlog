@@ -67,6 +67,8 @@ class ApiController extends Controller
             ->where('artwork_image_id', $image_id)
             ->firstOrFail();
 
+        $this->authorize('update', $image);
+
         $image->update([
             'artwork_image_id' => $request->artwork_image_id
         ]);
@@ -74,34 +76,5 @@ class ApiController extends Controller
         return response()->json([
             'message' => 'Imagen remplazada perfectamente',
         ]);
-    }
-
-    public function expand(Request $request, int $post_id)
-    {
-        $request->validate([
-            'key' => 'required|string|max:255|exists:post_images.key',
-            'artwork_image_id' => 'required|integer|exists:artwork_images,id',
-        ]);
-
-
-        $post = Post::findOrFail($post_id); 
-
-        $image = Artwork::findOrFail($request->artwork_image_id);
-
-
-        PostImage::create([
-            'post_id' => $post->id,
-            'artwork_image_id' => $image->id,
-            'key' => $request->key
-        ]);
-
-        
-
-        return response()->json([
-            'message' => 'Se ha registrado una nueva imagen asociada',
-        ]);
-
-
-
     }
 }

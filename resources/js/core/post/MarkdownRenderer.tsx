@@ -188,8 +188,6 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               setActiveSection(entry.target.id);
-              // Aquí podrías emitir un evento o llamar a una prop para avisar al índice
-              console.log("Sección activa:", entry.target.id);
             }
           });
         },
@@ -200,10 +198,10 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
       headings.forEach((h) => observer.observe(h));
 
       return () => observer.disconnect();
-    }, 100); // Un pequeño delay asegura que los IDs ya estén en el DOM
+    }, 100); 
 
     return () => clearTimeout(timer);
-  }, [content]); // Volver a ejecutar si el contenido cambia
+  }, [content]); 
 
 
 

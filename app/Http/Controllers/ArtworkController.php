@@ -64,9 +64,14 @@ class ArtworkController extends Controller
     {
         $request->validated();
 
+
+        $this->authorize('create', Artwork::class);
+
         $artwork = Artwork::create([
             'title' => $request->title,
         ]);
+
+    
 
         /** Creamos el directorio */
         Storage::disk('public')->makeDirectory('IMG/' . $artwork->code);
@@ -90,10 +95,13 @@ class ArtworkController extends Controller
     public function update(UpdateArtwork $request, int $id)
     {
 
+        $request->validated();
+
         $artwork = Artwork::findOrFail($id);
 
+        $this->authorize('update', $artwork);
         
-        $request->validated();
+       
 
 
         $artwork->update([
@@ -118,6 +126,8 @@ class ArtworkController extends Controller
     {
         $artwork = Artwork::findOrFail($id);
 
+        $this->authorize('delete', $artwork);
+
         if ($artwork->posts()->exists()) {
 
             return back()->with('error', 'Hay Post Relacionados, primero debes borrarlos');
@@ -138,9 +148,12 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::findOrFail($artworkId);
 
+
         $image = ArtworkImage::where('artwork_id', $artwork->id)
             ->where('id', $imageId)
             ->firstOrFail();
+
+         $this->authorize('delete', $image);
 
         if ($image->postImages()->exists()) {
             return back()->with('error', 'Esta imagen pertence a un post, remplazala para poder eliminarla');
@@ -164,9 +177,13 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::findOrFail($artworkId);
 
+
+
         $image = ArtworkImage::where('artwork_id', $artwork->id)
             ->where('id', $id)
             ->firstOrFail();
+
+        $this->authorize('update', $image);
 
         $image->update([
             'alt' => $request->alt,
@@ -176,16 +193,4 @@ class ArtworkController extends Controller
     }
 
 
-
-
-
-    private function hasName(string $name): string
-    {
-        $path = pathinfo($name);
-        $base = $path['filename'];
-        $ext = $path['extension'] ?? '';
-        $hash = Str::random(6);
-
-        return "{$base}_{$hash}.{$ext}";
-    }
 }

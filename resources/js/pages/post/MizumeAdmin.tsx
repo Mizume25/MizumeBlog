@@ -49,7 +49,6 @@ const MizumeAdmin = ({ data }: { data: Data }) => {
   /** Changes Section */
   /** Changes Section */
     const handleSection = (label : Section) => {
-        console.log(label)
         section.active = false;
 
         const sec  = SECTION.find((p) => p.label == label);

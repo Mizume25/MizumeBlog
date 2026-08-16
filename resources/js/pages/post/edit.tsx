@@ -58,7 +58,7 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
             },
         });
     };
-    console.log
+
     return (
         <BlogLayout>
             <AuthLayout title="MizumeBlog" description="Editar Post">
@@ -85,7 +85,6 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
                     artworks={artworks}
                     galeries={galeries}
                     post_id={post.id}
-                    photos={post.images}
                 />
             </AuthLayout>
         </BlogLayout>
