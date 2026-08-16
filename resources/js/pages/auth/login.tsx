@@ -42,7 +42,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Iniciar Session" />
 
             {/* CONTENEDOR CENTRADO Y TARJETA MARRÓN */}
-            <div className="mx-auto w-full max-w-md rounded-lg bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
+            <div className="mx-auto w-full max-w-md rounded-xl bg-[#754C22] p-4 sm:p-8 shadow-lg border border-border/50">
 
                 <form className="flex flex-col gap-6" onSubmit={submit}>
                     <div className="grid gap-6">
@@ -59,7 +59,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 placeholder="email@example.com"
-                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 rounded-2xl"
                             />
                             <InputError message={errors.email} />
                         </div>
@@ -88,7 +88,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 placeholder="Password"
-                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 rounded-2xl"
                             />
                             <InputError message={errors.password} />
                         </div>
@@ -101,26 +101,26 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 tabIndex={3}
                                 checked={data.remember}
                                 onCheckedChange={(checked) => setData('remember', !!checked)}
-                                className="border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-[#754C22] cursor-pointer"
+                                className="border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-[#754C22] cursor-pointer rounded-2xl"
                             />
                             <Label htmlFor="remember" className="text-white">Recuérdame</Label>
 
                         </div>
 
-                        {/* BOTÓN LOGIN (BLANCO COMO EL DE LA WELCOME) */}
+           
                         <Button
                             type="submit"
-                            className="mt-4 w-full bg-white text-[#754C22] hover:bg-white/90 font-bold h-12 cursor-pointer"
+                            className="mt-4 w-full bg-white text-[#754C22] hover:bg-white/90 font-bold h-12 cursor-pointer "
                             tabIndex={4}
                             disabled={processing}
                         >
                             {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                             Iniciar Sesión
                         </Button>
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center ">
                             <a
                                 href="/auth/google"
-                               className="bg-white flex items-center justify-center gap-2 border px-4 py-2 rounded-lg hover:bg-gray-100 text-black w-full pt-3 pb-3"
+                               className="bg-white flex items-center justify-center gap-2 border px-4 py-2 rounded-xl hover:bg-gray-100 text-black w-full pt-3 pb-3"
                             >
                                 <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
                                 <span className="leading-none">Continuar con Google</span>

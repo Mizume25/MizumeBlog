@@ -42,7 +42,9 @@ export default function DeleteUser() {
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="destructive">Borrar Perfil</Button>
+                        <Button variant="destructive"
+                        className='bg-red-400 text-white rounded-2xl cursor-pointer transition-transform duration-150 hover:scale-105 hover:bg-red-500'
+                        >Borrar Perfil</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogTitle>¿Seguro que quieres eliminar este perfil?</DialogTitle>

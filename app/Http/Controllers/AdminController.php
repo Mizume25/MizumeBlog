@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContentType;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\User;
 use Inertia\Inertia;
-use App\Services\ImageType;
+use App\Enums\ImageType;
+use App\Models\Artwork;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
@@ -29,9 +31,11 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $tags = $this->buildTags();
+        $tags = $this->files->buildTags();
 
-        return Inertia::render('post/create', compact('tags'));
+        $artworks = Artwork::all();
+
+        return Inertia::render('post/create', compact('tags', 'artworks'));
     }
 
     /**
@@ -54,11 +58,34 @@ class AdminController extends Controller
      */
     public function edit(int $id)
     {
-        $post = Post::findOrFail($id);
+        /** Obtenemos Post con todas las relaciones necesarias en una sola carga */
+        $post = Post::with(['artworks.images', 'images.image'])->findOrFail($id);
 
-        $tags = $this->buildTags();
+        /** Construimos tags */
+        $tags = $this->files->buildTags();
 
-        return Inertia::render('post/edit', compact('post', 'tags'));
+        $artworks = Artwork::all();
+
+        /** Obras ya relacionadas al post, para el selector */
+        $galeries = $post->artworks;
+
+        /** Catálogo de imágenes agrupado por code, para el sidebar de gestión */
+        $ids = $post->images()->pluck('artwork_image_id');
+
+        $container = $post->artworks->mapWithKeys(function ($artwork) use ($ids) {
+            return [
+                $artwork->code => $artwork->images
+                    ->whereIn('id', $ids)
+                    ->sortBy('num')
+                    ->map(fn($img) => [
+                        'id' => $img->id,
+                        'name' => $img->name,
+                        'alt' => $img->alt,
+                    ])->values()->toArray(),
+            ];
+        });
+
+        return Inertia::render('post/edit', compact('post', 'tags', 'container', 'artworks', 'galeries'));
     }
 
     /**
@@ -68,62 +95,52 @@ class AdminController extends Controller
      */
     public function update(UpdatePostRequest $request, int $id)
     {
-
-        /** Enotramos Post */
-        $post  = Post::findOrFail($id);
-
+        $post = Post::findOrFail($id);
         $this->authorize('update', $post);
-
         
-
-        /** Validamos peticion */
         $data = $request->validated();
 
+        
+        unset($data['cover'], $data['cover_card'], $data['content'], $data['works']);
 
-        /** Exceptaumos trato de card y cover */
-        unset($data['cover'], $data['cover_card'], $data['content']);
-
-
-        /*** Unimos tags */
         $data['tags'] = implode(',', $data['tags']);
 
+        $pendingKeys = [];
 
         if ($request->hasFile('content')) {
-            $file    = $request->file('content');
+            $file = $request->file('content');
             $content = file_get_contents($file->getRealPath());
 
-            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
-        } else {
+            if (!MarkdownService::hasHeading($content)) {
+                return back()->with('error', 'El archivo MD no es válido');
+            }
 
-            $content = MarkdownService::generate();
+
+
+            $titles = MarkdownService::extract($content);
+            $index = json_encode($titles);
+
+            Storage::disk('local')->put($post->path(ContentType::Content), $content);
+            Storage::disk('local')->put($post->path(ContentType::Index), $index);
+
+            $pendingKeys = MarkdownService::syncKeys($content, $post);
         }
 
-        $titles = MarkdownService::extract($content);
-        $index  = json_encode($titles);
-        $data['content'] = $content;
-
-
-
-        /**
-         * Actualiza, comprueba y remplaza imagenes
-         */
         if ($request->hasFile('cover')) $data['cover'] = $this->replaceImage($request->file('cover'), ImageType::Cover, 'Portada', 'cover', $post);
         if ($request->hasFile('cover_card')) $data['cover_card'] = $this->replaceImage($request->file('cover_card'), ImageType::Card, 'Portada', 'cover_card', $post);
 
         $post->update($data);
+        $post->refresh();
 
-        $path = $this->files->getPath($post->id, $post->title);
+        if ($request->has('works')) {
+            $this->register($request->input('works', []), $post);
+        }
 
+        if (!empty($pendingKeys)) {
+            return redirect()->back()->with('warning', 'El post se actualizó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
+        }
 
-        if (!file_exists($path)) mkdir($path, 0755, true);
-
-        file_put_contents($path . '/index.json', $index);
-        file_put_contents($path . '/content.md', $content);
-
-
-
-
-        return redirect()->back()->with('success', 'El Post se actualizo correctamente');
+        return redirect()->back()->with('success', 'El Post se actualizó correctamente');
     }
 
 
@@ -137,42 +154,29 @@ class AdminController extends Controller
      * @param $id id del Post
      */
     public function destroy(int $id)
-    {   
-        
+    {
         $post = Post::findOrFail($id);
-        
 
         $this->authorize('delete', $post);
 
-        /** Guardamos los valores */
-        $path = $this->files->getPath($post->id, $post->title);
         $cover = $post->cover;
         $card = $post->cover_card;
-        $folder = basename($path);
-
 
         /*** Eliminamos todos los comentarios Asociados */
         Comment::where('post_id', $post->id)->whereNotNull('parent_id')->delete();
         Comment::where('post_id', $post->id)->whereNull('parent_id')->delete();
 
-
-
-        $post->delete();
-
         /***
          * Eliminamos json md imagen y config img en ese orden
          */
-        if (file_exists($path . '/' . 'index.json')) unlink($path . '/' . 'index.json');
-        if (file_exists($path . '/' . 'content.md')) unlink($path . '/' . 'content.md');
+        Storage::disk('local')->delete($post->path(ContentType::Content));
+        Storage::disk('local')->delete($post->path(ContentType::Index));
+
+
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
 
-        Storage::disk('public')->deleteDirectory('IMG/' . $folder);
-        Storage::disk('local')->deleteDirectory('blog/' . $folder);
-
-
-
-
+        $post->delete();
 
         return redirect()->route('post.panel')->with('success', 'Post eliminado');
     }
@@ -187,19 +191,22 @@ class AdminController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+        /**Autorizamos sentencia */
         $this->authorize('create', Post::class);
 
+        /**Validamos datos */
         $data = $request->validated();
 
-        unset($data['cover'], $data['cover_card'], $data['content']);
+
+        /**Excluimos Datos */
+        unset($data['cover'], $data['cover_card'], $data['content'], $data['works']);
 
 
-
+        /** Guardamos el contenido, en caso de no haber generamos un ejemplo */
         if ($request->hasFile('content')) {
+
             $file    = $request->file('content');
             $content = file_get_contents($file->getRealPath());
-
-
 
             if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es valido');
         } else {
@@ -207,14 +214,11 @@ class AdminController extends Controller
             $content = MarkdownService::generate();
         }
 
-
-
-        $titles = MarkdownService::extract($content);
-        $index  = json_encode($titles);
-
+        /** Separamos los tags */
         $data['tags'] = implode(',', $data['tags']);
-        $data['content'] = $content;
 
+
+        /** Guardamos el cover */
         if ($request->hasFile('cover')) {
             $cover = $request->file('cover');
 
@@ -223,6 +227,7 @@ class AdminController extends Controller
             $data['cover'] = $name;
         }
 
+        /** Guardamos el card */
         if ($request->hasFile('cover_card')) {
             $cover = $request->file('cover_card');
 
@@ -231,19 +236,29 @@ class AdminController extends Controller
             $data['cover_card'] = $name;
         }
 
+        $titles = MarkdownService::extract($content);
 
+        /** Construiremos un indice partiendo de los titulo de la obra */
+        $index  = json_encode($titles);
+
+        /**Creamos el post */
         $post = Post::create($data);
 
 
+        /** Inyectamos contenido */
+        Storage::disk('local')->put($post->path(ContentType::Content), $content);
+        Storage::disk('local')->put($post->path(ContentType::Index), $index);
 
-        $path = $this->files->getPath($post->id, $post->title);
-        $images = basename($path);
-        Storage::disk('public')->makeDirectory('IMG/' . $images); 
+        if ($request->has('works')) {
+            $this->register($request->input('works', []), $post);
+        }
 
-        if (!file_exists($path)) mkdir($path, 0755, true);
+        $pendingKeys = MarkdownService::syncKeys($content, $post);
 
-        file_put_contents($path . '/index.json', $index);
-        file_put_contents($path . '/content.md', $content);
+        if (!empty($pendingKeys)) {
+            return back()->with('pendingKeys', $pendingKeys)
+                ->with('warning', 'El post se creó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
+        }
 
         return back()->with('success', "Post creado con exito");
     }
@@ -266,7 +281,7 @@ class AdminController extends Controller
         $timestamp = now()->format('Y-m-d_His');
         $path = "backups/backup_{$timestamp}.json";
 
-        Storage::disk('local')->put($path, $json);  
+        Storage::disk('local')->put($path, $json);
 
         /** Sobre escribimos init App */
         Storage::disk('local')->put('init.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
@@ -298,26 +313,12 @@ class AdminController extends Controller
         return $name;
     }
 
-
-    /***
-     * Maquetar Etiquetas
+    /**
+     * Crear Registro
      */
-    private function buildTags()
+    private function register(array $works, Post $post): void
     {
-        $items = Post::tags();
-        $tags = collect($items);
-
-        $tags = collect($items)
-            ->flatMap(fn($item) => explode(',', $item))
-            ->map(fn($g) => trim($g))
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
-
-        return $tags;
+        $ids = collect($works)->pluck('id')->filter()->all();
+        $post->artworks()->sync($ids);
     }
-
-
-    /** generateIndex */
 }

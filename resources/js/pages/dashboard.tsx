@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { HomeContent, } from '../core/home';
 
 
+
 /** @imports Layouts Reciclables */
 import BlogLayout from '@/layouts/app/blog-layout';
 import SideBarRight from '@/core/auth/SideBarRight';
@@ -31,6 +32,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             <Head title='Home' ></Head>
 
             <main className="container mx-auto max-w-[1500px] p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 items-start">
+                
 
                 <HomeContent mainPosts={mainPosts} className="order-2 lg:order-1" />
 

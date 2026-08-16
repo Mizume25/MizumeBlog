@@ -56,6 +56,8 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
     --background-image-blog: url('/IMG/Fondo.jpg');
+
+    --breakpoint-lg: 950px;
 }
 
 /*
@@ -76,8 +78,11 @@
     }
 }
 
+/* Colores propios */
 :root {
-    --background: hsl(0, 0%, 100%);
+
+    /* Colores no usados */ 
+    /* --background: hsl(0, 0%, 100%);
     --foreground: hsl(0, 0%, 3.9%);
     --card: hsl(0, 0%, 100%);
     --card-foreground: hsl(0, 0%, 3.9%);
@@ -109,11 +114,33 @@
     --sidebar-accent: hsl(0, 0%, 94%);
     --sidebar-accent-foreground: hsl(0, 0%, 30%);
     --sidebar-border: hsl(0, 0%, 91%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); */
+
+    --primary-color:#f3e5ab;
+    --secondary--color:#2c1e17;
+    --title-h1:
+    
 }
 
+/* Clases Reutilizables */
+
+/** Titulo web  */
+.title {
+    @apply text-white tracking-tight drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] truncate;
+}
+
+/* Botones */
+._btn_secondary {
+    @apply cursor-pointer rounded-md bg-[#3B2314] px-4 py-2 text-sm text-[#E8D5A3] shadow-sm transition-colors hover:bg-[#6B3F1F];
+}
+
+
+
+
 .dark {
-    --background: hsl(0, 0%, 3.9%);
+
+       /* Colores no usados */ 
+    /**--background: hsl(0, 0%, 3.9%);
     --foreground: hsl(0, 0%, 98%);
     --card: hsl(0, 0%, 3.9%);
     --card-foreground: hsl(0, 0%, 98%);
@@ -144,7 +171,10 @@
     --sidebar-accent: hsl(0, 0%, 15.9%);
     --sidebar-accent-foreground: hsl(240, 4.8%, 95.9%);
     --sidebar-border: hsl(0, 0%, 15.9%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); */
+
+
+    
 }
 
 @layer base {
