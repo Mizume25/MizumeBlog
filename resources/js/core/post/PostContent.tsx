@@ -108,7 +108,7 @@ function PostContent({ post, contenido, selectedId, handlerCick, raw }: PostCont
 
             {/* Contenedor de Tags*/}
             <PostTag tags={badge} />
-            {auth.user.role === 'admin' ? (
+            {auth?.user?.role === 'admin' ? (
                 <div className="flex h-20 w-full flex-row items-center justify-start gap-4 lg:flex-row">
                     <Button
                         className="text-md ms-4 mb-4 h-12 w-50 cursor-pointer rounded-2xl bg-amber-200 p-4 transition-transform duration-150 hover:scale-105"
