@@ -199,6 +199,8 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
         setPost(id);
         setValue('post_id', id);
     };
+
+    
     console.log(post);
     return (
         <>

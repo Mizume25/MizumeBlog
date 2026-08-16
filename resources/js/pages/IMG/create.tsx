@@ -1,14 +1,15 @@
 import ImageForm from '@/core/media/ImageForm'
 import BlogLayout from '@/layouts/app/blog-layout'
 import AuthLayout from '@/layouts/auth-layout'
+import { Post } from '@/types'
 import { Head } from '@inertiajs/react'
 
-function create() {
+function create({ posts } : {posts: Post[]}) {
   return (
     <BlogLayout>
             <AuthLayout title="MizumeBlog" description="Subir Imagenes">
                 <Head title="Subir Imagenes" />
-                <ImageForm />
+                <ImageForm posts={posts} />
             </AuthLayout>
       </BlogLayout>
   )

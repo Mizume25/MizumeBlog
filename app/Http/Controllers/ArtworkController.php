@@ -6,6 +6,7 @@ use App\Http\Requests\StoreArtwork;
 use App\Http\Requests\UpdateArtwork;
 use App\Models\Artwork;
 use App\Models\ArtworkImage;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\FileContentService;
 use Inertia\Inertia;
@@ -27,7 +28,8 @@ class ArtworkController extends Controller
      */
     public function create()
     {
-        return Inertia::render('IMG/create');
+        $posts = Post::all();
+        return Inertia::render('IMG/create', compact('posts'));
     }
 
     /**
@@ -54,6 +56,7 @@ class ArtworkController extends Controller
 
         $artworks = Artwork::all();
 
+
         return Inertia::render('IMG/index', compact('artworks'));
     }
 
@@ -71,7 +74,7 @@ class ArtworkController extends Controller
             'title' => $request->title,
         ]);
 
-    
+
 
         /** Creamos el directorio */
         Storage::disk('public')->makeDirectory('IMG/' . $artwork->code);
@@ -80,7 +83,13 @@ class ArtworkController extends Controller
          * En caso de existir imagenes las pondremos en su carpeta
          */
         if ($request->hasFile('images')) {
-            $this->files->saveImages($request->file('images'), $request->photos, $artwork);
+            
+           $unassociated =  $this->files->saveImages($request->file('images'), $request->photos, $artwork, $request->post_id);
+
+            if (!empty($unassociated)) {
+                return redirect()->route('artwork.index')
+                    ->with('warning', 'Artwork creado, pero algunas imágenes no se pudieron asociar: ' . implode(', ', $unassociated));
+            }
         }
 
 
@@ -100,8 +109,8 @@ class ArtworkController extends Controller
         $artwork = Artwork::findOrFail($id);
 
         $this->authorize('update', $artwork);
-        
-       
+
+
 
 
         $artwork->update([
@@ -153,7 +162,7 @@ class ArtworkController extends Controller
             ->where('id', $imageId)
             ->firstOrFail();
 
-         $this->authorize('delete', $image);
+        $this->authorize('delete', $image);
 
         if ($image->postImages()->exists()) {
             return back()->with('error', 'Esta imagen pertence a un post, remplazala para poder eliminarla');
@@ -191,6 +200,4 @@ class ArtworkController extends Controller
 
         return back()->with('success', 'EL texto alternativo se ha actualizado correctamente');
     }
-
-
 }

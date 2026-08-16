@@ -22,4 +22,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/post/{post_id}/artwork/{artwork_id}', [ApiController::class, 'avaliable'])->name('avaliable');
 
     Route::put('/post/{post_id}/replace/{image_id}', [ApiController::class, 'replace'])->name('replace');
+
+    Route::post('/post/{post_id}/associate/{artwork_image_id}', [ApiController::class, 'associate'])->name('associate');
 });

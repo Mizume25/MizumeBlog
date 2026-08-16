@@ -6,6 +6,9 @@ use App\Models\ArtworkImage;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use App\Enums\ContentType;
+
 
 class MarkdownService
 {
@@ -118,5 +121,13 @@ class MarkdownService
         $keysNuevas = $keysEnTexto->diff($keysExistentes);
 
         return $keysNuevas->values()->toArray();
+    }
+
+    /** Verifica si una key específica existe en el markdown actual del post */
+    public static function keyExistsInPost(string $key, Post $post): bool
+    {
+        $content = Storage::disk('local')->get($post->path(ContentType::Content));
+        preg_match_all('/\{\{img:([\w-]+)\}\}/', $content, $matches);
+        return in_array($key, $matches[1]);
     }
 }

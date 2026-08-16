@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artwork;
+use App\Models\ArtworkImage;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\MarkdownService;
 
 class ApiController extends Controller
 {
@@ -76,5 +78,30 @@ class ApiController extends Controller
         return response()->json([
             'message' => 'Imagen remplazada perfectamente',
         ]);
+    }
+
+
+    /**
+     * Funcion para asociar imagenes
+     */
+    public function associate(Request $request, int $post_id, int $artwork_image_id)
+    {
+        $request->validate([
+            'key' => 'required|string|min:2|max:50',
+        ]);
+
+        $post = Post::findOrFail($post_id);
+
+        if (!MarkdownService::keyExistsInPost($request->key, $post)) {
+            return response()->json(['message' => 'Esa clave no existe en el markdown de este post.'], 422);
+        }
+
+        PostImage::create([
+            'post_id' => $post->id,
+            'artwork_image_id' => $artwork_image_id,
+            'key' => $request->key,
+        ]);
+
+        return response()->json(['message' => 'Imagen asociada correctamente']);
     }
 }

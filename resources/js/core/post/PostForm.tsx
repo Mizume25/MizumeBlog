@@ -33,7 +33,7 @@ import {
     LoaderCircle,
     Paperclip,
     Pencil,
-    Settings,
+    Settings2,
     Tag,
     Tags,
     User,
@@ -115,6 +115,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const [modaltags, setModalTags] = useState(false);
         const [modalartwork, setModalArtwork] = useState(false);
         const [modalreplace, setModalReplace] = useState<boolean>(false);
+        const [modalAdd, setModalAdd] = useState(false);
 
         /** Varaible para expandir informacion */
         /**
@@ -157,6 +158,12 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const [coverPreview, setCoverPreview] = useState<string | null>(null);
         const [coverCardPreview, setCoverCardPreview] = useState<string | null>(null);
         const [contentPreview, setContentPreview] = useState<string | null>(null);
+
+        /** Imagen seleccionada para agregar/asociar */
+        const [selectedForAdd, setSelectedForAdd] = useState<Artwork_Image | null>(null);
+
+        /** Clave escrita para la nueva asociación */
+        const [addKey, setAddKey] = useState('');
 
         /** Funcion para el preview de cover */
         useEffect(() => {
@@ -322,6 +329,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
             const response = await answer.json();
 
+            console.log(response);
+
             return response;
         };
 
@@ -332,6 +341,12 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             const valids = await getAvaliablePicture();
             setavAvaliables(valids);
             setModalReplace(true);
+        };
+
+        const handleOpenAdd = async () => {
+            const valids = await getAvaliablePicture();
+            setavAvaliables(valids);
+            setModalAdd(true);
         };
 
         /**
@@ -370,9 +385,29 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
             window.location.reload();
         };
 
-    
+        const handleCreateConfirm = async (newImage: Artwork_Image, key: string) => {
+            if (newImage === undefined || !key.trim()) return;
 
-     
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            const response = await fetch(`/api/post/${post_id}/associate/${newImage.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken ?? '',
+                },
+                body: JSON.stringify({ key }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                alert(data.message ?? 'No se pudo asociar la imagen');
+                return;
+            }
+
+            setModalAdd(false);
+            window.location.reload();
+        };
 
         return (
             <>
@@ -694,7 +729,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <div
                                 className={`scrollbar-gutter-stable mt-2 grid min-h-0 flex-1 grid-cols-2 gap-3 gap-x-4 overflow-y-auto p-3 pr-5 text-left lg:grid-cols-4 ${showFolders ? '' : 'hidden'}`}
                             >
-                                {folders.map((p, i) => {
+                                {folders?.map((p, i) => {
                                     const readable = p.title.replace(/-/g, ' ');
                                     const normalize = readable.charAt(0).toUpperCase() + readable.slice(1);
 
@@ -780,15 +815,21 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             ))}
                         </select>
                         <a
+                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-lg text-white transition-colors hover:bg-amber-800"
+                            {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
+                        >
+                            <Settings2 size={20} className="text-white" />
+                            Gestionar Contenedor
+                        </a>
+
+                        <Button
                             className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-400 px-4 py-2 text-lg text-white transition-colors hover:bg-green-500"
-                            href={route('artwork.edit', artwork?.id)}
+                            {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
+                            onClick={handleOpenAdd}
                         >
                             <Image size={20} className="text-white" />
                             Agregar
-                        </a>
-
-                        
-
+                        </Button>
 
                         <div className="mt-5 min-h-0 flex-1 overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
                             <div className="flex flex-col items-center justify-center gap-4">
@@ -943,7 +984,73 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     </div>
                 </Dialog>
 
-              
+                {/* Modal para elegir obra */}
+                {/* Modal para agregar/asociar una imagen nueva */}
+                <Dialog
+                    open={modalAdd}
+                    onClose={() => {
+                        setModalAdd(false);
+                        setSelectedForAdd(null);
+                        setAddKey('');
+                    }}
+                    className="relative z-50"
+                >
+                    <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+
+                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4">
+                        <DialogPanel className="max-h-[90vh] w-full max-w-4xl rounded-2xl bg-white p-6">
+                            <DialogTitle className="text-lg font-bold">Agregar imagen</DialogTitle>
+                            <p className="mt-1 mb-4 text-sm text-gray-600">
+                                Elige una imagen del catálogo y escribe la clave que usaste en el markdown
+                            </p>
+
+                            <div className="scrollbar-gutter-stable grid max-h-[50vh] grid-cols-3 gap-3 overflow-y-auto p-1 sm:grid-cols-4">
+                                {avaliables.length === 0 ? (
+                                    <p className="col-span-full text-center text-sm text-gray-500">
+                                        No hay imágenes disponibles en esta obra. Ve a Artwork y sube algunas primero.
+                                    </p>
+                                ) : (
+                                    avaliables.map((img) => (
+                                        <button
+                                            key={img.id}
+                                            type="button"
+                                            onClick={() => setSelectedForAdd(img)}
+                                            className={`group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 ${
+                                                selectedForAdd?.id === img.id ? 'ring-4 ring-green-500' : ''
+                                            }`}
+                                        >
+                                            <img
+                                                src={`/storage/IMG/${artwork?.code}/${img.name}`}
+                                                alt={img.alt ?? ''}
+                                                className="h-full w-full object-cover"
+                                            />
+                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
+                                            </div>
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+
+                            <input
+                                type="text"
+                                value={addKey}
+                                onChange={(e) => setAddKey(e.target.value)}
+                                placeholder="Clave usada en el markdown (ej: foto-5)"
+                                className="mt-4 w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                            />
+
+                            <Button
+                                type="button"
+                                disabled={!selectedForAdd || addKey.trim().length === 0}
+                                onClick={() => selectedForAdd && handleCreateConfirm(selectedForAdd, addKey)}
+                                className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                Agregar
+                            </Button>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
             </>
         );
     },
