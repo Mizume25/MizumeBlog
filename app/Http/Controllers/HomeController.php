@@ -65,6 +65,8 @@ class HomeController extends Controller
 
         $index = json_decode($json, true);
 
+        $artworks = $post->artworks;
+
         /** Construimos el objeto */
         $content = [
             "post" => $post,
@@ -75,7 +77,7 @@ class HomeController extends Controller
         ];
 
         /** Renderizamos */
-        return Inertia::render('post/show', compact('content'));
+        return Inertia::render('post/show', compact('content', 'artworks'));
     }
 
     /**

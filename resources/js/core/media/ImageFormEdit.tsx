@@ -185,8 +185,14 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
     }, []);
 
     const onAsociate = () => {
+
         setShowAssociate((prev) => !prev);
-        setPost(null);
+        console.log(showAssociate)
+        if(showAssociate) {
+            setPost(posts[0].id);
+        } else {
+            setPost(null)
+        }
     };
 
     const onChangePost = (id: number) => {
@@ -202,7 +208,7 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
                         {/* Formulario  de Artworks */}
                         <form
                             onSubmit={handleSubmit(handleUpdate, (errors) => console.log('Errores de validación:', errors))}
-                            className="h-auto w-full rounded-2xl bg-[#754C22] p-6 lg:h-170 lg:w-100"
+                            className="h-auto w-full rounded-2xl bg-[#754C22] p-6 lg:h-190 lg:w-100"
                         >
                             <div className="flex flex-row justify-between gap-2 text-center">
                                 {/** Link de Vuelta */}
@@ -309,6 +315,18 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
                                 <InputError message={errors.images?.message} className="bg-[#754C22]/40" />
                                 <InputError message={errors.photos?.message} className="bg-[#754C22]/40" />
                             </label>
+                            {showAssociate ? (
+                                <a
+                                    type="submit"
+                                    className="mt-5 flex h-12 w-full cursor-pointer flex-row items-center justify-center rounded-2xl bg-blue-400 font-bold text-white transition-transform duration-150 hover:scale-105"
+                                    href={route('post.show', String(post))}
+                                >
+                                    Ver Post
+                                </a>
+                            ) : (
+                                <>
+                                </>
+                            )}
 
                             <Button
                                 type="submit"

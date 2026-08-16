@@ -127,7 +127,7 @@ class ArtworkController extends Controller
 
         $artwork->delete();
 
-        return back()->with('success', 'Se ha eliminado el artwork perfectamente');
+        return redirect()->route('artwork.index')->with('success', 'Se ha eliminado el artwork perfectamente');
     }
 
     /**
