@@ -7,7 +7,6 @@ import ReplyComent from './ReplyComent';
 
 function ComentText({ coment }: { coment: CommentRecord }) {
     const { auth } = usePage<SharedData>().props;
-    console.log(coment)
     const handleDelete = () => {
         router.delete(route('comments.destroy', coment.id), {
             preserveScroll: true

@@ -27,7 +27,7 @@ export default function HomeFooter() {
     const doubled = [...cards, ...cards];
 
     return (
-        <footer className="w-full overflow-hidden rounded-xl" style={{ background: "#0d0804" }}>
+        <footer className="w-full overflow-hidden z-10 rounded-xl" style={{ background: "#0d0804" }}>
 
             {/* ── Carrusel ── */}
             <div className="py-6 overflow-hidden" style={{ borderBottom: "0.5px solid rgba(201,168,124,0.15)" }}>

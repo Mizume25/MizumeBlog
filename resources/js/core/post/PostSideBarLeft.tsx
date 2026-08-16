@@ -1,4 +1,5 @@
 import { type IndexContent } from '@/types';
+import { Download } from 'lucide-react';
 
 /**
  * Propiedades del sidebar
@@ -7,11 +8,12 @@ interface PostSidebarProps {
     list: IndexContent[],
     onFindID: (id: string) => void,
     sidebar: boolean,
-    isClose: () => void
+    isClose: () => void,
+    post_id: number
 }
 
 
-function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps) {
+function PostSideBarLeft({ list, onFindID, sidebar, isClose , post_id }: PostSidebarProps) {
 
     /** Obtener id para viajar a secciones de la pagina */
     const handleID = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -57,6 +59,11 @@ function PostSideBarLeft({ list, onFindID, sidebar, isClose }: PostSidebarProps)
                 <li className="group flex items-center gap-2 sm:gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
                     <span className="text-base sm:text-xl group-hover:scale-125 transition-transform">🐢</span>
                     <a href='#comentarios' onClick={handleID} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">Comentarios</a>
+                </li>
+
+                <li className="group flex items-center gap-2 sm:gap-3 transition-all duration-300 hover:translate-x-3 cursor-pointer">
+                    <span className="text-base sm:text-xl group-hover:scale-125 transition-transform"><Download /></span>
+                    <a href={route('post.pdf', post_id)} className="text-sm sm:text-lg font-medium group-hover:text-white transition-colors">Download PDF</a>
                 </li>
             </ul>
         </aside>

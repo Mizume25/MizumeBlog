@@ -40,7 +40,6 @@ class UpdatePostRequest extends FormRequest
                 'mimetypes:text/markdown,text/plain,text/x-markdown',
                 'max:5120',
             ],
-
             'config'                    => ['nullable', 'array'],
             'config.home_config'        => ['nullable', 'string'],
             'config.article_config'     => ['nullable', 'string'],

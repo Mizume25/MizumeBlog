@@ -11,11 +11,14 @@
     "require": {
         "php": "^8.2",
         "aws/aws-sdk-php": "^3.379",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "doctrine/dbal": "^4.4",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.3",
         "laravel/socialite": "^5.26",
         "laravel/tinker": "^2.10.1",
+        "league/commonmark": "^2.8",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

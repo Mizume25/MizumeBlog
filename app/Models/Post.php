@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use App\Enums\ContentType;
 
 class Post extends Model
-{   
+{
     protected $casts = [
         'config' => 'array',
     ];
 
-    
+
     //Propiedades de Modelo
     protected $fillable = [
         'title',
@@ -26,7 +28,8 @@ class Post extends Model
         'featured',
         'cover',
         'cover_card',
-        'config'
+        'config',
+        'code'
     ];
 
     /**
@@ -36,6 +39,21 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id');
+    }
+
+    /**
+     * Tenemos varias imagenes
+     * @return HasMany
+     */
+    public function images()
+    {
+        return $this->hasMany(PostImage::class);
+    }
+
+    // En Post.php
+    public function artworks()
+    {
+        return $this->belongsToMany(Artwork::class, 'artwork_post')->withTimestamps();
     }
 
 
@@ -90,8 +108,38 @@ class Post extends Model
     }
 
     /** Obtener todas las confgiuraciones */
-    public static function formats() 
+    public static function formats()
     {
         return self::distinctValues('config');
+    }
+
+    /** Genera codigo unico para contenido de post */
+    protected static function generate(string $title): string
+    {
+        do {
+
+            $pre = substr($title, 0, 2);
+            $suf = Str::random(4);
+
+            $code = strtoupper("{$pre}-{$suf}");
+        } while (static::where('code', $code)->exists());
+
+        return $code;
+    }
+
+    /** Genera codigo automaticamente */
+    protected static function booted()
+    {
+        static::creating(function ($post) {
+            if (empty($post->code)) {
+                $post->code = static::generate($post->title);
+            }
+        });
+    }
+
+    /** Ruta de contenido */
+    public function path(ContentType $type): string
+    {
+        return "blog/{$this->code}/{$type->value}";
     }
 }

@@ -6,8 +6,15 @@ use App\Models\Comment;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Services\FileContentService;
-
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use League\CommonMark\MarkdownConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\Table\TableExtension;
+use App\Enums\ContentType;
+ 
+use App\Services\MarkdownService;
+use Storage;
 
 class HomeController extends Controller
 {
@@ -28,7 +35,7 @@ class HomeController extends Controller
     public function index()
     {
         //Recibimos solo los post destacados
-        $posts = Post::featured()->latest()->limit(6)->get();
+        $posts = Post::featured()->whereNotNull('publish_date')->latest()->limit(6)->get();
 
         //Retornamos el objeto filtrado
         return Inertia::render('dashboard', compact('posts'));
@@ -50,32 +57,30 @@ class HomeController extends Controller
         ->get();
 
 
-        $path = $this->files->getPath($post->id, $post->title);
+        $md = Storage::disk('local')->get($post->path(ContentType::Content));
+        $json = Storage::disk('local')->get($post->path(ContentType::Index));
 
-        /** Obtenemos el indice y el contenido */
-        $json = file_get_contents($path . '/' . 'index.json');
-        $md = file_get_contents($path . '/' . 'content.md');
+        $body = MarkdownService::resolveImages($md , $post);
+        $raw = Storage::disk('local')->get($post->path(ContentType::Content));
 
 
         $index = json_decode($json, true);
+
+        $artworks = $post->artworks;
 
         /** Construimos el objeto */
         $content = [
             "post" => $post,
             "index" => $index,
-            "body" => $md,
+            "body" => $body,
             "comments" => $comments,
             "features" => $features,
+            "raw" => $raw,
         ];
 
         /** Renderizamos */
-        return Inertia::render('post/show', compact('content'));
+        return Inertia::render('post/show', compact('content', 'artworks'));
     }
-
-
-
-
-
 
     /**
      * Controlador de archivador 
@@ -86,5 +91,41 @@ class HomeController extends Controller
         $posts = Post::publish()->get();
 
         return Inertia::render('post/library', compact('posts'));
+    }
+
+    /**
+     * Exportacion PDF
+     */
+    public function pdf(int $id) 
+    {   
+        $post = Post::findOrFail($id);
+
+        $content = Storage::disk('local')->get($post->path(ContentType::Content));
+        $index = Storage::disk('local')->get($post->path(ContentType::Index));
+
+        $tags = $this->files->parseTags($post->tags);
+
+        $env = new Environment();
+
+        $env->addExtension(new CommonMarkCoreExtension());
+
+        $env->addExtension(new TableExtension());
+
+    
+
+        $converter = new MarkdownConverter($env);
+
+        $html = $converter->convert($content)->getContent();
+
+        
+
+        $pdf = Pdf::loadView('post.pdf', [
+            'content' => $html,
+            'post' => $post,
+            'tags' => $tags,
+            'index' => $index
+            ]);
+
+         return $pdf->download("{$post->title}.pdf");
     }
 }

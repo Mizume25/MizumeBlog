@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'verified' , 'throttle:comments'])->group(function ()
 
     //Eliminar todos los comentarios de un usuario
     Route::delete('/comentarios', [ComentController::class, 'deleteAll'])->name('comments.deleteAll');
+
+    /** Exportacion PDF */
+    Route::get('/post/{id}/pdf', [HomeController::class, 'pdf'])->name('post.pdf');
 
 });
 
@@ -69,6 +73,38 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
 
     Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
+
+    
+    /** Rutas Artworks */
+
+    /*** Crear Artwork */
+    Route::get('artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
+    
+    /** Listar Artworks */
+    Route::get('artwork/index', [ArtworkController::class, 'index'])->name('artwork.index');
+
+    /** Editar Artworks */
+    Route::get('artwork/edit/{id}', [ArtworkController::class, 'edit'])->name('artwork.edit');
+
+    
+
+    /** Actualizar Artwork*/
+    Route::put('artwork/update/{id}', [ArtworkController::class, 'update'])->name('artwork.update');
+
+    /** Crear un Artwork */
+    Route::post('artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
+
+
+    /** Borrar un Artwork Completo */
+    Route::delete('artwork/{id}', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
+
+    /** Borrar una imagen especifica de Artwork */
+    Route::delete('artwork/{artworkId}/img/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
+
+    /** Actualizar una imagen especifica de Artwork */
+    Route::put('artwork/{artworkId}/img/{ImageId}', [ArtworkController::class, 'updateAlt'])->name('artwork.updateAlt');
+    
+
 });
 
 
