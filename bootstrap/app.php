@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__ . '/../routes/api.php',
         health: '/up',
     )
-    /*->booting(function () {
+    ->booting(function () {
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
         });
@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         RateLimiter::for('comments', function (Request $request) {
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
-    })*/
+    })
     ->withMiddleware(function (Middleware $middleware) {
         // 1. Redirección para usuarios no autenticados
         $middleware->redirectGuestsTo(fn() => route('login'));
