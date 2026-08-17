@@ -140,7 +140,7 @@ class Post extends Model
             }
         });
 
-         static::updating(function ($post) {
+        static::updating(function ($post) {
             $post->title = static::conventions($post->title);
             $post->web_title = static::conventions($post->web_title);
             $post->author = static::conventions($post->author);

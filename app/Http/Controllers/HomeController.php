@@ -101,7 +101,7 @@ class HomeController extends Controller
         $post = Post::findOrFail($id);
 
         $content = Storage::disk('local')->get($post->path(ContentType::Content));
-        $index = Storage::disk('local')->get($post->path(ContentType::Index));
+        $index = json_decode(Storage::disk('local')->get($post->path(ContentType::Index)), true);
 
         $tags = $this->files->parseTags($post->tags);
 
