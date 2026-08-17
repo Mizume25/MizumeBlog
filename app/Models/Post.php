@@ -131,15 +131,23 @@ class Post extends Model
     protected static function booted()
     {
         static::creating(function ($post) {
+            $post->title = static::conventions($post->title);
+            $post->web_title = static::conventions($post->web_title);
+            $post->author = static::conventions($post->author);
+
             if (empty($post->code)) {
                 $post->code = static::generate($post->title);
             }
         });
     }
-
     /** Ruta de contenido */
     public function path(ContentType $type): string
     {
         return "blog/{$this->code}/{$type->value}";
+    }
+
+    private static function conventions(string $value): string
+    {
+        return mb_strtolower(str_replace(' ', '-', trim($value)), 'UTF-8');
     }
 }

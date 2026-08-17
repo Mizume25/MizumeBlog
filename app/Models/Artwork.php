@@ -42,9 +42,15 @@ class Artwork extends Model
     protected static function booted()
     {
         static::creating(function ($artwork) {
+            $artwork->title = static::conventions($artwork->title);
             if (empty($artwork->code)) {
                 $artwork->code = static::generate($artwork->title);
             }
         });
+    }
+
+    private static function conventions(string $value): string
+    {
+        return mb_strtolower(str_replace(' ', '-', trim($value)), 'UTF-8');
     }
 }
