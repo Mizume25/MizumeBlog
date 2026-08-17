@@ -5,408 +5,231 @@ Esta versión se propone deconstruir el desastre de código que he implemente en
 
 
 ## Estructura de proyecto 
+Se sigue una convención de estructura de proyecto Laravel + React.  Esta estructura se ve modificada por mis propias modificaciones 
 
-````
-├───app
-│   ├───Console
-│   │   └───Commands
-│   │           CreateAdminUser.php # Comando de Consola
-│   │
-│   ├───Http
-│   │   ├───Controllers
-│   │   │   │   AdminController.php # Controlador Admin
-│   │   │   │   ApiController.php # Controlador Api request 
-│   │   │   │   ComentController.php # Controlador de Comentarios
-│   │   │   │   Controller.php 
-│   │   │   │   GoogleController.php # Controlador Validación OAuth 
-│   │   │   │   HomeController.php # Controlador de la página
-│   │   │   │   IndexController.php # Carga Página incial
-│   │   │   │   PostImageConfigController.php  # Controlador de Formato Imagenes
-│   │   │   │
-│   │   │   ├───Auth # Controladores de Breeze
-│   │   │   │       AuthenticatedSessionController.php
-│   │   │   │       ConfirmablePasswordController.php
-│   │   │   │       EmailVerificationNotificationController.php
-│   │   │   │       EmailVerificationPromptController.php
-│   │   │   │       NewPasswordController.php
-│   │   │   │       PasswordResetLinkController.php
-│   │   │   │       RegisteredUserController.php
-│   │   │   │       VerifyEmailController.php
-│   │   │   │
-│   │   │   └───Settings  # Controladores de Breeze
-│   │   │           PasswordController.php
-│   │   │           ProfileController.php
-│   │   │
-│   │   ├───Middleware 
-│   │   │       AdminMiddleware.php # Middleware de Administrador
-│   │   │       HandleInertiaRequests.php # Middlewware Inertia
-│   │   │
-│   │   └───Requests # Tipos de Request 
-│   │       │   StorePostRequest.php # Crear un Post
-│   │       │   UpdatePostConfigRequest.php  # Actualizar Formato de un Post
-│   │       │   UpdatePostRequest.php # Actualizar un Post
-│   │       │
-│   │       ├───Auth
-│   │       │       LoginRequest.php
-│   │       │
-│   │       └───Settings
-│   │               ProfileUpdateRequest.php
-│   │
-│   ├───Models # Modelos de la página 
-│   │       Comment.php
-│   │       Post.php
-│   │       User.php
-│   │
-│   ├───Policies # Politicias de la App 
-│   │       CommentPolicy.php
-│   │       PostPolicy.php
-│   │
-│   ├───Providers
-│   │       AppServiceProvider.php 
-│   │
-│   └───Services #Servicios de la app 
-│           FileContentService.php ## Servicio de Contenido de  rutas
-│           MarkdownService.php ## Servicio de Contenido MD 
-│
-├───bootstrap 
-│   │   app.php
-│   │   providers.php
-│   │
-│   └───cache
-│           .gitignore
-│           packages.php
-│           services.php
-│
+```
+├───app  
+│   ├───Console 
+│   ├───Enums # Tipados Especificos de MizumeBlog
+│   ├───Http 
+│   ├───Models 
+│   ├───Policies # Politicas de la página web 
+│   ├───Providers 
+│   ├───Services # Servicios propios de la página web
+├───bootstrap
 ├───config
 ├───database
-│   ├───factories
-│   ├───migrations ## Migraciones de la página
-│   │       0001_01_01_000000_create_users_table.php
-│   │       0001_01_01_000001_create_cache_table.php
-│   │       0001_01_01_000002_create_jobs_table.php
-│   │       2026_04_12_131250_create_posts_table.php
-│   │       2026_04_13_131941_create_comments_table.php
-│   │       2026_07_13_052013_create_personal_access_tokens_table.php
-│   └───seeders
-│           DatabaseSeeder.php ## Seeders de lapágina
-├───public # Carpeta Publica 
-│   │
-│   ├───IMG # Banners Cards Portadas Fotos de Perfil etc.. 
-│   │   │   Error-App.png
-│   │   │   Fondo.jpg
-│   │   │   Foto-Perfil.jpg
-│   │   │   IconApp.png
-│   │   ├───Banners
-│   │   ├───Cards
-│   │   └───Portada
-│   └───storage
-│       └───IMG # Contido de imagenes de cada post (storage link)
+├───docker
+├───docs
+├───node_modules
+├───public
 ├───resources
-│   ├───css
-│   │       app.css
-│   │       HomeMain.module.css
-│   ├───js
-│   │   │   app.tsx
-│   │   │   ssr.jsx
-│   │   ├───components
-│   │   │   └───ui
-│   │   ├───core # Componentes de la App 
-│   │   │   ├───admin
-│   │   │   │       index.ts
-│   │   │   │       InfoNav.tsx
-│   │   │   │       InfoPanel.tsx
-│   │   │   │       InfoProgresBar.tsx
-│   │   │   │       InfoSideBarLeft.tsx
-│   │   │   │       InfoSideBarRight.tsx
-│   │   │   │       InfoTable.tsx
-│   │   │   │       InfoTableMobile.tsx
-│   │   │   │
-│   │   │   ├───auth # Layouts Principales 
-│   │   │   │       AuthButton.tsx
-│   │   │   │       LibraryFormat.tsx
-│   │   │   │       LogoutButton.tsx
-│   │   │   │       SideBarLeft.tsx
-│   │   │   │       SideBarRight.tsx
-│   │   │   │       TopAuthBar.tsx
-│   │   │   │
-│   │   │   ├───coments # Componentes de Comentarios
-│   │   │   │       ComentContent.tsx
-│   │   │   │       ComentForm.tsx
-│   │   │   │       ComentProfile.tsx
-│   │   │   │       Coments.tsx
-│   │   │   │       ComentsTitle.tsx
-│   │   │   │       ComentText.tsx
-│   │   │   │       index.ts
-│   │   │   │       ReplyBTN.tsx
-│   │   │   │       ReplyComent.tsx
-│   │   │   │
-│   │   │   ├───home #Componentes de Dashboard 
-│   │   │   │       HomeContent.tsx
-│   │   │   │       HomeFooter.tsx
-│   │   │   │       HomePanelPost.tsx
-│   │   │   │       HomeProfile.tsx
-│   │   │   │       HomeSideBarRight.tsx
-│   │   │   │       index.ts
-│   │   │   │
-│   │   │   ├───library #Componentes de archivador 
-│   │   │   │       BookCard.tsx
-│   │   │   │       LibraryCard.tsx
-│   │   │   │       LibraryContent.tsx
-│   │   │   │       LibraryHeader.tsx
-│   │   │   │       LibrarySideBarLeft.tsx
-│   │   │   │
-│   │   │   └───post #Componentes de post
-│   │   │           ConfirmModal.tsx
-│   │   │           index.ts
-│   │   │           MarkdownRenderer.tsx
-│   │   │           PostContent.tsx
-│   │   │           PostForm.tsx
-│   │   │           PostProfile.tsx
-│   │   │           PostSideBarLeft.tsx
-│   │   ├───layouts
-│   │   │   │   app-layout.tsx
-│   │   │   │   auth-layout.tsx
-│   │   │   ├───app # Layout App por defecto y auxiliares
-│   │   │   │       app-header-layout.tsx
-│   │   │   │       app-sidebar-layout.tsx
-│   │   │   │       blog-layout.tsx
-│   │   │   │       FlashHandler.tsx 
-│   │   │   ├───auth
-│   │   │   ├───core
-│   │   │   └───settings
-│   │   │           layout.tsx # Layout Settings 
-│   │   ├───lib
-│   │   ├───pages # Pagina Principal y página de error 
-│   │   │   │   dashboard.tsx
-│   │   │   │   Error.tsx
-│   │   │   │   welcome.tsx
-│   │   │   │
-│   │   │   ├───auth # pagina de inicio de ssesion y registro 
-│   │   │   │       confirm-password.tsx
-│   │   │   │       forgot-password.tsx
-│   │   │   │       login.tsx
-│   │   │   │       register.tsx
-│   │   │   │       reset-password.tsx
-│   │   │   │       verify-email.tsx
-│   │   │   │
-│   │   │   ├───post # pagina de post
-│   │   │   │       create.tsx
-│   │   │   │       edit.tsx
-│   │   │   │       format.tsx
-│   │   │   │       library.tsx
-│   │   │   │       MizumeAdmin.tsx
-│   │   │   │       show.tsx
-│   │   │   │
-│   │   │   └───settings # Paginas de Settings
-│   │   │           appearance.tsx
-│   │   │           history.tsx
-│   │   │           password.tsx
-│   │   │           profile.tsx
-│   │   │           prueba.tsx
-│   │   │
-│   │   └───types # Interfaces web, funciones esqeumas constantes de la página
-│   │           constants.ts
-│   │           index.ts
-│   │           interfaces.ts
-│   │           schemas.ts
-│   │           utils.ts
-│   │           vite-env.d.ts
-│   │
-│   └───views 
-│       │   app.blade.php
-│       │
-│       └───vendor # Plantilla de email
-│           └───notifications
-│                   email.blade.php
-├───routes # Rutas web del proyecto
-│       api.php
-│       auth.php
-│       console.php
-│       settings.php
-│       web.php
-│
-├───storage # Almacen de imagenes, contenido y backups
-│   ├───app
-│   │   ├───private
-│   │   │   ├───backups
-│   │   │   │
-│   │   │   └───blog
-│   │   │
-│   │   └───public
-│   │       └───IMG
-│   ├───framework
-`````
-
-## Estructura de datos 
-## Diseño de BD
-![[Diseño Base dee datos .png|697]]
-
-## Migraciones 
-```` 
-
-Migraciones  de Post 
-Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('web_title');
-            $table->string('tags');
-            $table->enum('category', ['literatura', 'animemanga', 'reflexiones']);
-            $table->string('author');
-            $table->date('publish_date')->nullable();
-            $table->text('description')->nullable();
-            $table->boolean('featured')->default(true);
-            $table->string('cover')->nullable();
-            $table->string('cover_card')->nullable();
-            $table->json('config')->nullable();
-            $table->timestamps();
-});
-
-Migraciond de Comentarios
-Schema::create('comments', function (Blueprint $table) {
-
-            $table->id();
-            $table->text('description');
-            $table->date('publish_date')->default(DB::raw('CURRENT_DATE'));
-
-			/* FK de usuario post y autoreflexivas */
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('parent_id')->nullable();
-
-  
-
-            $table->foreign('user_id')
-            ->references('id')
-            ->on('users')
-            ->onUpdate('cascade')
-            ->onDelete('restrict');
-
-  
-			
-            $table->foreign('post_id')
-            ->references('id')
-            ->on('posts')
-            ->onUpdate('cascade')
-            ->onDelete('restrict');
+├───routes
+├───storage
+├───tests
+├───vendor
+````
 
 
-            $table->foreign('parent_id')
-            ->references('id')
-            ->on('comments')
-            ->onUpdate('cascade')
-            ->onDelete('restrict');
+### Objetos y Servicios Propios
 
-  
-  
+**Console**
+````
+├── Console
+│   └── Commands
+│       └── CreateAdminUser.php
+````
 
-            $table->timestamps();
+Creación de usuario administrador .
 
-        });
+**Enums**
+````
+├── Enums
+│   ├── ContentType.php
+│   └── ImageType.php
+````
 
-    }
+Tipos específicos de contenido de la página web 
 
-`````
+**Http**
 
+**Controllers**
+````
+├── Controllers
+│   ├── Auth/ # Controladores de lógica de autentificacion Brezee
+│   ├── AdminController.php # Controlador de Acciones Adminitrador
+│   ├── ApiController.php  # Controlador de Peticiones Api JSON
+│   ├── ArtworkController.php # Controlador de Artworks
+│   ├── ComentController.php # Controlador de Comentarios
+│   ├── Controller.php 
+│   ├── GoogleController.php # Controlador de Autentificacion OAuth
+│   ├── HomeController.php # Controlador del Homepage
+│   ├── IndexController.php # Controlador inicial
+│   ├── PostImageConfigController.ph # Controlador de Configruaciones PostImage
+````
+
+**Middleware**
+````
+├── Middleware
+│   ├── AdminMiddleware.php # Middleware que verifica usuario adminitrador
+│   └── HandleInertiaRequests.php # Middleware que capta peticion Inertia
+````
+
+**HandleInertiaRequests**
+````
+# Obtenemos Usuario y Respuestas de controladores
+
+
+ public function share(Request $request): array
+    {
+        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+
+        return [
+            ...parent::share($request),
+            'name'  => config('app.name'),
+            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'auth'  => [
+                'user' => $request->user()?->only([
+                    'id',
+                    'name',
+                    'email',
+                    'role',
+                    'avatar',
+                ]),
+            ],
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'warning' => fn() => $request->session()->get('warning'),
+            ]
+        ];
+    }
+````
+
+**Request**
+```
+├──Requests
+│       ├── Auth/
+│       ├── Settings/
+│       ├── StoreArtwork.php # Request de Store Artwork
+│       ├── StorePostRequest.php # Request de Store Post
+│       ├── UpdateArtwork.php # Request de Update Artwork
+│       ├── UpdatePostConfigRequest.php # Request de Config Image Artwork
+│       └── UpdatePostRequest.php # Request de Update Post
+```
 
 
 ### Modelos
 Partiendo de estas entidades he construido los siguientes modelos con las siguientes funciones 
 
-|   Modelos   |                                                      Propiedades                                                       |
-| :---------: | :--------------------------------------------------------------------------------------------------------------------: |
-|  **Post**   | **title, web_title, tags,category, author publish_date , description , featured , cover,** <br>**cover_card, config'** |
-| **Comment** |                             **description , publish_date , user_id , post_id , parent_id**                             |
+|       Post       |     Comment      |  Artwork  |  ArtworkImage  |      PostImage      |
+| :--------------: | :--------------: | :-------: | :------------: | :-----------------: |
+|    **title**     | **description**  | **title** | **artwork_id** | **artwor_image_id** |
+|  **web_title**   | **publish_date** | **code**  |    **num**     |     **post_id**     |
+|     **tags**     |   **user_id**    |     X     |    **name**    |       **key**       |
+|   **category**   |   **post_id**    |     X     |    **alt**     |          X          |
+|    **author**    |  **parent_id**   |     X     |       X        |          X          |
+| **publish_date** |        X         |     X     |       X        |          X          |
+| **description**  |        X         |     X     |       X        |          X          |
+|   **featured**   |        X         |     X     |       X        |          X          |
+|    **cover**     |        X         |     X     |       X        |          X          |
+|  **cover_card**  |        X         |     X     |       X        |          X          |
+|    **config**    |        X         |     X     |       X        |          X          |
+|     **code**     |        X         |     X     |       X        |          X          |
+
+
 
 Modelos con las siguientes funciones 
 
 #### Post
 
-|         Post         |                              Descripción                               |
-| :------------------: | :--------------------------------------------------------------------: |
-|   **comments ()**    |                 Obtiene todo los comentarios del post                  |
-|   **featured ()**    |                      Obtiene los post destacados                       |
-|    **publish ()**    |                      Obtiene los post publicados                       |
-|  **notPublish ()**   |                      Obtiene los post borradores                       |
-| **distincValues ()** | Función que retorna  valores separados de: tags / categories / formats |
+Cast de propiedades
+``` 
+protected $casts = [
+	'config' => 'array',
+];
+```
+
+|         Post         |                              Descripción                               | Static |
+| :------------------: | :--------------------------------------------------------------------: | :----: |
+|   **comments ()**    |                 Obtiene todo los comentarios del post                  |        |
+|     **images()**     |                     Obtiene Imágenes relacionadas                      |        |
+|    **artworks()**    |                   Obtiene los Artworks Relacionados                    |        |
+|   **featured ()**    |                      Obtiene los post destacados                       |        |
+|    **publish ()**    |                      Obtiene los post publicados                       |        |
+|  **notPublish ()**   |                      Obtiene los post borradores                       |        |
+| **distincValues ()** | Función que retorna  valores separados de: tags / categories / formats |   ✅    |
+|      **tags()**      |                         Obtiene todos los tags                         |   ✅    |
+|   **categories()**   |                      Obtiene todas las categorias                      |   ✅    |
+|    **fromats()**     |                      Obtiene todos los 'configs'                       |   ✅    |
+|     **booted()**     |         Convencion de propieadades al crear/actualizar un post         |   ✅    |
+|      **path()**      |                     Obtiene el path del contenido                      |        |
+|  **conventions()**   |                      Convenciones de propiedades                       |   ✅    |
+
 
 #### Comment
 
-|  Comment  |                    Descripción                    |
-| :-------: | :-----------------------------------------------: |
+|    Comment    |                    Descripción                    |
+| :-----------: | :-----------------------------------------------: |
 | **replies()** | Obtiene las respuestas relacionadas al comentario |
 | **parent()**  |          Obtiene el padre del comentario          |
 |  **user()**   |     Obtiene el usuario relativo al comentario     |
 |  **post()**   |      Obtiene el post relativo al comentario       |
 
+#### Artwork
 
-## Seeders 
+|      Artwork      |                        Descripción                         | Static |
+| :---------------: | :--------------------------------------------------------: | :----: |
+|   **images()**    |               Obtiene imagenes relacionadas                |        |
+|    **posts()**    |                 Obtiene post relacionados                  |        |
+|  **generate()**   |             Genera codigo unico para imagenes              |   ✅    |
+|   **booted()**    | Convencion de propiedades cuando crea o actualiza artworks |   ✅    |
+| **conventions()** |                Convenciones de propiedades                 |        |
 
-````
-class DatabaseSeeder extends Seeder
-{
+#### ArtworkImages
+|  ArtworkImages   |              Descripción              |
+| :--------------: | :-----------------------------------: |
+|  **artwork()**   |     Obtiene artworks relacionadas     |
+|   **images()**   |     Obtiene imagenes relacionadas     |
+| **postImages()** | Obtiene imagenes de post relacionados |
 
-    
-    public function run(): void
-    {
-        $data = Storage::disk('local')->json('init.json');
-
-
-        if (!$data) {
-            $this->command->error('No se encontro el archivo');
-            return;
-        } else {
-
-            foreach ($data["posts"] as $post) {
-                Post::create($post);
-            }
-
-            $count = 0;
-            foreach ($data["users"]  as $userData) {
-                $userData['password'] = Hash::make(Str::random(32));
-                $user = User::create($userData);
+#### Post Image
+|  PostImage  |              Descripción              |
+| :---------: | :-----------------------------------: |
+| **post()**  |     Obtiene donde pertence a post     |
+| **image()** | Obtiene imagen especifica relacionada |
 
 
-                if (empty($user['google_id']) && app()->environment('production'                                                                                                             )) {
-                   Password::sendResetLink(['email' => $user->email]);
-                 } else {
-                    $count++;
-                }
-            }
-
-            foreach ($data["comments"] as $comment) {
-                Comment::create($comment);
-            }
-
-
-
-
-
-            $this->command->info('Estamos en pruebas locales, hemos detectado '                                                                                                              . $count . ' usuarios a revisar');
-            $this->command->info('Los datos se restablecieron correctamente');
-        }
-    }
-}
-````
-
-Al iniciar la app tengo archivos json iniciales donde se reinicializara la la estructura de datos en caso de perdida.
-
-
-## Controladores  & Rutas 
-La lógica esta repartida entre 2 únicos perfiles de usuario. admin y user, ademas de otros controladores alternos. 
-
+### Controladores 
 ### AdminController 
 
-|  AdminController   |       Ruta        |     View     |             Descripcion             |
-| :----------------: | :---------------: | :----------: | :---------------------------------: |
-|    **create()**    |   /post/create    | post.create  |   Vista para crear un Post Nuevo    |
-|    **panel()**     | /post/MizumeAdmin |  post.panel  | Vista para a al panel Adminitracion |
-|     **edit()**     |  /post/edit/{id}  |  post.edit   |       Vista a editar un Post        |
-|    **update()**    |  /post/edit/{id}  | post.update  |    Función para actualizar Post     |
-|   **destroy()**    |    /post/{id}     | post.destroy |     Función para eliminar Post      |
-|    **store()**     |    /post/store    |  post.store  |        Función que crea post        |
-|    **backup()**    |   /post/backup    | post.backup  |      Función que crea backups       |
-| **replaceImage()** |         X         |      X       |    Helper para manejar imagenes     |
-|  **buildTags()**   |         X         |      X       |   Helper que reconstruye los tags   |
+|  AdminController   |       Ruta        |     View     |                  Descripcion                  |
+| :----------------: | :---------------: | :----------: | :-------------------------------------------: |
+|    **create()**    |   /post/create    | post.create  |        Vista para crear un Post Nuevo         |
+|    **panel()**     | /post/MizumeAdmin |  post.panel  |      Vista para a al panel Adminitracion      |
+|     **edit()**     |  /post/edit/{id}  |  post.edit   |            Vista a editar un Post             |
+|    **update()**    |  /post/edit/{id}  | post.update  |         Función para actualizar Post          |
+|   **destroy()**    |    /post/{id}     | post.destroy |          Función para eliminar Post           |
+|    **store()**     |    /post/store    |  post.store  |             Función que crea post             |
+|    **backup()**    |   /post/backup    | post.backup  |           Función que crea backups            |
+| **replaceImage()** |         X         |      X       |         Helper para manejar imagenes          |
+|  **buildTags()**   |         X         |      X       |        Helper que reconstruye los tags        |
+|   **register()**   |         x         |      x       | Helper que asocia y desasocia post y artworks |
+
+### ArtworkController 
+
+| AdminController |               Ruta                |       View        |                      Descripcion                      |
+| :-------------: | :-------------------------------: | :---------------: | :---------------------------------------------------: |
+|  **create()**   |          /artwork/create          |  artwork.create   |             Vista de creacion de Artwork              |
+|   **index()**   |          /artwork/index           |   artwork.index   |               Vista de lista de Artwork               |
+|   **edit()**    |        /artwork/edit/{id}         |   artwork.edit    |       Vista de Fomrulario de edicion de artwork       |
+|  **update()**   |       /artwork/update/{id}        |  artwork.update   |             Funcion de actualizar Artwork             |
+|  **destroy()**  |           /artwork/{id}           |  artwork.destroy  |             Función para eliminar Artwork             |
+|   **store()**   |          /artwork/store           |   artwork.store   |               Función que crea Artwork                |
+|  **remove()**   | artwork/{artworkId}/img/{imageId} |  artwork.remove   |    Función que borra imagen especifica del Artwork    |
+| **updateAlt()** | artwork/{artworkId}/img/{ImageId} | artwork.updateAlt | Funcion que actualiza texto alternativo de una imagen |
+
+
 
 ## HomeController
 
@@ -415,16 +238,26 @@ La lógica esta repartida entre 2 únicos perfiles de usuario. admin y user, ade
 |   **index()**    |    /dashboard    |    dashboard    | Dirige a Desaborad General  |
 |    **show()**    | /post/show/{id}  |    post.show    |  Dirige a Post individual   |
 | **archivador()** | /post/archivador | post.archivador | Dirige a Archivador de Post |
+|    **pdf()**     |  /post/{id}/pdf  |    post.pdf     |  Descarga contenido en pdf  |
 
 ### ComentController
 
-| ComentController |            Ruta             |          View          |                Descripcion                 |
-| :--------------: | :-------------------------: | :--------------------: | :----------------------------------------: |
-|     **store()**      |        /comentarios         |     comments.store     |            Crear un Comentario             |
-|    **destroy()**     |      /comentarios{id}       |    comments.destroy    |            Borrar un Comentario            |
-| **destroyByPost()**  | /comentarios/post/{post_id} | comments.destroyByPost |        Borar Comentarios de un post        |
-|   **deleteAll()**    |        /comentarios         |   comments.deleteAll   | Borrar todos los comentarios de un usuario |
+| ComentController    | Ruta                        | View                   | Descripcion                                |
+| :------------------ | :-------------------------- | :--------------------- | :----------------------------------------- |
+| **store()**         | /comentarios                | comments.store         | Crear un Comentario                        |
+| **destroy()**       | /comentarios{id}            | comments.destroy       | Borrar un Comentario                       |
+| **destroyByPost()** | /comentarios/post/{post_id} | comments.destroyByPost | Borar Comentarios de un post               |
+| **deleteAll()**     | /comentarios                | comments.deleteAll     | Borrar todos los comentarios de un usuario |
+### ApiController
 
+|   ApiController   |                      Ruta                       |     View      |                          Descripción                          |
+| :---------------: | :---------------------------------------------: | :-----------: | :-----------------------------------------------------------: |
+|  **upcomming()**  |                  api/upcomming                  | api.upcomming |                   Trae los Post borradores                    |
+| **apiComments()** |           api/post/{post_id}/comments           |  apiComments  |      Trae los Comentarios relativos a un post & Usuario       |
+|  **avaliable()**  |     api/post/{post_id}/artwork/{artwork_id}     |   avaliable   | Obtiene imagenes disponibles de post relacionado a un Artwork |
+|   **replace()**   |      api/post/{post_id}/replace/{image_id}      |    replace    |   Remplaza una imagen especifica de un post por otra imagen   |
+|  **associate()**  | api/post/{post_id}/associate/{artwork_image_id} |   associate   |                 Asociar una imagena a un post                 |
+|   **symlink()**   |           api/post/{post_id}/symlink            |    symlink    |                  Asocia un post a un artwork                  |
 ### Otros  Controladores
 
 | GoogleController |         Ruta         |   View   |     Descripción      |
@@ -432,65 +265,53 @@ La lógica esta repartida entre 2 únicos perfiles de usuario. admin y user, ade
 |    **redirect()**    |     /auth/google     | redirect | Redireccion de OAuth |
 |    **callback()**    | /auth/goole/callback | callback | Validacion de OAuth  |
 
----
-
-| ApiController |           Ruta           |     View      |                    Descripción                     |
-| :-----------: | :----------------------: | :-----------: | :------------------------------------------------: |
-|  **upcomming()**  |        /upcomming        | api.upcomming |              Trae los Post borradores              |
-| **apiComments()** | /post/{post_id}/comments |  apiComments  | Trae los Comentarios relativos a un post & Usuario |
 
 ---
 
 | PostImageConfigController |               Ruta               |           View           |                Descripción                 |
 | :-----------------------: | :------------------------------: | :----------------------: | :----------------------------------------: |
-|          **index()**          |    /admin/posts/image-config     |    posts.image-config    | Muestra vista con formatos de las imagenes |
-|         **update()**          | /admin/posts/{post}/image-config | post.image-config.update |             Actualiza formatos             |
+|        **index()**        |    /admin/posts/image-config     |    posts.image-config    | Muestra vista con formatos de las imagenes |
+|       **update()**        | /admin/posts/{post}/image-config | post.image-config.update |             Actualiza formatos             |
 
 ## Políticas 
-
 
 | Politica      | Descripcion                                                                                                                                                |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PostPolicy    | before() Comprobara que toda accion create , update , delete relativo a post, lo ejecute solo un usario con role admin                                     |
 | CommentPolicy | before() Comprobara que toda accion create , update , delete es ejecutada por un usuario con role admin o en su defecto el propetario de dicho comentario. |
+| ArtworkPolicy | before() Comprobara que toda accion create , update , delete relativo a post, lo ejecute solo un usario con role admin                                     |
 
 
 ## Servicies 
 
 ### FileContentService
-Es una clase php que tiene el principal objetivo de generar una convención de carpetas muy específica: 
 
-````
-1. Antologia de Machado => FileContentService => 1-antologia-de-machado/
-````
+Anida Funciones que comparten algunos controladores
 
-y tras esta convención podemos realizar un manejo mas optimo de las imágenes y contenido relacionado al post.
+| FileContentService |                 Descripcion                  |
+| :----------------: | :------------------------------------------: |
+|  **parseTags()**   |   Pasa un string tag especifico a un array   |
+| **modifyImages()** |    Modifica la portada o Cover de un post    |
+|  **buildTags()**   | Obtiene todos los tagss y lo traduce a array |
+|  **saveImages()**  |  Guarda y registra las imagenes de Artworks  |
+|   **hashName()**   |       Crea codigo único para imagenes        |
 
-````
-imagen9235409384.jpg  => FileContentService => P-antologia-de-machado.jpg
-imagen9235409384.jpg  => FileContentService => C-antologia-de-machado.jpg
-````
-
-De esa manera ocupamos una convención general del contenido.
+**parsetags() y  buildTags()**** 
+```
+'ejemplo1, ejemplo2' => ['ejemplo1' , 'ejemplo2']
+```
 
 ### MarkdownService
+Algomera funciones relativos al md:
 
-En caso de que se suba un archivo sin .md se generar un plantilla default,  posee funciones para extraer contenido md y construir índices que luego se guardara en la siguiente estructura
-
-````
-storage/app/private/
-├───1.post-publicado
-│   ├───index.json
-│   │───content.md
-
-````
-
-El índice se construye dinámicamente cuando se  o se actualice aun post y se guarda, para mostrar simplemente renderizara el json. 
-
-
-## Request
-
-StorePostRequest & UpdatePostRequest simplemente validad el store y update de los post, el que vale la pena mencionar es **UpdatePostConfigRequest** cuyo request es único al tener un ciclo de vida propio, que de momento solo se implemento update.
+|    MarkdownService    |             Descripcion             |
+| :-------------------: | :---------------------------------: |
+|   **hasHeading()**    | Comprueba si el MD subido es valido |
+|     **extract()**     |   Extrae ## y construye un indice   |
+|    **generate()**     |   Genera un md plantilla inicial    |
+|      **build()**      |    Construye la ruta de imagenes    |
+|    **syncKeys()**     |     Sincroniza keys de BD y MD      |
+| **keyExistsInPost()** |           Comprueba keys            |
 
 
 ## Diseño Web

@@ -85,17 +85,6 @@ class MarkdownService
         return "/storage/IMG/{$AI->artwork->code}/{$AI->name}";
     }
 
-    /** Devuelve los keys usados en el texto que no tienen PostImage asociado */
-    public static function missingImageKeys(string $content, Post $post): Collection
-    {
-        preg_match_all('/\{\{img:([\w-]+)\}\}/', $content, $matches);
-
-        $keysinContent = collect($matches[1])->unique();
-
-        $keysAssociated = $post->images()->pluck('key');
-
-        return $keysinContent->diff($keysAssociated);
-    }
 
     /**
      * Recorre el markdown, sincroniza post_images con las keys reales del texto,

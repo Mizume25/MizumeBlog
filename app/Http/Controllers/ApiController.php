@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Artwork;
-use App\Models\ArtworkImage;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostImage;

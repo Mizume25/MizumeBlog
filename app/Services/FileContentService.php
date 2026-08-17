@@ -17,26 +17,7 @@ use App\Enums\ContentType;
  */
 class FileContentService
 {
-    /**
-     * Obtener contenido
-     * @param $id del post
-     * @param $title titulo de la obra
-     */
-    public function getPath(int $id, string $title): string
-    {
-        return storage_path('app/private/blog' . '/' . $id . '-' . Str::slug($title));
-    }
-
-    public function getPath__p(int $id, string $title): string
-    {
-        return storage_path('app/public/IMG' . '/' . $id . '-' . Str::slug($title));
-    }
-
-    /**
-     * Modificar titulo
-     * 
-     */
-
+    
     /**
      * Construir Tags
      */

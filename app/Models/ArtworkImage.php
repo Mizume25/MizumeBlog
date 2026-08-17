@@ -18,13 +18,17 @@ class ArtworkImage extends Model
     {
         return $this->belongsTo(Artwork::class );
     }
-
+    /**
+     * Imagenes relacionadas
+     */
     public function images()
     {
         return $this->hasMany(ArtworkImage::class);
     }
 
-    
+    /**
+     * Imagenes relacionadas a post
+     */
     public function postImages()
     {
         return $this->hasMany(PostImage::class, 'artwork_image_id');
