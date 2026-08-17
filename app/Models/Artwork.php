@@ -47,6 +47,10 @@ class Artwork extends Model
                 $artwork->code = static::generate($artwork->title);
             }
         });
+
+       static::updating(function($artwork) {
+            $artwork->title = static::conventions($artwork->title);
+       });
     }
 
     private static function conventions(string $value): string

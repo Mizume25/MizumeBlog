@@ -139,6 +139,12 @@ class Post extends Model
                 $post->code = static::generate($post->title);
             }
         });
+
+         static::updating(function ($post) {
+            $post->title = static::conventions($post->title);
+            $post->web_title = static::conventions($post->web_title);
+            $post->author = static::conventions($post->author);
+        });
     }
     /** Ruta de contenido */
     public function path(ContentType $type): string
