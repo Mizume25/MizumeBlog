@@ -293,7 +293,7 @@ const ImageFormEdit = ({ artwork, pictures, posts }: ImageEditProps) => {
                             {post != null ? (
                                 <a
                                     type="submit"
-                                    className="mt-5 flex h-12 w-full cursor-pointer flex-row items-center justify-center rounded-2xl bg-blue-400 font-bold text-white transition-transform duration-150 hover:scale-105"
+                                    className="mt-5 flex h-12 w-full cursor-pointer flex-row items-center justify-center rounded-2xl bg-[#1279f8] font-bold text-white transition-transform duration-150 hover:scale-105"
                                     href={route('post.show', String(post))}
                                 >
                                     Ver {posts.find((p) => p.id === post)?.title}

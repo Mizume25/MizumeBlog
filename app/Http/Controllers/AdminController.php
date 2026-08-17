@@ -260,7 +260,7 @@ class AdminController extends Controller
                 ->with('warning', 'El post se creó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
         }
 
-        return back()->with('success', "Post creado con exito");
+        return redirect()->route('post.edit', $post->id)->with('success', 'Post Creado con exito');
     }
 
     public function backup()

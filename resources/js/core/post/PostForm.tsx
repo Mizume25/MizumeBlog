@@ -1,4 +1,5 @@
 /*** @import Imports de Inerficies de Formularios y objetos submit */
+import FormField from '@/components/form-label';
 import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,7 +24,7 @@ import {
     type CreatePostSchemaInput,
     type CreatePostSchemaOutput,
 } from '@/types';
-import { Button, Input, Select, Textarea } from '@headlessui/react';
+import { Button, Input } from '@headlessui/react';
 
 /** @imports Libreria de Iconos */
 import ModalOperation from '@/components/modal-operation';
@@ -462,7 +463,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <div className="mb-3 flex h-20 w-full flex-col p-4">
                                 <Button
                                     type="button"
-                                    className="h-full w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
+                                    className="bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale h-full w-full cursor-pointer rounded-2xl font-bold"
                                     tabIndex={4}
                                     onClick={() => setModalArtwork(true)}
                                 >
@@ -474,40 +475,34 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <div className="grid grid-cols-1 gap-6 p-3 text-left lg:grid-cols-2 lg:gap-10">
                                 {/**  Titulo de la obra  */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Book size={20} />
-                                        <span>Titulo Obra</span>
-                                    </Label>
-
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Titulo Obra"
+                                        icon={Book}
                                         id="title"
-                                        type="text"
                                         required
                                         autoFocus
                                         tabIndex={1}
+                                        error={errors.title?.message}
                                         {...register('title')}
                                         placeholder="Work Title..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
-                                    <InputError message={errors.title?.message} />
                                 </div>
 
                                 {/** Titulo Web */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Computer size={19} />
-                                        <span>Titulo Web</span>
-                                    </Label>
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Web title"
+                                        icon={Computer}
                                         id="web_title"
-                                        type="text"
+                                        required
                                         autoFocus
                                         tabIndex={1}
                                         {...register('web_title')}
-                                        placeholder="Web title work..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        error={errors.web_title?.message}
+                                        placeholder="Web Title ..."
                                     />
-                                    <InputError message={errors.web_title?.message} />
                                 </div>
 
                                 {/** Tags */}
@@ -518,7 +513,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     </Label>
                                     <Button
                                         type="button"
-                                        className="h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
+                                        className="bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale h-12 w-full rounded-2xl font-bold"
                                         tabIndex={4}
                                         onClick={() => setModalTags(true)}
                                     >
@@ -530,55 +525,45 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                                 {/*** Autor de la Obra */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <User size={19} />
-                                        <span>Autor</span>
-                                    </Label>
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Autor"
+                                        icon={User}
                                         id="author"
-                                        type="text"
+                                        required
                                         autoFocus
                                         tabIndex={1}
-                                        required
                                         {...register('author')}
+                                        error={errors.author?.message}
                                         placeholder="Author name..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
-                                    <InputError message={errors.author?.message} />
                                 </div>
 
                                 {/** Fecha Públicación */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Calendar size={19} />
-                                        <span>Fecha Públicación</span>
-                                    </Label>
-                                    <Input
-                                        id="publish_date"
+                                    <FormField
                                         type="date"
+                                        label="Publish date"
+                                        icon={Calendar}
+                                        id="publish_date"
                                         autoFocus
                                         tabIndex={1}
                                         {...register('publish_date')}
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        error={errors.publish_date?.message}
                                     />
-                                    <InputError message={errors.publish_date?.message} />
                                 </div>
 
                                 {/*** Categorias */}
                                 <div className="mb-5 flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Tag size={19} />
-                                        <span>Categoria</span>
-                                    </Label>
-                                    <Select id="category" {...register('category')} className="rounded-md bg-white/30 p-2 text-gray-50 capitalize">
-                                        {OPTION_CATEGORY.map((p) => (
-                                            <option value={p} key={p} className="bg-white/30 text-black capitalize">
-                                                {p}
-                                            </option>
-                                        ))}
-                                    </Select>
-
-                                    <InputError message={errors.category?.message} />
+                                    <FormField
+                                        type="select"
+                                        label="Categoria"
+                                        icon={Tag}
+                                        id="category"
+                                        {...register('category')}
+                                        options={OPTION_CATEGORY.map((p) => ({ value: p, label: p }))}
+                                        error={errors.category?.message}
+                                    />
                                 </div>
                             </div>
 
@@ -647,20 +632,17 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/*** CAMPO DESCRIPCION */}
                             <div>
                                 <div className="mb-6 flex flex-col gap-2">
-                                    {/** Descripcion */}
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Pencil size={19} />
-                                        <span>Descripcion</span>
-                                    </Label>
-                                    <Textarea
+                                    <FormField
+                                        type="textarea"
+                                        label="Description"
+                                        icon={Pencil}
                                         id="description"
+                                        {...register('description')}
                                         autoFocus
                                         tabIndex={1}
-                                        {...register('description')}
-                                        placeholder="This work is the..."
-                                        className="h-30 rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        
+                                        error={errors.category?.message}
                                     />
-                                    <InputError message={errors.description?.message} />
                                 </div>
                             </div>
 
@@ -778,7 +760,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/* ACCION UPDATE */}
                             <Button
                                 type="submit"
-                                className="mt-5 h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                                className="mt-5 h-12 w-full rounded-2xl font-bold bg-btn-primary text-btn-primary-foreground btn-hover-scale"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -995,7 +977,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     </div>
                 </ModalOperation>
 
-    
                 {/* Modal para agregar/asociar una imagen nueva */}
                 <ModalOperation
                     isOpen={modalAdd}

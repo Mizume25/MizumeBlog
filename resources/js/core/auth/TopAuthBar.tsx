@@ -20,7 +20,7 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
 
 
     return (
-        <div className="w-full bg-[#f3e5ab] text-[#2c1e17] py-4 px-4 shadow-md sticky top-0 z-30">
+        <div className="w-full bg-primary-foreground py-4 px-4 shadow-md sticky top-0 z-30">
             <div className="max-w-[1500px] mx-auto flex md:grid md:grid-cols-3 items-center justify-between">
 
                 {/* Nav: oculta en mobile */}
