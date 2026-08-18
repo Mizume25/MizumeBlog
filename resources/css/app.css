@@ -69,6 +69,11 @@
     --color-primary: var(--primary);
     --color-primary-foreground: var(--primary-foreground);
 
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-tertiary: var(--tertiary);
+    --color-tertiary-foreground:var(--tertiary);
 
     --color-pure: var(--pure-color);
     
@@ -123,8 +128,15 @@
 
 
     /* Color Principal */
-    --primary: hsl(20, 32%, 13%);
+    --primary: hsl(23, 40%, 12%);
     --primary-foreground:hsl(48, 75%, 81%);
+
+    --secondary:hsl(30, 55%, 30%);
+    --secondary-foreground:var(--pure-color);
+
+    --tertiary:hsl(53, 100%, 35%);
+    --tertiary-foreground:var(--pure-color);
+
 
     /* Paleta de Botones Princiaples */ 
     --btn-primary:hsl(53, 71%, 61%);
@@ -139,7 +151,7 @@
 
     /* Paleta de Botones de Acciones */ 
     --btn-danger:hsl(0, 72%, 55%);
-    --btn-success:hsl(142, 69%, 58%);
+    --btn-success:hsl(142, 100%, 39%);
     --btn-info:hsl(213, 94%, 52%);
     --btn-warning:hsl(250, 68%, 66%);
 

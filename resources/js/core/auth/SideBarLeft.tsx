@@ -1,79 +1,133 @@
-import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
-import { router } from "@inertiajs/react";
-import { Image, LayoutDashboard, LogIn, LogOut, Pencil, UserPlus } from "lucide-react";
+import { SharedData, WEB_ROUTE } from '@/types';
+import { router, usePage } from '@inertiajs/react';
 import HomeProfile from '../home/HomeProfile';
 import { netWork } from '../home/HomeSideBarRight';
-import { WEB_ROUTE } from '@/types';
 
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
+import { Folder, Image, LogIn, LogOut, PanelBottom, Settings, User, UserPlus } from 'lucide-react';
 
 interface SideBarLeftProps {
     isOpen?: boolean;
     onClose?: () => void;
-    id?: number | undefined
+    id?: number | undefined;
 }
 
 function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
-
     const { auth } = usePage<SharedData>().props;
-  
+
+    /** Renderizado de Operaciones */
+    const renderOptions = (admin: boolean) => {
+        return (
+            <Menu as="div" className="relative inline-block">
+                <MenuButton className="bg-btn-primary text-btn-primary-foreground rounded px-3 py-1.5 font-semibold">
+                    <Settings />
+                </MenuButton>
+
+                <MenuItems className="absolute left-0 z-50 mt-2 w-30 rounded shadow-lg">
+                    {admin ? (
+                        <>
+                            <MenuItems>
+                                <button
+                                    onClick={() => router.get(route('post.panel'))}
+                                    title="Cerrar sesión"
+                                    className="rounded-t-2xl bg-primary-foreground text-primary flex w-40 items-center justify-start px-4 py-2"
+                                >
+                                    <PanelBottom className='me-1' />  Panel
+                                </button>
+                            </MenuItems>
+                            <MenuItems>
+                                <button
+                                    onClick={() => router.get(route('posts.image-config'))}
+                                    title="Cerrar sesión"
+                                    className="bg-primary-foreground text-primary  btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
+                                >
+                                    <Image className='me-1' /> Format
+                                </button>
+                            </MenuItems>
+
+                            <MenuItems>
+                                <button
+                                    onClick={() => router.get(route('artwork.index'))}
+                                    title="Cerrar sesión"
+                                    className="bg-primary-foreground text-primary  btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
+                                >
+                                    <Folder className='me-1'/>  Artworks
+                                </button>
+                            </MenuItems>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+
+                    <MenuItems>
+                        <button 
+                         onClick={() => router.get(route('profile.edit'))}
+                        className="bg-btn-info text-btn-info-foreground btn-hover-scale flex w-40 items-center justify-start px-4 py-2">
+                            <User className='me-1' /> Profile
+                        </button>
+                    </MenuItems>
+                    <MenuItems>
+                        <button
+                            onClick={() => router.post(route('logout'))}
+                            title="Cerrar sesión"
+                            className="bg-btn-danger text-btn-danger-foreground btn-hover-scale flex w-40 items-center justify-start rounded-b-2xl px-4 py-2"
+                        >
+                            <LogOut className='me-1' /> Log Out
+                        </button>
+                    </MenuItems>
+                </MenuItems>
+            </Menu>
+        );
+    };
+
     const sidebarContent = (
         <>
             <section className="mb-[30px]">
                 <a href={route('profile.edit')}>
                     <div className="mb-4">
-
                         {auth?.user?.avatar ? (
-
                             <img
                                 src={auth.user.avatar}
                                 alt="Perfil"
-                                className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover"
+                                className="mx-auto block h-[144px] w-[134px] rounded-full border-[3px] border-[#C4A484] object-cover"
                             />
-
                         ) : auth?.user ? (
-
                             <HomeProfile name={auth.user.name} />
-
                         ) : (
-
                             <img
                                 src="/IMG/Foto-Perfil.jpg"
                                 alt="Perfil"
-                                className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] object-cover"
+                                className="mx-auto block h-[144px] w-[134px] rounded-full border-[3px] border-[#C4A484] object-cover"
                             />
                         )}
-
                     </div>
                 </a>
-                <div className="text-center w-full text-white mb-4">
-                    <span>Hola, {auth?.user?.name || "Bienvenido/a!"}</span>
+                <div className="mb-4 w-full text-center text-white">
+                    <span>Hola, {auth?.user?.name || 'Bienvenido/a!'}</span>
                 </div>
             </section>
 
             <section className="mb-[30px]">
                 {/* Secciones */}
-                <h3 className="text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] text-xl">
+                <h3 className="mb-4 border-b-2 border-[#eee] pb-[10px] text-xl font-bold text-white [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
                     Secciones
                 </h3>
                 <ul className="pl-0">
                     {WEB_ROUTE.map((item) => (
                         <li
                             key={item.label}
-                            className="group w-full p-[10px] rounded-[8px] transition-all duration-300 ease-in-out cursor-pointer hover:bg-[#624a2e] hover:scale-[1.02] text-left mt-[10px]"
+                            className="group mt-[10px] w-full cursor-pointer rounded-[8px] p-[10px] text-left transition-all duration-300 ease-in-out hover:scale-[1.02] hover:bg-[#624a2e]"
                         >
-                            <a href={item.url} className="text-white no-underline capitalize">
+                            <a href={item.url} className="text-white capitalize no-underline">
                                 🐢 {item.label}
                             </a>
                         </li>
                     ))}
                 </ul>
 
-
-
                 {/* ── Redes sociales: solo en drawer móvil ── */}
-                <div className="lg:hidden mt-6">
-                    <h3 className="text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] text-xl">
+                <div className="mt-6 lg:hidden">
+                    <h3 className="mb-4 border-b-2 border-[#eee] pb-[10px] text-xl font-bold text-white [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
                         Sígueme
                     </h3>
                     <div className="flex flex-wrap gap-[10px]">
@@ -81,7 +135,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                             <a
                                 key={red.nombre}
                                 href={red.ruta}
-                                className="inline-block py-[8px] px-[15px] bg-[rgb(118,77,35)] text-white rounded-[5px] transition-colors duration-300 hover:bg-[rgb(129,106,84)] no-underline text-sm"
+                                className="inline-block rounded-[5px] bg-[rgb(118,77,35)] px-[15px] py-[8px] text-sm text-white no-underline transition-colors duration-300 hover:bg-[rgb(129,106,84)]"
                             >
                                 🐢 {red.nombre}
                             </a>
@@ -89,7 +143,6 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                     </div>
                 </div>
             </section>
-
         </>
     );
 
@@ -99,55 +152,69 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
             <div className="lg:hidden">
                 <div
                     onClick={onClose}
-                    className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                        }`}
+                    className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
+                        isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+                    }`}
                 />
                 <aside
-                    className={`
-                        fixed inset-y-0 left-0 z-50 w-full
-                        bg-[rgb(45,29,13)] p-[35px]
-                        shadow-[4px_0_15px_rgba(0,0,0,0.3)]
-                        transition-transform duration-300 ease-in-out
-                        overflow-y-auto
-                        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                    `}
+                    className={`fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-[rgb(45,29,13)] p-[35px] shadow-[4px_0_15px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} `}
                 >
-                    {/* Fila superior: cerrar + iconos de acción */}
-                    {/* Fila superior: cerrar + iconos de acción */}
-                    <div className="flex items-center justify-between mb-6">
-                        <button
-                            onClick={onClose}
-                            className="text-white text-sm font-light opacity-70 hover:opacity-100 cursor-pointer"
-                        >
-                            ✕ Cerrar
-                        </button>
+                    <div className="mb-6 flex items-center justify-between gap-4">
+                        {!auth?.user ? (
+                            <div className="flex flex-row gap-3">
+                                <a
+                                    href={route('login')}
+                                    title="Iniciar Session"
+                                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-blue-400 transition-colors duration-300 hover:bg-[#8B2020]"
+                                >
+                                    <LogIn className="h-4 w-4 text-white" />
+                                </a>
+
+                                <a
+                                    href={route('register')}
+                                    title="Registrarse"
+                                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-red-400 transition-colors duration-300 hover:bg-[#8B2020]"
+                                >
+                                    <UserPlus className="h-4 w-4 text-white" />
+                                </a>
+                            </div>
+                        ) : (
+                            renderOptions(auth.user.role === 'admin' ? true : false)
+                        )}
 
                         <div className="flex items-center gap-2">
+                            <button onClick={onClose} className="cursor-pointer text-sm font-light text-white opacity-70 hover:opacity-100">
+                                ✕ Cerrar
+                            </button>
+
+                            {/*
                             {auth?.user?.role === 'admin' && (
                                 <>
-                                    <a href={route('post.panel')}
+                                    <a
+                                        href={route('post.panel')}
                                         title="Panel Admin"
-                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
+                                        className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
                                     >
-                                        <LayoutDashboard className="w-4 h-4 text-white" />
+                                        <LayoutDashboard className="h-4 w-4 text-white" />
                                     </a>
 
-                                    <a href={route('posts.image-config')}
+                                    <a
+                                        href={route('posts.image-config')}
                                         title="Format Image"
-                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
+                                        className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
                                     >
-                                        <Image className="w-4 h-4 text-white" />
+                                        <Image className="h-4 w-4 text-white" />
                                     </a>
                                 </>
                             )}
 
                             {auth?.user?.role === 'admin' && id != null && (
-
-                                <a href={route('post.edit', id)}
+                                <a
+                                    href={route('post.edit', id)}
                                     title="Editar"
-                                    className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#624a2e] transition-colors duration-300"
+                                    className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
                                 >
-                                    <Pencil className="w-4 h-4 text-white" />
+                                    <Pencil className="h-4 w-4 text-white" />
                                 </a>
                             )}
 
@@ -156,34 +223,34 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                                     <a
                                         href={route('login')}
                                         title="Iniciar Session"
-                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-blue-400 hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
+                                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-blue-400 transition-colors duration-300 hover:bg-[#8B2020]"
                                     >
-                                        <LogIn className="w-4 h-4 text-white" />
+                                        <LogIn className="h-4 w-4 text-white" />
                                     </a>
 
                                     <a
                                         href={route('register')}
                                         title="Registrarse"
-                                        className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-red-400 hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
+                                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-red-400 transition-colors duration-300 hover:bg-[#8B2020]"
                                     >
-                                        <UserPlus className="w-4 h-4 text-white" />
+                                        <UserPlus className="h-4 w-4 text-white" />
                                     </a>
                                 </>
                             ) : (
                                 <button
                                     onClick={() => router.post(route('logout'))}
                                     title="Cerrar sesión"
-                                    className="flex items-center justify-center w-9 h-9 rounded-[8px] bg-[rgb(118,77,35)] hover:bg-[#8B2020] transition-colors duration-300 cursor-pointer"
+                                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#8B2020]"
                                 >
-                                    <LogOut className="w-4 h-4 text-white" />
+                                    <LogOut className="h-4 w-4 text-white" />
                                 </button>
-                            )}
+                            )} */}
                         </div>
                     </div>
 
                     {sidebarContent}
-                </aside >
-            </div >
+                </aside>
+            </div>
         </>
     );
 }

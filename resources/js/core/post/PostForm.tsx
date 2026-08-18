@@ -10,7 +10,7 @@ import Switch from 'react-switch';
 import { artworkApi } from '@/types/api';
 
 /*** @import Estructuras de Estado  y de referencia */
-import { ToastType, useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { confirmDelete } from '@/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
@@ -47,6 +47,7 @@ import {
     Tags,
     User,
 } from 'lucide-react';
+import ApiToast from '@/components/api-toast';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -72,32 +73,7 @@ export interface PostFormHandle {
     resetForm: () => void;
 }
 
-/**
- * Funcion para notificar acciones api json
- */
-function ApiToast({ toast }: { toast: { type: ToastType; message: string } | null }) {
-    if (!toast) return null;
 
-    return (
-        <div
-            className={`fixed top-5 right-5 z-[100] transition-all duration-500 ease-out ${
-                toast ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-8 opacity-0'
-            }`}
-        >
-            <div
-                className={`flex min-w-[260px] items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
-                    toast?.type === 'success'
-                        ? 'bg-[#7ad35f] text-white'
-                        : toast?.type === 'warning'
-                          ? 'bg-[#e0a11a] text-white'
-                          : 'bg-[#fc5353] text-white'
-                }`}
-            >
-                <p className="text-sm font-medium">{toast?.message}</p>
-            </div>
-        </div>
-    );
-}
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
     (
@@ -422,7 +398,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                 {/** FORMULARIO HTML */}
                 <div>
                     <ApiToast toast={toast} />
-                    <div className="border-border/50 mx-auto rounded-lg border bg-[#754C22] p-4 shadow-lg sm:p-8 lg:min-w-150">
+                    <div className="bg-secondary text-secondary-foreground border-border/50 mx-auto rounded-lg border p-4 shadow-lg sm:p-8 lg:min-w-150">
                         {/** HEAD - FORMULARIO */}
                         <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}>
                             <div className="flex flex-row justify-between gap-2 text-center">
@@ -640,7 +616,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                         {...register('description')}
                                         autoFocus
                                         tabIndex={1}
-                                        
                                         error={errors.category?.message}
                                     />
                                 </div>
@@ -668,11 +643,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <Input id="content" type="file" className="hidden" accept=".md" {...register('content')} />
                                 <InputError message={errors.content?.message} />
                             </label>
-
-                            <Label className="mb-3 flex items-center gap-2 text-white">
-                                <Image size={19} />
-                                <span>Imagenes</span>
-                            </Label>
 
                             {/* Lista de tags */}
                             <div className="flex h-8 w-full flex-row items-center justify-start">
@@ -748,7 +718,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     {/* ACCION IMAGENES */}
                                     <Button
                                         type="button"
-                                        className={`mt-5 h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90 ${defaultValues == undefined ? 'hidden' : ''}`}
+                                        className={`bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold ${defaultValues == undefined ? 'hidden' : ''}`}
                                         tabIndex={4}
                                         onClick={onToogle}
                                     >
@@ -760,7 +730,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/* ACCION UPDATE */}
                             <Button
                                 type="submit"
-                                className="mt-5 h-12 w-full rounded-2xl font-bold bg-btn-primary text-btn-primary-foreground btn-hover-scale"
+                                className="bg-btn-primary text-btn-primary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -772,7 +742,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <>
                                     {/* ACCION SHOW */}
                                     <a
-                                        className="mt-5 flex h-12 w-full items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600"
+                                        className="bg-btn-info text-btn-info-foreground btn-hover-scale mt-5 flex h-12 w-full items-center justify-center rounded-2xl font-bold"
                                         href={route('post.show', post_id)}
                                     >
                                         Ver Post
@@ -780,7 +750,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                                     {/* ELIMINAR */}
                                     <Button
-                                        className="mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl bg-red-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-red-800"
+                                        className="bg-btn-danger text-btn-danger-foreground btn-hover-scale mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl font-bold"
                                         onClick={onDelete}
                                     >
                                         Eliminar
@@ -798,33 +768,34 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div
                         className={`fixed top-20 right-0 z-10 flex h-full w-full flex-col overflow-hidden bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-120 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
-                        <div className="flex h-10 w-full flex-row items-start justify-start gap-4">
+                        <div className="flex h-10 w-full flex-row items-start justify-between gap-4 mb-4">
+                            {/* LINK A ARTWORK CREATE */}
+                            <a
+                                className="bg-primary text-primary-foreground btn-hover-scale flex w-50 items-center justify-center p-2 text-sm"
+                                href={route('artwork.create')}
+                            >
+                                Agregar Artwork
+                            </a>
+
                             {/* CERRAR SIDEBAR */}
                             <button
-                                className="flex h-10 w-full cursor-pointer flex-row items-start justify-start gap-4"
+                                className="bg-btn-danger text-btn-danger-foreground flex h-10 w-10 flex-col items-center justify-center gap-4 rounded-xl text-sm btn-hover-scale"
                                 type="button"
                                 onClick={() => setisSidebar(false)}
                             >
                                 X
                             </button>
-                            {/* LINK A ARTWORK CREATE */}
-                            <a
-                                className="_btn_secondary flex items-center justify-center transition-transform duration-150 ease-in-out hover:scale-110"
-                                href={route('artwork.create')}
-                            >
-                                Agregar
-                            </a>
                         </div>
 
-                        <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
-                        <h3>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
+                        <h2 className="title text-center text-2xl font-bold mb-4">Gestion de Imagenes</h2>
+                        <h3 className='mb-2'>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
                         {/* SELECT DE ARTWORKS */}
                         <select
                             name="artworks"
                             id="artworks"
                             value={artwork?.id ?? ''}
                             onChange={(e) => changeArtwork(Number(e.target.value))}
-                            className="text- w-full cursor-pointer rounded-xl bg-white/30 p-2 outline-none focus:bg-white/20"
+                            className="text- w-full cursor-pointer rounded-xl bg-white/30 p-2 capitalize outline-none focus:bg-white/20"
                         >
                             {galeries?.map((gal) => (
                                 <option key={gal.id} value={gal.id} className="bg-white text-black">
@@ -835,15 +806,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                         {/* LINK A CONTENEDOR DE IMAGENES RELACIONADO */}
                         <a
-                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-lg text-white transition-colors hover:bg-amber-800"
+                            className="bg-btn-secondary text-btn-secondary-foreground btn-hover-scale rounded-2xl font-bold mt-4 flex h-10 w-auto items-center justify-center gap-2"
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                         >
-                            <Settings2 size={20} className="text-white" />
+                            <Settings2 size={20} />
                             Gestionar Contenedor
                         </a>
                         {/* BUTTON DE AGREGAR IMAGENES */}
                         <Button
-                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-400 px-4 py-2 text-lg text-white transition-colors hover:bg-green-500"
+                            className="bg-btn-success text-btn-success-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-xl px-4 py-2 text-lg "
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                             onClick={handleOpenAdd}
                         >
@@ -923,7 +894,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                     <a
                         type="button"
-                        className="mt-2 flex h-6 w-35 cursor-pointer flex-row items-center justify-center rounded-2xl bg-[#e2d255] text-sm font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                        className="bg-btn-primary text-btn-primary-foreground btn-hover-scale mt-2 flex h-6 w-35 flex-row items-center justify-center rounded-2xl text-sm font-bold "
                         tabIndex={4}
                         href={route('artwork.create')}
                     >
