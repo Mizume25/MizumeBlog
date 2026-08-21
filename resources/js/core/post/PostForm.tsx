@@ -34,6 +34,8 @@ import {
     Calendar,
     CheckCircle2,
     ChevronDown,
+    ChevronLeft,
+    ChevronRight,
     Computer,
     File,
     Folder,
@@ -427,12 +429,13 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const handleOpenMultiSelect = async () => {
             const valids = await artworkApi.getAvailable(post_id, artwork?.id);
             setavAvaliables(valids);
+            setImagePage(0);
             setmodalMultiSelect(true);
         };
 
         /** Trae las keys del MD que aún no tienen imagen asociada */
         const handleExtractPendingKeys = async () => {
-            console.log('click extract' , post_id)
+            console.log('click extract', post_id);
             if (post_id == null) return;
             setLoadingPendingKeys(true);
             try {
@@ -487,6 +490,16 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                 window.location.reload();
             }, 1500);
         };
+
+        /** Paginación del carrusel de imágenes disponibles */
+        const [imagePage, setImagePage] = useState(0);
+        const IMAGES_PER_PAGE = 4;
+
+        const totalPages = Math.ceil(avaliables.length / IMAGES_PER_PAGE);
+        const paginatedImages = avaliables.slice(imagePage * IMAGES_PER_PAGE, imagePage * IMAGES_PER_PAGE + IMAGES_PER_PAGE);
+
+        const goToPrevPage = () => setImagePage((p) => Math.max(0, p - 1));
+        const goToNextPage = () => setImagePage((p) => Math.min(totalPages - 1, p + 1));
 
         return (
             <>
@@ -1141,6 +1154,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                         setPendingKeys([]);
                         setSelectedKeys([]);
                         setAssignments({});
+                        setImagePage(0);
                     }}
                     title="Agregar Imágenes"
                 >
@@ -1154,7 +1168,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 type="button"
                                 onClick={handleExtractPendingKeys}
                                 disabled={loadingPendingKeys}
-                                className="cursor-pointer mb-3 h-10 w-full rounded-xl bg-amber-400 text-sm font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="mb-3 h-10 w-full cursor-pointer rounded-xl bg-amber-400 text-sm font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 {loadingPendingKeys ? 'Buscando...' : 'Extraer keys disponibles'}
                             </Button>
@@ -1169,7 +1183,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                             type="button"
                                             onClick={() => toggleKeySelection(key)}
                                             disabled={!!assignments[key]}
-                                            className={`cursor-pointer w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+                                            className={`w-full cursor-pointer rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
                                                 selectedKeys.includes(key)
                                                     ? 'border-green-500 bg-green-50 font-semibold text-green-700'
                                                     : assignments[key]
@@ -1185,39 +1199,65 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             </div>
                         </div>
 
-                        <div className="scrollbar-gutter-stable grid max-h-[50vh] grid-cols-2 gap-3 overflow-y-auto p-1">
-                            {avaliables.length === 0 ? (
-                                <p className="col-span-full text-center text-sm text-gray-500">
-                                    No hay imágenes disponibles en esta obra. Ve a Artwork y sube algunas primero.
-                                </p>
-                            ) : (
-                                avaliables.map((img) => {
-                                    const assignedKeys = Object.entries(assignments)
-                                        .filter(([, v]) => v.id === img.id)
-                                        .map(([k]) => k);
+                        <div className="flex flex-col">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {paginatedImages.length === 0 ? (
+                                    <p className="col-span-full text-center text-sm text-gray-500">
+                                        No hay imágenes disponibles en esta obra. Ve a Artwork y sube algunas primero.
+                                    </p>
+                                ) : (
+                                    paginatedImages.map((img) => {
+                                        const assignedKeys = Object.entries(assignments)
+                                            .filter(([, v]) => v.id === img.id)
+                                            .map(([k]) => k);
 
-                                    return (
-                                        <button
-                                            key={img.id}
-                                            type="button"
-                                            onClick={() => assignSelectedKeysToImage(img)}
-                                            disabled={selectedKeys.length === 0}
-                                            className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
-                                        >
-                                            <img
-                                                src={`/storage/IMG/${artwork?.code}/${img.name}`}
-                                                alt={img.alt ?? ''}
-                                                className="h-full w-full object-cover"
-                                            />
-                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
-                                                <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
-                                                {assignedKeys.length > 0 && (
-                                                    <p className="truncate text-[9px] text-green-300">{assignedKeys.join(', ')}</p>
-                                                )}
-                                            </div>
-                                        </button>
-                                    );
-                                })
+                                        return (
+                                            <button
+                                                key={img.id}
+                                                type="button"
+                                                onClick={() => assignSelectedKeysToImage(img)}
+                                                disabled={selectedKeys.length === 0}
+                                                className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <img
+                                                    src={`/storage/IMG/${artwork?.code}/${img.name}`}
+                                                    alt={img.alt ?? ''}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                    <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
+                                                    {assignedKeys.length > 0 && (
+                                                        <p className="truncate text-[9px] text-green-300">{assignedKeys.join(', ')}</p>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        );
+                                    })
+                                )}
+                            </div>
+
+                            {totalPages > 1 && (
+                                <div className="mt-3 flex items-center justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={goToPrevPage}
+                                        disabled={imagePage === 0}
+                                        className="rounded-full bg-gray-200 p-2 transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
+                                    >
+                                        <ChevronLeft size={18} />
+                                    </button>
+                                    <span className="text-sm text-gray-600">
+                                        {imagePage + 1} / {totalPages}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={goToNextPage}
+                                        disabled={imagePage === totalPages - 1}
+                                        className="rounded-full bg-gray-200 p-2 transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
