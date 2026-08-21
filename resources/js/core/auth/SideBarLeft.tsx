@@ -87,7 +87,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                     <div className="mb-4">
                         {auth?.user?.avatar ? (
                             <img
-                                src={auth.user.avatar}
+                                src={auth.user.avatar ?? '/IMG/IconApp.png'}
                                 alt="Perfil"
                                 className="mx-auto block h-[144px] w-[134px] rounded-full border-[3px] border-[#C4A484] object-cover"
                             />
@@ -145,7 +145,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
             </section>
         </>
     );
-
+    
     return (
         <>
             {/* ── MÓVIL: drawer ── */}
@@ -187,64 +187,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                                 ✕ Cerrar
                             </button>
 
-                            {/*
-                            {auth?.user?.role === 'admin' && (
-                                <>
-                                    <a
-                                        href={route('post.panel')}
-                                        title="Panel Admin"
-                                        className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
-                                    >
-                                        <LayoutDashboard className="h-4 w-4 text-white" />
-                                    </a>
-
-                                    <a
-                                        href={route('posts.image-config')}
-                                        title="Format Image"
-                                        className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
-                                    >
-                                        <Image className="h-4 w-4 text-white" />
-                                    </a>
-                                </>
-                            )}
-
-                            {auth?.user?.role === 'admin' && id != null && (
-                                <a
-                                    href={route('post.edit', id)}
-                                    title="Editar"
-                                    className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#624a2e]"
-                                >
-                                    <Pencil className="h-4 w-4 text-white" />
-                                </a>
-                            )}
-
-                            {!auth?.user ? (
-                                <>
-                                    <a
-                                        href={route('login')}
-                                        title="Iniciar Session"
-                                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-blue-400 transition-colors duration-300 hover:bg-[#8B2020]"
-                                    >
-                                        <LogIn className="h-4 w-4 text-white" />
-                                    </a>
-
-                                    <a
-                                        href={route('register')}
-                                        title="Registrarse"
-                                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-red-400 transition-colors duration-300 hover:bg-[#8B2020]"
-                                    >
-                                        <UserPlus className="h-4 w-4 text-white" />
-                                    </a>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={() => router.post(route('logout'))}
-                                    title="Cerrar sesión"
-                                    className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] bg-[rgb(118,77,35)] transition-colors duration-300 hover:bg-[#8B2020]"
-                                >
-                                    <LogOut className="h-4 w-4 text-white" />
-                                </button>
-                            )} */}
+                          
                         </div>
                     </div>
 

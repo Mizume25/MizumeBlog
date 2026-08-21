@@ -11,9 +11,12 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Enums\ImageType;
 use App\Models\Artwork;
+use App\Models\ArtworkImage;
+use App\Models\PostImage;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -119,6 +122,8 @@ class AdminController extends Controller
 
             $titles = MarkdownService::extract($content);
             $index = json_encode($titles);
+
+           
 
             Storage::disk('local')->put($post->path(ContentType::Content), $content);
             Storage::disk('local')->put($post->path(ContentType::Index), $index);
@@ -269,6 +274,10 @@ class AdminController extends Controller
             'posts'    => Post::all()->toArray(),
             'users'    => User::all()->makeHidden(['password', 'remember_token'])->toArray(),
             'comments' => Comment::all()->toArray(),
+            'artworks' => Artwork::all()->toArray(),
+            'artwork_images' => ArtworkImage::all()->toArray(),
+            'post_images' => PostImage::all()->toArray(),
+            'artwork_post' => DB::table('artwork_post')->select(["post_id" , "artwork_id"])->get(),
         ];
 
 

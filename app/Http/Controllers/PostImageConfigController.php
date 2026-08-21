@@ -10,13 +10,25 @@ use Inertia\Inertia;
 class PostImageConfigController extends Controller
 {
     public function index()
-    {   
+    {
 
         $posts = Post::whereNotNull('cover')
-        ->whereNotNull('cover_card')
-        ->get();
+            ->whereNotNull('cover_card')
+            ->get();
 
         return Inertia::render('post/format', [
+            'posts' => $posts,
+        ]);
+    }
+
+
+    public function temp()
+    {
+        $posts = Post::whereNotNull('cover')
+            ->whereNotNull('cover_card')
+            ->get();
+
+        return Inertia::render('post/example', [
             'posts' => $posts,
         ]);
     }
@@ -29,6 +41,6 @@ class PostImageConfigController extends Controller
             'config' => array_merge($post->config ?? [], $data),
         ]);
 
-        return back();
+        return back()->with('succes', 'Propiedad Modificada');
     }
 }

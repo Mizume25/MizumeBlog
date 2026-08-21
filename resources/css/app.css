@@ -73,7 +73,10 @@
     --color-secondary-foreground: var(--secondary-foreground);
 
     --color-tertiary: var(--tertiary);
-    --color-tertiary-foreground:var(--tertiary);
+    --color-tertiary-foreground:var(--tertiary-foreground);
+
+    --color-fourth:var(--fourth);
+    --color-fourth:var(--fourth-foreground);
 
     --color-pure: var(--pure-color);
     
@@ -137,9 +140,11 @@
     --tertiary:hsl(53, 100%, 35%);
     --tertiary-foreground:var(--pure-color);
 
+    --fourth:hsl(40, 12%, 90%);
+    --fourth-foreground:var(--primary-foreground);
 
     /* Paleta de Botones Princiaples */ 
-    --btn-primary:hsl(53, 71%, 61%);
+    --btn-primary:#F5EDD8;
     --btn-primary-foreground:hsl(36, 100%, 27%);
 
     --btn-secondary:hsl(20, 32%, 13%);

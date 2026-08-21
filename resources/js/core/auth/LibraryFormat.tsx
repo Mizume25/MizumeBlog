@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Config, Post } from '@/types';
-
+import ApiToast from '@/components/api-toast';
 
 type Tab = 'card' | 'home' | 'article';
 

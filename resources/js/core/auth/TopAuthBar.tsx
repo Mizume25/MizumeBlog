@@ -54,7 +54,7 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                                         />
                                     </AuthButton>
 
-                                    <AuthButton url={route('posts.image-config')} label="Format">
+                                    <AuthButton url={route('post.format')} label="Format">
                                         <Image
                                             size={15}
                                             className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"

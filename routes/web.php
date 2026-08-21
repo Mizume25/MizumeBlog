@@ -74,6 +74,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
 
+    Route::get('/admin/posts/formats', [PostImageConfigController::class , 'temp'])->name('post.format');
+
     
     /** Rutas Artworks */
 

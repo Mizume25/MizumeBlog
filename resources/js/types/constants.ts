@@ -24,10 +24,6 @@ export const WEB_ROUTE : Route [] = [
         url: route('post.archivador')
     },
     {
-        label:'profile',
-        url: route('profile.edit')
-    },
-    {
         label:'Contacto',
         url: '#'
     }

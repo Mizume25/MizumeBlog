@@ -11,7 +11,10 @@ class GoogleController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        return Socialite::driver('google')
+        ->stateless()
+        ->with(app()->environment('local') ? ['prompt' => 'select_account'] : [])
+        ->redirect();
     }
 
     public function callback()
