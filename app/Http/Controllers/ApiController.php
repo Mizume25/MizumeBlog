@@ -8,9 +8,14 @@ use App\Models\PostImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\MarkdownService;
+use App\Enums\ContentType;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
+
+
     /** Ruta json que obtiene post no publicados */
     public function upcoming()
     {
@@ -122,5 +127,61 @@ class ApiController extends Controller
         $post->artworks()->sync($ids);
 
         return response()->json(['message' => 'Asociaciones de post actualizadas']);
+    }
+
+
+    /** Funcion para obtener keys pendientes */
+    public static function pendingKeys(int $post_id)
+    {
+        $post = Post::findOrFail($post_id);
+
+        if (!$post->artworks()->exists()) return response()->json(['message' => 'Debe Asociarse aun Artwork'], 422);
+
+        $content = Storage::disk('local')->get($post->path(ContentType::Content));
+
+        if ($content == null) return response()->json(['message' => 'Debe tener contenido'], 422);
+
+        $pendingkeys = MarkdownService::syncKeys($content, $post, true);
+
+        if(count($pendingkeys) == 0) return response()->json(['message' => 'No hay keys pendientes'], 422);
+ 
+        return response()->json($pendingkeys);
+    }
+
+    public function associateBulk(Request $request, int $post_id)
+    {
+        $request->validate([
+            'associations' => 'required|array|min:1',
+            'associations.*.key' => 'required|string|min:2|max:50',
+            'associations.*.artwork_image_id' => 'required|integer|exists:artwork_images,id',
+        ]);
+
+        $post = Post::findOrFail($post_id);
+
+        try {
+            DB::transaction(function () use ($post, $request) {
+                foreach ($request->input('associations') as $item) {
+                    $this->createAssociation($post, $item['artwork_image_id'], $item['key']);
+                }
+            });
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json(['message' => 'Imágenes asociadas correctamente']);
+    }
+
+    /** Lógica compartida de validación + creación, usada por associate() y associateBulk() */
+    private function createAssociation(Post $post, int $artworkImageId, string $key): void
+    {
+        if (!MarkdownService::keyExistsInPost($key, $post)) {
+            throw new \InvalidArgumentException("La clave '{$key}' no existe en el markdown de este post.");
+        }
+
+        PostImage::create([
+            'post_id' => $post->id,
+            'artwork_image_id' => $artworkImageId,
+            'key' => $key,
+        ]);
     }
 }
