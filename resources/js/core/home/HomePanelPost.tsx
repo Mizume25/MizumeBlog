@@ -80,12 +80,12 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
 
                         <div className="relative self-start w-full mb-0 mt-auto">
                             <h2 className="text-white text-[1.1rem] sm:text-[1.5rem] md:text-[2.1rem] lg:text-[2.2rem] font-bold ml-[20px] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
-                                {post.title}
+                                {post.title.replaceAll('-', ' ')}
                             </h2>
 
                             <span
                                 className="hidden lg:block absolute bottom-[55px] right-0 mr-[20px] font-blood italic text-right text-white [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)]">
-                                {post.web_title}
+                                {post.web_title.replaceAll('-', ' ')}
                             </span>
                         </div>
                     </article>

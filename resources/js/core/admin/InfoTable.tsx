@@ -111,7 +111,7 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-[#F5EDD8] rounded flex items-center justify-center text-lg border border-[#EAD9B8]">📖</div>
                                         <div>
-                                            <p className="text-sm font-semibold text-[#3B2314]">{post.title}</p>
+                                            <p className="text-sm font-semibold text-[#3B2314]">{post.title.replaceAll('-', ' ')}</p>
                                             <p className="text-[11px] text-gray-400 italic">{post.tags}</p>
                                         </div>
                                     </div>

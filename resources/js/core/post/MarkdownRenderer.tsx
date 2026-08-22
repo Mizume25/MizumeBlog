@@ -3,6 +3,7 @@ import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
 import React from 'react';
 import rehypeSlug from 'rehype-slug';
+import remarkHeadingId from 'remark-heading-id';
 
 interface MarkdownRendererProps {
   content: string;
@@ -209,9 +210,10 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
   return (
     <div className={`prose-custom max-w-none ${className}`}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkHeadingId]}
         rehypePlugins={[rehypeSlug]}
         components={components}
+      
       >
         {content}
       </ReactMarkdown>

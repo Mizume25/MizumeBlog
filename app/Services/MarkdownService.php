@@ -47,6 +47,7 @@ class MarkdownService
         return $index;
     }
 
+
     /** Genera un Markdown  de ejemplo */
     public static function generate()
     {
@@ -89,6 +90,9 @@ class MarkdownService
     /**
      * Recorre el markdown, sincroniza post_images con las keys reales del texto,
      * y devuelve las keys nuevas que aún no tienen imagen asignada.
+     * @param $content
+     * @param $post
+     * @param $dryRun
      */
     public static function syncKeys(string $content, Post $post, bool $dryRun = false): array
     {
@@ -118,5 +122,25 @@ class MarkdownService
         $content = Storage::disk('local')->get($post->path(ContentType::Content));
         preg_match_all('/\{\{img:([\w-]+)\}\}/', $content, $matches);
         return in_array($key, $matches[1]);
+    }
+
+    /** Comprueba el indice tenga valores únicos
+     * @param array $index
+     */
+    public static function testIndex(array $index): bool
+    {
+        $ids = array_column($index, 'id');
+
+        return count($ids) !== count(array_unique($ids));
+    }
+
+    public static function embedIds(string $content, array $index): string
+    {
+        $i = 0;
+        return preg_replace_callback('/^(#{2}\s+.+)$/m', function ($match) use ($index, &$i) {
+            $id = $index[$i]['id'] ?? null;
+            $i++;
+            return $id ? "{$match[1]} {#{$id}}" : $match[1];
+        }, $content);
     }
 }

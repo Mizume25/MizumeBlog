@@ -18,6 +18,7 @@ use App\Services\MarkdownService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use League\CommonMark\Extension\Highlight\MarkRenderer;
 
 class AdminController extends Controller
 {
@@ -114,13 +115,17 @@ class AdminController extends Controller
             $file = $request->file('content');
             $content = file_get_contents($file->getRealPath());
 
-            if (!MarkdownService::hasHeading($content)) {
-                return back()->with('error', 'El archivo MD no es válido');
-            }
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es válido');
+            
 
 
 
             $titles = MarkdownService::extract($content);
+
+            if(MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores repetidos en el indice repetidos');
+
+
+            $content = MarkdownService::embedIds($content, $titles);
             $index = json_encode($titles);
 
            
@@ -242,7 +247,9 @@ class AdminController extends Controller
         }
 
         $titles = MarkdownService::extract($content);
-
+        if(MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores duplicados en el indice');
+        
+        $content = MarkdownService::embedIds($content, $titles);
         /** Construiremos un indice partiendo de los titulo de la obra */
         $index  = json_encode($titles);
 
