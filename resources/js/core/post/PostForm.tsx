@@ -35,10 +35,13 @@ import {
     Calendar,
     CheckCircle2,
     ChevronDown,
+    ChevronLeft,
+    ChevronRight,
     Computer,
     File,
     Folder,
     Image,
+    ImagesIcon,
     LoaderCircle,
     Paperclip,
     Pencil,
@@ -123,6 +126,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const [modalartwork, setModalArtwork] = useState(false);
         const [modalreplace, setModalReplace] = useState<boolean>(false);
         const [modalAdd, setModalAdd] = useState(false);
+        const [modalMutliSelect, setmodalMultiSelect] = useState(false);
 
         /**
          * Variable para mostrar artworks selecionados
@@ -173,6 +177,11 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
         /** Clave escrita para la nueva asociación */
         const [addKey, setAddKey] = useState('');
+
+        const [pendingKeys, setPendingKeys] = useState<string[]>([]);
+        const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+        const [assignments, setAssignments] = useState<Record<string, Artwork_Image>>({});
+        const [loadingPendingKeys, setLoadingPendingKeys] = useState(false);
 
         /**
          * @global HOOKS UTILIZADOS
@@ -392,6 +401,82 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                 router.delete(route('post.destroy', post_id)),
             );
         };
+
+        /** Abre el modal multi-select y precarga imágenes disponibles (reusa avaliables) */
+        const handleOpenMultiSelect = async () => {
+            const valids = await artworkApi.getAvailable(post_id, artwork?.id);
+            setavAvaliables(valids);
+            setImagePage(0);
+            setmodalMultiSelect(true);
+        };
+
+        /** Trae las keys del MD que aún no tienen imagen asociada */
+        const handleExtractPendingKeys = async () => {
+            console.log('click extract', post_id);
+            if (post_id == null) return;
+            setLoadingPendingKeys(true);
+            try {
+                const keys = await artworkApi.getPendingKeys(post_id);
+                setPendingKeys(keys);
+            } catch (err) {
+                showToast('error', (err as Error).message);
+            } finally {
+                setLoadingPendingKeys(false);
+            }
+        };
+
+        /** Toggle de selección de una key pendiente */
+        const toggleKeySelection = (key: string) => {
+            setSelectedKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+        };
+
+        /** Asigna todas las keys seleccionadas a la imagen clickeada */
+        const assignSelectedKeysToImage = (img: Artwork_Image) => {
+            if (selectedKeys.length === 0) return;
+            setAssignments((prev) => {
+                const next = { ...prev };
+                selectedKeys.forEach((key) => (next[key] = img));
+                return next;
+            });
+            setSelectedKeys([]);
+        };
+
+        /** Envía todas las asociaciones acumuladas en batch */
+        /** Envía todas las asociaciones acumuladas en batch */
+        const onAddImages = async (post_id: number | undefined) => {
+            if (post_id == null || Object.keys(assignments).length === 0) return;
+
+            const payload = Object.entries(assignments)
+                .filter((entry): entry is [string, Artwork_Image & { id: number }] => entry[1].id != null)
+                .map(([key, img]) => ({
+                    key,
+                    artwork_image_id: img.id,
+                }));
+
+            if (payload.length === 0) {
+                showToast('error', 'No hay imágenes válidas para asociar');
+                return;
+            }
+
+            artworkApi
+                .associateMultipleImages(post_id, payload)
+                .then((data) => showToast('success', data.message))
+                .catch((err) => showToast('error', err.message));
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        };
+
+        /** Paginación del carrusel de imágenes disponibles */
+        const [imagePage, setImagePage] = useState(0);
+        const IMAGES_PER_PAGE = 4;
+
+        const totalPages = Math.ceil(avaliables.length / IMAGES_PER_PAGE);
+        const paginatedImages = avaliables.slice(imagePage * IMAGES_PER_PAGE, imagePage * IMAGES_PER_PAGE + IMAGES_PER_PAGE);
+
+        const goToPrevPage = () => setImagePage((p) => Math.max(0, p - 1));
+        const goToNextPage = () => setImagePage((p) => Math.min(totalPages - 1, p + 1));
 
         return (
             <>
@@ -821,6 +906,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <Image size={20} className="text-white" />
                             Agregar
                         </Button>
+
+                        <Button
+                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-400 px-4 py-2 text-lg text-white transition-colors hover:bg-green-500"
+                            {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
+                            onClick={handleOpenMultiSelect}
+                        >
+                            <ImagesIcon size={20} className="text-white" />
+                            Agregar Multiples
+                        </Button>
                         {/* CONTENEDOR DE IMAGENES */}
                         <div className="mt-5 min-h-0 flex-1 overflow-y-auto rounded-lg border-2 border-white/20 bg-black/10 p-3">
                             <div className="flex flex-col items-center justify-center gap-4">
@@ -1003,6 +1097,131 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                         className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         Agregar
+                    </Button>
+                </ModalOperation>
+
+                <ModalOperation
+                    isOpen={modalMutliSelect}
+                    onClose={() => {
+                        setmodalMultiSelect(false);
+                        setPendingKeys([]);
+                        setSelectedKeys([]);
+                        setAssignments({});
+                        setImagePage(0);
+                    }}
+                    title="Agregar Imágenes"
+                >
+                    <p className="mt-1 mb-4 text-sm text-gray-600">
+                        Selecciona una o varias claves pendientes y haz click en la imagen que quieres asociarles.
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="flex flex-col">
+                            <Button
+                                type="button"
+                                onClick={handleExtractPendingKeys}
+                                disabled={loadingPendingKeys}
+                                className="mb-3 h-10 w-full cursor-pointer rounded-xl bg-amber-400 text-sm font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                {loadingPendingKeys ? 'Buscando...' : 'Extraer keys disponibles'}
+                            </Button>
+
+                            <div className="scrollbar-gutter-stable max-h-[50vh] space-y-2 overflow-y-auto p-1">
+                                {pendingKeys.length === 0 ? (
+                                    <p className="text-center text-sm text-gray-500">Sin keys pendientes. Usa el botón de arriba.</p>
+                                ) : (
+                                    pendingKeys.map((key) => (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            onClick={() => toggleKeySelection(key)}
+                                            disabled={!!assignments[key]}
+                                            className={`w-full cursor-pointer rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+                                                selectedKeys.includes(key)
+                                                    ? 'border-green-500 bg-green-50 font-semibold text-green-700'
+                                                    : assignments[key]
+                                                      ? 'border-gray-200 bg-gray-100 text-gray-400 line-through'
+                                                      : 'border-gray-300 text-gray-900 hover:border-amber-400'
+                                            }`}
+                                        >
+                                            {key}
+                                            {assignments[key] && ' ✓'}
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {paginatedImages.length === 0 ? (
+                                    <p className="col-span-full text-center text-sm text-gray-500">
+                                        No hay imágenes disponibles en esta obra. Ve a Artwork y sube algunas primero.
+                                    </p>
+                                ) : (
+                                    paginatedImages.map((img) => {
+                                        const assignedKeys = Object.entries(assignments)
+                                            .filter(([, v]) => v.id === img.id)
+                                            .map(([k]) => k);
+
+                                        return (
+                                            <button
+                                                key={img.id}
+                                                type="button"
+                                                onClick={() => assignSelectedKeysToImage(img)}
+                                                disabled={selectedKeys.length === 0}
+                                                className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-black/10 transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <img
+                                                    src={`/storage/IMG/${artwork?.code}/${img.name}`}
+                                                    alt={img.alt ?? ''}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                                                    <p className="truncate text-[10px] font-medium text-white">{img.name}</p>
+                                                    {assignedKeys.length > 0 && (
+                                                        <p className="truncate text-[9px] text-green-300">{assignedKeys.join(', ')}</p>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        );
+                                    })
+                                )}
+                            </div>
+
+                            {totalPages > 1 && (
+                                <div className="mt-3 flex items-center justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={goToPrevPage}
+                                        disabled={imagePage === 0}
+                                        className="rounded-full bg-gray-200 p-2 transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
+                                    >
+                                        <ChevronLeft size={18} />
+                                    </button>
+                                    <span className="text-sm text-gray-600">
+                                        {imagePage + 1} / {totalPages}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={goToNextPage}
+                                        disabled={imagePage === totalPages - 1}
+                                        className="rounded-full bg-gray-200 p-2 transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <Button
+                        type="button"
+                        disabled={Object.keys(assignments).length === 0}
+                        onClick={() => onAddImages(post_id)}
+                        className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-green-400 font-bold text-white transition-transform duration-150 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                        Guardar {Object.keys(assignments).length > 0 && `(${Object.keys(assignments).length})`}
                     </Button>
                 </ModalOperation>
             </>

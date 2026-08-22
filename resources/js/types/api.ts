@@ -16,7 +16,13 @@ async function apiFetch(url: string, options: RequestInit = {}) {
         },
     });
 
-    const data = await response.json();
+    let data;
+    try {
+        data = await response.json();
+    } catch {
+        // La respuesta no es JSON (probablemente página de error HTML de Laravel)
+        throw new Error(`Error ${response.status}: respuesta no válida del servidor`);
+    }
 
     if (!response.ok) {
         throw new Error(data.message ?? 'Error en la petición');
@@ -64,6 +70,22 @@ export const artworkApi = {
         return apiFetch(`/api/post/${postId}/symlink`, {
             method: 'PUT',
             body: JSON.stringify({ works: workIds.map((id) => ({ id })) }),
+        });
+    },
+    getPendingKeys: (postId: number | undefined) => {
+        if (postId == null) {
+            return Promise.reject(new Error('Falta el id del post'));
+        }
+        return apiFetch(`/api/post/${postId}/pendingKeys`);
+    },
+    associateMultipleImages: (postId: number | undefined, payload: { key: string; artwork_image_id: number }[]) => {
+        if (postId == null || payload.length === 0) {
+            return Promise.reject(new Error('Faltan datos para asociar las imágenes'));
+        }
+
+        return apiFetch(`/api/post/${postId}/associate/bulk`, {
+            method: 'POST',
+            body: JSON.stringify({ associations: payload }),
         });
     },
 };
