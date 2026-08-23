@@ -15,10 +15,16 @@ const getMounth = (data: string | undefined): string => {
     return name;
 }
 
+interface HomePanelPostProps {
+    post: Post,
+    left: boolean,
+    selectPost: number | null,
+    position: string | null,
+    edit: boolean
+}
 
 
-
-function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
+function HomePanelPost({ post , left , selectPost, edit, position} : HomePanelPostProps) {
 
     
 
@@ -32,7 +38,7 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
 
 
     /**Formato Imagenes */
-    const [format, setFormat] = useState<Formato | null>(formatDefault);
+    const [format, setFormat] = useState<string | null>(formatDefault.home_config ?? null);
 
 
 
@@ -41,19 +47,25 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
     /**
      * Formato de Imagen
      */
-    useEffect(() => setFormat(post.config ?? null) , [post.id]);
+    useEffect(() => setFormat(post.config?.home_config ?? null) , [post.id]);
 
+    useEffect(() => {
+        
+        if(position == null) return;
+        
+        setFormat(position)
 
-
+    }, [edit])
+    
 
     return (
 
         <>
             {left ? (
-                <a href={route('post.show', post.id)} className=" capitalize no-underline block cursor-pointer group" data-id={post.id}>
+                <a href={route('post.show', post.id)} className={`capitalize no-underline block cursor-pointer group ${selectPost === post.id ? 'border-3 border-amber-400' : ''}`}  data-id={post.id}>
                     <article style={{
                         '--bg-image': `url('${ruta}')`,
-                        '--bg-format': `${format?.home_config}`
+                        backgroundPosition: 'left top',
                     } as React.CSSProperties}
                         className={styles.featuredPost}>
 
@@ -91,10 +103,10 @@ function HomePanelPost({ post, left }: { post: Post, left: boolean }) {
                     </article>
                 </a>
             ) : (
-                <a href={route('post.show', post.id)} className="capitalize no-underline block cursor-pointer group" data-id={post.id}>
+                <a href={route('post.show', post.id)} className={`capitalize no-underline block cursor-pointer group ${selectPost === post.id ? 'border-3 border-amber-400' : ''}`} data-id={post.id}>
                     <article style={{
                         '--bg-image': `url('${ruta}')`,
-                        '--bg-format': `${format?.home_config}`
+                        '--bg-format': `${format}`
                     } as React.CSSProperties}
                         className={styles.featuredPost}>
 

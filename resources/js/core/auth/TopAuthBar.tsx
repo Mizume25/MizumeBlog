@@ -1,15 +1,18 @@
 import { SharedData, WEB_ROUTE } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Image, LayoutDashboard, Menu, Pencil } from 'lucide-react';
+import { LayoutDashboard, Menu, Pencil } from 'lucide-react';
+import Switch from 'react-switch';
 import AuthButton from './AuthButton';
 import LogoutButton from './LogoutButton';
 
 interface TopAuthBarProps {
     post_id?: number;
     onToggle: () => void;
+    edit?: boolean;
+    onEdit?: () => void;
 }
 
-export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
+export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps) {
     const { auth } = usePage<SharedData>().props;
 
     return (
@@ -44,18 +47,22 @@ export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
                         </>
                     ) : (
                         <>
+                            {auth.user.role === 'admin' && edit != undefined && onEdit ? (
+                                <Switch
+                                    checked={edit ?? false}
+                                    onChange={onEdit}
+                                    onColor="#a79101"
+                                    offColor="#454545"
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
+                                />
+                            ) : (
+                                <></>
+                            )}
                             {(auth.user.role === 'admin' || auth.user.role === 'editor') && (
                                 <>
                                     <AuthButton url={route('post.panel')} label="Panel">
                                         <LayoutDashboard
-                                            size={15}
-                                            className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
-                                            strokeWidth={1.5}
-                                        />
-                                    </AuthButton>
-
-                                    <AuthButton url={route('post.format')} label="Format">
-                                        <Image
                                             size={15}
                                             className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
                                             strokeWidth={1.5}

@@ -10,7 +10,7 @@ function LibraryCard({ post , section} : LibraryCardProps) {
     return (
         <a
             href={route('post.show', post.id)}
-            className={`group relative  focus:outline-none ${ section.label === post.category || section.label === 'todos' ? 'block' : 'hidden' }`}
+            className={`group relative  focus:outline-none ${ section?.label === post.category || section?.label === 'todos' ? 'block' : 'hidden' }`}
             
         >
             <div className="

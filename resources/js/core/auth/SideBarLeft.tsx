@@ -37,16 +37,6 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                             </MenuItems>
                             <MenuItems>
                                 <button
-                                    onClick={() => router.get(route('posts.image-config'))}
-                                    title="Cerrar sesión"
-                                    className="bg-primary-foreground text-primary  btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
-                                >
-                                    <Image className='me-1' /> Format
-                                </button>
-                            </MenuItems>
-
-                            <MenuItems>
-                                <button
                                     onClick={() => router.get(route('artwork.index'))}
                                     title="Cerrar sesión"
                                     className="bg-primary-foreground text-primary  btn-hover-scale flex w-40 items-center justify-start px-4 py-2"

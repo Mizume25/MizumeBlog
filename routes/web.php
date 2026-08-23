@@ -70,11 +70,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
     // routes/web.php
-    Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
+   // Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
 
-    Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
+   // Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
 
-    Route::get('/admin/posts/formats', [PostImageConfigController::class , 'temp'])->name('post.format');
+   // Route::get('/admin/posts/formats', [PostImageConfigController::class , 'temp'])->name('post.format');
 
     
     /** Rutas Artworks */

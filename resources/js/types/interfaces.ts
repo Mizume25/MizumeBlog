@@ -43,7 +43,7 @@ export interface NavItem {
 export interface FlashMessage {
     success?: string | null;
     error?: string | null;
-    warning?: string | null
+    warning?: string | null;
 }
 
 /**
@@ -122,8 +122,7 @@ export type Post = Field & {
     cover?: string;
     cover_card?: string;
     config?: Config;
-    images?:PostImageWithImage []
-    
+    images?: PostImageWithImage[];
 };
 
 /**
@@ -142,7 +141,7 @@ export type ArtworkInput = {
 };
 
 export type ArtworkPictures = {
-    id: number
+    id: number;
     name: string;
     alt: string | null;
 };
@@ -265,7 +264,7 @@ export type Content = {
     body: string;
     comments: CommentRecord[];
     features: Post[];
-    raw: string,
+    raw: string;
 };
 
 /**
@@ -276,3 +275,43 @@ export type Data = {
     posts: Post[];
     coments: Comment[];
 };
+
+/** Opcionalidades de backgrounds  */
+export type BackgroundPositionKeyword =
+    | 'left top'
+    | 'top left'
+    | 'left center'
+    | 'center left'
+    | 'left bottom'
+    | 'bottom left'
+    | 'center top'
+    | 'top center'
+    | 'center center'
+    | 'center bottom'
+    | 'bottom center'
+    | 'right top'
+    | 'top right'
+    | 'right center'
+    | 'center right'
+    | 'right bottom'
+    | 'bottom right';
+
+export const BackgroundOptions = [
+    'left top',
+    'top left',
+    'left center',
+    'center left',
+    'left bottom',
+    'bottom left',
+    'center top',
+    'top center',
+    'center center',
+    'center bottom',
+    'bottom center',
+    'right top',
+    'top right',
+    'right center',
+    'center right',
+    'right bottom',
+    'bottom right',
+];

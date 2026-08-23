@@ -21,7 +21,7 @@ export interface NavContentProps {
 
 export interface LibraryCardProps {
     post: Post,
-    section: Section_Content
+    section?: Section_Content
 }
 
 
