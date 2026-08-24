@@ -143,8 +143,8 @@ class ApiController extends Controller
 
         $pendingkeys = MarkdownService::syncKeys($content, $post, true);
 
-        if(count($pendingkeys) == 0) return response()->json(['message' => 'No hay keys pendientes'], 422);
- 
+        if (count($pendingkeys) == 0) return response()->json(['message' => 'No hay keys pendientes'], 422);
+
         return response()->json($pendingkeys);
     }
 
@@ -169,6 +169,27 @@ class ApiController extends Controller
         }
 
         return response()->json(['message' => 'Imágenes asociadas correctamente']);
+    }
+
+    /** Actualizar propiedades de imagen */
+    public function update_home_config(Request $request, int $post_id)
+    {
+        $request->validate([
+            'home_config' => 'required|string|max:255',
+        ]);
+
+        $post = Post::findOrFail($post_id);
+
+        $config = $post->config ?? [];
+        $config['home_config'] = $request->home_config;
+
+        $post->update(['config' => $config]);
+
+        $post->fresh();
+
+        return response()->json([
+            'message' => 'Se ha actualizado el home config correctamente',
+        ]);
     }
 
     /** Lógica compartida de validación + creación, usada por associate() y associateBulk() */

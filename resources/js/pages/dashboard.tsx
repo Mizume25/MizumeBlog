@@ -1,11 +1,14 @@
 import { BackgroundOptions, BackgroundPositionKeyword, type Post } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { HomeContent } from '../core/home';
-
 /** @imports Layouts Reciclables */
+import ApiToast from '@/components/api-toast';
 import SideBarRight from '@/core/auth/SideBarRight';
+import { useToast } from '@/hooks/use-toast';
 import BlogLayout from '@/layouts/app/blog-layout';
+import { configApi } from '@/types/api';
+import PanelEdit from '@/layouts/app/panel-edit';
 
 export default function Dashboard({ posts }: { posts: Post[] }) {
     /***
@@ -21,6 +24,8 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
     const [edit, setEdit] = useState(false);
 
+    const [confirm, setConfirm] = useState(false);
+
     const handlerEdit = () => {
         const newEdit = !edit;
 
@@ -28,6 +33,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
         if (newEdit) {
             setSelectPost(mainPosts[0].id);
+            console.log(mainPosts[0]);
         } else {
             setSelectPost(null);
         }
@@ -37,11 +43,30 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
     const [selectPost, setSelectPost] = useState<number | null>(null);
 
+    useEffect(() => {
+        if (position == null) return;
+
+        const current = posts.find((p) => p.id === selectPost);
+        setConfirm(current?.config?.home_config !== position);
+    }, [position]);
+
+    /** Api para confirmar cambios */
+    const ApiHomeUpdate = async () => {
+        if (position == null) return;
+
+        await configApi
+            .updateHome(Number(selectPost), position)
+            .then((data) => showToast('success', data.message))
+            .catch((err) => showToast('error', err.message));
+    };
+
+    const { showToast, toast } = useToast();
+
     return (
         <BlogLayout edit={edit} onEdit={handlerEdit}>
             {/* Head de el Home*/}
             <Head title="Home"></Head>
-
+            <ApiToast toast={toast} />
             <main className="container mx-auto grid max-w-[1500px] grid-cols-1 items-start gap-8 p-4 md:p-8 lg:grid-cols-[2fr_1fr]">
                 <HomeContent mainPosts={mainPosts} className="order-2 lg:order-1" selectPost={selectPost} position={position} edit={edit} />
 
@@ -49,14 +74,12 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             </main>
 
             {edit && (
-                <div className="animate-fade-in fixed right-8 bottom-8 z-[9999]">
-                    <div className="w-80 max-w-md scale-100 transform rounded-xl bg-white p-6 shadow-2xl transition-all dark:bg-gray-800">
-                        <h3 className="mb-2 text-lg font-bold text-gray-900 dark:text-white">Panel de Edición</h3>
+              <PanelEdit>
                         <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">Configura las opciones del layout aquí.</p>
 
-                        <select 
-                        className="text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
-                        onChange={(e) => setSelectPost(Number(e.target.value))}
+                        <select
+                            className="text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
+                            onChange={(e) => setSelectPost(Number(e.target.value))}
                         >
                             {mainPosts.map((p, i) => (
                                 <option key={p.id} value={p.id} className="bg-white text-black">
@@ -65,9 +88,9 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                             ))}
                         </select>
 
-                        <select 
-                        className="text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
-                        onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
+                        <select
+                            className={`text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                            onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
                         >
                             {BackgroundOptions.map((p, i) => (
                                 <option key={i} value={p} className="bg-white text-black">
@@ -77,13 +100,21 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                         </select>
 
                         <button
+                            onClick={ApiHomeUpdate}
+                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-black/60"
+                            disabled={!confirm}
+                        >
+                            Confirmar Cambio
+                        </button>
+
+                        <button
                             onClick={() => setEdit(false)}
-                            className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                            className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
                         >
                             Cerrar Panel
                         </button>
-                    </div>
-                </div>
+                </PanelEdit> 
+                
             )}
         </BlogLayout>
     );

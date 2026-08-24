@@ -89,3 +89,15 @@ export const artworkApi = {
         });
     },
 };
+
+export const configApi = {
+    updateHome: (postId: number | undefined, home_config : string) => {
+        if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
+        
+
+        return apiFetch(`/api/post/${postId}/home_config`, {
+            method: 'PUT',
+            body: JSON.stringify({home_config: home_config})
+        });
+    },
+};

@@ -277,41 +277,6 @@ export type Data = {
 };
 
 /** Opcionalidades de backgrounds  */
-export type BackgroundPositionKeyword =
-    | 'left top'
-    | 'top left'
-    | 'left center'
-    | 'center left'
-    | 'left bottom'
-    | 'bottom left'
-    | 'center top'
-    | 'top center'
-    | 'center center'
-    | 'center bottom'
-    | 'bottom center'
-    | 'right top'
-    | 'top right'
-    | 'right center'
-    | 'center right'
-    | 'right bottom'
-    | 'bottom right';
+export type BackgroundPositionKeyword = 'top' | 'center' | 'bottom';
 
-export const BackgroundOptions = [
-    'left top',
-    'top left',
-    'left center',
-    'center left',
-    'left bottom',
-    'bottom left',
-    'center top',
-    'top center',
-    'center center',
-    'center bottom',
-    'bottom center',
-    'right top',
-    'top right',
-    'right center',
-    'center right',
-    'right bottom',
-    'bottom right',
-];
+export const BackgroundOptions = ['top', 'center', 'bottom'];
