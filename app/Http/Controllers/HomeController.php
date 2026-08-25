@@ -50,6 +50,7 @@ class HomeController extends Controller
     public function show(int $id)
     {
         $features = Post::featured()->latest()->limit(3)->get();
+
         $post = Post::with('comments')->findOrFail($id);
 
         if($post->publish_date == null && Auth::user()->role == 'user') return redirect()->route('home')->with('error', 'Este Post no esta disponible');
@@ -65,10 +66,14 @@ class HomeController extends Controller
         $json = Storage::disk('local')->get($post->path(ContentType::Index));
 
         $body = MarkdownService::resolveImages($md , $post);
+        
+
         $raw = Storage::disk('local')->get($post->path(ContentType::Content));
 
 
         $index = json_decode($json, true);
+
+        
 
         $artworks = $post->artworks;
 

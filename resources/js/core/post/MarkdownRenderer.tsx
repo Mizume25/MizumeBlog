@@ -23,7 +23,7 @@ const components: Components = {
   h2: ({ children, ...props }) => (
     <h2
       {...props}
-      className="text-sm sm:text-base md:text-lg font-bold text-[#C8AD7F] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]"
+      className="text-sm sm:text-base md:text-lg font-bold text-[#ffffff] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]"
     >
       {children}
     </h2>

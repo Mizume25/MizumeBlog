@@ -101,10 +101,10 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
         $this->authorize('update', $post);
-        
+
         $data = $request->validated();
 
-        
+
         unset($data['cover'], $data['cover_card'], $data['content'], $data['works']);
 
         $data['tags'] = implode(',', $data['tags']);
@@ -116,19 +116,20 @@ class AdminController extends Controller
             $content = file_get_contents($file->getRealPath());
 
             if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es válido');
-            
+
 
 
 
             $titles = MarkdownService::extract($content);
 
-            if(MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores repetidos en el indice repetidos');
+            if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores repetidos en el indice repetidos');
 
 
-            $content = MarkdownService::embedIds($content, $titles);
+            
             $index = json_encode($titles);
+            $content = MarkdownService::cleanAllMD($content);
 
-           
+
 
             Storage::disk('local')->put($post->path(ContentType::Content), $content);
             Storage::disk('local')->put($post->path(ContentType::Index), $index);
@@ -247,9 +248,11 @@ class AdminController extends Controller
         }
 
         $titles = MarkdownService::extract($content);
-        if(MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores duplicados en el indice');
+        if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores duplicados en el indice');
+
         
-        $content = MarkdownService::embedIds($content, $titles);
+        $content = MarkdownService::cleanAllMD($content);
+
         /** Construiremos un indice partiendo de los titulo de la obra */
         $index  = json_encode($titles);
 
@@ -268,12 +271,15 @@ class AdminController extends Controller
         $pendingKeys = MarkdownService::syncKeys($content, $post);
 
         if (!empty($pendingKeys)) {
-            return back()->with('pendingKeys', $pendingKeys)
+
+            return redirect()->route('post.edit', $post->id)
+                ->with('pendingKeys', $pendingKeys)
                 ->with('warning', 'El post se creó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
         }
 
         return redirect()->route('post.edit', $post->id)->with('success', 'Post Creado con exito');
     }
+
 
     public function backup()
     {
@@ -284,7 +290,7 @@ class AdminController extends Controller
             'artworks' => Artwork::all()->toArray(),
             'artwork_images' => ArtworkImage::all()->toArray(),
             'post_images' => PostImage::all()->toArray(),
-            'artwork_post' => DB::table('artwork_post')->select(["post_id" , "artwork_id"])->get(),
+            'artwork_post' => DB::table('artwork_post')->select(["post_id", "artwork_id"])->get(),
         ];
 
 
