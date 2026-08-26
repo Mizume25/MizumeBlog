@@ -171,7 +171,7 @@ class ApiController extends Controller
         return response()->json(['message' => 'Imágenes asociadas correctamente']);
     }
 
-    /** Actualizar propiedades de imagen */
+    /*
     public function update_home_config(Request $request, int $post_id)
     {
         $request->validate([
@@ -190,7 +190,8 @@ class ApiController extends Controller
         return response()->json([
             'message' => 'Se ha actualizado el home config correctamente',
         ]);
-    }
+    } 
+        */
 
     /** Lógica compartida de validación + creación, usada por associate() y associateBulk() */
     private function createAssociation(Post $post, int $artworkImageId, string $key): void

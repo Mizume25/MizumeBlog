@@ -51,7 +51,7 @@ function LibraryCard({ post , section} : LibraryCardProps) {
                                 src={`/IMG/Cards/${post.cover_card}`}
                                 alt={`Portada de ${post.title}`}
                                 className="w-full h-full object-cover object-center "
-                                style={{ objectPosition: `${post.config?.card_config}` }}
+                                //style={{ objectPosition: `${post.config?.card_config}` }}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-2xl opacity-30">

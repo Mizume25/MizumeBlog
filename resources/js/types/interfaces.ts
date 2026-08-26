@@ -215,24 +215,31 @@ export type UserRecord = User & {
  *
  * Gestor de contenidos web
  */
+export type ArticleConfig = {
+    height: string;
+    position: string;
+};
 
 /**
  * Formato de imagenes
  * @type Formato de Imagenes
  */
 export type Config = {
-    home_config?: string;
-    article_config?: string;
-    card_config?: string;
+    home?: string;
+    article?: ArticleConfig;
+    card?: string;
     accent?: string;
 };
 /**
  * Formato Default de imagenes
  */
 export const formatDefault: Config = {
-    home_config: 'center',
-    article_config: 'bg-[center_18%]',
-    card_config: '10%',
+    home: 'center',
+    article: {
+        position: 'center',
+        height: '35vh',
+    },
+    card: '10%',
     accent: '#fcfcfd',
 };
 

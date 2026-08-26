@@ -1,5 +1,5 @@
 /** Interfaces web utilizadas */
-import { Artwork, Formato, IndexContent, formatDefault, type Content } from '@/types';
+import { ArticleConfig, Artwork, BackgroundOptions, BackgroundPositionKeyword, IndexContent, formatDefault, type Content } from '@/types';
 
 /** Eestados e iconos react */
 import { Head } from '@inertiajs/react';
@@ -18,6 +18,8 @@ import { Folder, FolderOpen } from 'lucide-react';
 /** @import Componenetes Modal */
 import ModalOperation from '@/components/modal-operation';
 import { DialogTitle } from '@headlessui/react';
+import PanelEdit from '@/layouts/app/panel-edit';
+import { Config } from '@/types';
 
 /**
  *
@@ -26,15 +28,16 @@ import { DialogTitle } from '@headlessui/react';
  * @param formato Formato de imagen
  * @returns
  */
-function PostHeader({ route, title, format }: { route: string | undefined; title: string; format?: string }) {
+function PostHeader({ route, title, format }: { route: string | undefined; title: string; format?: ArticleConfig }) {
     return (
         <>
             {/* Imagen de la obra */}
             <header
-                className={`h-[35vh] w-full bg-cover bg-no-repeat`}
+                className={`w-full bg-cover bg-no-repeat`}
                 style={{
+                    height:'50vh',
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`,
-                    backgroundPosition: 'bottom',
+                    backgroundPosition: `top`,
                 }}
             ></header>
 
@@ -78,7 +81,7 @@ function show({ content, artworks }: ShowProps) {
     const cover = `/IMG/Portada/${content.post.cover}`;
 
     /** Formato de la portada */
-    const [format, setFormat] = useState<Formato | null>(formatDefault);
+    const [format, setFormat] = useState<Config | null>(formatDefault);
 
     /** Formato de la portada renderizada a estado  */
     useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
@@ -108,17 +111,22 @@ function show({ content, artworks }: ShowProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
+    const [edit , setEdit] = useState(false);
     const handlerClick = () => {
         setIsOpen(true);
     };
 
+    const handlerEdit = () => setEdit((prev) => !prev);
+
+    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
+
     return (
-        <BlogLayout post_id={content.post.id}>
+        <BlogLayout post_id={content.post.id} edit={edit} onEdit={handlerEdit}>
             {/* Pestaña de la Página */}
             <Head title={content.post.title}></Head>
 
             {/* Componente imagen header */}
-            <PostHeader route={cover} title={content.post.title} format={format?.article_config} />
+            <PostHeader route={cover} title={content.post.title} format={format?.article} />
 
             {/** Componente para indice button */}
             <PostBTN onOpen={onOpen} />
@@ -141,6 +149,41 @@ function show({ content, artworks }: ShowProps) {
                     <Coments coments={content.comments} post_id={content.post.id} />
                 </div>
             </main>
+
+
+            {edit && (
+              <PanelEdit>
+                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">Configura las opciones del layout aquí.</p>
+
+                       
+                        <select
+                            className={`text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                            onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
+                        >
+                            {BackgroundOptions.map((p, i) => (
+                                <option key={i} value={p} className="bg-white text-black">
+                                    {p}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            
+                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-black/60"
+                            disabled={!confirm}
+                        >
+                            Confirmar Cambio
+                        </button>
+
+                        <button
+                            onClick={() => setEdit(false)}
+                            className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
+                        >
+                            Cerrar Panel
+                        </button>
+                </PanelEdit> 
+                
+            )}
 
             <ModalOperation isOpen={isOpen} onClose={() => setIsOpen(false)} title="Artworks">
                 {/* Header */}

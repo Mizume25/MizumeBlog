@@ -30,7 +30,7 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
     const badges: string[] = post?.tags.split(',').map((p) => p.trim());
 
     /**Formato Imagenes */
-    const [format, setFormat] = useState<string | null>(formatDefault.home_config ?? null);
+    const [format, setFormat] = useState<string | null>(formatDefault.home ?? null);
 
     let date: string = getMounth(post?.publish_date);
 
@@ -38,7 +38,7 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
      * Formato de Imagen
      */
     useEffect(() => {
-        setFormat(post.config?.home_config ?? null);
+        setFormat(post.config?.home ?? null);
     }, [post.id]);
 
     useEffect(() => {
@@ -110,7 +110,7 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
                         style={
                             {
                                 '--bg-image': `url('${ruta}')`,
-                                '--bg-format-y': `${format}`,
+                                '--bg-format-y': `center`,
                             } as React.CSSProperties
                         }
                         className={styles.featuredPost}
