@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\Config;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostImage;
@@ -9,8 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\MarkdownService;
 use App\Enums\ContentType;
+use App\Enums\PositionType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use ValueError;
 
 class ApiController extends Controller
 {
@@ -171,28 +174,56 @@ class ApiController extends Controller
         return response()->json(['message' => 'Imágenes asociadas correctamente']);
     }
 
-    /*
-    public function update_home_config(Request $request, int $post_id)
+
+    /** 
+     * Funcion para modificar el home position  
+     */
+    public function updateHomeConfig(Request $request, int $post_id)
     {
         $request->validate([
-            'home_config' => 'required|string|max:255',
+            'home' => ['required', 'string', 'in:top,center,bottom'],
         ]);
 
         $post = Post::findOrFail($post_id);
 
-        $config = $post->config ?? [];
-        $config['home_config'] = $request->home_config;
+        try {
+            $position = PositionType::from($request->home);
+        } catch (ValueError) {
+            return response()->json(['message' => 'La posición no es valida'], 402);
+        }
 
-        $post->update(['config' => $config]);
+        $config = $post->config ?? new Config();
 
-        $post->fresh();
+        $config->setHome($position);
 
-        return response()->json([
-            'message' => 'Se ha actualizado el home config correctamente',
+        $post->config = $config;
+
+        $post->save();
+
+        return response()->json(['message' => 'La posicion home se ha modificado perfectamente']);
+    }
+    /**
+     * Funcion para modificar el color
+     */
+    public function updateAccentConfig(Request $request, int $post_id)
+    {
+        $request->validate([
+            'accent' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
-    } 
-        */
 
+        $post = Post::findOrFail($post_id);
+
+        $config = $post->config ?? new Config();
+
+        $config->setAccent($request->accent);
+
+        $post->config = $config;
+
+        $post->save();
+
+        return response()->json(['message' => 'El color ha sido modificado perfectamente']);
+    }
+   
     /** Lógica compartida de validación + creación, usada por associate() y associateBulk() */
     private function createAssociation(Post $post, int $artworkImageId, string $key): void
     {

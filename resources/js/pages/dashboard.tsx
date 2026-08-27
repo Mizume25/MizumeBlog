@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import BlogLayout from '@/layouts/app/blog-layout';
 import { configApi } from '@/types/api';
 import PanelEdit from '@/layouts/app/panel-edit';
+import ColorPicker from '@/components/color-picker';
 
 export default function Dashboard({ posts }: { posts: Post[] }) {
     /***
@@ -24,7 +25,8 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
     const [edit, setEdit] = useState(false);
 
-    const [confirm, setConfirm] = useState(false);
+    const [confirmPosition, setConfirmPosition] = useState(false);
+
 
     const handlerEdit = () => {
         const newEdit = !edit;
@@ -43,12 +45,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
     const [selectPost, setSelectPost] = useState<number | null>(null);
 
-    useEffect(() => {
-        if (position == null) return;
-
-        const current = posts.find((p) => p.id === selectPost);
-        setConfirm(current?.config?.home_config !== position);
-    }, [position]);
+    const { showToast, toast } = useToast();
 
     /** Api para confirmar cambios */
     const ApiHomeUpdate = async () => {
@@ -60,7 +57,8 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             .catch((err) => showToast('error', err.message));
     };
 
-    const { showToast, toast } = useToast();
+   
+   
 
     return (
         <BlogLayout edit={edit} onEdit={handlerEdit}>
@@ -75,10 +73,10 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
             {edit && (
               <PanelEdit>
-                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">Configura las opciones del layout aquí.</p>
+                        <p className="mb-4 text-sm text-white dark:text-gray-100">Configura las opciones del layout aquí.</p>
 
                         <select
-                            className="text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
+                            className="text-black mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
                             onChange={(e) => setSelectPost(Number(e.target.value))}
                         >
                             {mainPosts.map((p, i) => (
@@ -88,8 +86,9 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                             ))}
                         </select>
 
+                        <h3 className="mb-2 text-lg font-bold  text-white">Posicion</h3>
                         <select
-                            className={`text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                            className={`text-black mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
                             onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
                         >
                             {BackgroundOptions.map((p, i) => (
@@ -98,21 +97,14 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                                 </option>
                             ))}
                         </select>
-
-                        <button
+                         <button
                             onClick={ApiHomeUpdate}
-                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-black/60"
-                            disabled={!confirm}
+                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
+                            disabled={!confirmPosition}
                         >
-                            Confirmar Cambio
+                            Confirmar Posicion
                         </button>
-
-                        <button
-                            onClick={() => setEdit(false)}
-                            className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
-                        >
-                            Cerrar Panel
-                        </button>
+                       
                 </PanelEdit> 
                 
             )}

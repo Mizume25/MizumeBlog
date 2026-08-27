@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\ConfigCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Comment;
@@ -12,7 +13,7 @@ use App\Enums\ContentType;
 class Post extends Model
 {
     protected $casts = [
-        'config' => 'array',
+        'config' => ConfigCast::class,
     ];
 
 
@@ -107,11 +108,11 @@ class Post extends Model
         return self::distinctValues('category');
     }
 
-    /** Obtener todas las confgiuraciones */
+    /* Obtener todas las confgiuraciones 
     public static function formats()
     {
         return self::distinctValues('config');
-    }
+    }*/
 
     /** Genera codigo unico para contenido de post */
     protected static function generate(string $title): string

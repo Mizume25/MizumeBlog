@@ -87,7 +87,7 @@ export default function HomeFooter() {
                                     height: "100%",
                                     borderRadius: 6,
                                     overflow: "hidden",
-                                    borderLeft: `4px solid ${card.config?.accent}`,
+                                    borderLeft: `4px solid ${card.config?.accent ?? '#ffffff'}`,
 
                                     display: "flex",
                                     flexDirection: "column",

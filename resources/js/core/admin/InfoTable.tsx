@@ -2,14 +2,16 @@ import { router } from '@inertiajs/react';
 import { confirmDelete, SECTION, Section, Section_Content, type Post } from '@/types';
 import Switch from "react-switch";
 import { useState } from 'react';
+import { Eye, PaintRoller } from 'lucide-react';
 
 interface InfoTableProps {
     posts: Post[];
     onSection: (id: Section) => void;
     section: Section_Content;
+    onID: (id: number) => void
 }
 
-function InfoTable({ posts, onSection, section }: InfoTableProps) {
+function InfoTable({ posts, onSection, section , onID}: InfoTableProps) {
 
     const [publish , setPublish ]  = useState(false);
 
@@ -20,6 +22,9 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
             () => router.delete(route('post.destroy', id))
         );
     };
+
+
+  
 
     return (
         <div className="lg:col-span-2 bg-white border border-[#EAD9B8] rounded-xl overflow-hidden shadow-sm">
@@ -98,6 +103,7 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                             <th className="px-5 py-3 font-semibold">Título</th>
                             <th className="px-5 py-3 font-semibold">Categoria</th>
                             <th className="px-5 py-3 font-semibold">Estado</th>
+                            <th className="px-5 py-3 font-semibold">Colores</th>
                             <th className="px-5 py-3 font-semibold">Acciones</th>
                         </tr>
                     </thead>
@@ -126,6 +132,17 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                                 </td>
                                 <td className="px-5 py-4">
                                     <div className="flex gap-2">
+                                        <button
+                                            onClick={() => onID(post.id)}
+                                            className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer"
+                                        >
+                                            <PaintRoller size={20} />
+                                        </button>
+                                    </div>
+                                </td>
+                                <td className="px-5 py-4">
+                                    <div className="flex gap-2">
+                                         <a href={route('post.show', post.id)} className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-[#A08050] transition-colors cursor-pointer"><Eye  size={16}/></a>
                                         <a href={route('post.edit', post.id)} className="text-[11px] px-2 py-1 border border-[#EAD9B8] rounded hover:border-[#A08050] transition-colors cursor-pointer">Editar</a>
                                         <button
                                             onClick={() => handleDelete(post.id, post.title)}
@@ -135,6 +152,7 @@ function InfoTable({ posts, onSection, section }: InfoTableProps) {
                                         </button>
                                     </div>
                                 </td>
+                                
                             </tr>
                         ))}
                     </tbody>

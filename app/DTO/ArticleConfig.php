@@ -1,31 +1,31 @@
 <?php 
 
-namespace App\DTOs;
+namespace App\DTO;
 
+use App\Enums\PositionType;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
-use Override;
 
 final class ArticleConfig implements JsonSerializable, Arrayable
-{   
-    /** Constructor de la clase */
-    public function __construct(
-        public readonly string $height = '0',
-        public readonly string $position = 'center',
-    ) {}
+{
+    private string $height;
+    private PositionType $position;
 
-    /**
-     * Funcion para crearlo mediante array
-     */
+    public function __construct(string $height, PositionType $position)
+    {
+        $this->height = $height;
+        $this->position = $position;
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(
             height: $data['height'] ?? '0',
-            position: $data['position'] ?? 'default',
+            position: PositionType::from($data['position'] ?? 'center'),
         );
     }
-    /** Funcion para transformarlo en array */
-    public function toArray(): array
+
+     public function toArray(): array
     {
         return [
             'height' => $this->height,
@@ -41,3 +41,4 @@ final class ArticleConfig implements JsonSerializable, Arrayable
 }
 
 ?>
+

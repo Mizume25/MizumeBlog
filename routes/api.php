@@ -31,5 +31,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::post('/post/{post_id}/associate/{artwork_image_id}', [ApiController::class, 'associate'])->name('associate');
 
-    Route::put('/post/{post_id}/home_config', [ApiController::class, 'update_home_config'])->name('update_home_config');
+    Route::put('/post/{post_id}/format/home', [ApiController::class, 'updateHomeConfig'])->name('updateHomeConfig');
+
+    Route::put('/post/{post_id}/format/accent', [ApiController::class, 'updateAccentConfig'])->name('updateAccentConfig');
+    
 });

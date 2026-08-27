@@ -91,12 +91,20 @@ export const artworkApi = {
 };
 
 export const configApi = {
-    updateHome: (postId: number | undefined, home_config : string) => {
+    updateHome: (postId: number | undefined, home : string) => {
         if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
         
-        return apiFetch(`/api/post/${postId}/home_config`, {
+        return apiFetch(`/api/post/${postId}/format/home`, {
             method: 'PUT',
-            body: JSON.stringify({home_config: home_config})
+            body: JSON.stringify({home: home})
         });
     },
+    updateAccent: (postId: number | undefined, accent: string)  => {
+        if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
+
+        return apiFetch(`/api/post/${postId}/format/accent`,{
+            method: 'PUT',
+            body: JSON.stringify({accent: accent})
+        } )
+    }
 };
