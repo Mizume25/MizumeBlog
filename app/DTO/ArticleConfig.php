@@ -20,7 +20,7 @@ final class ArticleConfig implements JsonSerializable, Arrayable
     public static function fromArray(array $data): self
     {
         return new self(
-            height: $data['height'] ?? '0',
+            height: $data['height'] ?? '30vh',
             position: PositionType::from($data['position'] ?? 'center'),
         );
     }

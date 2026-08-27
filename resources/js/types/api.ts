@@ -1,5 +1,7 @@
 /** Archivo de Apis utilizadas */
 
+import { ArticleConfig } from "./interfaces";
+
 /** Cifrado Token */
 function getCsrfToken(): string {
     return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
@@ -106,5 +108,16 @@ export const configApi = {
             method: 'PUT',
             body: JSON.stringify({accent: accent})
         } )
-    }
+    },
+     updateArticle: (postId: number | undefined, article: ArticleConfig)  => {
+        if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
+
+        return apiFetch(`/api/post/${postId}/format/article`,{
+            method: 'PUT',
+            body: JSON.stringify({
+                height: article.height,
+                position: article.position
+            })
+        } )
+    },
 };

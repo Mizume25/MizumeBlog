@@ -43,16 +43,11 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
 
     useEffect(() => {
         if (position == null) return;
-        console.log(
-            `[post ${post.id} | typeof ${typeof post.id}] selectPost:`,
-            selectPost,
-            `| typeof ${typeof selectPost}`,
-            '| match:',
-            post.id === selectPost,
-        );
         if (post.id != selectPost) return;
         setFormat(position);
     }, [position]);
+
+   
 
     return (
         <>

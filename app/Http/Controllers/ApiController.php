@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\ArticleConfig;
 use App\DTO\Config;
 use App\Models\Comment;
 use App\Models\Post;
@@ -202,6 +203,67 @@ class ApiController extends Controller
 
         return response()->json(['message' => 'La posicion home se ha modificado perfectamente']);
     }
+
+    /** 
+     * Funcion para modificar el card position  
+     */
+    public function updateCardConfig(Request $request, int $post_id)
+    {
+        $request->validate([
+            'card' => ['required', 'string', 'in:top,center,bottom'],
+        ]);
+
+        $post = Post::findOrFail($post_id);
+
+        try {
+            $position = PositionType::from($request->home);
+        } catch (ValueError) {
+            return response()->json(['message' => 'La posición no es valida'], 402);
+        }
+
+        $config = $post->config ?? new Config();
+
+        $config->setCard($position);
+
+        $post->config = $config;
+
+        $post->save();
+
+        return response()->json(['message' => 'La posicion card se ha modificado perfectamente']);
+    }
+
+    /** 
+     * Funcion para modificar el card position  
+     */
+    public function updateArticleConfig(Request $request, int $post_id)
+    {
+        $request->validate([
+            'height' => ['required', 'string'],
+            'position' => ['required', 'string', 'in:bottom,top,center'],
+        ]);
+
+        try {
+            $position = PositionType::from($request->input('position'));
+        } catch (\ValueError) {
+            return response()->json(['message' => 'La posición no es válida'], 422);
+        }
+
+        $article = new ArticleConfig(
+            height: $request->input('height'),
+            position: $position,
+        );
+
+        $post = Post::findOrFail($post_id);
+        $config = $post->config ?? new Config();
+        $config->setArticle($article);
+
+        $post->config = $config;
+        $post->save();
+
+        return response()->json(['message' => 'La configuracion de artículo se ha modificado correctamente']);
+    }
+
+
     /**
      * Funcion para modificar el color
      */
@@ -223,7 +285,7 @@ class ApiController extends Controller
 
         return response()->json(['message' => 'El color ha sido modificado perfectamente']);
     }
-   
+
     /** Lógica compartida de validación + creación, usada por associate() y associateBulk() */
     private function createAssociation(Post $post, int $artworkImageId, string $key): void
     {

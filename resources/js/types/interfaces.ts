@@ -217,7 +217,7 @@ export type UserRecord = User & {
  */
 export type ArticleConfig = {
     height: string;
-    position: string;
+    position: BackgroundPositionKeyword;
 };
 
 /**

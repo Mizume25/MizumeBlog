@@ -16,11 +16,12 @@ import { PostContent, PostSideBarLeft } from '../../core/post';
 import { Folder, FolderOpen } from 'lucide-react';
 
 /** @import Componenetes Modal */
+import ApiToast from '@/components/api-toast';
 import ModalOperation from '@/components/modal-operation';
-import { DialogTitle } from '@headlessui/react';
+import { useToast } from '@/hooks/use-toast';
 import PanelEdit from '@/layouts/app/panel-edit';
-import { Config } from '@/types';
-
+import { configApi } from '@/types/api';
+import { DialogTitle } from '@headlessui/react';
 /**
  *
  * @param routa Ruta de la imagen
@@ -28,16 +29,18 @@ import { Config } from '@/types';
  * @param formato Formato de imagen
  * @returns
  */
-function PostHeader({ route, title, format }: { route: string | undefined; title: string; format?: ArticleConfig }) {
+function PostHeader({ route, title, format }: { route: string | undefined; title: string; format: ArticleConfig | undefined }) {
+    const config = String(format?.height ?? 30);
+
     return (
         <>
             {/* Imagen de la obra */}
             <header
                 className={`w-full bg-cover bg-no-repeat`}
                 style={{
-                    height:'50vh',
+                    height: `${format?.height}`,
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`,
-                    backgroundPosition: `top`,
+                    backgroundPosition: `${format?.position}`,
                 }}
             ></header>
 
@@ -77,14 +80,18 @@ interface ShowProps {
 }
 
 function show({ content, artworks }: ShowProps) {
+    const MIN = 20;
+    const MAX = 90;
+    const DEFAULT_HEIGHT = 35;
+
     /** Ruta de la Portada */
     const cover = `/IMG/Portada/${content.post.cover}`;
 
     /** Formato de la portada */
-    const [format, setFormat] = useState<Config | null>(formatDefault);
+    const [format, setFormat] = useState<ArticleConfig | undefined>(content.post.config?.article ?? formatDefault.article);
 
     /** Formato de la portada renderizada a estado  */
-    useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
+    useEffect(() => setFormat(content.post.config?.article ?? undefined), [content.post.id]);
 
     /** Indice de Contenido */
     const index: IndexContent[] = content.index;
@@ -95,8 +102,12 @@ function show({ content, artworks }: ShowProps) {
     /** Sidebar del Indice */
     const [sidebar, setSidebar] = useState(false);
 
+    const [confirm, setConfirm] = useState(false);
+
     /** Iteración de indice */
     const handleFindID = (id: string) => setSelectedId(id);
+
+    const { showToast, toast } = useToast();
 
     /** Toogle de cerrado */
     const onOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
@@ -111,7 +122,7 @@ function show({ content, artworks }: ShowProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const [edit , setEdit] = useState(false);
+    const [edit, setEdit] = useState(false);
     const handlerClick = () => {
         setIsOpen(true);
     };
@@ -120,13 +131,54 @@ function show({ content, artworks }: ShowProps) {
 
     const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
 
+    const [height, setHeight] = useState(DEFAULT_HEIGHT);
+
+    /** Api para confirmar cambios */
+    const ApiArticleUpdate = async () => {
+        if (position == null) return;
+        if (format == null) return;
+        await configApi
+            .updateArticle(Number(content.post.id), format)
+            .then((data) => showToast('success', data.message))
+            .catch((err) => showToast('error', err.message));
+    };
+
+    useEffect(() => {
+        if (position == null) return;
+        setFormat((prev) => ({ height: prev?.height ?? '30vh', position: position ?? 'center' }));
+        console.log('posicion actual', position);
+    }, [position]);
+
+    function clamp(n: number) {
+        return Math.min(MAX, Math.max(MIN, n));
+    }
+
+    useEffect(() => {
+        if (edit) {
+            setFormat(formatDefault.article);
+        } else {
+            setFormat(content.post.config?.article ?? formatDefault.article);
+        }
+    }, [edit]);
+
+    useEffect(() => {
+        const originalPosition = content.post.config?.article?.position ?? null;
+        const originalHeightRaw = content.post.config?.article?.height;
+        const originalHeight = originalHeightRaw ? parseInt(originalHeightRaw, 10) : DEFAULT_HEIGHT;
+
+        const positionChanged = position != null && position !== originalPosition;
+        const heightChanged = height !== originalHeight;
+
+        setConfirm(positionChanged || heightChanged);
+    }, [position, height]);
+
     return (
         <BlogLayout post_id={content.post.id} edit={edit} onEdit={handlerEdit}>
             {/* Pestaña de la Página */}
             <Head title={content.post.title}></Head>
-
+            <ApiToast toast={toast} />
             {/* Componente imagen header */}
-            <PostHeader route={cover} title={content.post.title} format={format?.article} />
+            <PostHeader route={cover} title={content.post.title} format={format} />
 
             {/** Componente para indice button */}
             <PostBTN onOpen={onOpen} />
@@ -150,39 +202,78 @@ function show({ content, artworks }: ShowProps) {
                 </div>
             </main>
 
-
             {edit && (
-              <PanelEdit>
-                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">Configura las opciones del layout aquí.</p>
+                <PanelEdit>
+                    <h3 className="mb-2 text-lg font-bold text-white">Posicion</h3>
+                    <p className="mb-4 text-sm text-gray-100">Configura las opciones del layout aquí.</p>
 
-                       
-                        <select
-                            className={`text- mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
-                            onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
-                        >
-                            {BackgroundOptions.map((p, i) => (
-                                <option key={i} value={p} className="bg-white text-black">
-                                    {p}
-                                </option>
-                            ))}
-                        </select>
+                    <select
+                        className={`mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 text-black capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                        onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
+                    >
+                        {BackgroundOptions.map((p, i) => (
+                            <option key={i} value={p} className="bg-white text-black">
+                                {p}
+                            </option>
+                        ))}
+                    </select>
+                    <h3 className="mb-2 text-lg font-bold text-white">Altura</h3>
+                    <div className="mb-2 flex items-center gap-2">
+                        <input
+                            type="number"
+                            min={MIN}
+                            max={MAX}
+                            value={height}
+                            onChange={(e) => setHeight(clamp(Number(e.target.value)))}
+                            className="w-full [appearance:textfield] rounded-xl border border-[#2a2f3a] bg-[#171a21] px-4 py-2.5 font-mono text-[15px] text-[#e8eaed] tabular-nums transition-colors duration-150 outline-none focus:border-[#5b8cff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5b8cff] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        />
 
-                        <button
-                            
-                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-black/60"
-                            disabled={!confirm}
-                        >
-                            Confirmar Cambio
-                        </button>
+                        <div className="flex flex-none items-center gap-1">
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Disminuir"
+                                onClick={() => setHeight((h: number) => clamp(h - 1))}
+                            >
+                                −
+                            </button>
 
-                        <button
-                            onClick={() => setEdit(false)}
-                            className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
-                        >
-                            Cerrar Panel
-                        </button>
-                </PanelEdit> 
-                
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-xs text-[#8a90a0] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Restablecer"
+                                title="Restablecer"
+                                onClick={() => setHeight(DEFAULT_HEIGHT)}
+                            >
+                                ↺
+                            </button>
+
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Aumentar"
+                                onClick={() => setHeight((h: number) => clamp(h + 1))}
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={ApiArticleUpdate}
+                        className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
+                        disabled={!confirm}
+                    >
+                        Confirmar Cambio
+                    </button>
+
+                    <button
+                        onClick={() => setEdit(false)}
+                        className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
+                    >
+                        Cerrar Panel
+                    </button>
+                </PanelEdit>
             )}
 
             <ModalOperation isOpen={isOpen} onClose={() => setIsOpen(false)} title="Artworks">
