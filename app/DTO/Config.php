@@ -20,7 +20,7 @@ final class Config implements JsonSerializable, Arrayable
     public function __construct(?PositionType $home = null, ?ArticleConfig $article = null, ?PositionType $card = null, ?string $accent = null)
     {
         $this->home = $home ?? PositionType::from('center');
-        $this->article = $article ?? new ArticleConfig('0', PositionType::from('center'));
+        $this->article = $article ?? new ArticleConfig('30vh', PositionType::from('center'));
         $this->card = $card ?? PositionType::from('center');
         $this->accent = $accent ?? '#ffffff';
     }

@@ -1,6 +1,6 @@
 /** Archivo de Apis utilizadas */
 
-import { ArticleConfig } from "./interfaces";
+import { ArticleConfig } from './interfaces';
 
 /** Cifrado Token */
 function getCsrfToken(): string {
@@ -93,31 +93,41 @@ export const artworkApi = {
 };
 
 export const configApi = {
-    updateHome: (postId: number | undefined, home : string) => {
+    updateHome: (postId: number | undefined, home: string) => {
         if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
-        
+
         return apiFetch(`/api/post/${postId}/format/home`, {
             method: 'PUT',
-            body: JSON.stringify({home: home})
+            body: JSON.stringify({ home: home }),
         });
     },
-    updateAccent: (postId: number | undefined, accent: string)  => {
+    updateAccent: (postId: number | undefined, accent: string) => {
         if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
 
-        return apiFetch(`/api/post/${postId}/format/accent`,{
+        return apiFetch(`/api/post/${postId}/format/accent`, {
             method: 'PUT',
-            body: JSON.stringify({accent: accent})
-        } )
+            body: JSON.stringify({ accent: accent }),
+        });
     },
-     updateArticle: (postId: number | undefined, article: ArticleConfig)  => {
+    updateArticle: (postId: number | undefined, article: ArticleConfig) => {
         if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
 
-        return apiFetch(`/api/post/${postId}/format/article`,{
+        return apiFetch(`/api/post/${postId}/format/article`, {
             method: 'PUT',
             body: JSON.stringify({
                 height: article.height,
-                position: article.position
-            })
-        } )
+                position: article.position,
+            }),
+        });
+    },
+    updateCard: (postId: number | undefined, card: string) => {
+        if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
+
+        return apiFetch(`/api/post/${postId}/format/card'`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                card: card,
+            }),
+        });
     },
 };

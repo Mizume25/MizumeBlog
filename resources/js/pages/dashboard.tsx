@@ -104,6 +104,13 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                         >
                             Confirmar Posicion
                         </button>
+
+                          <button
+                                onClick={() => setEdit(false)}
+                                className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
+                            >
+                                Cerrar Panel
+                            </button>
                        
                 </PanelEdit> 
                 

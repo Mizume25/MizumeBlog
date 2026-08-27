@@ -210,7 +210,7 @@ class ApiController extends Controller
     public function updateCardConfig(Request $request, int $post_id)
     {
         $request->validate([
-            'card' => ['required', 'string', 'in:top,center,bottom'],
+            'card' => 'required|string|max:255',
         ]);
 
         $post = Post::findOrFail($post_id);

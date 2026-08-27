@@ -30,8 +30,6 @@ import { DialogTitle } from '@headlessui/react';
  * @returns
  */
 function PostHeader({ route, title, format }: { route: string | undefined; title: string; format: ArticleConfig | undefined }) {
-    const config = String(format?.height ?? 30);
-
     return (
         <>
             {/* Imagen de la obra */}
@@ -90,9 +88,6 @@ function show({ content, artworks }: ShowProps) {
     /** Formato de la portada */
     const [format, setFormat] = useState<ArticleConfig | undefined>(content.post.config?.article ?? formatDefault.article);
 
-    /** Formato de la portada renderizada a estado  */
-    useEffect(() => setFormat(content.post.config?.article ?? undefined), [content.post.id]);
-
     /** Indice de Contenido */
     const index: IndexContent[] = content.index;
 
@@ -131,12 +126,22 @@ function show({ content, artworks }: ShowProps) {
 
     const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
 
-    const [height, setHeight] = useState(DEFAULT_HEIGHT);
+    const [height, setHeight] = useState(0);
+
+    /** Formato de la portada renderizada a estado  */
+    useEffect(() => {
+        setFormat(content.post.config?.article ?? undefined);
+        const originalHeightRaw = content.post.config?.article?.height;
+        if (originalHeightRaw == undefined) return;
+        const value = parseInt(originalHeightRaw, 10);
+        setHeight(value);
+        setPosition(content.post.config?.article?.position as BackgroundPositionKeyword ?? null)
+    }, [content.post.id]);
 
     /** Api para confirmar cambios */
     const ApiArticleUpdate = async () => {
-        if (position == null) return;
         if (format == null) return;
+
         await configApi
             .updateArticle(Number(content.post.id), format)
             .then((data) => showToast('success', data.message))
@@ -144,22 +149,23 @@ function show({ content, artworks }: ShowProps) {
     };
 
     useEffect(() => {
-        if (position == null) return;
-        setFormat((prev) => ({ height: prev?.height ?? '30vh', position: position ?? 'center' }));
-        console.log('posicion actual', position);
-    }, [position]);
+    setFormat((prev) => ({
+        height: `${height}vh`,
+        position: position ?? prev?.position ?? 'center',
+    }));
+}, [position, height]);
 
     function clamp(n: number) {
         return Math.min(MAX, Math.max(MIN, n));
     }
 
     useEffect(() => {
-        if (edit) {
-            setFormat(formatDefault.article);
-        } else {
-            setFormat(content.post.config?.article ?? formatDefault.article);
-        }
-    }, [edit]);
+    if (!edit) {
+        setPosition(content.post.config?.article?.position as BackgroundPositionKeyword ?? null);
+        const raw = content.post.config?.article?.height;
+        setHeight(raw ? parseInt(raw, 10) : DEFAULT_HEIGHT);
+    }
+}, [edit]);
 
     useEffect(() => {
         const originalPosition = content.post.config?.article?.position ?? null;
