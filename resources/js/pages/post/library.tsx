@@ -9,11 +9,7 @@ import { BackgroundOptionsCard, BackgroundPositionKeywordCard, Post, Section, SE
 import { configApi } from '@/types/api';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-/**
- *
- * @param
- * @returns
- */
+
 
 export interface NavContentProps {
     section: Section_Content;
@@ -54,6 +50,8 @@ function Library({ posts }: { posts: Post[] }) {
 
     useEffect(() => {
         setPosition(selectPost.config?.card as BackgroundPositionKeywordCard);
+        console.log(selectPost.config?.card)
+
     }, [selectPost]);
 
     const handlerID = (id: number) => {
@@ -67,7 +65,7 @@ function Library({ posts }: { posts: Post[] }) {
         if (position == null) return;
 
         await configApi
-            .updateCard(Number(selectPost), String(position))
+            .updateCard(Number(selectPost.id), String(position))
             .then((data) => showToast('success', data.message))
             .catch((err) => showToast('error', err.message));
     };
@@ -99,7 +97,7 @@ function Library({ posts }: { posts: Post[] }) {
                         onChange={(e) => setPosition(e.target.value as BackgroundPositionKeywordCard)}
                     >
                         {BackgroundOptionsCard.map((p, i) => (
-                            <option key={i} value={p} className="bg-white text-black">
+                            <option key={i} value={p} selected={position === p ? true:false} className="bg-white text-black">
                                 {p}
                             </option>
                         ))}

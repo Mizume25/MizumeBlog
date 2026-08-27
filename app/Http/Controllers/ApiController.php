@@ -216,7 +216,7 @@ class ApiController extends Controller
         $post = Post::findOrFail($post_id);
 
         try {
-            $position = PositionType::from($request->home);
+            $position = PositionType::from($request->card);
         } catch (ValueError) {
             return response()->json(['message' => 'La posición no es valida'], 402);
         }

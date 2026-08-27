@@ -105,7 +105,7 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
                         style={
                             {
                                 '--bg-image': `url('${ruta}')`,
-                                '--bg-format-y': `center`,
+                                 '--bg-format-y': `${format}`,
                             } as React.CSSProperties
                         }
                         className={styles.featuredPost}
@@ -130,11 +130,11 @@ function HomePanelPost({ post, left, selectPost, edit, position }: HomePanelPost
 
                         <div className="relative mt-auto mb-0 w-full self-end text-right">
                             <h2 className="ml-[20px] text-[1.1rem] font-bold text-white [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] sm:text-[1.5rem] md:text-[2.1rem] lg:text-[2.2rem]">
-                                {post.title}
+                                {post.title.replaceAll('-', ' ')}
                             </h2>
 
                             <span className="absolute bottom-[30px] left-0 ml-[20px] hidden text-left font-light text-white italic [text-shadow:_2px_2px_4px_rgba(0,0,0,0.4),_0_0_10px_rgba(0,0,0,0.2)] lg:block">
-                                {post.web_title}
+                                  {post.web_title.replaceAll('-', ' ')}
                             </span>
                         </div>
                     </article>

@@ -67,15 +67,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     /** Crear Backup */
     Route::get('post/backup', [AdminController::class, 'backup'])->name('post.backup');
 
-
-
-    // routes/web.php
-   // Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
-
-   // Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
-
-   // Route::get('/admin/posts/formats', [PostImageConfigController::class , 'temp'])->name('post.format');
-
     
     /** Rutas Artworks */
 

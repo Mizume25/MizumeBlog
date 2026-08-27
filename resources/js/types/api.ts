@@ -123,7 +123,7 @@ export const configApi = {
     updateCard: (postId: number | undefined, card: string) => {
         if (postId == null) return Promise.reject(new Error('Debes elegir un post a modificar'));
 
-        return apiFetch(`/api/post/${postId}/format/card'`, {
+        return apiFetch(`/api/post/${postId}/format/card`, {
             method: 'PUT',
             body: JSON.stringify({
                 card: card,

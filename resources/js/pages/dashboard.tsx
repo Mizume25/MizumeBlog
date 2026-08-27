@@ -1,15 +1,33 @@
+/** @import Types Utilizados */
 import { BackgroundOptions, BackgroundPositionKeyword, type Post } from '@/types';
+
+/** @imports Inertia Objetcts */
 import { Head } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
-import { HomeContent } from '../core/home';
-/** @imports Layouts Reciclables */
+
+/** @imports Objeto de peticiones Api */
+import { configApi } from '@/types/api';
+
+/** @import COMPONENTES */
 import ApiToast from '@/components/api-toast';
 import SideBarRight from '@/core/auth/SideBarRight';
-import { useToast } from '@/hooks/use-toast';
 import BlogLayout from '@/layouts/app/blog-layout';
-import { configApi } from '@/types/api';
 import PanelEdit from '@/layouts/app/panel-edit';
-import ColorPicker from '@/components/color-picker';
+import { HomeContent } from '../core/home';
+
+/** @import HOOKS UTILIZADOS */
+import { useToast } from '@/hooks/use-toast';
+import { useEffect, useMemo, useState } from 'react';
+
+/**
+ * Funciones Estaticas
+ * @param id
+ * @returns Post
+ */
+
+const getPost = (posts: Post[], id: number | null) => {
+    if (id == null) return;
+    return posts.find((p) => p.id === id);
+};
 
 export default function Dashboard({ posts }: { posts: Post[] }) {
     /***
@@ -23,11 +41,29 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
         };
     }, [posts]);
 
+    /**+
+     * @glob Vairables globales
+     */
+    /** Variable de estructura de control para activar edicion de imagen */
     const [edit, setEdit] = useState(false);
 
+    /** Estructura de control para conirmar cambios */
     const [confirmPosition, setConfirmPosition] = useState(false);
 
+    /** Estructura para almacenar posiciones */
+    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
 
+    /** Estructura para almacenar Post utilizado */
+    const [selectPost, setSelectPost] = useState<number | null>(null);
+
+    /** Variables del hook personal toast */
+    const { showToast, toast } = useToast();
+
+    /**
+     * @glob Funciones de toda la página
+     */
+
+    /** Activar y Desactivar propiedades */
     const handlerEdit = () => {
         const newEdit = !edit;
 
@@ -35,19 +71,12 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
         if (newEdit) {
             setSelectPost(mainPosts[0].id);
-            console.log(mainPosts[0]);
         } else {
             setSelectPost(null);
         }
     };
 
-    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
-
-    const [selectPost, setSelectPost] = useState<number | null>(null);
-
-    const { showToast, toast } = useToast();
-
-    /** Api para confirmar cambios */
+    /** Api que realiza el update */
     const ApiHomeUpdate = async () => {
         if (position == null) return;
 
@@ -57,8 +86,23 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             .catch((err) => showToast('error', err.message));
     };
 
-   
-   
+    /**
+     * @glob HOOKS y RENDERS
+     */
+
+    /** Cambiar el formato del post cuando se cambie de post */
+    useEffect(() => {
+        const post = getPost(posts, selectPost);
+        setPosition((post?.config?.home as BackgroundPositionKeyword) ?? 'top');
+    }, [selectPost]);
+
+    /**
+     * Permitir confirmar cambios solo en caso de introducir valores diferentes
+     */
+    useEffect(() => {
+        const post = getPost(posts, selectPost);
+        setConfirmPosition((post?.config?.home as BackgroundPositionKeyword) !== position);
+    }, [position]);
 
     return (
         <BlogLayout edit={edit} onEdit={handlerEdit}>
@@ -72,48 +116,48 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             </main>
 
             {edit && (
-              <PanelEdit>
-                        <p className="mb-4 text-sm text-white dark:text-gray-100">Configura las opciones del layout aquí.</p>
+                <PanelEdit>
+                    <p className="mb-4 text-sm text-white dark:text-gray-100">Configura las opciones del layout aquí.</p>
 
-                        <select
-                            className="text-black mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200"
-                            onChange={(e) => setSelectPost(Number(e.target.value))}
-                        >
-                            {mainPosts.map((p, i) => (
-                                <option key={p.id} value={p.id} className="bg-white text-black">
-                                    {p.title}
-                                </option>
-                            ))}
-                        </select>
+                    <select
+                        className="mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 text-black capitalize outline-none focus:bg-amber-200"
+                        value={selectPost ?? ''}
+                        onChange={(e) => setSelectPost(Number(e.target.value))}
+                    >
+                        {mainPosts.map((p, i) => (
+                            <option key={p.id} value={p.id} className="bg-white text-black">
+                                {p.title}
+                            </option>
+                        ))}
+                    </select>
 
-                        <h3 className="mb-2 text-lg font-bold  text-white">Posicion</h3>
-                        <select
-                            className={`text-black mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
-                            onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
-                        >
-                            {BackgroundOptions.map((p, i) => (
-                                <option key={i} value={p} className="bg-white text-black">
-                                    {p}
-                                </option>
-                            ))}
-                        </select>
-                         <button
-                            onClick={ApiHomeUpdate}
-                            className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
-                            disabled={!confirmPosition}
-                        >
-                            Confirmar Posicion
-                        </button>
+                    <h3 className="mb-2 text-lg font-bold text-white">Posicion</h3>
+                    <select
+                        className={`mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 text-black capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                        value={position ?? ''}
+                        onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
+                    >
+                        {BackgroundOptions.map((p, i) => (
+                            <option key={i} value={p} className="bg-white text-black">
+                                {p}
+                            </option>
+                        ))}
+                    </select>
+                    <button
+                        onClick={ApiHomeUpdate}
+                        className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
+                        disabled={!confirmPosition}
+                    >
+                        Confirmar Posicion
+                    </button>
 
-                          <button
-                                onClick={() => setEdit(false)}
-                                className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
-                            >
-                                Cerrar Panel
-                            </button>
-                       
-                </PanelEdit> 
-                
+                    <button
+                        onClick={() => setEdit(false)}
+                        className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
+                    >
+                        Cerrar Panel
+                    </button>
+                </PanelEdit>
             )}
         </BlogLayout>
     );

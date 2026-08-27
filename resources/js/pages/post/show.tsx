@@ -1,19 +1,11 @@
-/** Interfaces web utilizadas */
+/** @import Todos los types utilizados */
 import { ArticleConfig, Artwork, BackgroundOptions, BackgroundPositionKeyword, IndexContent, formatDefault, type Content } from '@/types';
 
-/** Eestados e iconos react */
+/** @import Objetos Inertia */
 import { Head } from '@inertiajs/react';
-import { ListTree } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
 
-/** COMPONENTES  */
-import SideBarRight from '@/core/auth/SideBarRight';
-import Coments from '@/core/coments/Coments';
-import BlogLayout from '@/layouts/app/blog-layout';
-import { PostContent, PostSideBarLeft } from '../../core/post';
-
-/** @import Folders */
-import { Folder, FolderOpen } from 'lucide-react';
+/** @import Iconos */
+import { Folder, FolderOpen, ListTree } from 'lucide-react';
 
 /** @import Componenetes Modal */
 import ApiToast from '@/components/api-toast';
@@ -22,6 +14,16 @@ import { useToast } from '@/hooks/use-toast';
 import PanelEdit from '@/layouts/app/panel-edit';
 import { configApi } from '@/types/api';
 import { DialogTitle } from '@headlessui/react';
+
+/** @imports HOOKS Utilziados */
+import { useCallback, useEffect, useState } from 'react';
+
+/** @import Layouts y Componentes */
+import SideBarRight from '@/core/auth/SideBarRight';
+import Coments from '@/core/coments/Coments';
+import BlogLayout from '@/layouts/app/blog-layout';
+import { PostContent, PostSideBarLeft } from '../../core/post';
+
 /**
  *
  * @param routa Ruta de la imagen
@@ -29,7 +31,28 @@ import { DialogTitle } from '@headlessui/react';
  * @param formato Formato de imagen
  * @returns
  */
-function PostHeader({ route, title, format }: { route: string | undefined; title: string; format: ArticleConfig | undefined }) {
+
+/** @interface Interfaz de Encabezado */
+interface PostHeaderProps {
+    route: string | undefined;
+    title: string;
+    format: ArticleConfig | undefined;
+}
+
+/** @interface Interfaz de la Página */
+interface ShowProps {
+    content: Content;
+    artworks: Artwork[];
+}
+
+/**
+ * Componente TSX para renderizar Encabezado
+ * @param route
+ * @param title
+ * @param format
+ * @returns
+ */
+function PostHeader({ route, title, format }: PostHeaderProps) {
     return (
         <>
             {/* Imagen de la obra */}
@@ -54,12 +77,11 @@ function PostHeader({ route, title, format }: { route: string | undefined; title
 
 /**
  * Boton Indice para Post
- * @param Function Funcion para abrir y cerrar SideBar
+ * @param onOpen Funcion para abrir y cerrar SideBar
  * @returns
  */
 function PostBTN({ onOpen }: { onOpen?: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => onOpen?.(e);
-
     return (
         <button
             onClick={handleClick}
@@ -72,12 +94,10 @@ function PostBTN({ onOpen }: { onOpen?: (e: React.MouseEvent<HTMLButtonElement>)
     );
 }
 
-interface ShowProps {
-    content: Content;
-    artworks: Artwork[];
-}
-
 function show({ content, artworks }: ShowProps) {
+    /**
+     * @glob Variables de la página
+     */
     const MIN = 20;
     const MAX = 90;
     const DEFAULT_HEIGHT = 35;
@@ -97,46 +117,46 @@ function show({ content, artworks }: ShowProps) {
     /** Sidebar del Indice */
     const [sidebar, setSidebar] = useState(false);
 
+    /** Estructura de control de confirmacion de cambios */
     const [confirm, setConfirm] = useState(false);
+
+    /** Estructura de control para abrir el imagenes */
+    const [isOpen, setIsOpen] = useState(false);
+
+    /** Estructura para abrir panel de edicion */
+    const [edit, setEdit] = useState(false);
+
+    /** Estructura para seteat la position */
+    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
+
+    /** Estructura para setear altura del contendor */
+    const [height, setHeight] = useState(0);
 
     /** Iteración de indice */
     const handleFindID = (id: string) => setSelectedId(id);
 
+    /** Hooks personalizados */
     const { showToast, toast } = useToast();
 
     /** Toogle de cerrado */
     const onOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-
         setSidebar((prev) => !prev);
     }, []);
 
     /** Cerrado de Indice */
     const isClose = () => setSidebar(false);
 
-    const [isOpen, setIsOpen] = useState(false);
+    /** Abrir Sidebar */
+    const handlerClick = () => setIsOpen(true);
 
-    const [edit, setEdit] = useState(false);
-    const handlerClick = () => {
-        setIsOpen(true);
-    };
-
+    /** Editar Panel */
     const handlerEdit = () => setEdit((prev) => !prev);
 
-    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
-
-    const [height, setHeight] = useState(0);
-
-    /** Formato de la portada renderizada a estado  */
-    useEffect(() => {
-        setFormat(content.post.config?.article ?? undefined);
-        const originalHeightRaw = content.post.config?.article?.height;
-        if (originalHeightRaw == undefined) return;
-        const value = parseInt(originalHeightRaw, 10);
-        setHeight(value);
-        setPosition(content.post.config?.article?.position as BackgroundPositionKeyword ?? null)
-    }, [content.post.id]);
+    /**
+     * Funciones
+     */
 
     /** Api para confirmar cambios */
     const ApiArticleUpdate = async () => {
@@ -148,25 +168,46 @@ function show({ content, artworks }: ShowProps) {
             .catch((err) => showToast('error', err.message));
     };
 
-    useEffect(() => {
-    setFormat((prev) => ({
-        height: `${height}vh`,
-        position: position ?? prev?.position ?? 'center',
-    }));
-}, [position, height]);
-
     function clamp(n: number) {
         return Math.min(MAX, Math.max(MIN, n));
     }
 
-    useEffect(() => {
-    if (!edit) {
-        setPosition(content.post.config?.article?.position as BackgroundPositionKeyword ?? null);
-        const raw = content.post.config?.article?.height;
-        setHeight(raw ? parseInt(raw, 10) : DEFAULT_HEIGHT);
-    }
-}, [edit]);
+    /**
+     * @glob HOOKS
+     */
 
+    /** Formato de la portada renderizada a estado  */
+    useEffect(() => {
+        setFormat(content.post.config?.article ?? undefined);
+        const originalHeightRaw = content.post.config?.article?.height;
+        if (originalHeightRaw == undefined) return;
+        const value = parseInt(originalHeightRaw, 10);
+        setHeight(value);
+        setPosition((content.post.config?.article?.position as BackgroundPositionKeyword) ?? null);
+    }, [content.post.id]);
+
+    /** Setear Formato mientras cambio las variable s */
+    useEffect(() => {
+        setFormat((prev) => ({
+            height: `${height}vh`,
+            position: position ?? prev?.position ?? 'center',
+        }));
+    }, [position, height]);
+
+    /**
+     * Resetear Valores
+     */
+    useEffect(() => {
+        if (!edit) {
+            setPosition((content.post.config?.article?.position as BackgroundPositionKeyword) ?? null);
+            const raw = content.post.config?.article?.height;
+            setHeight(raw ? parseInt(raw, 10) : DEFAULT_HEIGHT);
+        }
+    }, [edit]);
+
+    /**
+     * Solo Activar Confirmar en caso de valores diferentes
+     */
     useEffect(() => {
         const originalPosition = content.post.config?.article?.position ?? null;
         const originalHeightRaw = content.post.config?.article?.height;
