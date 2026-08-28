@@ -2,8 +2,9 @@ import PostForm, { PostFormHandle } from '@/core/post/PostForm';
 import BlogLayout from '@/layouts/app/blog-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import { Artwork } from '@/types';
+import { handleRequest } from '@/types/request';
 import type { CreatePostSchemaOutput } from '@/types/schemas';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
 interface CreateProps {
@@ -50,12 +51,9 @@ export default function Create({ tags, artworks }: CreateProps) {
         /**
          * Emviamos informació
          */
-        router.post(route('post.store'), formData, {
+        handleRequest('store', route('post.store'), formData, {
             onSuccess: () => {
-                formRef.current?.resetForm();
-            },
-            onFinish: () => {
-                setProcessing(false);
+                setProcessing(false)
             },
         });
     };

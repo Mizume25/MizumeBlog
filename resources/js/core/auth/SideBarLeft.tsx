@@ -4,7 +4,7 @@ import HomeProfile from '../home/HomeProfile';
 import { netWork } from '../home/HomeSideBarRight';
 
 import { Menu, MenuButton, MenuItems } from '@headlessui/react';
-import { Folder, Image, LogIn, LogOut, PanelBottom, Settings, User, UserPlus } from 'lucide-react';
+import { Folder, LogIn, LogOut, PanelBottom, Settings, User, UserPlus } from 'lucide-react';
 
 interface SideBarLeftProps {
     isOpen?: boolean;
@@ -15,6 +15,7 @@ interface SideBarLeftProps {
 function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
     const { auth } = usePage<SharedData>().props;
 
+   
     /** Renderizado de Operaciones */
     const renderOptions = (admin: boolean) => {
         return (
@@ -27,21 +28,21 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                     {admin ? (
                         <>
                             <MenuItems>
-                                <button
-                                    onClick={() => router.get(route('post.panel'))}
+                                <a
+                                    href={route('post.panel')}
                                     title="Cerrar sesión"
-                                    className="rounded-t-2xl bg-primary-foreground text-primary flex w-40 items-center justify-start px-4 py-2"
+                                    className="bg-primary-foreground text-primary flex w-40 items-center justify-start rounded-t-2xl px-4 py-2"
                                 >
-                                    <PanelBottom className='me-1' />  Panel
-                                </button>
+                                    <PanelBottom className="me-1" /> Panel
+                                </a>
                             </MenuItems>
                             <MenuItems>
                                 <button
                                     onClick={() => router.get(route('artwork.index'))}
                                     title="Cerrar sesión"
-                                    className="bg-primary-foreground text-primary  btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
+                                    className="bg-primary-foreground text-primary btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
                                 >
-                                    <Folder className='me-1'/>  Artworks
+                                    <Folder className="me-1" /> Artworks
                                 </button>
                             </MenuItems>
                         </>
@@ -50,20 +51,21 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                     )}
 
                     <MenuItems>
-                        <button 
-                         onClick={() => router.get(route('profile.edit'))}
-                        className="bg-btn-info text-btn-info-foreground btn-hover-scale flex w-40 items-center justify-start px-4 py-2">
-                            <User className='me-1' /> Profile
+                        <button
+                            onClick={() => router.get(route('profile.edit'))}
+                            className="bg-btn-info text-btn-info-foreground btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
+                        >
+                            <User className="me-1" /> Profile
                         </button>
                     </MenuItems>
                     <MenuItems>
-                        <button
+                        <a
                             onClick={() => router.post(route('logout'))}
                             title="Cerrar sesión"
                             className="bg-btn-danger text-btn-danger-foreground btn-hover-scale flex w-40 items-center justify-start rounded-b-2xl px-4 py-2"
                         >
-                            <LogOut className='me-1' /> Log Out
-                        </button>
+                            <LogOut className="me-1" /> Log Out
+                        </a>
                     </MenuItems>
                 </MenuItems>
             </Menu>
@@ -135,7 +137,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
             </section>
         </>
     );
-    
+
     return (
         <>
             {/* ── MÓVIL: drawer ── */}
@@ -176,8 +178,6 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                             <button onClick={onClose} className="cursor-pointer text-sm font-light text-white opacity-70 hover:opacity-100">
                                 ✕ Cerrar
                             </button>
-
-                          
                         </div>
                     </div>
 

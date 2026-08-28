@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use League\CommonMark\Extension\Highlight\MarkRenderer;
 
+
 class AdminController extends Controller
 {
 
@@ -125,7 +126,7 @@ class AdminController extends Controller
             if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores repetidos en el indice repetidos');
 
 
-            
+
             $index = json_encode($titles);
             $content = MarkdownService::cleanAllMD($content);
 
@@ -189,7 +190,9 @@ class AdminController extends Controller
 
         $post->delete();
 
-        return redirect()->route('post.panel')->with('success', 'Post eliminado');
+
+
+        return redirect()->route('post.panel')->with('success', 'El Post se borro correctamente');
     }
 
 
@@ -250,7 +253,7 @@ class AdminController extends Controller
         $titles = MarkdownService::extract($content);
         if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores duplicados en el indice');
 
-        
+
         $content = MarkdownService::cleanAllMD($content);
 
         /** Construiremos un indice partiendo de los titulo de la obra */

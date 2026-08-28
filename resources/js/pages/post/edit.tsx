@@ -3,20 +3,20 @@ import PostForm, { type PostFormHandle } from '@/core/post/PostForm';
 import BlogLayout from '@/layouts/app/blog-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import { Artwork, ArtworkPictures, Post } from '@/types';
+import { handleRequest } from '@/types/request';
 import type { CreatePostSchemaOutput } from '@/types/schemas';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useRef, useState } from 'react';
-
 
 interface EditProps {
     post: Post;
     tags: string[];
     artworks: Artwork[];
     container: Record<string, ArtworkPictures[]>;
-    galeries: Artwork[],
+    galeries: Artwork[];
 }
 
-export default function Edit({ post, tags, container, artworks ,galeries}: EditProps) {
+export default function Edit({ post, tags, container, artworks, galeries }: EditProps) {
     const formRef = useRef<PostFormHandle>(null);
     const [processing, setProcessing] = useState(false);
 
@@ -43,13 +43,8 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
             });
         }
 
-       
-
-        router.post(route('post.update', post.id), formData, {
-            onSuccess: () => {},
-            onFinish: () => {
-                setProcessing(false);
-            },
+        handleRequest('update', route('post.update', post.id), formData, {
+            onFinish: () => setProcessing(false),
         });
     };
 
@@ -57,7 +52,7 @@ export default function Edit({ post, tags, container, artworks ,galeries}: EditP
         <BlogLayout>
             <AuthLayout title="MizumeBlog" description="Editar Post">
                 <Head title="Editar Post" />
-               
+
                 <PostForm
                     ref={formRef}
                     tags={tags}

@@ -1,5 +1,5 @@
 import { SharedData, WEB_ROUTE } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { LayoutDashboard, Menu, Pencil } from 'lucide-react';
 import Switch from 'react-switch';
 import AuthButton from './AuthButton';
@@ -14,7 +14,7 @@ interface TopAuthBarProps {
 
 export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps) {
     const { auth } = usePage<SharedData>().props;
-
+    
     return (
         <div className="bg-primary-foreground sticky top-0 z-30 w-full px-4 py-4 shadow-md">
             <div className="mx-auto max-w-[1500px] items-center justify-between max-lg:flex max-lg:flex-row lg:grid lg:grid-cols-3">
@@ -79,6 +79,7 @@ export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps)
                                     />
                                 </AuthButton>
                             )}
+
                             <LogoutButton />
                         </>
                     )}

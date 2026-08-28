@@ -25,10 +25,12 @@ import {
     type CreatePostSchemaOutput,
 } from '@/types';
 import { Button, Input } from '@headlessui/react';
+import axios from 'axios'
 
 /** @imports Libreria de Iconos */
+import ApiToast from '@/components/api-toast';
 import ModalOperation from '@/components/modal-operation';
-import { router } from '@inertiajs/react';
+import { handleRequest } from '@/types/request';
 import {
     ArrowBigLeft,
     Book,
@@ -50,7 +52,6 @@ import {
     Tags,
     User,
 } from 'lucide-react';
-import ApiToast from '@/components/api-toast';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -75,8 +76,6 @@ interface PostFormProps {
 export interface PostFormHandle {
     resetForm: () => void;
 }
-
-
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
     (
@@ -397,9 +396,9 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          */
         const onDelete = () => {
             if (post_id == null) return;
-            confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () =>
-                router.delete(route('post.destroy', post_id)),
-            );
+            confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () => 
+                axios.delete(`/post/${post_id}`)
+        );
         };
 
         /** Abre el modal multi-select y precarga imágenes disponibles (reusa avaliables) */
@@ -815,7 +814,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/* ACCION UPDATE */}
                             <Button
                                 type="submit"
-                                className="bg-tertiary text-tertiary-foreground     btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
+                                className="bg-tertiary text-tertiary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -853,7 +852,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div
                         className={`fixed top-20 right-0 z-10 flex h-full w-full flex-col overflow-hidden bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-120 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
-                        <div className="flex h-10 w-full flex-row items-start justify-between gap-4 mb-4">
+                        <div className="mb-4 flex h-10 w-full flex-row items-start justify-between gap-4">
                             {/* LINK A ARTWORK CREATE */}
                             <a
                                 className="bg-primary text-primary-foreground btn-hover-scale flex w-50 items-center justify-center p-2 text-sm"
@@ -864,7 +863,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                             {/* CERRAR SIDEBAR */}
                             <button
-                                className="bg-btn-danger text-btn-danger-foreground flex h-10 w-10 flex-col items-center justify-center gap-4 rounded-xl text-sm btn-hover-scale"
+                                className="bg-btn-danger text-btn-danger-foreground btn-hover-scale flex h-10 w-10 flex-col items-center justify-center gap-4 rounded-xl text-sm"
                                 type="button"
                                 onClick={() => setisSidebar(false)}
                             >
@@ -872,8 +871,8 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             </button>
                         </div>
 
-                        <h2 className="title text-center text-2xl font-bold mb-4">Gestion de Imagenes</h2>
-                        <h3 className='mb-2'>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
+                        <h2 className="title mb-4 text-center text-2xl font-bold">Gestion de Imagenes</h2>
+                        <h3 className="mb-2">Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
                         {/* SELECT DE ARTWORKS */}
                         <select
                             name="artworks"
@@ -891,7 +890,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                         {/* LINK A CONTENEDOR DE IMAGENES RELACIONADO */}
                         <a
-                            className="bg-btn-secondary text-btn-secondary-foreground btn-hover-scale rounded-2xl font-bold mt-4 flex h-10 w-auto items-center justify-center gap-2"
+                            className="bg-btn-secondary text-btn-secondary-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-2xl font-bold"
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                         >
                             <Settings2 size={20} />
@@ -899,7 +898,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                         </a>
                         {/* BUTTON DE AGREGAR IMAGENES */}
                         <Button
-                            className="bg-btn-success text-btn-success-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-xl px-4 py-2 text-lg "
+                            className="bg-btn-success text-btn-success-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-xl px-4 py-2 text-lg"
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                             onClick={handleOpenAdd}
                         >
@@ -988,7 +987,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                     <a
                         type="button"
-                        className="bg-btn-primary text-btn-primary-foreground btn-hover-scale mt-2 flex h-6 w-35 flex-row items-center justify-center rounded-2xl text-sm font-bold "
+                        className="bg-btn-primary text-btn-primary-foreground btn-hover-scale mt-2 flex h-6 w-35 flex-row items-center justify-center rounded-2xl text-sm font-bold"
                         tabIndex={4}
                         href={route('artwork.create')}
                     >
