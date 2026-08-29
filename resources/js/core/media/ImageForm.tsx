@@ -57,7 +57,6 @@ const ImageForm = ( { posts } : { posts: Post[]}) => {
     /** Varaible de Modal abierto y cerrado  */
     const [isOpen, setIsOpen] = useState(false);
 
-     const [showAssociate, setShowAssociate] = useState(true);
 
 
     /**

@@ -36,7 +36,7 @@ function HomeProfile({ name }: AvatarProps) {
 
     return (
         <div
-            className="block mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] flex items-center justify-center select-none"
+            className="mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] flex items-center justify-center select-none"
             style={{ backgroundColor: bgColor }}
         >
             <span

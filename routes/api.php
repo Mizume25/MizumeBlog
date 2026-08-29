@@ -29,5 +29,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::post('/post/{post_id}/associate/bulk', [ApiController::class, 'associateBulk'])->name('associateBulk');
 
-     Route::post('/post/{post_id}/associate/{artwork_image_id}', [ApiController::class, 'associate'])->name('associate');
+    Route::post('/post/{post_id}/associate/{artwork_image_id}', [ApiController::class, 'associate'])->name('associate');
+
+    Route::put('/post/{post_id}/format/home', [ApiController::class, 'updateHomeConfig'])->name('updateHomeConfig');
+
+    Route::put('/post/{post_id}/format/accent', [ApiController::class, 'updateAccentConfig'])->name('updateAccentConfig');
+
+    Route::put('/post/{post_id}/format/card', [ApiController::class, 'updateCardConfig'])->name('updateCardConfig');
+
+    Route::put('/post/{post_id}/format/article', [ApiController::class, 'updateArticleConfig'])->name('updateArticleConfig');
+    
 });

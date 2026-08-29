@@ -1,23 +1,28 @@
-/** Interfaces web utilizadas */
-import { Artwork, Formato, IndexContent, formatDefault, type Content } from '@/types';
+/** @import Todos los types utilizados */
+import { ArticleConfig, Artwork, BackgroundOptions, BackgroundPositionKeyword, IndexContent, formatDefault, type Content } from '@/types';
 
-/** Eestados e iconos react */
+/** @import Objetos Inertia */
 import { Head } from '@inertiajs/react';
-import { ListTree } from 'lucide-react';
+
+/** @import Iconos */
+import { Folder, FolderOpen, ListTree } from 'lucide-react';
+
+/** @import Componenetes Modal */
+import ApiToast from '@/components/api-toast';
+import ModalOperation from '@/components/modal-operation';
+import { useToast } from '@/hooks/use-toast';
+import PanelEdit from '@/layouts/app/panel-edit';
+import { configApi } from '@/types/api';
+import { DialogTitle } from '@headlessui/react';
+
+/** @imports HOOKS Utilziados */
 import { useCallback, useEffect, useState } from 'react';
 
-/** COMPONENTES  */
+/** @import Layouts y Componentes */
 import SideBarRight from '@/core/auth/SideBarRight';
 import Coments from '@/core/coments/Coments';
 import BlogLayout from '@/layouts/app/blog-layout';
 import { PostContent, PostSideBarLeft } from '../../core/post';
-
-/** @import Folders */
-import { Folder, FolderOpen } from 'lucide-react';
-
-/** @import Componenetes Modal */
-import ModalOperation from '@/components/modal-operation';
-import { DialogTitle } from '@headlessui/react';
 
 /**
  *
@@ -26,14 +31,37 @@ import { DialogTitle } from '@headlessui/react';
  * @param formato Formato de imagen
  * @returns
  */
-function PostHeader({ route, title, format }: { route: string | undefined; title: string; format?: string }) {
+
+/** @interface Interfaz de Encabezado */
+interface PostHeaderProps {
+    route: string | undefined;
+    title: string;
+    format: ArticleConfig | undefined;
+}
+
+/** @interface Interfaz de la Página */
+interface ShowProps {
+    content: Content;
+    artworks: Artwork[];
+}
+
+/**
+ * Componente TSX para renderizar Encabezado
+ * @param route
+ * @param title
+ * @param format
+ * @returns
+ */
+function PostHeader({ route, title, format }: PostHeaderProps) {
     return (
         <>
             {/* Imagen de la obra */}
             <header
-                className={`h-[35vh] w-full bg-cover bg-no-repeat ${format}`}
+                className={`w-full bg-cover bg-no-repeat`}
                 style={{
+                    height: `${format?.height}`,
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`,
+                    backgroundPosition: `${format?.position}`,
                 }}
             ></header>
 
@@ -49,12 +77,11 @@ function PostHeader({ route, title, format }: { route: string | undefined; title
 
 /**
  * Boton Indice para Post
- * @param Function Funcion para abrir y cerrar SideBar
+ * @param onOpen Funcion para abrir y cerrar SideBar
  * @returns
  */
 function PostBTN({ onOpen }: { onOpen?: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => onOpen?.(e);
-
     return (
         <button
             onClick={handleClick}
@@ -67,20 +94,19 @@ function PostBTN({ onOpen }: { onOpen?: (e: React.MouseEvent<HTMLButtonElement>)
     );
 }
 
-interface ShowProps {
-    content: Content;
-    artworks: Artwork[];
-}
-
 function show({ content, artworks }: ShowProps) {
+    /**
+     * @glob Variables de la página
+     */
+    const MIN = 20;
+    const MAX = 90;
+    const DEFAULT_HEIGHT = 35;
+
     /** Ruta de la Portada */
     const cover = `/IMG/Portada/${content.post.cover}`;
 
     /** Formato de la portada */
-    const [format, setFormat] = useState<Formato | null>(formatDefault);
-
-    /** Formato de la portada renderizada a estado  */
-    useEffect(() => setFormat(content.post.config ?? null), [content.post.id]);
+    const [format, setFormat] = useState<ArticleConfig | undefined>(content.post.config?.article ?? formatDefault.article);
 
     /** Indice de Contenido */
     const index: IndexContent[] = content.index;
@@ -91,33 +117,115 @@ function show({ content, artworks }: ShowProps) {
     /** Sidebar del Indice */
     const [sidebar, setSidebar] = useState(false);
 
+    /** Estructura de control de confirmacion de cambios */
+    const [confirm, setConfirm] = useState(false);
+
+    /** Estructura de control para abrir el imagenes */
+    const [isOpen, setIsOpen] = useState(false);
+
+    /** Estructura para abrir panel de edicion */
+    const [edit, setEdit] = useState(false);
+
+    /** Estructura para seteat la position */
+    const [position, setPosition] = useState<BackgroundPositionKeyword | null>(null);
+
+    /** Estructura para setear altura del contendor */
+    const [height, setHeight] = useState(0);
+
     /** Iteración de indice */
     const handleFindID = (id: string) => setSelectedId(id);
+
+    /** Hooks personalizados */
+    const { showToast, toast } = useToast();
 
     /** Toogle de cerrado */
     const onOpen = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-
         setSidebar((prev) => !prev);
     }, []);
 
     /** Cerrado de Indice */
     const isClose = () => setSidebar(false);
 
-    const [isOpen, setIsOpen] = useState(false);
+    /** Abrir Sidebar */
+    const handlerClick = () => setIsOpen(true);
 
-    const handlerClick = () => {
-        setIsOpen(true);
+    /** Editar Panel */
+    const handlerEdit = () => setEdit((prev) => !prev);
+
+    /**
+     * Funciones
+     */
+
+    /** Api para confirmar cambios */
+    const ApiArticleUpdate = async () => {
+        if (format == null) return;
+
+        await configApi
+            .updateArticle(Number(content.post.id), format)
+            .then((data) => showToast('success', data.message))
+            .catch((err) => showToast('error', err.message));
     };
 
+    function clamp(n: number) {
+        return Math.min(MAX, Math.max(MIN, n));
+    }
+
+    /**
+     * @glob HOOKS
+     */
+
+    /** Formato de la portada renderizada a estado  */
+    useEffect(() => {
+        setFormat(content.post.config?.article ?? undefined);
+        const originalHeightRaw = content.post.config?.article?.height;
+        if (originalHeightRaw == undefined) return;
+        const value = parseInt(originalHeightRaw, 10);
+        setHeight(value);
+        setPosition((content.post.config?.article?.position as BackgroundPositionKeyword) ?? null);
+    }, [content.post.id]);
+
+    /** Setear Formato mientras cambio las variable s */
+    useEffect(() => {
+        setFormat((prev) => ({
+            height: `${height}vh`,
+            position: position ?? prev?.position ?? 'center',
+        }));
+    }, [position, height]);
+
+    /**
+     * Resetear Valores
+     */
+    useEffect(() => {
+        if (!edit) {
+            setPosition((content.post.config?.article?.position as BackgroundPositionKeyword) ?? null);
+            const raw = content.post.config?.article?.height;
+            setHeight(raw ? parseInt(raw, 10) : DEFAULT_HEIGHT);
+        }
+    }, [edit]);
+
+    /**
+     * Solo Activar Confirmar en caso de valores diferentes
+     */
+    useEffect(() => {
+        const originalPosition = content.post.config?.article?.position ?? null;
+        const originalHeightRaw = content.post.config?.article?.height;
+        const originalHeight = originalHeightRaw ? parseInt(originalHeightRaw, 10) : DEFAULT_HEIGHT;
+
+        const positionChanged = position != null && position !== originalPosition;
+        const heightChanged = height !== originalHeight;
+
+        setConfirm(positionChanged || heightChanged);
+    }, [position, height]);
+
     return (
-        <BlogLayout post_id={content.post.id}>
+        <BlogLayout post_id={content.post.id} edit={edit} onEdit={handlerEdit}>
             {/* Pestaña de la Página */}
             <Head title={content.post.title}></Head>
-
+            <ApiToast toast={toast} />
             {/* Componente imagen header */}
-            <PostHeader route={cover} title={content.post.title} format={format?.article_config} />
+            <PostHeader route={cover} title={content.post.title} format={format} />
 
             {/** Componente para indice button */}
             <PostBTN onOpen={onOpen} />
@@ -140,6 +248,80 @@ function show({ content, artworks }: ShowProps) {
                     <Coments coments={content.comments} post_id={content.post.id} />
                 </div>
             </main>
+
+            {edit && (
+                <PanelEdit>
+                    <h3 className="mb-2 text-lg font-bold text-white">Posicion</h3>
+                    <p className="mb-4 text-sm text-gray-100">Configura las opciones del layout aquí.</p>
+
+                    <select
+                        className={`mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 text-black capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
+                        onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
+                    >
+                        {BackgroundOptions.map((p, i) => (
+                            <option key={i} value={p} className="bg-white text-black">
+                                {p}
+                            </option>
+                        ))}
+                    </select>
+                    <h3 className="mb-2 text-lg font-bold text-white">Altura</h3>
+                    <div className="mb-2 flex items-center gap-2">
+                        <input
+                            type="number"
+                            min={MIN}
+                            max={MAX}
+                            value={height}
+                            onChange={(e) => setHeight(clamp(Number(e.target.value)))}
+                            className="w-full [appearance:textfield] rounded-xl border border-[#2a2f3a] bg-[#171a21] px-4 py-2.5 font-mono text-[15px] text-[#e8eaed] tabular-nums transition-colors duration-150 outline-none focus:border-[#5b8cff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5b8cff] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        />
+
+                        <div className="flex flex-none items-center gap-1">
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Disminuir"
+                                onClick={() => setHeight((h: number) => clamp(h - 1))}
+                            >
+                                −
+                            </button>
+
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-xs text-[#8a90a0] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Restablecer"
+                                title="Restablecer"
+                                onClick={() => setHeight(DEFAULT_HEIGHT)}
+                            >
+                                ↺
+                            </button>
+
+                            <button
+                                type="button"
+                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
+                                aria-label="Aumentar"
+                                onClick={() => setHeight((h: number) => clamp(h + 1))}
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={ApiArticleUpdate}
+                        className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
+                        disabled={!confirm}
+                    >
+                        Confirmar Cambio
+                    </button>
+
+                    <button
+                        onClick={() => setEdit(false)}
+                        className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
+                    >
+                        Cerrar Panel
+                    </button>
+                </PanelEdit>
+            )}
 
             <ModalOperation isOpen={isOpen} onClose={() => setIsOpen(false)} title="Artworks">
                 {/* Header */}

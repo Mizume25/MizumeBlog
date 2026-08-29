@@ -11,6 +11,7 @@ use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Table\TableExtension;
+use Illuminate\Support\Facades\Auth;
 use App\Enums\ContentType;
  
 use App\Services\MarkdownService;
@@ -49,7 +50,10 @@ class HomeController extends Controller
     public function show(int $id)
     {
         $features = Post::featured()->latest()->limit(3)->get();
+
         $post = Post::with('comments')->findOrFail($id);
+
+        if($post->publish_date == null && Auth::user()->role == 'user') return redirect()->route('home')->with('error', 'Este Post no esta disponible');
 
         $comments = Comment::where('post_id', $post->id)
         ->whereNull('parent_id')
@@ -58,13 +62,18 @@ class HomeController extends Controller
 
 
         $md = Storage::disk('local')->get($post->path(ContentType::Content));
+        
         $json = Storage::disk('local')->get($post->path(ContentType::Index));
 
         $body = MarkdownService::resolveImages($md , $post);
+        
+
         $raw = Storage::disk('local')->get($post->path(ContentType::Content));
 
 
         $index = json_decode($json, true);
+
+        
 
         $artworks = $post->artworks;
 

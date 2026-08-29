@@ -1,0 +1,1 @@
+const t={home:"center",article:{position:"center",height:"35vh"}},e=["top","center","bottom"],o=["top left","top center","top right","center left","center","center center","center right","bottom left","bottom center","bottom right"];export{e as B,o as a,t as f};

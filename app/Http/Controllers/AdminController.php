@@ -11,10 +11,16 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Enums\ImageType;
 use App\Models\Artwork;
+use App\Models\ArtworkImage;
+use App\Models\PostImage;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use League\CommonMark\Extension\Highlight\MarkRenderer;
+
 
 class AdminController extends Controller
 {
@@ -43,10 +49,9 @@ class AdminController extends Controller
      */
     public function panel()
     {
-        $posts = Post::orderBy('publish_date', 'desc')->get();
         return Inertia::render('post/MizumeAdmin', [
             'data' => [
-                'posts'   => $posts,
+                'posts'   => Post::orderBy('publish_date', 'desc')->get(),
                 'users'   => User::all(['id', 'name', 'email', 'created_at']),
                 'coments' => Comment::all(),
             ]
@@ -97,10 +102,10 @@ class AdminController extends Controller
     {
         $post = Post::findOrFail($id);
         $this->authorize('update', $post);
-        
+
         $data = $request->validated();
 
-        
+
         unset($data['cover'], $data['cover_card'], $data['content'], $data['works']);
 
         $data['tags'] = implode(',', $data['tags']);
@@ -111,14 +116,21 @@ class AdminController extends Controller
             $file = $request->file('content');
             $content = file_get_contents($file->getRealPath());
 
-            if (!MarkdownService::hasHeading($content)) {
-                return back()->with('error', 'El archivo MD no es válido');
-            }
+            if (!MarkdownService::hasHeading($content)) return back()->with('error', 'El archivo MD no es válido');
+
 
 
 
             $titles = MarkdownService::extract($content);
+
+            if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores repetidos en el indice repetidos');
+
+
+
             $index = json_encode($titles);
+            $content = MarkdownService::cleanAllMD($content);
+
+
 
             Storage::disk('local')->put($post->path(ContentType::Content), $content);
             Storage::disk('local')->put($post->path(ContentType::Index), $index);
@@ -153,7 +165,7 @@ class AdminController extends Controller
      * Eliminar Post
      * @param $id id del Post
      */
-    public function destroy(int $id)
+    public function destroy(int $id) 
     {
         $post = Post::findOrFail($id);
 
@@ -171,14 +183,15 @@ class AdminController extends Controller
          */
         Storage::disk('local')->delete($post->path(ContentType::Content));
         Storage::disk('local')->delete($post->path(ContentType::Index));
+        Storage::disk('local')->deleteDirectory("blog/{$post->code}");
 
 
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
 
         $post->delete();
-
-        return redirect()->route('post.panel')->with('success', 'Post eliminado');
+        
+        return redirect()->route('post.panel')->with('success', 'Post borrado correctamente');
     }
 
 
@@ -237,6 +250,10 @@ class AdminController extends Controller
         }
 
         $titles = MarkdownService::extract($content);
+        if (MarkdownService::testIndex($titles)) return back()->with('error', 'Hay valores duplicados en el indice');
+
+
+        $content = MarkdownService::cleanAllMD($content);
 
         /** Construiremos un indice partiendo de los titulo de la obra */
         $index  = json_encode($titles);
@@ -256,12 +273,15 @@ class AdminController extends Controller
         $pendingKeys = MarkdownService::syncKeys($content, $post);
 
         if (!empty($pendingKeys)) {
-            return back()->with('pendingKeys', $pendingKeys)
+
+            return redirect()->route('post.edit', $post->id)
+                ->with('pendingKeys', $pendingKeys)
                 ->with('warning', 'El post se creó, pero hay claves de imagen sin asignar: ' . implode(', ', $pendingKeys));
         }
 
-        return back()->with('success', "Post creado con exito");
+        return redirect()->route('post.edit', $post->id)->with('success', 'Post Creado con exito');
     }
+
 
     public function backup()
     {
@@ -269,6 +289,10 @@ class AdminController extends Controller
             'posts'    => Post::all()->toArray(),
             'users'    => User::all()->makeHidden(['password', 'remember_token'])->toArray(),
             'comments' => Comment::all()->toArray(),
+            'artworks' => Artwork::all()->toArray(),
+            'artwork_images' => ArtworkImage::all()->toArray(),
+            'post_images' => PostImage::all()->toArray(),
+            'artwork_post' => DB::table('artwork_post')->select(["post_id", "artwork_id"])->get(),
         ];
 
 

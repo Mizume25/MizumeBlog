@@ -43,11 +43,14 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        // 4. Trata las peticiones a /api/* como stateful cuando vienen del propio SPA,
+        //    para que Sanctum acepte la cookie de sesión en vez de exigir un token.
         $middleware->statefulApi();
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exceptions, Request $request) {
-            if (! app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [403, 404, 419, 429, 500, 503])) {
+            if (!app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [403, 404, 419, 429, 500, 503])) {
                 return Inertia::render('Error', ['status' => $response->getStatusCode()])
                     ->toResponse($request)
                     ->setStatusCode($response->getStatusCode());

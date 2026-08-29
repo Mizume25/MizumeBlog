@@ -47,6 +47,7 @@ class MarkdownService
         return $index;
     }
 
+
     /** Genera un Markdown  de ejemplo */
     public static function generate()
     {
@@ -89,6 +90,9 @@ class MarkdownService
     /**
      * Recorre el markdown, sincroniza post_images con las keys reales del texto,
      * y devuelve las keys nuevas que aún no tienen imagen asignada.
+     * @param $content
+     * @param $post
+     * @param $dryRun
      */
     public static function syncKeys(string $content, Post $post, bool $dryRun = false): array
     {
@@ -118,5 +122,92 @@ class MarkdownService
         $content = Storage::disk('local')->get($post->path(ContentType::Content));
         preg_match_all('/\{\{img:([\w-]+)\}\}/', $content, $matches);
         return in_array($key, $matches[1]);
+    }
+
+    /** Comprueba el indice tenga valores únicos
+     * @param array $index
+     */
+    public static function testIndex(array $index): bool
+    {
+        $ids = array_column($index, 'id');
+
+        return count($ids) !== count(array_unique($ids));
+    }
+
+    /**
+     * Colocal ids correspondientes
+     */
+    public static function embedIds(string $content, array $index): string
+    {
+        $i = 0;
+        return preg_replace_callback('/^(#{2}\s+.+)$/m', function ($match) use ($index, &$i) {
+            $id = $index[$i]['id'] ?? null;
+            $i++;
+            return $id ? "{$match[1]} {#{$id}}" : $match[1];
+        }, $content);
+    }
+
+    /**
+     * Transforma los wiki links en claves
+     */
+    public static function convertWikiImages(string $content): string
+    {
+        $usedKeys = [];
+
+        return preg_replace_callback(
+            '/!\[\[([^\]|]+\.(?:webp|png|jpe?g|gif|svg))(?:\|[^\]]*)?\]\]/i',
+            function () use (&$usedKeys) {
+                do {
+                    $key = Str::lower(Str::random(10));
+                } while (isset($usedKeys[$key]));
+
+                $usedKeys[$key] = true;
+
+                return "{{img:{$key}}}";
+            },
+            $content
+        );
+    }
+
+    /**
+     * Elimina el bloque de frontmatter YAML (---...---) al inicio del
+     * documento, si existe. Es metadata de Obsidian, no pertenece al
+     * contenido del blog.
+     */
+    public static function stripFrontmatter(string $content): string
+    {
+        return preg_replace('/^---\s*\n.*?\n---\s*\n/s', '', $content, 1);
+    }
+
+    /** Limpiado de citas */
+    public static function stripCitationLinks(string $content): string
+    {
+        return preg_replace_callback(
+            '/(?<!!)\[\[([^\]]+)\]\]/',
+            function ($match) {
+                $inner = $match[1];
+
+                if (str_contains($inner, '|')) {
+                    [, $alias] = explode('|', $inner, 2);
+                    return trim($alias);
+                }
+
+                return trim($inner); // red de seguridad, no debería dispararse en tu flujo normal
+            },
+            $content
+        );
+    }
+
+
+    /**
+     * Funcion Envolvente
+     */
+    public static function cleanAllMD(string $content)
+    {
+        $content = static::convertWikiImages($content);
+        $content = static::stripFrontmatter($content);
+        $content = static::stripCitationLinks($content);
+
+        return $content;
     }
 }

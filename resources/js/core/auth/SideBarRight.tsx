@@ -79,7 +79,7 @@ function SideBarRight({
                     ? "text-xl text-white font-bold pb-[10px] border-b-2 border-[#eee] mb-4 [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]"
                     : "text-[#2A1B12] text-lg font-semibold mb-5"
                 }>
-                    {featuredTitle}
+                    {featuredTitle.replaceAll('-', ' ')}
                 </h3>
 
                 <ul className={`capitalize ${isDark} ? "pl-0" : "space-y-0`}>
@@ -95,7 +95,7 @@ function SideBarRight({
                                     : "block py-3 outline-none text-[#34495E] text-base font-bold tracking-tight group-hover:text-[#1A2D42] transition-colors text-center"
                                 }
                             >
-                                {post.title}
+                                {post.title.replaceAll('-', ' ')}
                             </a>
                         </li>
                     ))}

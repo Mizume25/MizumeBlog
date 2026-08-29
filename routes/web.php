@@ -6,7 +6,6 @@ use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\PostImageConfigController;
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -66,13 +65,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     /** Crear Backup */
     Route::get('post/backup', [AdminController::class, 'backup'])->name('post.backup');
-
-
-
-    // routes/web.php
-    Route::get('/admin/posts/image-config', [PostImageConfigController::class, 'index'])->name('posts.image-config');
-
-    Route::patch('/admin/posts/{post}/image-config', [PostImageConfigController::class, 'update'])->name('post.image-config.update');
 
     
     /** Rutas Artworks */

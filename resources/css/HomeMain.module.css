@@ -28,8 +28,9 @@
     
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: var(--bg-format);
-    
+    background-position-x: var(--bg-format-x);
+    background-position-y: var(--bg-format-y);
+
     /* Volvemos a un tiempo normal para que lo disfrutes */
     transition: transform 0.8s ease-in-out;
     transform: scale(1);

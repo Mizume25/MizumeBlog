@@ -1,91 +1,101 @@
-import { Link, usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
-import LogoutButton from './LogoutButton';
-import { WEB_ROUTE } from '@/types';
-import { Image, LayoutDashboard, Menu, Pencil } from 'lucide-react';
+import { SharedData, WEB_ROUTE } from '@/types';
+import { Link, router, usePage } from '@inertiajs/react';
+import { LayoutDashboard, Menu, Pencil } from 'lucide-react';
+import Switch from 'react-switch';
 import AuthButton from './AuthButton';
-
-
+import LogoutButton from './LogoutButton';
 
 interface TopAuthBarProps {
     post_id?: number;
     onToggle: () => void;
+    edit?: boolean;
+    onEdit?: () => void;
 }
 
-
-export function TopAuthBar({ post_id, onToggle }: TopAuthBarProps) {
+export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps) {
     const { auth } = usePage<SharedData>().props;
-
-
-
-
+    
     return (
-        <div className="w-full bg-[#f3e5ab] text-[#2c1e17] py-4 px-4 shadow-md sticky top-0 z-30">
-            <div className="max-w-[1500px] mx-auto flex md:grid md:grid-cols-3 items-center justify-between">
-
+        <div className="bg-primary-foreground sticky top-0 z-30 w-full px-4 py-4 shadow-md">
+            <div className="mx-auto max-w-[1500px] items-center justify-between max-lg:flex max-lg:flex-row lg:grid lg:grid-cols-3">
                 {/* Nav: oculta en mobile */}
-                <nav className="hidden md:flex gap-6 text-sm font-medium justify-self-start">
+                <nav className="hidden gap-6 justify-self-start text-sm font-medium lg:flex">
                     {WEB_ROUTE.map((p, i) => (
-                        <a href={p.url} key={i} className="relative text-[#2d1d0d] font-bold text-sm uppercase tracking-wide group">
-                           {p.label}
-                            <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#8c6c44] transition-all duration-300 group-hover:w-full" />
+                        <a href={p.url} key={i} className="text-primary group relative text-sm font-bold tracking-wide uppercase">
+                            {p.label}
+                            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[#8c6c44] transition-all duration-300 group-hover:w-full" />
                         </a>
                     ))}
                 </nav>
-
-                <h1 className="md:justify-self-center text-[1.6rem] md:text-[2rem] lg:text-[2.2rem] font-bold title">
-                    Mizumeblog
-                </h1>
+                <div>
+                    <h1 className="title text-[1.6rem] font-bold md:justify-self-center md:text-[2rem] lg:text-[2.2rem]">Mizumeblog</h1>
+                </div>
 
                 {/* Auth buttons: ocultos en mobile */}
-                <div className="hidden md:flex gap-6 items-center text-sm font-medium justify-self-end">
+                <div className="hidden items-center gap-6 justify-self-end text-sm font-medium lg:flex">
                     {!auth.user ? (
                         <>
-                            <Link href={route('login')} className="hover:underline">Iniciar Sesión</Link>
+                            <Link href={route('login')} className="hover:underline">
+                                Iniciar Sesión
+                            </Link>
                             <Link
                                 href={route('register')}
-                                className="bg-[#2c1e17] text-[#f3e5ab] px-3 py-1 rounded hover:bg-[#4a3728] transition-colors"
+                                className="bg-primary text-primary-foreground btn-hover-scale rounded px-3 py-1 transition-colors hover:bg-[#4a3728]"
                             >
                                 Registrarse
                             </Link>
                         </>
                     ) : (
                         <>
-                            {(auth.user.role === 'admin' || auth.user.role === 'editor') &&
+                            {auth.user.role === 'admin' && edit != undefined && onEdit ? (
+                                <Switch
+                                    checked={edit ?? false}
+                                    onChange={onEdit}
+                                    onColor="#a79101"
+                                    offColor="#454545"
+                                    checkedIcon={false}
+                                    uncheckedIcon={false}
+                                />
+                            ) : (
+                                <></>
+                            )}
+                            {(auth.user.role === 'admin' || auth.user.role === 'editor') && (
                                 <>
-                                    <AuthButton url={route('post.panel')} label='Panel' >
-                                        <LayoutDashboard size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
-                                    </AuthButton>
-
-                                    <AuthButton url={route('posts.image-config')} label='Format' >
-                                        <Image size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
+                                    <AuthButton url={route('post.panel')} label="Panel">
+                                        <LayoutDashboard
+                                            size={15}
+                                            className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
+                                            strokeWidth={1.5}
+                                        />
                                     </AuthButton>
                                 </>
-
-                            }
+                            )}
                             {(auth.user.role === 'admin' || auth.user.role === 'editor') && post_id && (
-
-                                <AuthButton url={route('post.edit', post_id)} label='Edit'>
-                                    <Pencil size={15} className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5" strokeWidth={1.5} />
+                                <AuthButton url={route('post.edit', post_id)} label="Edit">
+                                    <Pencil
+                                        size={15}
+                                        className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
+                                        strokeWidth={1.5}
+                                    />
                                 </AuthButton>
                             )}
+
                             <LogoutButton />
                         </>
                     )}
                 </div>
 
-                {/* Trigger del sidebar: solo mobile */}
-                <button
-                    onClick={() => onToggle()}
-                    className="md:hidden p-1 bg-[#3D1F08] rounded shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer"
-                    aria-label="Abrir menú"
-                >
-                    <Menu size={24} className='text-white' />
-                </button>
+                <div>
+                    {/* Trigger del sidebar: solo mobile */}
+                    <button
+                        onClick={() => onToggle()}
+                        className="bg-primary flex w-10 cursor-pointer items-center justify-center rounded border border-white/20 p-1 shadow-lg transition-all active:scale-95 lg:hidden"
+                        aria-label="Abrir menú"
+                    >
+                        <Menu size={24} className="text-white" />
+                    </button>
+                </div>
             </div>
-
-            {/* Aquí conectas tu componente de Sidebar, ej: */}
-            {/* <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} auth={auth} post_id={post_id} /> */}
         </div>
     );
 }

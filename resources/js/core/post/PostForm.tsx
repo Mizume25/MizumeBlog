@@ -1,4 +1,5 @@
 /*** @import Imports de Inerficies de Formularios y objetos submit */
+import FormField from '@/components/form-label';
 import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +10,7 @@ import Switch from 'react-switch';
 import { artworkApi } from '@/types/api';
 
 /*** @import Estructuras de Estado  y de referencia */
-import { ToastType, useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { confirmDelete } from '@/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
@@ -23,11 +24,13 @@ import {
     type CreatePostSchemaInput,
     type CreatePostSchemaOutput,
 } from '@/types';
-import { Button, Input, Select, Textarea } from '@headlessui/react';
+import { Button, Input } from '@headlessui/react';
+import axios from 'axios'
 
 /** @imports Libreria de Iconos */
+import ApiToast from '@/components/api-toast';
 import ModalOperation from '@/components/modal-operation';
-import { router } from '@inertiajs/react';
+
 import {
     ArrowBigLeft,
     Book,
@@ -49,6 +52,7 @@ import {
     Tags,
     User,
 } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -72,33 +76,6 @@ interface PostFormProps {
  */
 export interface PostFormHandle {
     resetForm: () => void;
-}
-
-/**
- * Funcion para notificar acciones api json
- */
-function ApiToast({ toast }: { toast: { type: ToastType; message: string } | null }) {
-    if (!toast) return null;
-
-    return (
-        <div
-            className={`fixed top-5 right-5 z-[100] transition-all duration-500 ease-out ${
-                toast ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-8 opacity-0'
-            }`}
-        >
-            <div
-                className={`flex min-w-[260px] items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
-                    toast?.type === 'success'
-                        ? 'bg-[#7ad35f] text-white'
-                        : toast?.type === 'warning'
-                          ? 'bg-[#e0a11a] text-white'
-                          : 'bg-[#fc5353] text-white'
-                }`}
-            >
-                <p className="text-sm font-medium">{toast?.message}</p>
-            </div>
-        </div>
-    );
 }
 
 const PostForm = forwardRef<PostFormHandle, PostFormProps>(
@@ -420,9 +397,9 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
          */
         const onDelete = () => {
             if (post_id == null) return;
-            confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () =>
+            confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () => 
                 router.delete(route('post.destroy', post_id)),
-            );
+        );
         };
 
         /** Abre el modal multi-select y precarga imágenes disponibles (reusa avaliables) */
@@ -506,7 +483,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                 {/** FORMULARIO HTML */}
                 <div>
                     <ApiToast toast={toast} />
-                    <div className="border-border/50 mx-auto rounded-lg border bg-[#754C22] p-4 shadow-lg sm:p-8 lg:min-w-150">
+                    <div className="bg-secondary text-secondary-foreground border-border/50 mx-auto rounded-lg border p-4 shadow-lg sm:p-8 lg:min-w-150">
                         {/** HEAD - FORMULARIO */}
                         <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Errores de validación:', errors))}>
                             <div className="flex flex-row justify-between gap-2 text-center">
@@ -547,7 +524,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <div className="mb-3 flex h-20 w-full flex-col p-4">
                                 <Button
                                     type="button"
-                                    className="h-full w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
+                                    className="bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale h-full w-full cursor-pointer rounded-2xl font-bold"
                                     tabIndex={4}
                                     onClick={() => setModalArtwork(true)}
                                 >
@@ -559,40 +536,34 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             <div className="grid grid-cols-1 gap-6 p-3 text-left lg:grid-cols-2 lg:gap-10">
                                 {/**  Titulo de la obra  */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Book size={20} />
-                                        <span>Titulo Obra</span>
-                                    </Label>
-
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Titulo Obra"
+                                        icon={Book}
                                         id="title"
-                                        type="text"
                                         required
                                         autoFocus
                                         tabIndex={1}
+                                        error={errors.title?.message}
                                         {...register('title')}
                                         placeholder="Work Title..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
-                                    <InputError message={errors.title?.message} />
                                 </div>
 
                                 {/** Titulo Web */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Computer size={19} />
-                                        <span>Titulo Web</span>
-                                    </Label>
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Web title"
+                                        icon={Computer}
                                         id="web_title"
-                                        type="text"
+                                        required
                                         autoFocus
                                         tabIndex={1}
                                         {...register('web_title')}
-                                        placeholder="Web title work..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        error={errors.web_title?.message}
+                                        placeholder="Web Title ..."
                                     />
-                                    <InputError message={errors.web_title?.message} />
                                 </div>
 
                                 {/** Tags */}
@@ -603,7 +574,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     </Label>
                                     <Button
                                         type="button"
-                                        className="h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90"
+                                        className="bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale h-12 w-full rounded-2xl font-bold"
                                         tabIndex={4}
                                         onClick={() => setModalTags(true)}
                                     >
@@ -615,55 +586,45 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                                 {/*** Autor de la Obra */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <User size={19} />
-                                        <span>Autor</span>
-                                    </Label>
-                                    <Input
+                                    <FormField
+                                        type="input"
+                                        label="Autor"
+                                        icon={User}
                                         id="author"
-                                        type="text"
+                                        required
                                         autoFocus
                                         tabIndex={1}
-                                        required
                                         {...register('author')}
+                                        error={errors.author?.message}
                                         placeholder="Author name..."
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
                                     />
-                                    <InputError message={errors.author?.message} />
                                 </div>
 
                                 {/** Fecha Públicación */}
                                 <div className="flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Calendar size={19} />
-                                        <span>Fecha Públicación</span>
-                                    </Label>
-                                    <Input
-                                        id="publish_date"
+                                    <FormField
                                         type="date"
+                                        label="Publish date"
+                                        icon={Calendar}
+                                        id="publish_date"
                                         autoFocus
                                         tabIndex={1}
                                         {...register('publish_date')}
-                                        className="rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        error={errors.publish_date?.message}
                                     />
-                                    <InputError message={errors.publish_date?.message} />
                                 </div>
 
                                 {/*** Categorias */}
                                 <div className="mb-5 flex flex-col gap-2">
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Tag size={19} />
-                                        <span>Categoria</span>
-                                    </Label>
-                                    <Select id="category" {...register('category')} className="rounded-md bg-white/30 p-2 text-gray-50 capitalize">
-                                        {OPTION_CATEGORY.map((p) => (
-                                            <option value={p} key={p} className="bg-white/30 text-black capitalize">
-                                                {p}
-                                            </option>
-                                        ))}
-                                    </Select>
-
-                                    <InputError message={errors.category?.message} />
+                                    <FormField
+                                        type="select"
+                                        label="Categoria"
+                                        icon={Tag}
+                                        id="category"
+                                        {...register('category')}
+                                        options={OPTION_CATEGORY.map((p) => ({ value: p, label: p }))}
+                                        error={errors.category?.message}
+                                    />
                                 </div>
                             </div>
 
@@ -732,20 +693,16 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/*** CAMPO DESCRIPCION */}
                             <div>
                                 <div className="mb-6 flex flex-col gap-2">
-                                    {/** Descripcion */}
-                                    <Label className="flex items-center gap-2 text-white">
-                                        <Pencil size={19} />
-                                        <span>Descripcion</span>
-                                    </Label>
-                                    <Textarea
+                                    <FormField
+                                        type="textarea"
+                                        label="Description"
+                                        icon={Pencil}
                                         id="description"
+                                        {...register('description')}
                                         autoFocus
                                         tabIndex={1}
-                                        {...register('description')}
-                                        placeholder="This work is the..."
-                                        className="h-30 rounded-md border-white/20 bg-white/30 p-2 text-gray-50 placeholder:text-white/40 focus:bg-white/20"
+                                        error={errors.category?.message}
                                     />
-                                    <InputError message={errors.description?.message} />
                                 </div>
                             </div>
 
@@ -771,11 +728,6 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <Input id="content" type="file" className="hidden" accept=".md" {...register('content')} />
                                 <InputError message={errors.content?.message} />
                             </label>
-
-                            <Label className="mb-3 flex items-center gap-2 text-white">
-                                <Image size={19} />
-                                <span>Imagenes</span>
-                            </Label>
 
                             {/* Lista de tags */}
                             <div className="flex h-8 w-full flex-row items-center justify-start">
@@ -851,7 +803,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                     {/* ACCION IMAGENES */}
                                     <Button
                                         type="button"
-                                        className={`mt-5 h-12 w-full cursor-pointer rounded-2xl bg-white font-bold text-[#754C22] transition-transform duration-150 hover:scale-105 hover:bg-white/90 ${defaultValues == undefined ? 'hidden' : ''}`}
+                                        className={`bg-btn-tertiary text-btn-tertiary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold ${defaultValues == undefined ? 'hidden' : ''}`}
                                         tabIndex={4}
                                         onClick={onToogle}
                                     >
@@ -863,7 +815,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/* ACCION UPDATE */}
                             <Button
                                 type="submit"
-                                className="mt-5 h-12 w-full cursor-pointer rounded-2xl bg-[#e2d255] font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                                className="bg-tertiary text-tertiary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
                                 tabIndex={4}
                                 disabled={processing}
                             >
@@ -875,7 +827,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                                 <>
                                     {/* ACCION SHOW */}
                                     <a
-                                        className="mt-5 flex h-12 w-full items-center justify-center rounded-2xl bg-blue-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-600"
+                                        className="bg-btn-info text-btn-info-foreground btn-hover-scale mt-5 flex h-12 w-full items-center justify-center rounded-2xl font-bold"
                                         href={route('post.show', post_id)}
                                     >
                                         Ver Post
@@ -883,7 +835,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                                     {/* ELIMINAR */}
                                     <Button
-                                        className="mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl bg-red-500 font-bold text-white transition-transform duration-150 hover:scale-105 hover:bg-red-800"
+                                        className="bg-btn-danger text-btn-danger-foreground btn-hover-scale mt-5 flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl font-bold"
                                         onClick={onDelete}
                                     >
                                         Eliminar
@@ -901,33 +853,34 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                     <div
                         className={`fixed top-20 right-0 z-10 flex h-full w-full flex-col overflow-hidden bg-[#e5c385] p-4 transition-opacity duration-300 lg:w-120 ${isSidebar ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                     >
-                        <div className="flex h-10 w-full flex-row items-start justify-start gap-4">
+                        <div className="mb-4 flex h-10 w-full flex-row items-start justify-between gap-4">
+                            {/* LINK A ARTWORK CREATE */}
+                            <a
+                                className="bg-primary text-primary-foreground btn-hover-scale flex w-50 items-center justify-center p-2 text-sm"
+                                href={route('artwork.create')}
+                            >
+                                Agregar Artwork
+                            </a>
+
                             {/* CERRAR SIDEBAR */}
                             <button
-                                className="flex h-10 w-full cursor-pointer flex-row items-start justify-start gap-4"
+                                className="bg-btn-danger text-btn-danger-foreground btn-hover-scale flex h-10 w-10 flex-col items-center justify-center gap-4 rounded-xl text-sm"
                                 type="button"
                                 onClick={() => setisSidebar(false)}
                             >
                                 X
                             </button>
-                            {/* LINK A ARTWORK CREATE */}
-                            <a
-                                className="_btn_secondary flex items-center justify-center transition-transform duration-150 ease-in-out hover:scale-110"
-                                href={route('artwork.create')}
-                            >
-                                Agregar
-                            </a>
                         </div>
 
-                        <h2 className="title text-center text-2xl font-bold">Gestion de Imagenes</h2>
-                        <h3>Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
+                        <h2 className="title mb-4 text-center text-2xl font-bold">Gestion de Imagenes</h2>
+                        <h3 className="mb-2">Total de Imagenes: {Object.values(container ?? {}).flat().length}</h3>
                         {/* SELECT DE ARTWORKS */}
                         <select
                             name="artworks"
                             id="artworks"
                             value={artwork?.id ?? ''}
                             onChange={(e) => changeArtwork(Number(e.target.value))}
-                            className="text- w-full cursor-pointer rounded-xl bg-white/30 p-2 outline-none focus:bg-white/20"
+                            className="text- w-full cursor-pointer rounded-xl bg-white/30 p-2 capitalize outline-none focus:bg-white/20"
                         >
                             {galeries?.map((gal) => (
                                 <option key={gal.id} value={gal.id} className="bg-white text-black">
@@ -938,15 +891,15 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                         {/* LINK A CONTENEDOR DE IMAGENES RELACIONADO */}
                         <a
-                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-lg text-white transition-colors hover:bg-amber-800"
+                            className="bg-btn-secondary text-btn-secondary-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-2xl font-bold"
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                         >
-                            <Settings2 size={20} className="text-white" />
+                            <Settings2 size={20} />
                             Gestionar Contenedor
                         </a>
                         {/* BUTTON DE AGREGAR IMAGENES */}
                         <Button
-                            className="mt-4 flex h-10 w-auto cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-400 px-4 py-2 text-lg text-white transition-colors hover:bg-green-500"
+                            className="bg-btn-success text-btn-success-foreground btn-hover-scale mt-4 flex h-10 w-auto items-center justify-center gap-2 rounded-xl px-4 py-2 text-lg"
                             {...(artwork?.id != null ? { href: route('artwork.edit', artwork.id) } : {})}
                             onClick={handleOpenAdd}
                         >
@@ -1035,7 +988,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
 
                     <a
                         type="button"
-                        className="mt-2 flex h-6 w-35 cursor-pointer flex-row items-center justify-center rounded-2xl bg-[#e2d255] text-sm font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
+                        className="bg-btn-primary text-btn-primary-foreground btn-hover-scale mt-2 flex h-6 w-35 flex-row items-center justify-center rounded-2xl text-sm font-bold"
                         tabIndex={4}
                         href={route('artwork.create')}
                     >

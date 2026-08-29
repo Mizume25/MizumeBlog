@@ -2,6 +2,7 @@
  * @fileoverview Archivos de exportacion de interfaces web
  */
 import { LucideIcon } from 'lucide-react';
+import { Section_Content } from './constants';
 
 /**
  * @interface Auth
@@ -40,10 +41,11 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+
 export interface FlashMessage {
     success?: string | null;
     error?: string | null;
-    warning?: string | null
+    warning?: string | null;
 }
 
 /**
@@ -122,8 +124,7 @@ export type Post = Field & {
     cover?: string;
     cover_card?: string;
     config?: Config;
-    images?:PostImageWithImage []
-    
+    images?: PostImageWithImage[];
 };
 
 /**
@@ -142,7 +143,7 @@ export type ArtworkInput = {
 };
 
 export type ArtworkPictures = {
-    id: number
+    id: number;
     name: string;
     alt: string | null;
 };
@@ -216,24 +217,31 @@ export type UserRecord = User & {
  *
  * Gestor de contenidos web
  */
+export type ArticleConfig = {
+    height: string;
+    position: BackgroundPositionKeyword;
+};
 
 /**
  * Formato de imagenes
  * @type Formato de Imagenes
  */
 export type Config = {
-    home_config?: string;
-    article_config?: string;
-    card_config?: string;
+    home?: string;
+    article?: ArticleConfig;
+    card?: string;
     accent?: string;
 };
 /**
  * Formato Default de imagenes
  */
 export const formatDefault: Config = {
-    home_config: 'center',
-    article_config: 'bg-[center_18%]',
-    card_config: '10%',
+    home: 'center',
+    article: {
+        position: 'center',
+        height: '35vh',
+    },
+    card: '10%',
     accent: '#fcfcfd',
 };
 
@@ -265,8 +273,11 @@ export type Content = {
     body: string;
     comments: CommentRecord[];
     features: Post[];
-    raw: string,
+    raw: string;
 };
+
+
+
 
 /**
  * Datos a analizar
@@ -276,3 +287,33 @@ export type Data = {
     posts: Post[];
     coments: Comment[];
 };
+
+/** Opcionalidades de backgrounds  */
+export type BackgroundPositionKeyword = 'top' | 'center' | 'bottom';
+
+export type BackgroundPositionKeywordCard =
+    | 'top left'
+    | 'top center'
+    | 'top right'
+    | 'center left'
+    | 'center'
+    | 'center center'
+    | 'center right'
+    | 'bottom left'
+    | 'bottom center'
+    | 'bottom right';
+
+export const BackgroundOptions = ['top', 'center', 'bottom'];
+
+export const BackgroundOptionsCard = [
+    'top left',
+    'top center',
+    'top right',
+    'center left',
+    'center',
+    'center center',
+    'center right',
+    'bottom left',
+    'bottom center',
+    'bottom right',
+];
