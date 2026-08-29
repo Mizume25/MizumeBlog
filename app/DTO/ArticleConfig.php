@@ -39,6 +39,3 @@ final class ArticleConfig implements JsonSerializable, Arrayable
         return $this->toArray();
     }
 }
-
-?>
-

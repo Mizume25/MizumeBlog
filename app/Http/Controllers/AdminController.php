@@ -165,7 +165,7 @@ class AdminController extends Controller
      * Eliminar Post
      * @param $id id del Post
      */
-    public function destroy(int $id) : RedirectResponse
+    public function destroy(int $id) 
     {
         $post = Post::findOrFail($id);
 
@@ -190,10 +190,8 @@ class AdminController extends Controller
         if ($card && file_exists(public_path('IMG/Cards/' . $card))) unlink(public_path('IMG/Cards/' . $card));
 
         $post->delete();
-
-  
-
-        return redirect()->route('post.panel')->with('success', 'El Post se borro correctamente');
+        
+        return redirect()->route('post.panel')->with('success', 'Post borrado correctamente');
     }
 
 

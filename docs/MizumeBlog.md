@@ -9,6 +9,8 @@ Se sigue una convención de estructura de proyecto Laravel + React.  Esta estruc
 
 ```
 ├───app  
+│   ├───Casts # Cast de objetos customs 
+│   ├───DTO  # Data Object Transfern - Estructura JSON de un campo específico de BBDD
 │   ├───Console 
 │   ├───Enums # Tipados Especificos de MizumeBlog
 │   ├───Http 
@@ -38,6 +40,7 @@ Se sigue una convención de estructura de proyecto Laravel + React.  Esta estruc
 ├── Console
 │   └── Commands
 │       └── CreateAdminUser.php
+│       └── CreateTestPost.php
 ````
 
 Creación de usuario administrador .
@@ -46,7 +49,9 @@ Creación de usuario administrador .
 ````
 ├── Enums
 │   ├── ContentType.php
+│   ├──   PositionType.php
 │   └── ImageType.php
+
 ````
 
 Tipos específicos de contenido de la página web 
@@ -114,7 +119,6 @@ Tipos específicos de contenido de la página web
 │       ├── StoreArtwork.php # Request de Store Artwork
 │       ├── StorePostRequest.php # Request de Store Post
 │       ├── UpdateArtwork.php # Request de Update Artwork
-│       ├── UpdatePostConfigRequest.php # Request de Config Image Artwork
 │       └── UpdatePostRequest.php # Request de Update Post
 ```
 
@@ -146,7 +150,7 @@ Modelos con las siguientes funciones
 Cast de propiedades
 ``` 
 protected $casts = [
-	'config' => 'array',
+	'config' => ConfigCast::class,
 ];
 ```
 
@@ -312,6 +316,7 @@ Algomera funciones relativos al md:
 |      **build()**      |    Construye la ruta de imagenes    |
 |    **syncKeys()**     |     Sincroniza keys de BD y MD      |
 | **keyExistsInPost()** |           Comprueba keys            |
+
 
 
 ## Diseño Web
