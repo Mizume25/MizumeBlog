@@ -1,6 +1,7 @@
 /** Archivo de Apis utilizadas */
 
 import { ArticleConfig } from './interfaces';
+import axios from 'axios'
 
 /** Cifrado Token */
 function getCsrfToken(): string {

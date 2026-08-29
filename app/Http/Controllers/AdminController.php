@@ -15,6 +15,7 @@ use App\Models\ArtworkImage;
 use App\Models\PostImage;
 use App\Services\FileContentService;
 use App\Services\MarkdownService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -165,7 +166,7 @@ class AdminController extends Controller
      * Eliminar Post
      * @param $id id del Post
      */
-    public function destroy(int $id)
+    public function destroy(int $id) : RedirectResponse
     {
         $post = Post::findOrFail($id);
 
@@ -190,7 +191,7 @@ class AdminController extends Controller
 
         $post->delete();
 
-
+  
 
         return redirect()->route('post.panel')->with('success', 'El Post se borro correctamente');
     }

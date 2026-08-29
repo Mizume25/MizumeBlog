@@ -397,7 +397,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const onDelete = () => {
             if (post_id == null) return;
             confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () => 
-                axios.delete(`/post/${post_id}`)
+                handleRequest("destroy", route('post.destroy', post_id))
         );
         };
 
