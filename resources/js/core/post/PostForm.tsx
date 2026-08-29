@@ -52,6 +52,7 @@ import {
     Tags,
     User,
 } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
 /**
  * @inteface Propiedades props para edit y create
@@ -397,7 +398,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
         const onDelete = () => {
             if (post_id == null) return;
             confirmDelete('¿Borrar Post?', `Esta accion eliminara ${defaultValues?.title} permanentemente`, () => 
-                handleRequest("destroy", route('post.destroy', post_id))
+                router.delete(route('post.destroy', post_id)),
         );
         };
 

@@ -135,6 +135,7 @@ class ArtworkController extends Controller
         }
 
         Storage::disk('public')->deleteDirectory("IMG/{$artwork->code}");
+        
 
         $artwork->delete();
 

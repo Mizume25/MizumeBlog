@@ -9,9 +9,13 @@ use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use App\Enums\ContentType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
+
+    use HasFactory;
+
     protected $casts = [
         'config' => ConfigCast::class,
     ];

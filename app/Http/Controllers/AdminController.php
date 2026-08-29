@@ -49,10 +49,9 @@ class AdminController extends Controller
      */
     public function panel()
     {
-        $posts = Post::orderBy('publish_date', 'desc')->get();
         return Inertia::render('post/MizumeAdmin', [
             'data' => [
-                'posts'   => $posts,
+                'posts'   => Post::orderBy('publish_date', 'desc')->get(),
                 'users'   => User::all(['id', 'name', 'email', 'created_at']),
                 'coments' => Comment::all(),
             ]
@@ -184,6 +183,7 @@ class AdminController extends Controller
          */
         Storage::disk('local')->delete($post->path(ContentType::Content));
         Storage::disk('local')->delete($post->path(ContentType::Index));
+        Storage::disk('local')->deleteDirectory("blog/{$post->code}");
 
 
         if ($cover && file_exists(public_path('IMG/Portada/' . $cover))) unlink(public_path('IMG/Portada/' .  $cover));

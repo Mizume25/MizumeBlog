@@ -32,3 +32,6 @@ export const handleRequest = (
     return router.post(url, payload, options);
 };
 
+/**
+ * Rutas
+ */

@@ -17,13 +17,13 @@ export default function index({ artworks }: ArtworkFoldersProps) {
                         <Book size={24} />
                         Artworks
                     </h1>
-                    <Link
+                    <a
                         href={route('artwork.create')}
                         className="flex items-center gap-2 rounded-2xl bg-[#e2d255] px-4 py-2 font-bold text-[#885200] transition-transform duration-150 hover:scale-105"
                     >
                         <Plus size={18} />
                         Nuevo Artwork
-                    </Link>
+                    </a>
                 </div>
 
                 {artworks.length === 0 ? (

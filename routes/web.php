@@ -6,7 +6,6 @@ use App\Http\Controllers\ComentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\PostImageConfigController;
 
 /**
  * Rutas Restringidas par ausuarios verificados
