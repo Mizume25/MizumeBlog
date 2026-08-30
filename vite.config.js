@@ -17,8 +17,16 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    define: {
+        PACKAGE_VERSION: JSON.stringify('3.2.1'),
+    },
     optimizeDeps: {
-        include: ['@headlessui/react'],
+        include: ['@headlessui/react', 'katex', 'rehype-katex', 'remark-math', 'rehype-mathjax'],
+        esbuildOptions: {
+            define: {
+                PACKAGE_VERSION: JSON.stringify('3.2.1'),
+            },
+        },
     },
     server: {
 	cors: true,

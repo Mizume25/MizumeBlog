@@ -57,7 +57,7 @@ function PostHeader({ route, title, format }: PostHeaderProps) {
         <>
             {/* Imagen de la obra */}
             <header
-                className={`w-full bg-cover bg-no-repeat`}
+                className={`hidden lg:block w-full bg-cover bg-no-repeat`}
                 style={{
                     height: `${format?.height}`,
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`,
@@ -66,7 +66,7 @@ function PostHeader({ route, title, format }: PostHeaderProps) {
             ></header>
 
             {/* Titulo de la obra */}
-            <div className="relative z-10 -mt-10 flex justify-center px-4">
+            <div className="hidden relative z-10 -mt-10 lg:flex justify-center px-4">
                 <div className="w-full max-w-4xl rounded-xl border border-[#b39a6f] bg-[#C8AD7F] py-4 text-center shadow-lg">
                     <h2 className="title text-2xl font-bold tracking-wide text-white uppercase sm:text-3xl md:text-5xl">{title}</h2>
                 </div>
