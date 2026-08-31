@@ -183,7 +183,7 @@ class MarkdownService
     public static function stripCitationLinks(string $content): string
     {
         return preg_replace_callback(
-            '/(?<!!)\[\[([^\]]+)\]\]/',
+            '/(?<!!)\[\[((?:[^\[\]]|\[[^\[\]]*\])+)\]\]/',
             function ($match) {
                 $inner = $match[1];
 
@@ -198,6 +198,8 @@ class MarkdownService
         );
     }
 
+
+   
 
     /**
      * Funcion Envolvente

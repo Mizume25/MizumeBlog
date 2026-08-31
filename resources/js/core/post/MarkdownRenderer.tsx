@@ -212,6 +212,7 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
 
   return (
     <div className={`prose-custom max-w-none ${className}`}>
+      <style>{`mjx-container { color: #e5e7eb; }`}</style>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkHeadingId, remarkMath]}
         rehypePlugins={[rehypeSlug, rehypeMathjax]}
