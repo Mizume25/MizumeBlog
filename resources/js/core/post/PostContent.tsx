@@ -5,6 +5,7 @@ import MDEditor from '@uiw/react-md-editor';
 import { useState } from 'react';
 import Switch from 'react-switch';
 import MarkdownRenderer from './MarkdownRenderer';
+import { Image } from 'lucide-react';
 /**
  * Formatear Fecha
  * @param data
@@ -110,10 +111,11 @@ function PostContent({ post, contenido, selectedId, handlerCick, raw }: PostCont
                     </div>
 
                     <Button
-                        className="bg-btn-primary text-btn-primary-foreground btn-hover-scale text-md ms-4 mb-4 h-12 w-50 rounded-2xl p-4"
+                        className=" bg-btn-primary text-btn-primary-foreground btn-hover-scale text-md ms-4 mb-4 h-12 w-12 lg:w-50 rounded-2xl p-4"
                         onClick={handlerCick}
                     >
-                        Gestor de Imagenes
+                        <p className='hidden lg:inline'>Gestor de Imagenes</p>
+                        <Image size={20} className='flex flex-row items-center justify-between' />
                     </Button>
 
                     

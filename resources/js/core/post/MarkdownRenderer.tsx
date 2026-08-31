@@ -4,6 +4,9 @@ import type { Components } from 'react-markdown';
 import React from 'react';
 import rehypeSlug from 'rehype-slug';
 import remarkHeadingId from 'remark-heading-id';
+import remarkMath from 'remark-math';
+import rehypeMathjax from 'rehype-mathjax';
+import 'katex/dist/katex.min.css';
 
 interface MarkdownRendererProps {
   content: string;
@@ -209,9 +212,10 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
 
   return (
     <div className={`prose-custom max-w-none ${className}`}>
+      <style>{`mjx-container { color: #e5e7eb; }`}</style>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkHeadingId]}
-        rehypePlugins={[rehypeSlug]}
+        remarkPlugins={[remarkGfm, remarkHeadingId, remarkMath]}
+        rehypePlugins={[rehypeSlug, rehypeMathjax]}
         components={components}
       
       >
