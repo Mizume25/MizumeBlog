@@ -31,4 +31,4 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./public/build/
-          server-dir: /domains/mizumeblog.es/public_html/build/
+          server-dir: /domains/mizumeblog.es/public_html/public/build/
