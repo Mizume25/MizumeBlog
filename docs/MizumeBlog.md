@@ -237,31 +237,35 @@ protected $casts = [
 
 ## HomeController
 
-|  HomeController  |       Ruta       |      View       |         Descripcion         |
-| :--------------: | :--------------: | :-------------: | :-------------------------: |
-|   **index()**    |    /dashboard    |    dashboard    | Dirige a Desaborad General  |
-|    **show()**    | /post/show/{id}  |    post.show    |  Dirige a Post individual   |
-| **archivador()** | /post/archivador | post.archivador | Dirige a Archivador de Post |
-|    **pdf()**     |  /post/{id}/pdf  |    post.pdf     |  Descarga contenido en pdf  |
+| HomeController |       Ruta       |      View       |         Descripcion         |
+| :------------: | :--------------: | :-------------: | :-------------------------: |
+|   **index**    |    /dashboard    |    dashboard    | Dirige a Desaborad General  |
+|    **show**    | /post/show/{id}  |    post.show    |  Dirige a Post individual   |
+| **archivador** | /post/archivador | post.archivador | Dirige a Archivador de Post |
+|    **pdf**     |  /post/{id}/pdf  |    post.pdf     |  Descarga contenido en pdf  |
 
 ### ComentController
 
-| ComentController    | Ruta                        | View                   | Descripcion                                |
-| :------------------ | :-------------------------- | :--------------------- | :----------------------------------------- |
-| **store()**         | /comentarios                | comments.store         | Crear un Comentario                        |
-| **destroy()**       | /comentarios{id}            | comments.destroy       | Borrar un Comentario                       |
-| **destroyByPost()** | /comentarios/post/{post_id} | comments.destroyByPost | Borar Comentarios de un post               |
-| **deleteAll()**     | /comentarios                | comments.deleteAll     | Borrar todos los comentarios de un usuario |
+| ComentController  | Ruta                        | View                   | Descripcion                                |
+| :---------------- | :-------------------------- | :--------------------- | :----------------------------------------- |
+| **store**         | /comentarios                | comments.store         | Crear un Comentario                        |
+| **destroy**       | /comentarios{id}            | comments.destroy       | Borrar un Comentario                       |
+| **destroyByPost** | /comentarios/post/{post_id} | comments.destroyByPost | Borar Comentarios de un post               |
+| **deleteAll**     | /comentarios                | comments.deleteAll     | Borrar todos los comentarios de un usuario |
 ### ApiController
 
-|   ApiController   |                      Ruta                       |     View      |                          Descripción                          |
-| :---------------: | :---------------------------------------------: | :-----------: | :-----------------------------------------------------------: |
-|  **upcomming()**  |                  api/upcomming                  | api.upcomming |                   Trae los Post borradores                    |
-| **apiComments()** |           api/post/{post_id}/comments           |  apiComments  |      Trae los Comentarios relativos a un post & Usuario       |
-|  **avaliable()**  |     api/post/{post_id}/artwork/{artwork_id}     |   avaliable   | Obtiene imagenes disponibles de post relacionado a un Artwork |
-|   **replace()**   |      api/post/{post_id}/replace/{image_id}      |    replace    |   Remplaza una imagen especifica de un post por otra imagen   |
-|  **associate()**  | api/post/{post_id}/associate/{artwork_image_id} |   associate   |                 Asociar una imagena a un post                 |
-|   **symlink()**   |           api/post/{post_id}/symlink            |    symlink    |                  Asocia un post a un artwork                  |
+|    ApiController    |                      Ruta                       |     View      |                          Descripción                          |
+| :-----------------: | :---------------------------------------------: | :-----------: | :-----------------------------------------------------------: |
+|    **upcomming**    |                  api/upcomming                  | api.upcomming |                   Trae los Post borradores                    |
+|   **apiComments**   |           api/post/{post_id}/comments           |       X       |      Trae los Comentarios relativos a un post & Usuario       |
+|    **avaliable**    |     api/post/{post_id}/artwork/{artwork_id}     |       X       | Obtiene imagenes disponibles de post relacionado a un Artwork |
+|     **replace**     |      api/post/{post_id}/replace/{image_id}      |       X       |   Remplaza una imagen especifica de un post por otra imagen   |
+|    **associate**    | api/post/{post_id}/associate/{artwork_image_id} |       X       |                 Asociar una imagena a un post                 |
+|     **symlink**     |           api/post/{post_id}/symlink            |       X       |                  Asocia un post a un artwork                  |
+|  updateHomeConfig   |         api/post/{post_id}/format/home          |       X       |             Actualiza la propiedad home de config             |
+|  updateCardConfig   |         api/post/{post_id}/format/card          |       X       |             Actualiza la propiedad card de config             |
+| updateArticleConfig |        api/post/{post_id}/format/article        |       X       |           Actualiza la propiedad article de config            |
+| updateAccentConfig  |        api/post/{post_id}/format/accent         |       X       |             Actualiza la prociedad accent config              |
 ### Otros  Controladores
 
 | GoogleController |         Ruta         |   View   |     Descripción      |
