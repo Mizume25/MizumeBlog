@@ -489,4 +489,3 @@ El índice se construye dinámicamente cuando se  o se actualice aun post y se g
 
 StorePostRequest & UpdatePostRequest simplemente validad el store y update de los post, el que vale la pena mencionar es **UpdatePostConfigRequest** cuyo request es único al tener un ciclo de vida propio, que de momento solo se implemento update.
 
-awdwadwadwad
