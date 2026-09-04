@@ -1,5 +1,5 @@
 /** @import Todos los types utilizados */
-import { ArticleConfig, Artwork, BackgroundOptions, BackgroundPositionKeyword, IndexContent, formatDefault, type Content } from '@/types';
+import { ArticleConfig, Artwork, BackgroundPositionKeyword, IndexContent, formatDefault, type Content } from '@/types';
 
 /** @import Objetos Inertia */
 import { Head } from '@inertiajs/react';
@@ -21,6 +21,7 @@ import { useCallback, useEffect, useState } from 'react';
 /** @import Layouts y Componentes */
 import SideBarRight from '@/core/auth/SideBarRight';
 import Coments from '@/core/coments/Coments';
+import PostEdit from '@/core/post/PostEdit';
 import BlogLayout from '@/layouts/app/blog-layout';
 import { PostContent, PostSideBarLeft } from '../../core/post';
 
@@ -31,6 +32,10 @@ import { PostContent, PostSideBarLeft } from '../../core/post';
  * @param formato Formato de imagen
  * @returns
  */
+
+export var MIN = 20;
+export var MAX = 90;
+export var DEFAULT_HEIGHT = 35;
 
 /** @interface Interfaz de Encabezado */
 interface PostHeaderProps {
@@ -57,7 +62,7 @@ function PostHeader({ route, title, format }: PostHeaderProps) {
         <>
             {/* Imagen de la obra */}
             <header
-                className={`hidden lg:block w-full bg-cover bg-no-repeat`}
+                className={`hidden w-full bg-cover bg-no-repeat lg:block`}
                 style={{
                     height: `${format?.height}`,
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${route})`,
@@ -66,9 +71,9 @@ function PostHeader({ route, title, format }: PostHeaderProps) {
             ></header>
 
             {/* Titulo de la obra */}
-            <div className="hidden relative z-10 -mt-10 lg:flex justify-center px-4">
+            <div className="relative z-10 -mt-10 hidden justify-center px-4 lg:flex">
                 <div className="w-full max-w-4xl rounded-xl border border-[#b39a6f] bg-[#C8AD7F] py-4 text-center shadow-lg">
-                    <h2 className="title text-2xl font-bold tracking-wide text-white uppercase sm:text-3xl md:text-5xl">{title}</h2>
+                    <h2 className="title text-2xl font-bold tracking-wide text-white uppercase sm:text-3xl md:text-5xl">{title.replaceAll('-', ' ')}</h2>
                 </div>
             </div>
         </>
@@ -98,9 +103,6 @@ function show({ content, artworks }: ShowProps) {
     /**
      * @glob Variables de la página
      */
-    const MIN = 20;
-    const MAX = 90;
-    const DEFAULT_HEIGHT = 35;
 
     /** Ruta de la Portada */
     const cover = `/IMG/Portada/${content.post.cover}`;
@@ -166,6 +168,10 @@ function show({ content, artworks }: ShowProps) {
             .updateArticle(Number(content.post.id), format)
             .then((data) => showToast('success', data.message))
             .catch((err) => showToast('error', err.message));
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     };
 
     function clamp(n: number) {
@@ -219,6 +225,12 @@ function show({ content, artworks }: ShowProps) {
         setConfirm(positionChanged || heightChanged);
     }, [position, height]);
 
+    const onChange = (n: number) => clamp(Number(n));
+    const onPlus = () => setHeight((h: number) => clamp(h + 1));
+    const onRest = () => setHeight((h: number) => clamp(h - 1));
+    const onReset = () => setHeight(DEFAULT_HEIGHT);
+    const onPosition = (ps: BackgroundPositionKeyword) => setPosition(ps);
+
     return (
         <BlogLayout post_id={content.post.id} edit={edit} onEdit={handlerEdit}>
             {/* Pestaña de la Página */}
@@ -251,75 +263,18 @@ function show({ content, artworks }: ShowProps) {
 
             {edit && (
                 <PanelEdit>
-                    <h3 className="mb-2 text-lg font-bold text-white">Posicion</h3>
-                    <p className="mb-4 text-sm text-gray-100">Configura las opciones del layout aquí.</p>
+                    <PostEdit
+                        height={height}
+                        onChange={onChange}
+                        onClose={() => setEdit(false)}
+                        onPlus={onPlus}
+                        onConfirm={ApiArticleUpdate}
+                        onPosition={onPosition}
+                        onReset={onReset}
+                        onRest={onRest}
+                    />
 
-                    <select
-                        className={`mb-5 w-full cursor-pointer rounded-xl bg-amber-100 p-2 text-black capitalize outline-none focus:bg-amber-200 disabled:bg-amber-200/20`}
-                        onChange={(e) => setPosition(e.target.value as BackgroundPositionKeyword)}
-                    >
-                        {BackgroundOptions.map((p, i) => (
-                            <option key={i} value={p} className="bg-white text-black">
-                                {p}
-                            </option>
-                        ))}
-                    </select>
-                    <h3 className="mb-2 text-lg font-bold text-white">Altura</h3>
-                    <div className="mb-2 flex items-center gap-2">
-                        <input
-                            type="number"
-                            min={MIN}
-                            max={MAX}
-                            value={height}
-                            onChange={(e) => setHeight(clamp(Number(e.target.value)))}
-                            className="w-full [appearance:textfield] rounded-xl border border-[#2a2f3a] bg-[#171a21] px-4 py-2.5 font-mono text-[15px] text-[#e8eaed] tabular-nums transition-colors duration-150 outline-none focus:border-[#5b8cff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5b8cff] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-
-                        <div className="flex flex-none items-center gap-1">
-                            <button
-                                type="button"
-                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
-                                aria-label="Disminuir"
-                                onClick={() => setHeight((h: number) => clamp(h - 1))}
-                            >
-                                −
-                            </button>
-
-                            <button
-                                type="button"
-                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-xs text-[#8a90a0] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
-                                aria-label="Restablecer"
-                                title="Restablecer"
-                                onClick={() => setHeight(DEFAULT_HEIGHT)}
-                            >
-                                ↺
-                            </button>
-
-                            <button
-                                type="button"
-                                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2f3a] bg-[#171a21] text-lg leading-none text-[#e8eaed] transition-colors duration-150 hover:border-[#5b8cff] hover:text-[#5b8cff] active:scale-95"
-                                aria-label="Aumentar"
-                                onClick={() => setHeight((h: number) => clamp(h + 1))}
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={ApiArticleUpdate}
-                        className="bg-btn-success text-btn-success-foreground mb-2 w-full rounded-xl px-4 py-2 transition-colors not-disabled:cursor-pointer disabled:bg-white/60"
-                        disabled={!confirm}
-                    >
-                        Confirmar Cambio
-                    </button>
-
-                    <button
-                        onClick={() => setEdit(false)}
-                        className="bg-btn-info text-btn-info-foreground btn-hover-scale w-full rounded-xl px-4 py-2 transition-colors"
-                    >
-                        Cerrar Panel
-                    </button>
+                   
                 </PanelEdit>
             )}
 

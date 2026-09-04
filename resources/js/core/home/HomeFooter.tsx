@@ -1,5 +1,7 @@
 import { type Post } from '@/types';
 import { useEffect, useRef, useState } from 'react';
+import { usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
 
 const getPosts = async (): Promise<Post[]> => {
     const response = await fetch('/api/upcoming');
@@ -22,6 +24,8 @@ export default function HomeFooter() {
 
     // Duplicamos para loop infinito
     const doubled = [...cards, ...cards];
+
+    const { quote } = usePage<SharedData>().props;
 
     return (
         <footer className="z-10 w-full overflow-hidden rounded-xl" style={{ background: '#0d0804' }}>
@@ -153,12 +157,12 @@ export default function HomeFooter() {
                             marginBottom: 8,
                         }}
                     >
-                        Cita del mes
+                        Cita 
                     </p>
                     <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', lineHeight: 1.65, margin: 0 }}>
-                        "It's the only NEET things to do"
+                        {quote.message}
                         <cite style={{ display: 'block', fontStyle: 'normal', fontSize: 10, color: 'rgba(201,168,124,0.55)', marginTop: 4 }}>
-                            — Kamisama Memochou Vol.1
+                            — {quote.author}
                         </cite>
                     </p>
                 </div>

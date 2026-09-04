@@ -1,5 +1,5 @@
 /** @import Types Utilizados */
-import { BackgroundOptions, BackgroundPositionKeyword, type Post } from '@/types';
+import { BackgroundPositionKeyword, type Post } from '@/types';
 
 /** @imports Inertia Objetcts */
 import { Head } from '@inertiajs/react';
@@ -15,6 +15,7 @@ import PanelEdit from '@/layouts/app/panel-edit';
 import { HomeContent } from '../core/home';
 
 /** @import HOOKS UTILIZADOS */
+import HomeEdition from '@/core/home/HomeEdition';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -84,6 +85,10 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
             .updateHome(Number(selectPost), position)
             .then((data) => showToast('success', data.message))
             .catch((err) => showToast('error', err.message));
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     };
 
     /**
@@ -104,6 +109,9 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
         setConfirmPosition((post?.config?.home as BackgroundPositionKeyword) !== position);
     }, [position]);
 
+    const onPosition = (ps: BackgroundPositionKeyword) => setPosition(ps);
+    const onPost = (post: number) => setSelectPost(post);
+
     return (
         <BlogLayout edit={edit} onEdit={handlerEdit}>
             {/* Head de el Home*/}
@@ -117,6 +125,19 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
 
             {edit && (
                 <PanelEdit>
+                    <HomeEdition
+                        mainPosts={mainPosts}
+                        position={position}
+                        confirmPosition={confirmPosition}
+                        selectPost={selectPost}
+                        onConfirm={ApiHomeUpdate}
+                        onPosition={onPosition}
+                        onClose={() => setEdit(false)}
+                        onPost={onPost}
+                    />
+
+                    {/*
+                    
                     <p className="mb-4 text-sm text-white dark:text-gray-100">Configura las opciones del layout aquí.</p>
 
                     <select
@@ -157,6 +178,7 @@ export default function Dashboard({ posts }: { posts: Post[] }) {
                     >
                         Cerrar Panel
                     </button>
+                    */}
                 </PanelEdit>
             )}
         </BlogLayout>
