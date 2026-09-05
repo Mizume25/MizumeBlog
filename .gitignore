@@ -24,6 +24,6 @@ npm-debug.log
 yarn-error.log
 /public/backups
 UpdateBackups.bat
-.claude/*
+
 .obsidian/
 public/build/
