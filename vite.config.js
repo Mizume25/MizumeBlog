@@ -14,9 +14,6 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
-    esbuild: {
-        jsx: 'automatic',
-    },
     define: {
         PACKAGE_VERSION: JSON.stringify('3.2.1'),
     },
