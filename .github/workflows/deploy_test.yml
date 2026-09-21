@@ -16,10 +16,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME_TEST }}
           password: ${{ secrets.FTP_PASSWORD_TEST }}
           server-dir: htdocs/
-          dry-run: true
           exclude: |
             **/.git*/**
             **/node_modules/**
+            docs/*
             vendor/**
             storage/**
             tests/**
