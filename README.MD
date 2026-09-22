@@ -2,7 +2,7 @@
 MizumeBlog - Es una version mejorada de mi blog personal.Una plataforma web full-stack construida con Laravel 12, React y TypeScript. Implementa autenticación robusta mediante Laravel Breeze e Inertia.js, con una interfaz estilizada íntegramente en Tailwind CSS. Enfocado en el rendimiento y una experiencia de usuario fluida (SPA).
 
 ## Versiones 
-- Laravel 12.56.0
+- Laravel 13.56.0
 - PHP 8.2.12
 - Composer version 2.8.12
 - React 19.0.0.0 
