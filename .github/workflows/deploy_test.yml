@@ -19,7 +19,7 @@ jobs:
           exclude: |
             **/.git*/**
             **/node_modules/**
-            **docs/*
+            **/docs/**
             vendor/**
             storage/**
             tests/**
