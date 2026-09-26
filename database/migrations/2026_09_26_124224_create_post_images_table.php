@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('id_post')->constrained('posts', 'id');
             $table->foreignId('id_media')->constrained('media', 'id');
 
-            $table->unique('key');
+            $table->unique(['id_post', 'key']);
+            
             $table->timestamps();
         });
     }

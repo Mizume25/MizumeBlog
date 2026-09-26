@@ -20,6 +20,9 @@ return new class extends Migration
             $table->dropColumn('category');
             $table->dropColumn('author');
             $table->dropColumn('config');
+
+            /** Modificamos campo */ 
+            $table->string('code', 255)->nullable()->change();
             
             /** Nuevo Campos */
             $table->string('type');

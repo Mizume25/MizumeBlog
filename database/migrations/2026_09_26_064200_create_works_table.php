@@ -4,14 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/** Medios Permitidos */
-const MEDIUM_ALLOW = ["libro", "poema", "novela_ligera", "novela", "anime", "manga" ,"pelicula"];
-
-/** Categorias Permitidas */
-const CATEGORY_ALLOW = ["literatura", "animemanga"];
 
 return new class extends Migration
 {
+
+    private const MEDIUM_ALLOW = ["libro", "poema", "novela_ligera", "novela", "anime", "manga" ,"pelicula"];
+    private const CATEGORY_ALLOW = ["literatura", "animemanga"];
+
     /**
      * Run the migrations.
      */
@@ -21,10 +20,10 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('abbreviation');
-            $table->enum("category", CATEGORY_ALLOW);
+            $table->enum("category", self::CATEGORY_ALLOW);
             $table->date("publish_date");
             $table->text("sinopsi");
-            $table->enum("medium", MEDIUM_ALLOW);
+            $table->enum("medium", self::MEDIUM_ALLOW);
             $table->timestamps();
         });
     }

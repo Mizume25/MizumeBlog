@@ -4,22 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-const STATUS = ["denied", "accepted", "pending", "expired", "used"];
+
 
 return new class extends Migration
 {
 
-
+    private const STATUS = ["denied", "accepted", "pending", "expired", "used"];
     /**
      * Run the migrations.
      */
     public function up(): void
     {
+        
         Schema::create('requests_permissions', function (Blueprint $table) {
             $table->id();
             $table->text("message");
-            $table->enum("status", STATUS);
-            $table->timestamps('granted_at')->nullable();
+            $table->enum("status", self::STATUS);
+            $table->timestamp('granted_at')->nullable();
             $table->timestamp('access_expires_at')->nullable();
             $table->timestamp('requested_at')->nullable(); 
             $table->foreignId('granted_by')->constrained('users', 'id');

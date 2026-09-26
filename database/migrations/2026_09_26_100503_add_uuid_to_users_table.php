@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->unique()->after('id');
+            $table->uuid('uuid')->nullable()->after('id');
         });
-        
+
         /** Rellenamos valores */
         DB::table('users')->whereNull('uuid')->cursor()->each(function ($user) {
-            DB::table('users')->where('id_user', $user->id_user)->update([
+            DB::table('users')->where('id', $user->id)->update([
                 'uuid' => Str::uuid()->toString(),
             ]);
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->unique('uuid');
         });
     }
 

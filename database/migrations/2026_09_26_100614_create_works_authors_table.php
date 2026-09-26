@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_author')->constrained('authors', 'id');
             $table->foreignId('id_work')->constrained('works', 'id');
+            $table->unique(['id_author', 'id_work']);
             $table->timestamps();
         });
     }
