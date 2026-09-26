@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('works_authors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_author')->constrained('authors', 'id');
-            $table->foreignId('id_work')->constrained('works', 'id');
-            $table->unique(['id_author', 'id_work']);
+            $table->foreignId('author_id')->constrained('authors', 'id');
+            $table->foreignId('work_id')->constrained('works', 'id');
+            $table->unique(['author_id', 'work_id']);
             $table->timestamps();
         });
     }

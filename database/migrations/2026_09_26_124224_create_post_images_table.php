@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_images', function (Blueprint $table) {
+        Schema::create('posts_images', function (Blueprint $table) {
             $table->id();
             $table->string('key');
-            $table->foreignId('id_post')->constrained('posts', 'id');
-            $table->foreignId('id_media')->constrained('media', 'id');
+            $table->foreignId('post_id')->constrained('posts', 'id');
+            $table->foreignId('media_id')->constrained('media', 'id');
 
-            $table->unique(['id_post', 'key']);
+            $table->unique(['post_id', 'key']);
             
             $table->timestamps();
         });

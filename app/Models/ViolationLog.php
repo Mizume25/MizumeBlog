@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostImage extends Model
+class ViolationLog extends Model
 {
     protected $fillable = [
-        'key',
+        'action',
+        'attempts_count',
         'post_id',
-        'media_id'
+        'user_id'
     ];
 }

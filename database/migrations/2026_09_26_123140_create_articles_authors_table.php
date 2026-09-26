@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_authors', function (Blueprint $table) {
+        Schema::create('articles_authors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_author')->constrained('authors', 'id');
-            $table->foreignId('id_post')->constrained('posts', 'id');
+            $table->foreignId('author_id')->constrained('authors', 'id');
+            $table->foreignId('post_id')->constrained('posts', 'id');
 
-            $table->unique('id_author');
+            $table->unique('author_id');
             $table->timestamps();
         });
     }

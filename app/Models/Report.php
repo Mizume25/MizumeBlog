@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostImage extends Model
+class Report extends Model
 {
     protected $fillable = [
-        'key',
-        'post_id',
-        'media_id'
+        'message',
+        'status',
+        'resolved_by'
     ];
 }

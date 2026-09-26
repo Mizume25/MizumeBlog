@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamp('requested_at')->nullable(); 
             $table->foreignId('granted_by')->constrained('users', 'id');
             $table->foreignId('user_id')->constrained('users', 'id');
-            $table->foreignId('id_post')->constrained('posts', 'id');
+            $table->foreignId('post_id')->constrained('posts', 'id');
             $table->timestamps();
         });
     }
