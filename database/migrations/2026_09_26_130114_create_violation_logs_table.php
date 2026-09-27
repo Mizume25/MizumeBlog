@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('action');
             $table->integer('attempts_count');
-            $table->unsignedBigInteger('id_post')->nullable();
+            $table->unsignedBigInteger('post_id')->nullable();
 
-            $table->foreign('id_post')
+            $table->foreign('post_id')
             ->references('id')
             ->on('posts')
             ->onDelete('restrict')
             ->onUpdate('cascade');
 
-            $table->foreignId('id_user')->constrained('users', 'id');
+            $table->foreignId('user_id')->constrained('users', 'id');
             $table->timestamps();
         });
     }

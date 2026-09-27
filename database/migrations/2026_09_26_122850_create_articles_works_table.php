@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_works', function (Blueprint $table) {
+        Schema::create('articles_works', function (Blueprint $table) {
             $table->id();
             #$table->foreignId('id_works')->constrained('works', 'id'); Correcion
-            $table->foreignId('id_work')->constrained('works', 'id');
+            $table->foreignId('work_id')->constrained('works', 'id');
             
-            $table->foreignId('id_post')->constrained('posts', 'id');
+            $table->foreignId('post_id')->constrained('posts', 'id');
 
-            #$table->unique(['id_works', 'id_post']); Correcion
-            $table->unique(['id_work', 'id_post']);
+            $table->unique(['work_id', 'post_id']);
             $table->timestamps();
         });
     }
