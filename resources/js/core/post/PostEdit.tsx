@@ -1,5 +1,5 @@
 import { BackgroundOptions, BackgroundPositionKeyword } from "@/types";
-import {MIN , MAX , DEFAULT_HEIGHT} from "@/pages/post/show";
+import {MIN , MAX , DEFAULT_HEIGHT} from "@/pages/post_old/show";
 interface PostEditProps {
     height: number,
     onChange: (n:number) => void,

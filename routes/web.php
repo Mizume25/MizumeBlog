@@ -39,87 +39,87 @@ Route::middleware(['auth', 'admin'])->group(function () {
     /** Views */
 
     /** Panel Princiap */
-    Route::get('post/MizumeAdmin', [AdminController::class, 'panel'])->name('post.panel');
+    //Route::get('post/MizumeAdmin', [AdminController::class, 'panel'])->name('post.panel');
 
     /** Vista de edición */
-    Route::get('post/edit/{id}', [AdminController::class, 'edit'])->name('post.edit');
+    //Route::get('post/edit/{id}', [AdminController::class, 'edit'])->name('post.edit');
 
 
-    Route::get('post/create', [AdminController::class, 'create'])->name('post.create');
+    //Route::get('post/create', [AdminController::class, 'create'])->name('post.create');
 
 
     /** Funciones */
 
 
     /** Function de Borrado */
-    Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
+    //Route::delete('post/{id}', [AdminController::class, 'destroy'])->name('post.destroy');
 
 
     /** Funcion de borrador */
-    Route::match('put', 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
+    //Route::match('put', 'post/edit/{id}', [AdminController::class, 'update'])->name('post.update');
 
 
     /** Crear un post */
-    Route::post('post/store', [AdminController::class, 'store'])->name('post.store');
+    //Route::post('post/store', [AdminController::class, 'store'])->name('post.store');
 
 
     /** Crear Backup */
-    Route::get('post/backup', [AdminController::class, 'backup'])->name('post.backup');
+    //Route::get('post/backup', [AdminController::class, 'backup'])->name('post.backup');
 
     
     /** Rutas Artworks */
 
     /*** Crear Artwork */
-    Route::get('artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
+    //Route::get('artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
     
     /** Listar Artworks */
-    Route::get('artwork/index', [ArtworkController::class, 'index'])->name('artwork.index');
+    //Route::get('artwork/index', [ArtworkController::class, 'index'])->name('artwork.index');
 
     /** Editar Artworks */
-    Route::get('artwork/edit/{id}', [ArtworkController::class, 'edit'])->name('artwork.edit');
+    //Route::get('artwork/edit/{id}', [ArtworkController::class, 'edit'])->name('artwork.edit');
 
     
 
     /** Actualizar Artwork*/
-    Route::put('artwork/update/{id}', [ArtworkController::class, 'update'])->name('artwork.update');
+    //Route::put('artwork/update/{id}', [ArtworkController::class, 'update'])->name('artwork.update');
 
     /** Crear un Artwork */
-    Route::post('artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
+    //Route::post('artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
 
 
     /** Borrar un Artwork Completo */
-    Route::delete('artwork/{id}', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
+    //Route::delete('artwork/{id}', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
 
     /** Borrar una imagen especifica de Artwork */
-    Route::delete('artwork/{artworkId}/img/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
+    //Route::delete('artwork/{artworkId}/img/{imageId}', [ArtworkController::class , 'remove'])->name('artwork.remove');
 
     /** Actualizar una imagen especifica de Artwork */
-    Route::put('artwork/{artworkId}/img/{ImageId}', [ArtworkController::class, 'updateAlt'])->name('artwork.updateAlt');
+    //Route::put('artwork/{artworkId}/img/{ImageId}', [ArtworkController::class, 'updateAlt'])->name('artwork.updateAlt');
     
 
 });
 
 
 
-// GUEST - ADMIN - USER
+// GUEST - ADMIN - USER - RUTAS ANTIGUAS
 
 //Renderizamos dashboard - Redirreccion inicial
-Route::get('/', [HomeController::class, 'index'])->name('home');
+//Route::get('/', [HomeController::class, 'index'])->name('home');
 
 //Renderizamos ruta dashboard - Redireccion general 
-Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
+//Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 //Renderizamos post - Renderizacion general
-Route::get('post/show/{id}', [HomeController::class, 'show'])->name('post.show');
+//Route::get('post/show/{id}', [HomeController::class, 'show'])->name('post.show');
 
 
 //Api de google - Login de Google
-Route::get('/auth/google', [GoogleController::class, 'redirect']);
+//Route::get('/auth/google', [GoogleController::class, 'redirect']);
 
-Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+//Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 //Ruta para ir al archivador
-Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post.archivador');
+//Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post.archivador');
 
 
 
