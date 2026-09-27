@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tag } from 'lucide-react'
 import { Section, SECTION } from '@/types'
-import { NavContentProps } from '@/pages/post/library'
+import { NavContentProps } from '@/pages/post_old/library'
 function LibrarySideBarLeft({ onSection, section }: NavContentProps) {
     return (
 

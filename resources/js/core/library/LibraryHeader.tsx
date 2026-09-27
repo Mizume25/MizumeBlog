@@ -1,4 +1,4 @@
-import { NavContentProps } from "@/pages/post/library"
+import { NavContentProps } from "@/pages/post_old/library"
 import { Section, SECTION } from "@/types/constants"
 
 function LibraryHeader( { onSection , section} : NavContentProps) {
