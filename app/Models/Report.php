@@ -13,11 +13,7 @@ class Report extends Model
 {   
     use HasFactory;
 
-    protected $fillable = [
-        'message',
-        'status',
-        'resolved_by'
-    ];
+    protected $fillable = ['message'];
      protected function casts(): array
     {
         return ['status' => ReportStatus::class];

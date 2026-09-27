@@ -24,7 +24,7 @@ class Author extends Model
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('photo')->singleFile();
+        $this->addMediaCollection('profile')->singleFile();
     }
 
     // --- Relaciones ---

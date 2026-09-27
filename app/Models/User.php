@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Dom\Comment;
+use App\Models\Comment;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Override;
 /**
  * @property UserRole|null $role
@@ -20,7 +20,7 @@ use Override;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, MustVerifyEmailTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +31,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role',
         'google_id',
         'avatar',
         'uuid'
@@ -57,6 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class, 
         ];
     }
 
@@ -87,7 +87,7 @@ class User extends Authenticatable implements MustVerifyEmail
     } 
 
     /** Devolvemos uuid publico */
-    public function getRouteKey()
+    public function getRouteKeyName()
     {
         return 'uuid';
     }

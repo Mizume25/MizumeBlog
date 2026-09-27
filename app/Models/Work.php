@@ -38,6 +38,8 @@ class Work extends Model
         $this->addMediaCollection('cover')->singleFile();
     }
 
+    
+
     // --- Relaciones ---
 
     public function authors(): BelongsToMany
