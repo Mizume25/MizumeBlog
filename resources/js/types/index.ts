@@ -12,7 +12,7 @@ export * from './constants'
 export * from './schemas'
 
 /** Funciones */
-export * from './utils'
+export * from '../utils'
 
 
 
