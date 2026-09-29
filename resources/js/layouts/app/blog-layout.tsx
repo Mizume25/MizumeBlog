@@ -39,8 +39,8 @@ function BlogLayout({ children, edit, onEdit }: LayoutProps) {
             <TopAuthBar  onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
             <main>
               
-                <SideBarLeft isOpen={sidebar} onClose={handleClose} /> {/*** Sidebar Responsive */}
-                {children} {/*** Contenido */}
+              
+                {children} 
             </main>
             <HomeFooter />
         </>

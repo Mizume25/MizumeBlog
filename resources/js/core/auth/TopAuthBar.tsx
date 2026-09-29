@@ -2,7 +2,7 @@ import { SharedData, WEB_ROUTE } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { LayoutDashboard, Menu, Pencil } from 'lucide-react';
 import Switch from 'react-switch';
-import AuthButton from './AuthButton';
+
 import LogoutButton from './LogoutButton';
 
 interface TopAuthBarProps {
@@ -15,14 +15,14 @@ export function TopAuthBar({ onToggle, edit, onEdit }: TopAuthBarProps) {
     const { auth } = usePage<SharedData>().props;
     
     return (
-        <div className="bg-primary-foreground sticky top-0 z-30 w-full px-4 py-4 shadow-md">
+        <div className="bg-primary sticky top-0 z-30 w-full px-4 py-4 shadow-md">
             <div className="mx-auto max-w-375 items-center justify-between max-lg:flex max-lg:flex-row lg:grid lg:grid-cols-3">
                 {/* Nav: oculta en mobile */}
                 <nav className="hidden gap-6 justify-self-start text-sm font-medium lg:flex">
                     {WEB_ROUTE.map((p, i) => (
-                        <a href={p.url} key={i} className="text-primary group relative text-sm font-bold tracking-wide uppercase">
+                        <a href={p.url} key={i} className="text-primary-foreground group relative text-sm font-bold tracking-wide uppercase">
                             {p.label}
-                            <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[#8c6c44] transition-all duration-300 group-hover:w-full" />
+                            <span className="absolute -bottom-1 left-0  w-0 bg-[#8c6c44] transition-all duration-300 group-hover:w-full" />
                         </a>
                     ))}
                 </nav>

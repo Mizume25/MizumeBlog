@@ -28,7 +28,7 @@ export default function HomeFooter() {
     const { quote } = usePage<SharedData>().props;
 
     return (
-        <footer className="z-10 w-full overflow-hidden rounded-xl" style={{ background: '#0d0804' }}>
+        <footer className="z-10 w-full overflow-hidden rounded-xl bg-[#0d0804]">
             
             {/* ── Carrusel ── 
             <div className="overflow-hidden py-6" style={{ borderBottom: '0.5px solid rgba(201,168,124,0.15)' }}>

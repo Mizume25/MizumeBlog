@@ -141,7 +141,7 @@
     --pure-color:hsl(0, 100%, 100%);
 
     /* Color Principal */
-    --primary: oklch(0.205 0 0);
+    /*--primary: oklch(0.205 0 0);
     --primary-foreground: oklch(0.985 0 0);
 
     --secondary: oklch(0.97 0 0);
@@ -151,7 +151,10 @@
     --tertiary-foreground:var(--pure-color);
 
     --fourth:hsl(40, 12%, 90%);
-    --fourth-foreground:var(--primary-foreground);
+    --fourth-foreground:var(--primary-foreground); */
+
+    --primary:hsl(43, 59%, 90%);
+    --primary-foreground: oklch(0.205 0 0);
 
     /* Paleta de Botones Princiaples */ 
     --btn-primary:#F5EDD8;
@@ -167,7 +170,7 @@
     --btn-danger:hsl(0, 72%, 55%);
     --btn-success:hsl(142, 100%, 39%);
     --btn-info:hsl(213, 94%, 52%);
-    --btn-warning:hsl(250, 68%, 66%);
+    --btn-warning:hsl(59, 100%, 50%);
 
     /* Color de texto de botones */
     --btn-danger-foreground:var(--pure-color);
@@ -210,7 +213,7 @@
     --sidebar-accent: hsl(0, 0%, 94%);
     --sidebar-accent-foreground: hsl(0, 0%, 30%);
     --sidebar-border: hsl(0, 0%, 91%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); */
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); 
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -239,7 +242,7 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
-
+    */
 }
 
 /** Titulo web  */
@@ -289,7 +292,7 @@
     --sidebar-accent: hsl(0, 0%, 15.9%);
     --sidebar-accent-foreground: hsl(240, 4.8%, 95.9%);
     --sidebar-border: hsl(0, 0%, 15.9%);
-    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); */
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%); 
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
@@ -321,6 +324,7 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0)
+    */
 
 }
 
