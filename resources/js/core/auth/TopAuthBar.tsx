@@ -6,18 +6,17 @@ import AuthButton from './AuthButton';
 import LogoutButton from './LogoutButton';
 
 interface TopAuthBarProps {
-    post_id?: number;
     onToggle: () => void;
     edit?: boolean;
     onEdit?: () => void;
 }
 
-export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps) {
+export function TopAuthBar({ onToggle, edit, onEdit }: TopAuthBarProps) {
     const { auth } = usePage<SharedData>().props;
     
     return (
         <div className="bg-primary-foreground sticky top-0 z-30 w-full px-4 py-4 shadow-md">
-            <div className="mx-auto max-w-[1500px] items-center justify-between max-lg:flex max-lg:flex-row lg:grid lg:grid-cols-3">
+            <div className="mx-auto max-w-375 items-center justify-between max-lg:flex max-lg:flex-row lg:grid lg:grid-cols-3">
                 {/* Nav: oculta en mobile */}
                 <nav className="hidden gap-6 justify-self-start text-sm font-medium lg:flex">
                     {WEB_ROUTE.map((p, i) => (
@@ -28,7 +27,7 @@ export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps)
                     ))}
                 </nav>
                 <div>
-                    <h1 className="title text-[1.6rem] font-bold md:justify-self-center md:text-[2rem] lg:text-[2.2rem]"><a href={route('dashboard')}>Mizumeblog</a></h1>
+                    <h1 className="title text-[1.6rem] font-bold md:justify-self-center md:text-[2rem] lg:text-[2.2rem]"><a href={route('main')}>Mizumeblog</a></h1>
                 </div>
 
                 {/* Auth buttons: ocultos en mobile */}
@@ -61,24 +60,10 @@ export function TopAuthBar({ post_id, onToggle, edit, onEdit }: TopAuthBarProps)
                             )}
                             {(auth.user.role === 'admin' || auth.user.role === 'editor') && (
                                 <>
-                                    <AuthButton url={route('post.panel')} label="Panel">
-                                        <LayoutDashboard
-                                            size={15}
-                                            className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
-                                            strokeWidth={1.5}
-                                        />
-                                    </AuthButton>
+                                  
                                 </>
                             )}
-                            {(auth.user.role === 'admin' || auth.user.role === 'editor') && post_id && (
-                                <AuthButton url={route('post.edit', post_id)} label="Edit">
-                                    <Pencil
-                                        size={15}
-                                        className="relative z-10 text-[#C8AD7F] transition-transform duration-300 group-hover:-translate-x-0.5"
-                                        strokeWidth={1.5}
-                                    />
-                                </AuthButton>
-                            )}
+                            
 
                             <LogoutButton />
                         </>

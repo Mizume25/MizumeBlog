@@ -17,11 +17,11 @@ export interface Route {
 export const WEB_ROUTE : Route [] = [
     {
         label: 'home',
-        url: route('home')
+        url: "#"
     },
     {
         label:'archive',
-        url: route('post.archivador')
+        url: "#"
     },
     {
         label:'Contacto',

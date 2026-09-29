@@ -30,7 +30,7 @@ class HandleInertiaRequests extends Middleware
                     'email',
                     'role',
                     'avatar',
-                    'google_id',
+                    'uuid',
                 ]),
             ],
             'flash' => [

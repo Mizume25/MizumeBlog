@@ -2,7 +2,6 @@
  * @fileoverview Archivos de exportacion de interfaces web
  */
 import { LucideIcon } from 'lucide-react';
-import { Section_Content } from './constants';
 
 /**
  * @interface Auth
@@ -60,233 +59,20 @@ export interface SharedData {
     flash: FlashMessage;
 }
 
-/**
- * Todos los campos comparten estas propieaddes
- * @type field
- */
-export type Field = {
-    id: number;
-    created_at: string;
-    updated_at: string;
-};
 
-export type CreateField = {
-    id?: number;
-    created_at?: string;
-    updated_at?: string;
-};
 
-/**
- * @interface
- * Interfaz de usuario
- */
-export type User = Field & {
-    name: string;
-    email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    role: string;
-    google_id?: number;
-};
 
-export interface Book {
-    title: string;
-    author: string;
-    image?: string;
-    color1: string;
-    color2: string;
-    accent: string;
-}
 
-/***
- * Lista de types de mi Página Web
- */
 
-/**
- * Enum de Category
- * @type Category
- */
-export type Category = 'literatura' | 'animemanga' | 'reflexiones';
 
-/**
- * @type Post
- * Propiedades de un Post
- */
-export type Post = Field & {
-    title: string;
-    web_title: string;
-    tags: string;
-    category: Category;
-    author: string;
-    publish_date?: string;
-    description: string;
-    featured: boolean;
-    cover?: string;
-    cover_card?: string;
-    config?: Config;
-    images?: PostImageWithImage[];
-};
 
-/**
- * @type Artwork
- * Propiedades de un Artwork
- */
 
-export type Artwork = Field & {
-    title: string;
-    code: string;
-};
 
-export type ArtworkInput = {
-    id: number | null;
-    title: string;
-};
-
-export type ArtworkPictures = {
-    id: number;
-    name: string;
-    alt: string | null;
-};
-
-/**
- * @type Artwork Image
- * Propeidades de Artwork Image
- */
-export type Artwork_Image = Partial<Field> & {
-    num?: number;
-    name: string;
-    alt: string;
-};
-
-export type PostImage = Field & {
-    post_id: number;
-    artwork_image_id: number;
-    key: string;
-};
-
-export type PostImageWithImage = PostImage & {
-    image: Artwork_Image;
-};
-
-/**
- * @type Post Image
- * Propiedades de Post Image
- */
-export type Post_Image = Field & {
-    post_id: number;
-    artwork_image_id: number;
-    key: string;
-};
-
-/**
- *  @type Comentarios
- * Propiedades de Comentarios
- */
-
-export type Comment = Field & {
-    description: string;
-    publish_date: string;
-    user_id: number;
-    post_id: number;
-    parent_id: number;
-};
 
 export type Reply = Comment & {
     user: User;
 };
 
-/**
- * Types que utilizaremos
- */
-
-/**
- * Comentario con Respuestas
- * @type ComentarioRecord
- */
-export type CommentRecord = Comment & {
-    replies: Reply[];
-    user: User;
-    post?: Post;
-};
-
-export type UserRecord = User & {
-    coemntarios: Comment[];
-};
-
-/***
- *
- * Gestor de contenidos web
- */
-export type ArticleConfig = {
-    height: string;
-    position: BackgroundPositionKeyword;
-};
-
-/**
- * Formato de imagenes
- * @type Formato de Imagenes
- */
-export type Config = {
-    home?: string;
-    article?: ArticleConfig;
-    card?: string;
-    accent?: string;
-};
-/**
- * Formato Default de imagenes
- */
-export const formatDefault: Config = {
-    home: 'center',
-    article: {
-        position: 'center',
-        height: '35vh',
-    },
-    card: '10%',
-    accent: '#fcfcfd',
-};
-
-/**
- * Indices de Post
- * @type Index
- */
-export type IndexContent = {
-    id: string;
-    titulo: string;
-};
-
-/**
- * Contenido Post
- * @type
- */
-export type ContentPost = {
-    index: IndexContent[];
-    body: string;
-};
-
-/**
- * Contenido de Post
- * @type Contenido de web
- */
-export type Content = {
-    post: Post;
-    index: IndexContent[];
-    body: string;
-    comments: CommentRecord[];
-    features: Post[];
-    raw: string;
-};
-
-
-
-
-/**
- * Datos a analizar
- */
-export type Data = {
-    users: User[];
-    posts: Post[];
-    coments: Comment[];
-};
 
 /** Opcionalidades de backgrounds  */
 export type BackgroundPositionKeyword = 'top' | 'center' | 'bottom';

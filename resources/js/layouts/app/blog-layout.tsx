@@ -14,19 +14,13 @@ import { ReactNode, useCallback, useState } from 'react';
  */
 export interface LayoutProps {
     children?: ReactNode;
-    post_id?: number;
     edit?: boolean;
     onEdit?: () => void;
 }
 
-type FlashType = 'success' | 'error';
 
-interface FlashState {
-    type: FlashType;
-    message: string;
-}
 
-function BlogLayout({ children, post_id, edit, onEdit }: LayoutProps) {
+function BlogLayout({ children, edit, onEdit }: LayoutProps) {
     /** Estado del sdiebar responsive */
     const [sidebar, setSideBar] = useState(false);
 
@@ -41,10 +35,11 @@ function BlogLayout({ children, post_id, edit, onEdit }: LayoutProps) {
     return (
         <>
             <FlashHandler /> {/*** Mensaje de existo en acciones */}
-            <TopAuthBar post_id={post_id} onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
+
+            <TopAuthBar  onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
             <main>
               
-                <SideBarLeft isOpen={sidebar} onClose={handleClose} id={post_id} /> {/*** Sidebar Responsive */}
+                <SideBarLeft isOpen={sidebar} onClose={handleClose} /> {/*** Sidebar Responsive */}
                 {children} {/*** Contenido */}
             </main>
             <HomeFooter />
