@@ -14,7 +14,7 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
             <div className="w-full max-w-sm">
                 <div className="flex flex-col gap-8 items-center justify-center">
                     <div className="flex flex-col gap-4 bg-white rounded-2xl p-1 w-full">
-                        <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
+                        <Link href="#" className="flex flex-col items-center gap-2 font-medium">
                             <div className="mb-1 flex h-28 w-28 items-center justify-center rounded-md ">
                                 <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
                             </div>

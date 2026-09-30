@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ArtworkController;
-use App\Http\Controllers\ComentController;
-use App\Http\Controllers\HomeController;
+
+use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
+
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -13,21 +12,21 @@ use App\Http\Controllers\GoogleController;
 Route::middleware(['auth', 'verified' , 'throttle:comments'])->group(function () {
 
     //Funciones de contenido - Crear Comentario 
-    Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
+    //Route::post('/comentarios', [ComentController::class, 'store'])->name('comments.store');
 
     //Funciones de contenido - Eliminar Comentario 
-    Route::delete('/comentarios/{id}', [ComentController::class, 'destroy'])->name('comments.destroy');
+    //Route::delete('/comentarios/{id}', [ComentController::class, 'destroy'])->name('comments.destroy');
 
 
     // Eliminar comentarios de un post realtivos  a un usuario
-    Route::delete('/comentarios/post/{post_id}', [ComentController::class, 'destroyByPost'])->name('comments.destroyByPost');
+    //Route::delete('/comentarios/post/{post_id}', [ComentController::class, 'destroyByPost'])->name('comments.destroyByPost');
 
 
     //Eliminar todos los comentarios de un usuario
-    Route::delete('/comentarios', [ComentController::class, 'deleteAll'])->name('comments.deleteAll');
+    //Route::delete('/comentarios', [ComentController::class, 'deleteAll'])->name('comments.deleteAll');
 
     /** Exportacion PDF */
-    Route::get('/post/{id}/pdf', [HomeController::class, 'pdf'])->name('post.pdf');
+    //Route::get('/post/{id}/pdf', [HomeController::class, 'pdf'])->name('post.pdf');
 
 });
 
@@ -114,12 +113,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
 //Api de google - Login de Google
-//Route::get('/auth/google', [GoogleController::class, 'redirect']);
+Route::get('/auth/google', [GoogleController::class, 'redirect']);
 
-//Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 //Ruta para ir al archivador
 //Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post.archivador');
+
+
+
+
+Route::get('/', HomeController::class)->name('main');
+
 
 
 

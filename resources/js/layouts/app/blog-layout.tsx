@@ -1,6 +1,6 @@
 /** Componentes */
 import SideBarLeft from '@/core/auth/SideBarLeft';
-import TopAuthBar from '@/core/auth/TopAuthBar';
+import TopAuthBar from '@/layouts/app/blog-top-bar';
 import HomeFooter from '@/core/home/HomeFooter';
 
 import FlashHandler from './FlashHandler';
@@ -8,25 +8,20 @@ import FlashHandler from './FlashHandler';
 /** ESTADOS REACT */
 
 import { ReactNode, useCallback, useState } from 'react';
+import BlogSidebar from './blog-sidebar';
 
 /**
  * Props de Layout
  */
 export interface LayoutProps {
     children?: ReactNode;
-    post_id?: number;
     edit?: boolean;
     onEdit?: () => void;
 }
 
-type FlashType = 'success' | 'error';
 
-interface FlashState {
-    type: FlashType;
-    message: string;
-}
 
-function BlogLayout({ children, post_id, edit, onEdit }: LayoutProps) {
+function BlogLayout({ children, edit, onEdit }: LayoutProps) {
     /** Estado del sdiebar responsive */
     const [sidebar, setSideBar] = useState(false);
 
@@ -41,11 +36,12 @@ function BlogLayout({ children, post_id, edit, onEdit }: LayoutProps) {
     return (
         <>
             <FlashHandler /> {/*** Mensaje de existo en acciones */}
-            <TopAuthBar post_id={post_id} onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
+
+            <TopAuthBar  onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
             <main>
+                <BlogSidebar />
               
-                <SideBarLeft isOpen={sidebar} onClose={handleClose} id={post_id} /> {/*** Sidebar Responsive */}
-                {children} {/*** Contenido */}
+                {children} 
             </main>
             <HomeFooter />
         </>

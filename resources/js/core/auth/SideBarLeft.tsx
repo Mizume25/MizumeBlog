@@ -29,7 +29,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                         <>
                             <MenuItems>
                                 <a
-                                    href={route('post.panel')}
+                                    href="#"
                                     title="Cerrar sesión"
                                     className="bg-primary-foreground text-primary flex w-40 items-center justify-start rounded-t-2xl px-4 py-2"
                                 >
@@ -38,7 +38,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
                             </MenuItems>
                             <MenuItems>
                                 <button
-                                    onClick={() => router.get(route('artwork.index'))}
+                              
                                     title="Cerrar sesión"
                                     className="bg-primary-foreground text-primary btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
                                 >
@@ -52,7 +52,7 @@ function SideBarLeft({ isOpen = false, onClose, id }: SideBarLeftProps) {
 
                     <MenuItems>
                         <button
-                            onClick={() => router.get(route('profile.edit'))}
+                    
                             className="bg-btn-info text-btn-info-foreground btn-hover-scale flex w-40 items-center justify-start px-4 py-2"
                         >
                             <User className="me-1" /> Profile

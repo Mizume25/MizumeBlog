@@ -2,6 +2,8 @@
  * @fileoverview Objetos propios creados para usos particulares y especificos
  */
 
+import { Author, Post, Tag, Work } from "./definitions"
+
 /**
  * TYPE PET - Interfaces para la mascota web
  */
@@ -47,3 +49,18 @@ type TURTLE = Omit<Pet, 'onPath' | 'onImage' | 'onName' | 'onObject'> & {
     onName: (status: TurtleStatus) => string,
     onObject: (status: TurtleStatus) => { name: string, alt: string },
 }
+
+
+/** Fusion de base de datos */
+
+export type WorkRecord = Work & {
+    tags: Tag []
+    author: Author[] | Author
+}
+
+export type Article = Post & {
+  type: 'article';
+  works: Work[];
+  authors: Author[];
+};
+

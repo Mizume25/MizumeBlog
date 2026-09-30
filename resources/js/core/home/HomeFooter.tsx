@@ -1,35 +1,36 @@
-import { type Post } from '@/types';
+//import { type Post } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
-const getPosts = async (): Promise<Post[]> => {
+/*const getPosts = async (): Promise<Post[]> => {
     const response = await fetch('/api/upcoming');
 
     if (!response) throw new Error(`Error ${response}: no se han podido cargar los posts`);
 
     return response.json();
-};
+}; */
 
 export default function HomeFooter() {
     const trackRef = useRef<HTMLDivElement>(null);
 
-    const [cards, setCards] = useState<Post[]>([]);
+    //const [cards, setCards] = useState<Post[]>([]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         getPosts()
             .then(setCards)
             .catch((e) => console.log('Error en el carrusel', e));
-    }, []);
+    }, []); */
 
     // Duplicamos para loop infinito
-    const doubled = [...cards, ...cards];
+    //const doubled = [...cards, ...cards];
 
     const { quote } = usePage<SharedData>().props;
 
     return (
-        <footer className="z-10 w-full overflow-hidden rounded-xl" style={{ background: '#0d0804' }}>
-            {/* ── Carrusel ── */}
+        <footer className="z-10 w-full overflow-hidden rounded-xl bg-[#0d0804]">
+            
+            {/* ── Carrusel ── 
             <div className="overflow-hidden py-6" style={{ borderBottom: '0.5px solid rgba(201,168,124,0.15)' }}>
                 <p
                     style={{
@@ -127,17 +128,13 @@ export default function HomeFooter() {
                     </div>
                 </div>
             </div>
-
-            {/* ── Footer 3 columnas ── */}
-            {/* ── Footer 3 columnas ── */}
+*/}
             <div
                 className="footer-cols grid gap-6 px-8 pt-6 pb-4"
                 style={{
                     gridTemplateColumns: '1fr',
                     alignItems: 'start',
-                }}
-                ref={undefined}
-            >
+                }}>
                 <style>{`
         @media (min-width: 640px) {
             .footer-cols { grid-template-columns: 1fr 0.5px 1fr 0.5px 1fr !important; }
