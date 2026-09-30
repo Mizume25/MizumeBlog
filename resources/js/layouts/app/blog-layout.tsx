@@ -1,6 +1,6 @@
 /** Componentes */
 import SideBarLeft from '@/core/auth/SideBarLeft';
-import TopAuthBar from '@/core/auth/TopAuthBar';
+import TopAuthBar from '@/layouts/app/blog-top-bar';
 import HomeFooter from '@/core/home/HomeFooter';
 
 import FlashHandler from './FlashHandler';
@@ -8,6 +8,7 @@ import FlashHandler from './FlashHandler';
 /** ESTADOS REACT */
 
 import { ReactNode, useCallback, useState } from 'react';
+import BlogSidebar from './blog-sidebar';
 
 /**
  * Props de Layout
@@ -38,7 +39,7 @@ function BlogLayout({ children, edit, onEdit }: LayoutProps) {
 
             <TopAuthBar  onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
             <main>
-              
+                <BlogSidebar />
               
                 {children} 
             </main>
