@@ -3,6 +3,8 @@
 
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GoogleController;
+
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -111,9 +113,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
 //Api de google - Login de Google
-//Route::get('/auth/google', [GoogleController::class, 'redirect']);
+Route::get('/auth/google', [GoogleController::class, 'redirect']);
 
-//Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 //Ruta para ir al archivador
 //Route::get('post/archivador', [HomeController::class, 'archivador'])->name('post.archivador');

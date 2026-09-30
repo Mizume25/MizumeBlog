@@ -37,6 +37,6 @@ class GoogleController extends Controller
 
 
         Auth::login($user);
-        return redirect('dashboard')->with('Registro con Exito!');
+        return redirect('main')->with('Registro con Exito!');
     }
 }
