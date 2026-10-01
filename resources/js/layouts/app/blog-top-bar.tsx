@@ -9,10 +9,10 @@ import {
 export function BlogTopBar() {
 
     return (
-        <BlogTopHeader>
-            <BlogTopRoutes />
-            <BlogTopTitle />
-            <BlogTopLogin />
+        <BlogTopHeader>        
+                <BlogTopRoutes />
+                <BlogTopTitle />
+                <BlogTopLogin />
         </BlogTopHeader >
     );
 }

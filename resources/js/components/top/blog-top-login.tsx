@@ -7,12 +7,12 @@ function BlogTopLogin() {
      <div className="hidden items-center gap-6 justify-self-end text-sm font-medium lg:flex">
                 {!auth.user ? (
                     <>
-                        <Link href={route('login')} className="bg-primary text-primary-foreground btn-hover-scale rounded px-3 py-1 transition-colors hover:bg-btn-info hover:text-white">
+                        <Link href={route('login')} className="text-primary font-bold btn-hover-scale rounded px-3 py-1 transition-colors hover:bg-btn-info hover:text-white">
                             Iniciar Sesión
                         </Link>
                         <Link
                             href={route('register')}
-                            className="bg-primary text-primary-foreground btn-hover-scale rounded px-3 py-1 transition-colors hover:bg-btn-danger hover:text-white"
+                            className="text-primary btn-hover-scale font-bold rounded px-3 py-1 transition-colors hover:bg-btn-danger hover:text-white"
                         >
                             Registrarse
                         </Link>

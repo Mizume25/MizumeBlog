@@ -8,20 +8,22 @@ import FlashHandler from './FlashHandler';
 /** ESTADOS REACT */
 
 import { ReactNode, useCallback, useState } from 'react';
-import BlogSidebar from './blog-sidebar';
 
+
+
+import { SidebarProvider, SidebarTrigger } from "@/components/animate-ui/components/radix/sidebar"
+import { AppSidebar } from '@/components/app-sidebar';
+import { BlogSidebar } from './blog-sidebar';
 /**
  * Props de Layout
  */
 export interface LayoutProps {
     children?: ReactNode;
-    edit?: boolean;
-    onEdit?: () => void;
 }
 
 
 
-function BlogLayout({ children, edit, onEdit }: LayoutProps) {
+function BlogLayout({ children }: LayoutProps) {
     /** Estado del sdiebar responsive */
     const [sidebar, setSideBar] = useState(false);
 
@@ -35,15 +37,9 @@ function BlogLayout({ children, edit, onEdit }: LayoutProps) {
 
     return (
         <>
-            <FlashHandler /> {/*** Mensaje de existo en acciones */}
+            <FlashHandler />
 
-            <TopAuthBar  onToggle={onToogle} edit={edit} onEdit={onEdit} /> {/*** Menu de Navegación */}
-            <main>
-                <BlogSidebar />
-              
-                {children} 
-            </main>
-            <HomeFooter />
+            <BlogSidebar />
         </>
     );
 }
