@@ -27,7 +27,7 @@ export function AppSidebar() {
             <SidebarHeader >
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton size="lg">
                             
                         </SidebarMenuButton>
                     </SidebarMenuItem>
