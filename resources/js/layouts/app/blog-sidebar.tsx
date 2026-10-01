@@ -211,7 +211,7 @@ export const BlogSidebar = () => {
   if (!activeTeam) return null;
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className='bg-mizume-primary'>
       <Sidebar collapsible="icon">
         <SidebarHeader>
           {/* Team Switcher */}
@@ -228,10 +228,10 @@ export const BlogSidebar = () => {
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {activeTeam.name}
+                        MizumeBlog
                       </span>
                       <span className="truncate text-xs">
-                        {activeTeam.plan}
+                        comunidad
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto" />
@@ -477,11 +477,11 @@ export const BlogSidebar = () => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 bg-[url(/IMG/Fondo.jpg)]">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-white/80" />
+            <div className="aspect-video rounded-xl bg-white/80" />
+            <div className="aspect-video rounded-xl bg-white/80" />
           </div>
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
