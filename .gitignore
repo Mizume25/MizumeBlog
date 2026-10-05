@@ -27,3 +27,6 @@ UpdateBackups.bat
 
 .obsidian/
 public/build/
+
+# Log de sesiones de Claude
+.claude/log.md

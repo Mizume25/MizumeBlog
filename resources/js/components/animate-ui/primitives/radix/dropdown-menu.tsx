@@ -152,7 +152,18 @@ function DropdownMenuSubTrigger({
   );
 
   return (
-    <DropdownMenuPrimitive.SubTrigger ref={highlightedRef} disabled={disabled} textValue={textValue} render={<motion.div data-slot="dropdown-menu-sub-trigger" data-disabled={disabled} {...props} />}></DropdownMenuPrimitive.SubTrigger>
+    <DropdownMenuPrimitive.SubTrigger
+      ref={highlightedRef}
+      disabled={disabled}
+      textValue={textValue}
+      asChild
+    >
+      <motion.div
+        data-slot="dropdown-menu-sub-trigger"
+        data-disabled={disabled}
+        {...props}
+      />
+    </DropdownMenuPrimitive.SubTrigger>
   );
 }
 
@@ -191,7 +202,34 @@ function DropdownMenuSubContent({
     <AnimatePresence>
       {isOpen && (
         <DropdownMenuPortal forceMount container={container}>
-          <DropdownMenuPrimitive.SubContent forceMount loop={loop} onEscapeKeyDown={onEscapeKeyDown} onPointerDownOutside={onPointerDownOutside} onFocusOutside={onFocusOutside} onInteractOutside={onInteractOutside} sideOffset={sideOffset} alignOffset={alignOffset} avoidCollisions={avoidCollisions} collisionBoundary={collisionBoundary} collisionPadding={collisionPadding} arrowPadding={arrowPadding} sticky={sticky} hideWhenDetached={hideWhenDetached} render={<motion.div key="dropdown-menu-sub-content" data-slot="dropdown-menu-sub-content" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={transition} style={{ willChange: 'opacity, transform', ...style }} {...props} />}></DropdownMenuPrimitive.SubContent>
+          <DropdownMenuPrimitive.SubContent
+            asChild
+            forceMount
+            loop={loop}
+            onEscapeKeyDown={onEscapeKeyDown}
+            onPointerDownOutside={onPointerDownOutside}
+            onFocusOutside={onFocusOutside}
+            onInteractOutside={onInteractOutside}
+            sideOffset={sideOffset}
+            alignOffset={alignOffset}
+            avoidCollisions={avoidCollisions}
+            collisionBoundary={collisionBoundary}
+            collisionPadding={collisionPadding}
+            arrowPadding={arrowPadding}
+            sticky={sticky}
+            hideWhenDetached={hideWhenDetached}
+          >
+            <motion.div
+              key="dropdown-menu-sub-content"
+              data-slot="dropdown-menu-sub-content"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={transition}
+              style={{ willChange: 'opacity, transform', ...style }}
+              {...props}
+            />
+          </DropdownMenuPrimitive.SubContent>
         </DropdownMenuPortal>
       )}
     </AnimatePresence>
@@ -261,7 +299,36 @@ function DropdownMenuContent({
     <AnimatePresence>
       {isOpen && (
         <DropdownMenuPortal forceMount container={container}>
-          <DropdownMenuPrimitive.Content loop={loop} onCloseAutoFocus={onCloseAutoFocus} onEscapeKeyDown={onEscapeKeyDown} onPointerDownOutside={onPointerDownOutside} onFocusOutside={onFocusOutside} onInteractOutside={onInteractOutside} side={side} sideOffset={sideOffset} align={align} alignOffset={alignOffset} avoidCollisions={avoidCollisions} collisionBoundary={collisionBoundary} collisionPadding={collisionPadding} arrowPadding={arrowPadding} sticky={sticky} hideWhenDetached={hideWhenDetached} render={<motion.div key="dropdown-menu-content" data-slot="dropdown-menu-content" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={transition} style={{ willChange: 'opacity, transform', ...style }} {...props} />}></DropdownMenuPrimitive.Content>
+          <DropdownMenuPrimitive.Content
+            asChild
+            loop={loop}
+            onCloseAutoFocus={onCloseAutoFocus}
+            onEscapeKeyDown={onEscapeKeyDown}
+            onPointerDownOutside={onPointerDownOutside}
+            onFocusOutside={onFocusOutside}
+            onInteractOutside={onInteractOutside}
+            side={side}
+            sideOffset={sideOffset}
+            align={align}
+            alignOffset={alignOffset}
+            avoidCollisions={avoidCollisions}
+            collisionBoundary={collisionBoundary}
+            collisionPadding={collisionPadding}
+            arrowPadding={arrowPadding}
+            sticky={sticky}
+            hideWhenDetached={hideWhenDetached}
+          >
+            <motion.div
+              key="dropdown-menu-content"
+              data-slot="dropdown-menu-content"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={transition}
+              style={{ willChange: 'opacity, transform', ...style }}
+              {...props}
+            />
+          </DropdownMenuPrimitive.Content>
         </DropdownMenuPortal>
       )}
     </AnimatePresence>
@@ -300,7 +367,19 @@ function DropdownMenuItem({
   );
 
   return (
-    <DropdownMenuPrimitive.Item ref={highlightedRef} disabled={disabled} onSelect={onSelect} textValue={textValue} render={<motion.div data-slot="dropdown-menu-item" data-disabled={disabled} {...props} />}></DropdownMenuPrimitive.Item>
+    <DropdownMenuPrimitive.Item
+      ref={highlightedRef}
+      disabled={disabled}
+      onSelect={onSelect}
+      textValue={textValue}
+      asChild
+    >
+      <motion.div
+        data-slot="dropdown-menu-item"
+        data-disabled={disabled}
+        {...props}
+      />
+    </DropdownMenuPrimitive.Item>
   );
 }
 
@@ -332,7 +411,21 @@ function DropdownMenuCheckboxItem({
   );
 
   return (
-    <DropdownMenuPrimitive.CheckboxItem ref={highlightedRef} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} onSelect={onSelect} textValue={textValue} render={<motion.div data-slot="dropdown-menu-checkbox-item" data-disabled={disabled} {...props} />}></DropdownMenuPrimitive.CheckboxItem>
+    <DropdownMenuPrimitive.CheckboxItem
+      ref={highlightedRef}
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+      disabled={disabled}
+      onSelect={onSelect}
+      textValue={textValue}
+      asChild
+    >
+      <motion.div
+        data-slot="dropdown-menu-checkbox-item"
+        data-disabled={disabled}
+        {...props}
+      />
+    </DropdownMenuPrimitive.CheckboxItem>
   );
 }
 
@@ -363,7 +456,20 @@ function DropdownMenuRadioItem({
   );
 
   return (
-    <DropdownMenuPrimitive.RadioItem ref={highlightedRef} value={value} disabled={disabled} onSelect={onSelect} textValue={textValue} render={<motion.div data-slot="dropdown-menu-radio-item" data-disabled={disabled} {...props} />}></DropdownMenuPrimitive.RadioItem>
+    <DropdownMenuPrimitive.RadioItem
+      ref={highlightedRef}
+      value={value}
+      disabled={disabled}
+      onSelect={onSelect}
+      textValue={textValue}
+      asChild
+    >
+      <motion.div
+        data-slot="dropdown-menu-radio-item"
+        data-disabled={disabled}
+        {...props}
+      />
+    </DropdownMenuPrimitive.RadioItem>
   );
 }
 
@@ -404,7 +510,12 @@ type DropdownMenuItemIndicatorProps = Omit<
 
 function DropdownMenuItemIndicator(props: DropdownMenuItemIndicatorProps) {
   return (
-    <DropdownMenuPrimitive.ItemIndicator data-slot="dropdown-menu-item-indicator" render={<motion.div {...props} />}></DropdownMenuPrimitive.ItemIndicator>
+    <DropdownMenuPrimitive.ItemIndicator
+      data-slot="dropdown-menu-item-indicator"
+      asChild
+    >
+      <motion.div {...props} />
+    </DropdownMenuPrimitive.ItemIndicator>
   );
 }
 

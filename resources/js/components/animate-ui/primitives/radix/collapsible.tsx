@@ -63,14 +63,35 @@ function CollapsibleContent({
   return (
     <AnimatePresence>
       {keepRendered ? (
-        <CollapsiblePrimitive.Content forceMount render={<motion.div key="collapsible-content" data-slot="collapsible-content" layout initial={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }} animate={
-                            isOpen
-                              ? { opacity: 1, height: 'auto', overflow: 'hidden', y: 0 }
-                              : { opacity: 0, height: 0, overflow: 'hidden', y: 20 }
-                          } transition={transition} {...props} />}></CollapsiblePrimitive.Content>
+        <CollapsiblePrimitive.Content asChild forceMount>
+          <motion.div
+            key="collapsible-content"
+            data-slot="collapsible-content"
+            layout
+            initial={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }}
+            animate={
+              isOpen
+                ? { opacity: 1, height: 'auto', overflow: 'hidden', y: 0 }
+                : { opacity: 0, height: 0, overflow: 'hidden', y: 20 }
+            }
+            transition={transition}
+            {...props}
+          />
+        </CollapsiblePrimitive.Content>
       ) : (
         isOpen && (
-          <CollapsiblePrimitive.Content forceMount render={<motion.div key="collapsible-content" data-slot="collapsible-content" layout initial={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }} animate={{ opacity: 1, height: 'auto', overflow: 'hidden', y: 0 }} exit={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }} transition={transition} {...props} />}></CollapsiblePrimitive.Content>
+          <CollapsiblePrimitive.Content asChild forceMount>
+            <motion.div
+              key="collapsible-content"
+              data-slot="collapsible-content"
+              layout
+              initial={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }}
+              animate={{ opacity: 1, height: 'auto', overflow: 'hidden', y: 0 }}
+              exit={{ opacity: 0, height: 0, overflow: 'hidden', y: 20 }}
+              transition={transition}
+              {...props}
+            />
+          </CollapsiblePrimitive.Content>
         )
       )}
     </AnimatePresence>
