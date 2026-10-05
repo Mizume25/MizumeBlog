@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useEffect, useState } from 'react';
 import { RenderProfileGuest, RenderProfileAuth } from './blog-sidebar-help';
 import {
   Breadcrumb,
@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { UserType } from '@/types/definitions';
 import { Separator } from '@/components/ui/separator';
 import {
   SidebarProvider,
@@ -73,7 +74,7 @@ import {
   UserCircle2,
   BookBookmark,
 
-  
+
 } from 'lucide-react';
 import {
   Avatar,
@@ -83,6 +84,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
+import { boolean } from 'zod';
 
 export const DATA = {
   user: {
@@ -222,14 +224,30 @@ export const DATA = {
 export const CONTENT = {
   title: "Mizumeblog",
   subtitle: "community",
-  sidebar: {
-    home: "Home",
-    archive: "Archivador",
-    authors: "Autores",
-    works: "Obras"
-  },
+  sidebar: [
+    {
+      name: 'Home',
+      url: '#',
+      icon: Home,
+    },
+    {
+      name: 'Archive',
+      url: '#',
+      icon: FolderBookmark,
+    },
+    {
+      name: 'Autores',
+      url: '#',
+      icon: UserCircle2,
+    },
+    {
+      name: 'Obras',
+      url: '#',
+      icon: BookBookmark,
+    },
+  ],
   profile: {
-    settings:"Perfil",
+    settings: "Perfil",
     session: "Log out",
     reports: "Reportes",
     policy: "Politicas"
@@ -241,19 +259,24 @@ export const BlogSidebar = () => {
   const [activeTeam, setActiveTeam] = React.useState(DATA.teams[0]);
   const { auth } = usePage<SharedData>().props;
 
+  const role: UserType = (auth?.user?.role as UserType | undefined) ?? "guest"
+
   if (!activeTeam) return null;
 
 
-  
+
+  interface ProfileFooterProps {
+    isMobile: boolean,
+    role: UserType  
+  }
 
 
-  /** Types de Renders */
-  const RenderProfileType = ({ isMobile } : { isMobile: boolean}) => {
-      return (
-        <SidebarFooter>
-             <RenderProfileAuth isMobile={isMobile} />
-        </SidebarFooter>
-      )
+  const RenderProfileType = ({ isMobile, role }: ProfileFooterProps) => {
+    return (
+      <SidebarFooter>
+        <RenderProfileAuth isMobile={isMobile} role={role} />
+      </SidebarFooter>
+    )
   }
 
   return (
@@ -263,22 +286,22 @@ export const BlogSidebar = () => {
           {/* Team Switcher */}
           <SidebarMenu>
             <SidebarMenuItem>
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                  >
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-                      <img src='/Icons/turtle/turtle-reader.png' />
-                    </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {CONTENT.title}
-                      </span>
-                      <span className="truncate text-xs">
-                        {CONTENT.subtitle}
-                      </span>
-                    </div>
-                  </SidebarMenuButton>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                  <img src='/Icons/turtle/turtle-reader.png' />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    {CONTENT.title}
+                  </span>
+                  <span className="truncate text-xs">
+                    {CONTENT.subtitle}
+                  </span>
+                </div>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
           {/* Team Switcher */}
@@ -286,12 +309,12 @@ export const BlogSidebar = () => {
 
         <SidebarContent>
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Contenido Principal</SidebarGroupLabel>
-            <SidebarMenu>
-              {DATA.projects.map((item) => (
+            <SidebarGroupLabel className='text-lg'>Contenido Principal</SidebarGroupLabel>
+            <SidebarMenu >
+              {CONTENT.sidebar.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton size={'lg'} asChild>
+                    <a href={item.url} className='text-lg'>
                       <item.icon />
                       <span>{item.name}</span>
                     </a>
@@ -325,18 +348,12 @@ export const BlogSidebar = () => {
                   </DropdownMenu>
                 </SidebarMenuItem>
               ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-sidebar-foreground/70">
-                  <MoreHorizontal className="text-sidebar-foreground/70" />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
           {/* Nav Project */}
         </SidebarContent>
-        
-              <RenderProfileType isMobile={isMobile} />
+
+        <RenderProfileType isMobile={isMobile} role={role} />
         <SidebarRail />
       </Sidebar>
 

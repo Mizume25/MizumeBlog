@@ -79,12 +79,46 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { DATA, CONTENT } from './blog-sidebar';
+import { UserType } from '@/types/definitions';
 
 interface RenderProfileProps {
     isMobile: boolean
+    role: UserType
+
 }
 
-export const RenderProfileAuth = ({ isMobile }: RenderProfileProps) => {
+export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
+
+    const RenderAdminSettings = () => {
+        return (
+            <DropdownMenuItem>
+                <GavelIcon />
+                <a href="#">Panel</a>
+            </DropdownMenuItem>
+        )
+    }
+
+    const RenderEditorSettings = () => {
+        return (
+            <DropdownMenuItem>
+                <GavelIcon />
+                <a href="#">Panel</a>
+            </DropdownMenuItem>
+        )
+    }
+
+    const RenderSettingsExtra = () => {
+    switch (role) {
+        case "admin":
+            return <RenderAdminSettings />
+        case "editor":
+            return <RenderEditorSettings />
+        default:
+            return null
+    }
+}
+
+
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -156,6 +190,7 @@ export const RenderProfileAuth = ({ isMobile }: RenderProfileProps) => {
                                 <GavelIcon />
                                 {CONTENT.profile.policy}
                             </DropdownMenuItem>
+                            {role !== "guest" && <RenderSettingsExtra />}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
@@ -179,13 +214,13 @@ export const RenderProfileGuest = () => {
         <SidebarMenu>
             <SidebarMenuItem>
                 <div className='w-full h-full flex justify-center items-center gap-2'>
-                <div className='w-[50%] h-auto bg-btn-info text-btn-info-foreground  text-sm rounded-md cursor-pointer hover:bg-blue-500/90 text-center'>
-                      <a href={route("login")}>Iniciar Session</a>
+                    <div className='w-[50%] h-auto bg-btn-info text-btn-info-foreground  text-sm rounded-md cursor-pointer hover:bg-blue-500/90 text-center'>
+                        <a href={route("login")}>Iniciar Session</a>
+                    </div>
+                    <div className='w-[50%] h-auto bg-btn-danger text-sm text-btn-danger-foreground rounded-md cursor-pointer hover:bg-red-500/70 text-center'>
+                        <a href={route("register")}> Registrarse </a>
+                    </div>
                 </div>
-                <div className='w-[50%] h-auto bg-btn-danger text-sm text-btn-danger-foreground rounded-md cursor-pointer hover:bg-red-500/70 text-center'>
-                      <a href={route("register")}> Registrarse </a>
-                </div>
-            </div>
             </SidebarMenuItem>
         </SidebarMenu>
     )

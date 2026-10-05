@@ -2,7 +2,7 @@
  * @fileoverview Archivos de exportacion de interfaces web
  */
 import { LucideIcon } from 'lucide-react';
-
+import { User } from './definitions';
 /**
  * @interface Auth
  * Sesion Autentificada

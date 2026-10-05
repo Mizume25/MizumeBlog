@@ -26,6 +26,13 @@ export type ReportSatatus = "pending" | "resolved" | "rejected"
  */
 export type PermissionsSatatus = "denied" | "accepted" | "pending" | "expired" | "used"
 
+
+/**
+ * @enum UserType
+ * Tipos de Usuario
+ */
+export type UserType = "admin" | "editor" | "user" | "guest"
+
 /**
  * Todos los campos comparten estas propieaddes
  * @type field
