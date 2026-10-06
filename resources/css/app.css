@@ -186,8 +186,10 @@
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
+
+    /* Valores del sidebar*/
+    --sidebar: var(--mizume-primary);
+    --sidebar-foreground: var(--mizume-primary-foreground);
     --sidebar-primary: oklch(0.205 0 0);
     --sidebar-primary-foreground: oklch(0.985 0 0);
     --sidebar-accent: oklch(0.97 0 0);
@@ -274,7 +276,6 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: 'Inter Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -317,6 +318,8 @@
     --color-mizume-primary: var(--mizume-primary);
     --color-mizume-primary-foreground: var(--mizume-primary-foreground);
     --color-mizume-secondary: var(--mizume-secondary);
+    --color-mizume-secondary-foreground: var(--color-pure);
     --color-mizume-tertiary: var(--mizume-tertiary);
+    --color-mizume-tertiary-foreground: var(--color-pure);
 
 }

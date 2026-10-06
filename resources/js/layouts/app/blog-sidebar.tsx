@@ -254,7 +254,11 @@ export const CONTENT = {
   }
 }
 
-export const BlogSidebar = () => {
+interface BlogSidebarProps {
+  children: React.ReactNode;
+}
+
+export const BlogSidebar = ({ children }: BlogSidebarProps) => {
   const isMobile = useIsMobile();
   const [activeTeam, setActiveTeam] = React.useState(DATA.teams[0]);
   const { auth } = usePage<SharedData>().props;
@@ -267,7 +271,7 @@ export const BlogSidebar = () => {
 
   interface ProfileFooterProps {
     isMobile: boolean,
-    role: UserType  
+    role: UserType
   }
 
 
@@ -314,38 +318,11 @@ export const BlogSidebar = () => {
               {CONTENT.sidebar.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton size={'lg'} asChild>
-                    <a href={item.url} className='text-lg'>
+                    <a href={item.url} className='text-xl'>
                       <item.icon />
                       <span>{item.name}</span>
                     </a>
                   </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover>
-                        <MoreHorizontal />
-                        <span className="sr-only">More</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-48 rounded-lg"
-                      side={isMobile ? 'bottom' : 'right'}
-                      align={isMobile ? 'end' : 'start'}
-                    >
-                      <DropdownMenuItem>
-                        <Folder className="text-muted-foreground" />
-                        <span>View Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Forward className="text-muted-foreground" />
-                        <span>Share Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Trash2 className="text-muted-foreground" />
-                        <span>Delete Project</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -358,32 +335,26 @@ export const BlogSidebar = () => {
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="bg-mizume-tertiary text-mizume-tertiary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
+            <Breadcrumb className='text-mizume-secondary-foreground'>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
                   <BreadcrumbLink href="#">
-                    Building Your Application
+                    Home
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <BreadcrumbSeparator className='text-mizume-secondary-foreground' />
+                <BreadcrumbItem className='text-mizume-secondary-foreground'>
+                  <BreadcrumbPage className='text-mizume-secondary-foreground"'> Menu </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0 bg-[url(/IMG/Fondo.jpg)]">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-white/80" />
-            <div className="aspect-video rounded-xl bg-white/80" />
-            <div className="aspect-video rounded-xl bg-white/80" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
