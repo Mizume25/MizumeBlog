@@ -208,6 +208,10 @@
     --mizume-tertiary:hsl(53, 100%, 35%);
     --mizume-tertiary-foreground:var(--pure-color);
 
+    --mizume-fourthary: var(--mizume-primary-foreground);
+    --mizume-fourthary-foreground: var(--pure-color);
+    
+
 }
 
 /** Titulo web  */
@@ -315,11 +319,14 @@
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
 
+    /* Variables css */
     --color-mizume-primary: var(--mizume-primary);
     --color-mizume-primary-foreground: var(--mizume-primary-foreground);
     --color-mizume-secondary: var(--mizume-secondary);
     --color-mizume-secondary-foreground: var(--color-pure);
     --color-mizume-tertiary: var(--mizume-tertiary);
     --color-mizume-tertiary-foreground: var(--color-pure);
-
+    --color-mizume-fourthary: var(--mizume-fourthary);
+    --color-mizume-fourthary-foreground: var(--color-pure);
+    
 }

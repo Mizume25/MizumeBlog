@@ -73,6 +73,7 @@ import {
   FolderBookmark,
   UserCircle2,
   BookBookmark,
+  FileWarning
 
 
 } from 'lucide-react';
@@ -245,6 +246,11 @@ export const CONTENT = {
       url: '#',
       icon: BookBookmark,
     },
+    {
+      name: 'Reclamaciones',
+      url: '#',
+      icon: FileWarning,
+    },
   ],
   profile: {
     settings: "Perfil",
@@ -335,7 +341,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
       </Sidebar>
 
       <SidebarInset>
-        <header className="bg-mizume-tertiary text-mizume-tertiary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Breadcrumb className='text-mizume-secondary-foreground'>
@@ -353,7 +359,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 bg-[url(/IMG/Fondo.jpg)]">
+        <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)]">
           {children}
         </div>
       </SidebarInset>
