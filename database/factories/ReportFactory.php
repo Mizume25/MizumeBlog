@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
+use App\Models\Report;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Post>
+ * @extends Factory<Report>
  */
-class PostFactory extends Factory
+class ReportFactory extends Factory
 {
     /**
      * Define the model's default state.

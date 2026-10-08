@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
+use App\Models\RequestPermission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Post>
+ * @extends Factory<RequestPermission>
  */
-class PostFactory extends Factory
+class RequestPermissionFactory extends Factory
 {
     /**
      * Define the model's default state.

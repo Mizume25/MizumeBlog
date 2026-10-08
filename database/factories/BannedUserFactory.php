@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
+use App\Models\BannedUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Post>
+ * @extends Factory<BannedUser>
  */
-class PostFactory extends Factory
+class BannedUserFactory extends Factory
 {
     /**
      * Define the model's default state.

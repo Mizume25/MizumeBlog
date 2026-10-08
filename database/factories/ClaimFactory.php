@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Post;
+use App\Models\Claim;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Post>
+ * @extends Factory<Claim>
  */
-class PostFactory extends Factory
+class ClaimFactory extends Factory
 {
     /**
      * Define the model's default state.
