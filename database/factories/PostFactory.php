@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\PostType;
+use App\Enums\UserRole;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class PostFactory extends Factory
             'code' => strtoupper(Str::substr(Str::slug($title, ''), 0, 2) . '-' . Str::random(4))
                 . fake()->unique()->numerify('##'),
             'type' => PostType::Article,
-            'user_id' => User::factory()->editor(),
+            'user_id' => User::where('role', UserRole::Editor)->inRandomOrder()->value('id')
         ];
     }
 

@@ -13,6 +13,7 @@ use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Override;
+
 /**
  * @property UserRole|null $role
  * @property string|null $uuid
@@ -56,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => UserRole::class, 
+            'role' => UserRole::class,
         ];
     }
 
@@ -64,12 +65,17 @@ class User extends Authenticatable implements MustVerifyEmail
      * Comentarios Respuesta Relacionado
      * @return HasMany 
      */
-    public function comentarios()
+    public function commments()
     {
         return $this->hasMany(Comment::class, 'user_id');
     }
 
-    
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -77,14 +83,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     /** Nuevas Funciones para la version 1.4.0 */
-    
+
     /** Funciones para agregar campo uuid  publico automaticamente */
     public static function booted()
     {
-        static::creating(function (User $user){
-            if(empty($user->uuid)) $user->uuid = Str::uuid();
+        static::creating(function (User $user) {
+            if (empty($user->uuid)) $user->uuid = Str::uuid();
         });
-    } 
+    }
 
     /** Devolvemos uuid publico */
     public function getRouteKeyName()
@@ -93,7 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-      /** Solicitudes que este usuario ha hecho. */
+    /** Solicitudes que este usuario ha hecho. */
     public function permissionRequests(): HasMany
     {
         return $this->hasMany(RequestPermission::class);
@@ -156,5 +162,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->where('role', UserRole::Admin);
     }
-
 }
