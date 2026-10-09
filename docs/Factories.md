@@ -6,14 +6,6 @@
 
 ## Antes de pegar nada: 4 cosas que romperán los factories
 
-1. **`Tag` no usa `HasFactory`** → `Tag::factory()` lanza `BadMethodCallException`. Hay que añadir el trait (ver sección Tag).
-2. **`CommentsFactory.php` está mal nombrado.** Laravel resuelve `Comment::factory()` buscando `Database\Factories\CommentFactory` (singular). Además importa `App\Models\Model`, que no existe. Renombra el archivo a `CommentFactory.php` (ver sección Comment).
-3. **`PostImage` apunta a una tabla que no existe.** La migración `2026_09_26_124224` crea `posts_images`, pero el modelo usa el nombre por defecto `post_images` (esa tabla la borró `drop_artworks_tables`). Añade al modelo:
-   ```php
-   protected $table = 'posts_images';
-   ```
-4. **`requests_permissions.granted_by` es NOT NULL** en la migración, aunque una solicitud `pending` todavía no tiene quién la conceda. El factory lo rellena siempre para poder insertar, pero lo correcto es hacer la columna `->nullable()` en una migración nueva.
-
 > Nota: los factories se ejecutan con `Model::unguarded()`, así que **sí** pueden asignar campos fuera de `$fillable` (`role`, `status`, `granted_by`, `resolved_by`, `reviewed_by`…). Eso es intencionado y no abre ningún hueco en producción.
 
 > Nota extra: `config/media-library.php` sigue con `'media_model' => Spatie\...\Media::class`, no `App\Models\Media::class`. No afecta a los factories (crean `App\Models\Media` directamente), pero sí a `PostImage::attach()` en uso real.
@@ -496,7 +488,6 @@ class RequestPermissionFactory extends Factory
             'requested_at' => now(),
             'granted_at' => null,
             'access_expires_at' => null,
-            // TODO: null cuando la columna sea nullable.
             'granted_by' => User::factory()->admin(),
             'user_id' => User::factory()->editor(),
             'post_id' => Post::factory(),
