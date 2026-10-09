@@ -18,7 +18,21 @@ class AuthorFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'pseudonym' => null,
+            'birth_year' => fake()->year(),
+            'description' => fake()->text(200),
         ];
+    }
+
+    /** Autor conocido solo por seudónimo (displayName devuelve el seudónimo). */
+    public function pseudonymous(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => null,
+            'last_name' => null,
+            'pseudonym' => fake()->unique()->userName(),
+        ]);
     }
 }
