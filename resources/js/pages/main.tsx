@@ -13,7 +13,7 @@ interface BlogContentProps {
 /** Contenedor Superior */
 export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
   return (
-    <div className="grid auto-rows-min gap-1 md:grid-cols-3" >
+    <div className="grid auto-rows-min gap-4 md:grid-cols-3" >
       {children}
     </div>
   )
@@ -26,7 +26,7 @@ export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
  */
 export const BlogMain = ({ children }: BlogContentProps) => {
   return (
-    <div className="min-h-screen flex-1 rounded-xl md:min-h-min bg-mizume-secondary text-mizume-secondary-foreground" >
+    <div className="flex-1 rounded-xl h-[50%] bg-mizume-secondary text-mizume-secondary-foreground" >
       {children}
     </div>
   )

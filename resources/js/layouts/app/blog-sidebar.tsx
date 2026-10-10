@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import { RenderProfileGuest, RenderProfileAuth } from './blog-sidebar-help';
 import {
   Breadcrumb,
@@ -10,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { UserType } from '@/types/definitions';
-import { Separator } from '@/components/ui/separator';
+import { SiInstagram, SiX, SiTiktok, SiGoodreads, SiLinkerd, SiGithub } from 'react-icons/si'
 import {
   SidebarProvider,
   SidebarInset,
@@ -25,49 +24,19 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
-  SidebarMenuAction,
 } from '@/components/animate-ui/components/radix/sidebar';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/animate-ui/primitives/radix/collapsible';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from '@/components/animate-ui/components/radix/dropdown-menu';
+
 import {
   AudioWaveform,
-  BadgeCheck,
-  Bell,
   BookOpen,
   Bot,
-  ChevronRight,
-  ChevronsUpDown,
   Command,
-  CreditCard,
-  Folder,
-  Forward,
   Frame,
   GalleryVerticalEnd,
-  LogOut,
   Map,
-  MoreHorizontal,
   PieChart,
-  Plus,
   Settings2,
-  Sparkles,
   SquareTerminal,
-  Trash2,
   MegaphoneIcon,
   Home,
   FolderBookmark,
@@ -85,7 +54,43 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
-import { boolean } from 'zod';
+import { url } from 'zod';
+
+
+
+const NETWORKS = [
+  {
+    url: "https://www.instagram.com/_mi_zume_/",
+    icon: SiInstagram,
+    name: "Instagram"
+  },
+  {
+    url: "#",
+    icon: SiX,
+    name: "Twitter"
+  },
+  {
+    url: "https://github.com/Mizume25",
+    icon: SiGithub,
+    name: "Github"
+  },
+  {
+    url: "https://www.linkedin.com/in/gabriel-nivicela-86733035a/",
+    icon: SiLinkerd,
+    name: "Linkedin"
+  },
+  {
+    url: "https://www.goodreads.com/mizume",
+    icon: SiGoodreads,
+    name: "Goreads"
+  },
+  {
+    url: "https://www.tiktok.com/@m_gabi_?is_from_webapp=1&sender_device=pc",
+    icon: SiTiktok,
+    name: "Tik Tok"
+  }
+
+]
 
 export const DATA = {
   user: {
@@ -251,6 +256,11 @@ export const CONTENT = {
       url: '#',
       icon: FileWarning,
     },
+    {
+      name: 'Politicas',
+      url: '#',
+      icon: MegaphoneIcon,
+    },
   ],
   profile: {
     settings: "Perfil",
@@ -273,6 +283,28 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
   if (!activeTeam) return null;
 
+
+  const BlogFooter = () => {
+    return (
+      <div className='w-full min-h-20 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
+        <div className='w-full lg:w-[50%]  h-full p-4'>
+          <div className='h-full w-full text-[12px] '>
+            <p> 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law. - Immanuel Kant'
+            </p>
+          </div>
+        </div>
+        <div className='w-full lg:w-[50%] h-full p-4'>
+          <div className='h-full w-full justify-center lg:justify-end items-center flex flex-row gap-4'>
+            {NETWORKS.map((p) => (
+              <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer">
+                <p.icon size={30} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
 
   interface ProfileFooterProps {
@@ -359,9 +391,13 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)]">
+        <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)] p-4">
           {children}
+
         </div>
+        <BlogFooter>
+
+        </BlogFooter>
       </SidebarInset>
     </SidebarProvider>
   );

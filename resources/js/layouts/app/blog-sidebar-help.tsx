@@ -1,38 +1,8 @@
-import * as React from 'react';
-
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
-import {
-    SidebarProvider,
-    SidebarInset,
-    SidebarTrigger,
-    Sidebar,
-    SidebarHeader,
-    SidebarContent,
-    SidebarFooter,
-    SidebarRail,
-    SidebarGroup,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-    SidebarMenuSub,
-    SidebarMenuSubItem,
-    SidebarMenuSubButton,
-    SidebarMenuAction,
 } from '@/components/animate-ui/components/radix/sidebar';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/animate-ui/primitives/radix/collapsible';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -40,44 +10,20 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from '@/components/animate-ui/components/radix/dropdown-menu';
 import {
-    AudioWaveform,
-    BadgeCheck,
-    Bell,
-    BookOpen,
-    Bot,
-    ChevronRight,
     ChevronsUpDown,
-    Command,
-    CreditCard,
-    Folder,
-    Forward,
-    Frame,
-    GalleryVerticalEnd,
     LogOut,
-    Map,
-    MoreHorizontal,
-    PieChart,
-    Plus,
     Settings2,
-    Sparkles,
-    SquareTerminal,
-    Trash2,
     MegaphoneIcon,
     GavelIcon
-
 } from 'lucide-react';
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from '@/components/ui/avatar';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
 import { DATA, CONTENT } from './blog-sidebar';
 import { UserType } from '@/types/definitions';
 
@@ -185,10 +131,6 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
                             <DropdownMenuItem>
                                 <MegaphoneIcon />
                                 {CONTENT.profile.reports}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <GavelIcon />
-                                {CONTENT.profile.policy}
                             </DropdownMenuItem>
                             {role !== "guest" && <RenderSettingsExtra />}
                         </DropdownMenuGroup>
