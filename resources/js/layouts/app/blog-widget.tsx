@@ -11,7 +11,7 @@ interface BlogWidgetProps {
 function BlogWidget({ variant }: BlogWidgetProps) {
 
   const content = "flex flex-col justify-center items-center transition-transform hover:scale-115 cursor-pointer duration-300"
-  const figure = "text-mizume-tertiary"
+  const figure = "text-mizume-tertiary w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36"
   const subtitle = "title text-2xl"
 
   const RenderTypeIcon = () => {
@@ -49,7 +49,7 @@ function BlogWidget({ variant }: BlogWidgetProps) {
 
 
   return (
-    <div className="aspect-video rounded-xl bg-mizume-secondary m-2 flex justify-center items-center" >
+    <div className="w-75 h-75 rounded-xl bg-mizume-secondary flex justify-center items-center p-4">
       <RenderTypeIcon />
     </div>
   )

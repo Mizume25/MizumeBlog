@@ -70,10 +70,7 @@ class Post extends Model
         return $this->belongsToMany(Author::class, 'articles_authors')->withTimestamps();
     }
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(PostImage::class);
-    }
+   
 
     public function permissionRequests(): HasMany
     {
@@ -111,6 +108,11 @@ class Post extends Model
     public function scopeOwnedBy(Builder $query, User $user): Builder
     {
         return $query->where('user_id', $user->id);
+    }
+
+    public function scopeFeatured (Builder $query) : Builder 
+    {
+        return $query->where('featured', true);
     }
 
 

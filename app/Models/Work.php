@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Work extends Model
-{   
+{
     use HasFactory;
     use InteractsWithMedia;
 
@@ -38,7 +38,7 @@ class Work extends Model
         $this->addMediaCollection('cover')->singleFile();
     }
 
-    
+
 
     // --- Relaciones ---
 
@@ -71,7 +71,12 @@ class Work extends Model
 
     public function scopeWithTag(Builder $query, string $tagName): Builder
     {
-        return $query->whereHas('tags', fn (Builder $q) => $q->where('name', $tagName));
+        return $query->whereHas('tags', fn(Builder $q) => $q->where('name', $tagName));
+    }
+
+    public function scopeWithFeaturedPost(Builder $query): Builder
+    {
+        return $query->whereHas('posts', fn(Builder $q) => $q->where('featured', true));
     }
 
     // --- Tags ---
@@ -80,7 +85,7 @@ class Work extends Model
     public function syncTagsByName(array $names): void
     {
         $ids = collect($names)
-            ->map(fn (string $name) => Tag::findOrCreateNormalized($name)->id);
+            ->map(fn(string $name) => Tag::findOrCreateNormalized($name)->id);
 
         $this->tags()->sync($ids);
     }

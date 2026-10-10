@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Legacy;
 
 use App\Models\Comment;
 use App\Models\Post;
@@ -13,7 +13,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ContentType;
- 
+use App\Http\Controllers\Controller;
 use App\Services\MarkdownService;
 use Storage;
 

@@ -4,7 +4,7 @@ import {
   BlogLayout,
   BlogWidget
 } from '@/layouts/app'
-import { BlogFeatureCard } from '@/layouts/app/blog-feature-card'
+
 
 interface BlogContentProps {
   children: React.ReactNode
@@ -13,7 +13,7 @@ interface BlogContentProps {
 /** Contenedor Superior */
 export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
   return (
-    <div className="grid auto-rows-min gap-4 md:grid-cols-3" >
+    <div className="grid auto-rows-min gap-1 md:grid-cols-3" >
       {children}
     </div>
   )
