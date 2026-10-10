@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Legacy;
 
 use App\DTO\ArticleConfig;
 use App\DTO\Config;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\MarkdownService;
 use App\Enums\ContentType;
 use App\Enums\PositionType;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use ValueError;

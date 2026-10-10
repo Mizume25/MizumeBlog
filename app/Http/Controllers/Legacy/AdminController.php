@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Legacy;
 
 use App\Enums\ContentType;
 use App\Http\Requests\StorePostRequest;
@@ -10,6 +10,7 @@ use App\Models\Comment;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Enums\ImageType;
+use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\ArtworkImage;
 use App\Models\PostImage;

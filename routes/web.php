@@ -3,7 +3,7 @@
 
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\Auth\GoogleController;
 
 
 /**
