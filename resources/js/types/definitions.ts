@@ -196,7 +196,14 @@ export type Permissions = Field &{
     post_id: number,  
 }
 
+// -- Tipados customizados
 
+export type PostRecord = Post & {
+    user:User,
+    works: Work []
+}
+
+export type PostsGroupedByUser = Record<string, PostRecord[]>
 
 
 

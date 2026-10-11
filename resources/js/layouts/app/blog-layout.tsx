@@ -4,14 +4,13 @@ import {
     BlogSidebar
 } from '@/layouts/app'
 
+
 /**
  * Props de Layout
  */
 export interface LayoutProps {
     children?: ReactNode;
 }
-
-
 
 function BlogLayout({ children }: LayoutProps) {
     return (

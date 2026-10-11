@@ -14,6 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use App\Models\PostImage;
+use Illuminate\Support\Collection;
 
 class Post extends Model
 {
@@ -70,7 +71,7 @@ class Post extends Model
         return $this->belongsToMany(Author::class, 'articles_authors')->withTimestamps();
     }
 
-   
+
 
     public function permissionRequests(): HasMany
     {
@@ -110,7 +111,7 @@ class Post extends Model
         return $query->where('user_id', $user->id);
     }
 
-    public function scopeFeatured (Builder $query) : Builder 
+    public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('featured', true);
     }
@@ -166,7 +167,22 @@ class Post extends Model
     }
 
 
+    //-- Custom functions --
+    public static function groupedByAuthorForWorks(Collection $workIds): Collection
+    {
+        return static::whereHas('works', fn(Builder $q) => $q->whereIn('works.id', $workIds))
+            ->with('user')
+            ->get()
+            ->groupBy('user_id');
+    }
 
+    public static function featuredWithWorksGroupedByUser(): Collection
+    {
+        return static::where('featured', true)
+            ->with(['works', 'user'])
+            ->get()
+            ->groupBy('user_id'); // pendiente: confirmame si es user_id o id_user
+    }
 
 
     /**

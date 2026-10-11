@@ -283,8 +283,11 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
   if (!activeTeam) return null;
 
+ 
 
-  const BlogFooter = () => {
+
+
+  const BlogFooter = ( ) => {
     return (
       <div className='w-full min-h-20 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
         <div className='w-full lg:w-[50%]  h-full p-4'>
@@ -396,7 +399,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
         </div>
         <BlogFooter>
-
+              
         </BlogFooter>
       </SidebarInset>
     </SidebarProvider>

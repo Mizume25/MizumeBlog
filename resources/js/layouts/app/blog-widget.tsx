@@ -49,7 +49,7 @@ function BlogWidget({ variant }: BlogWidgetProps) {
 
 
   return (
-    <div className="aspect-video rounded-xl bg-mizume-secondary flex justify-center items-center p-4">
+    <div className="aspect-video rounded-xl bg-mizume-secondary flex justify-center items-center p-4 hover:bg-mizume-primary transition-transform duration-500 ease-in-out">
       <RenderTypeIcon />
     </div>
   )

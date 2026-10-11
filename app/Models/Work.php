@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Support\Collection;
 
 class Work extends Model
 {
@@ -88,5 +89,14 @@ class Work extends Model
             ->map(fn(string $name) => Tag::findOrCreateNormalized($name)->id);
 
         $this->tags()->sync($ids);
+    }
+
+    // -- Funciones Customs -- 
+    public static function featuredGroupedByAuthor(): Collection
+    {
+        return static::where('featured', true)
+            ->with('author')
+            ->get()
+            ->groupBy('author_id');
     }
 }
