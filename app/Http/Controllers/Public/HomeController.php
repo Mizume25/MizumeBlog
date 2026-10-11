@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\Work;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,10 +11,19 @@ use Inertia\Inertia;
 class HomeController extends Controller
 {
     public function __invoke()
-    {   
+    {
+        $posts = Post::featuredWithWorksGroupedByUser();
 
-        $works = Work::withFeaturedPost()->get();
+        $works = $posts
+            ->flatten()
+            ->pluck('works')
+            ->flatten()
+            ->unique('id')
+            ->values();
 
-        return Inertia::render('main', compact('works'));
+        return Inertia::render('main', [
+            'works' => $works,
+            'posts' => $posts,
+        ]);
     }
 }
