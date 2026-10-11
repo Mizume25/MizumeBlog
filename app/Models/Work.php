@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Support\Collection;
+use Spatie\MediaLibrary\HasMedia;
 
-class Work extends Model
+class Work extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    protected $appends = ['cover_url'];
 
     protected $fillable = [
         'title',
@@ -91,12 +93,12 @@ class Work extends Model
         $this->tags()->sync($ids);
     }
 
-    // -- Funciones Customs -- 
-    public static function featuredGroupedByAuthor(): Collection
+    // -- Media -- 
+
+    public function getCoverUrlAttribute(): ?string
     {
-        return static::where('featured', true)
-            ->with('author')
-            ->get()
-            ->groupBy('author_id');
+        return $this->getFirstMediaUrl('cover') ?: null;
     }
+
+    
 }

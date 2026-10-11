@@ -168,20 +168,14 @@ class Post extends Model
 
 
     //-- Custom functions --
-    public static function groupedByAuthorForWorks(Collection $workIds): Collection
-    {
-        return static::whereHas('works', fn(Builder $q) => $q->whereIn('works.id', $workIds))
-            ->with('user')
-            ->get()
-            ->groupBy('user_id');
-    }
+
 
     public static function featuredWithWorksGroupedByUser(): Collection
     {
         return static::where('featured', true)
-            ->with(['works', 'user'])
+            ->with(['works.media', 'user'])
             ->get()
-            ->groupBy('user_id'); // pendiente: confirmame si es user_id o id_user
+            ->groupBy('user_id');
     }
 
 

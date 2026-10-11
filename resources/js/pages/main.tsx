@@ -6,8 +6,8 @@ import {
 } from '@/layouts/app'
 import { MotionCarousel } from '@/components/animate-ui/components/community/motion-carousel';
 import { EmblaOptionsType } from 'embla-carousel';
-import { PostsGroupedByUser, Work } from '@/types/definitions';
-import { CustomPropType } from '@/components/animate-ui/components/community/motion-carousel';
+import { PostRecord, PostsGroupedByUser, Work, WorkWithMedia } from '@/types/definitions';
+
 interface BlogContentProps {
   children: React.ReactNode
 }
@@ -28,26 +28,35 @@ export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
  */
 export const BlogMain = ({ children }: BlogContentProps) => {
   return (
-    <div className="flex-1 rounded-xl min-h-85 bg-mizume-secondary text-mizume-secondary-foreground flex flex-row justify-center items-center p-4" >
+    <div className="flex-1 gap-4 rounded-xl min-h-85 bg-mizume-secondary text-mizume-secondary-foreground flex flex-col lg:flex-row justify-center items-center p-4" >
       {children}
     </div>
   )
 }
- const BlogCarousel = ( { posts } : PostsGroupedByUser) => {
-    const OPTIONS: EmblaOptionsType = { loop: true };
-    const SLIDE_COUNT = 6;
-    const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
-  
-  
-    return <MotionCarousel slides={SLIDES} options={OPTIONS}   />;
-  };
+interface BlogCarouselProps {
+  works: WorkWithMedia []
+}
+
+export type UserPostsSlide = {
+  id_user: string;
+  posts: PostRecord[];
+};
+const BlogCarousel = ({ works }: BlogCarouselProps) => {
+  const OPTIONS: EmblaOptionsType = { loop: true };
+  const SLIDE_COUNT = 6;
+  const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
+
+ 
+
+  return <MotionCarousel slides={works} options={OPTIONS} />;
+};
 
 interface MainProps {
-  works: Work [],
-  posts: PostsGroupedByUser 
+  works: WorkWithMedia [],
+  posts: PostsGroupedByUser
 }
-function main( { works, posts } : MainProps) {
+function main({ works, posts }: MainProps) {
 
   
   return (
@@ -58,11 +67,11 @@ function main( { works, posts } : MainProps) {
         <BlogWidget variant='author' />
       </BlogWidgetWrap>
       <BlogMain>
-        <div className='w-[50%] h-full   border-4 rounded-2xl border-black '>
-            <BlogCarousel />
+        <div className='w-full lg:w-[50%]  h-full border-4 rounded-2xl border-mizume-fourthary '>
+          <BlogCarousel works={works} />
         </div>
 
-        <div className='w-[50%] h-full p-4'>
+        <div className='w-full lg:w-[50%] h-full p-4 rounded-2xl bg-mizume-fourthary'>
 
         </div>
       </BlogMain>

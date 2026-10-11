@@ -289,7 +289,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
   const BlogFooter = ( ) => {
     return (
-      <div className='w-full min-h-20 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
+      <div className='w-full min-h-8 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
         <div className='w-full lg:w-[50%]  h-full p-4'>
           <div className='h-full w-full text-[12px] '>
             <p> 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law. - Immanuel Kant'
@@ -396,11 +396,8 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
         </header>
         <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)] p-4">
           {children}
-
         </div>
-        <BlogFooter>
-              
-        </BlogFooter>
+        <BlogFooter />
       </SidebarInset>
     </SidebarProvider>
   );

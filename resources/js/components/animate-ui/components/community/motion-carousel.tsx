@@ -4,10 +4,11 @@ import { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/animate-ui/primitives/buttons/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { PostsGroupedByUser, Work } from '@/types/definitions';
+import { PostsGroupedByUser, Work, WorkWithMedia } from '@/types/definitions';
+import { UserPostsSlide } from '@/pages/main';
 
 type PropType = {
-  slides: number[];
+  slides: WorkWithMedia [];
   options?: EmblaOptionsType;
 };
 
@@ -107,17 +108,18 @@ function MotionCarousel(props: PropType) {
     <div className="rounded-2xl w-full space-y-4 [--slide-height:9rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%] bg-mizume-primary p-4 ">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y touch-pinch-zoom ">
-          {slides.map((index) => {
-            const isActive = index === selectedIndex;
-
+          {slides.map((p, i) => {
+            const isActive = i === selectedIndex;
+            
             return (
               <motion.div
-                key={index}
-                className="h-[var(--slide-height)] mr-[var(--slide-spacing)] basis-[var(--slide-size)] flex-none flex min-w-0"
+                key={i}
+                className="cursor-pointer h-[var(--slide-height)] mr-[var(--slide-spacing)] basis-[var(--slide-size)] flex-none flex min-w-0"
               >
                 <motion.div
-                  className="bg-[url(/IMG/Cards/C-parasite-in-love.jpg)] bg-cover border-mizume-secondary p-3 size-full flex items-center justify-center text-3xl md:text-5xl font-semibold select-none border-4 rounded-xl"
+                  className=" bg-cover border-mizume-secondary p-3 size-full flex items-center justify-center text-3xl md:text-5xl font-semibold select-none border-4 rounded-xl"
                   initial={false}
+                  style={{ backgroundImage: p.media[0].original_url ? `url(${p.media[0].original_url})` : "/IMG/Error-App.png" }}
                   animate={{
                     scale: isActive ? 1 : 0.9,
                   }}
@@ -140,7 +142,7 @@ function MotionCarousel(props: PropType) {
           {scrollSnaps.map((_, index) => (
             <DotButton
               key={index}
-              label={`Slide ${index + 1}`} // Texto de los sildes
+               label={slides[index]?.abbreviation ?? `Obras ${index + 1}`}
               selected={index === selectedIndex}
               onClick={() => onDotClick(index)}
             
