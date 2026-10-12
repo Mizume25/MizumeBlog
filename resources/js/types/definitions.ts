@@ -205,8 +205,9 @@ export type PostRecord = Post & {
 
 export type PostsGroupedByUser = Record<string, PostRecord[]>
 
-export type WorkWithMedia = Work & {
+export type WorkRecord = Work & {
     media: Media []
+    tags: Tag []
 }
 
 

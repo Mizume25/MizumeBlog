@@ -173,7 +173,7 @@ class Post extends Model
     public static function featuredWithWorksGroupedByUser(): Collection
     {
         return static::where('featured', true)
-            ->with(['works.media', 'user'])
+            ->with(['works.media', 'user', 'works.tags'])
             ->get()
             ->groupBy('user_id');
     }

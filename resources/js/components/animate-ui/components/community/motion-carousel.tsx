@@ -4,11 +4,11 @@ import { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/animate-ui/primitives/buttons/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { PostsGroupedByUser, Work, WorkWithMedia } from '@/types/definitions';
+import { PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
 import { UserPostsSlide } from '@/pages/main';
 
 type PropType = {
-  slides: WorkWithMedia [];
+  slides: WorkRecord [];
   options?: EmblaOptionsType;
 };
 
@@ -105,7 +105,7 @@ function MotionCarousel(props: PropType) {
   } = useEmblaControls(emblaApi);
 
   return (
-    <div className="rounded-2xl w-full space-y-4 [--slide-height:9rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%] bg-mizume-primary p-4 ">
+    <div className="rounded-2xl w-full space-y-4 [--slide-height:12rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%] bg-mizume-primary p-4 ">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y touch-pinch-zoom ">
           {slides.map((p, i) => {
