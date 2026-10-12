@@ -12,6 +12,8 @@ import { MotionCarousel } from '@/components/animate-ui/components/community/mot
 import { EmblaOptionsType } from 'embla-carousel';
 import { PostRecord, PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
+import { formatDate } from '@/lib/utils';
+import { number } from 'zod';
 /**
  *  Interfaces necesarias para la pagina
  */
@@ -31,11 +33,15 @@ export type SectionProps = "left" | "right"
 export interface BlogSectionProps {
   variant: SectionProps,
   works: WorkRecord[]
+  work: WorkRecord,
+  posts: PostsGroupedByUser
+  changeWork: (work : WorkRecord) => void
 }
 
 /** Interfaz de Blog props */
 export interface BlogCarouselProps {
   works: WorkRecord[]
+  changeWork: (work : WorkRecord) => void
 }
 
 
@@ -80,97 +86,62 @@ export const BlogMain = ({ children }: BlogContentProps) => {
 }
 
 
+interface BlogSectionContentProps {
+  work: WorkRecord,
+  posts: PostsGroupedByUser
+}
 
 
 
-
-const BlogSectionContent = () => {
-
-  const WORK: WorkRecord = {
-    title: "Titulo Obra",
-    abbreviation: "TO",
-    category: "animemanga",
-    medium: "anime",
-    publish_date: "20/20/20",
-    sinopsi: "Descripcion de sinopsi larga de work ñokfheñgioewogrwighpewghrghwghrwipghwr`woighrwgiwrgporh ",
-    created_at: "20/20/20",
-    updated_at: "20/20/20",
-    id: 1,
-    media: [],
-    tags: [
-      {
-        id: 1,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      },
-      {
-        id: 2,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      },
-      {
-        id: 3,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      },
-      {
-        id: 4,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      },
-      {
-        id: 5,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      },
-      {
-        id: 6,
-        name: "genero",
-        created_at: "20/20/20",
-        updated_at: "20/20/20"
-      }
-    ]
-  }
+const BlogSectionContent = ({ work, posts }: BlogSectionContentProps) => {
 
 
+  /**
+   * Exclusion de propiedades iterables de work
+   */
+  const WORK_EXCLUDE = [
+    "id", "created_at", "updated_at", "title", "sinopsi",
+    "abbreviation", "tags", "media", "pivot", "cover_url",
+  ] as const;
+
+  type WorkExclude = (typeof WORK_EXCLUDE)[number];
 
   return (
     <div className='w-full h-full p-4 flex flex-col justify-center items-center gap-4'>
-      <div className='w-full min-h-15 flex flex-row justify-between items-center rounded-2xl'>
-        <div className='w-full lg:w-[50%] h-full bg-mizume-primary flex flex-row justify-start items-center px-6'>
-          <h2 className='title text-xl'>{WORK.title}</h2>
+      <div className='w-full min-h-15 flex flex-col lg:flex-row justify-between items-center rounded-2xl bg-mizume-primary sm:p-4'>
+        <div className='w-full lg:w-[50%] h-full  flex flex-row justify-center lg:justify-start items-center  px-6'>
+          <h2 className='title text-xl'>{work.title}</h2>
         </div>
-        <div className='w-full lg:w-[50%] h-full bg-mizume-primary flex flex-row justify-center items-center px-6'>
+        <div className='w-full lg:w-[50%] h-full  flex flex-row justify-center items-center px-6'>
           <select className='bg-mizume-secondary  w-full h-8 rounded-2xl px-3'>
             <option className='text-mizume-primary-foreground text-md' value="">hola</option>
           </select>
         </div>
 
       </div>
-      <div className="w-full min-h-75 bg-mizume-primary p-4 rounded-2xl text-black flex flex-row">
-        <div className="w-[50%] h-full border-r-2 border-black flex flex-col gap-6 min-w-0 p-4">
-          {Object.entries(WORK).map(([key, value]) => {
-            if (key === "id" || key === "created_at" || key === "updated_at" || key === "title" || key === "sinopsi" || key === "abbreviation" || key === "tags" || key === "media") return null;
-            const styles = key === "sinopsi" ? "text-[12px]" : ""
+      <div className="w-full min-h-75 bg-mizume-primary p-4 rounded-2xl text-black flex flex-col lg:flex-row">
+        <div className="w-full lg:w-[50%] h-full sm:text-sm lg:border-r-2 border-black flex flex-col gap-6 min-w-0 p-4">
+          {Object.entries(work).map(([key, value]) => {
+            if ((WORK_EXCLUDE as readonly string[]).includes(key)) return null;
+            if (typeof value === "object") return null
             if (Array.isArray(value)) return null;
+            const styles = key === "sinopsi" ? "text-[12px]" : ""
+
+            const VALUE = key === "publish_date" && typeof value === "string" ? formatDate(value) : value;
+
 
             return (
               <div key={key} className="w-full h-10 flex flex-row justify-start items-center gap-2">
-                <h3 className="text-xl">{key}:</h3>
+                <h3 className="lg:text-xl capitalize">{key}:</h3>
                 <div className="bg-mizume-secondary p-2 rounded-lg">
-                  <p className={`text-white ${styles}`}>{value}</p>
+                  <p className={`text-white ${styles} capitalize text-sm`}>{VALUE}</p>
                 </div>
               </div>
             );
           })}
 
           <div className="w-full grid grid-cols-3 gap-2 mt-2">
-            {WORK.tags.map((tag) => (
+            {work.tags.map((tag) => (
               <div key={tag.id} className="bg-mizume-secondary p-2 rounded-lg flex items-center justify-center">
                 <p className="text-white text-xs text-center">{tag.name}</p>
               </div>
@@ -178,11 +149,11 @@ const BlogSectionContent = () => {
           </div>
         </div>
 
-        <div className="w-[50%] h-full min-w-0 overflow-hidden">
+        <div className="w-full lg:w-[50%] h-full min-w-0 overflow-hidden">
           <div className="w-full h-full flex flex-col items-start justify-start p-4 gap-2 text-center">
             <h2 className="text-xl font-bold">Sinopsi</h2>
             <p className="text-sm leading-relaxed break-all text-start">
-              {WORK.sinopsi}
+              {work.sinopsi}
             </p>
           </div>
         </div>
@@ -194,9 +165,9 @@ const BlogSectionContent = () => {
 
 
 
-export const BlogSection = ({ variant, works }: BlogSectionProps) => {
+export const BlogSection = ({ variant, works, work, posts, changeWork }: BlogSectionProps) => {
   const style = variant === "left" ? "border-mizume-fourthary" : "bg-mizume-fourthary border-mizume-primary"
-  const component = variant === "left" ? <BlogCarousel works={works} /> : <BlogSectionContent />
+  const component = variant === "left" ? <BlogCarousel works={works} changeWork={changeWork} /> : <BlogSectionContent posts={posts} work={work} />
 
   return (
     <div className={`w-full lg:w-[50%] h-full border-4 rounded-2xl ${style}`}>
@@ -207,14 +178,14 @@ export const BlogSection = ({ variant, works }: BlogSectionProps) => {
 
 
 
-const BlogCarousel = ({ works }: BlogCarouselProps) => {
+const BlogCarousel = ({ works, changeWork }: BlogCarouselProps) => {
   const OPTIONS: EmblaOptionsType = { loop: true };
   const SLIDE_COUNT = 6;
   const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
 
 
-  return <MotionCarousel slides={works} options={OPTIONS} />;
+  return <MotionCarousel slides={works} options={OPTIONS} changeWork={changeWork} />;
 };
 
 

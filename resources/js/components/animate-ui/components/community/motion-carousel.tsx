@@ -5,11 +5,12 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/animate-ui/primitives/buttons/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
-import { UserPostsSlide } from '@/pages/main';
+
 
 type PropType = {
   slides: WorkRecord [];
   options?: EmblaOptionsType;
+  changeWork: (work : WorkRecord) => void
 };
 
 
@@ -92,7 +93,7 @@ const useEmblaControls = (
 };
 
 function MotionCarousel(props: PropType) {
-  const { slides, options } = props;
+  const { slides, options, changeWork } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const {
     selectedIndex,
@@ -104,8 +105,13 @@ function MotionCarousel(props: PropType) {
     onNext,
   } = useEmblaControls(emblaApi);
 
+  React.useEffect(() => {
+  const work = slides[selectedIndex];
+  if (work) changeWork(work);
+}, [selectedIndex, slides, changeWork]);
+
   return (
-    <div className="rounded-2xl w-full space-y-4 [--slide-height:12rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%] bg-mizume-primary p-4 ">
+    <div className="rounded-2xl w-full space-y-4 [--slide-height:12rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%]  bg-mizume-primary p-4 ">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y touch-pinch-zoom ">
           {slides.map((p, i) => {
