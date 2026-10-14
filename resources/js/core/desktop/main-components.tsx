@@ -1,16 +1,15 @@
 /**
  * Componentes de main.tsx
  */
-
-
 import React from 'react'
+import { Fragment } from 'react'
 import {
   BlogLayout,
 
 } from '@/layouts/app'
 import { MotionCarousel } from '@/components/animate-ui/components/community/motion-carousel';
 import { EmblaOptionsType } from 'embla-carousel';
-import { PostRecord, PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
+import { PostRecord, PostsGroupedByUser, User, Work, WorkRecord } from '@/types/definitions';
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 import { formatDate } from '@/lib/utils';
 import { number } from 'zod';
@@ -35,13 +34,14 @@ export interface BlogSectionProps {
   works: WorkRecord[]
   work: WorkRecord,
   posts: PostsGroupedByUser
-  changeWork: (work : WorkRecord) => void
+  changeWork: (work: WorkRecord) => void
+  users: User[],
 }
 
 /** Interfaz de Blog props */
 export interface BlogCarouselProps {
   works: WorkRecord[]
-  changeWork: (work : WorkRecord) => void
+  changeWork: (work: WorkRecord) => void
 }
 
 
@@ -63,7 +63,7 @@ export interface BlogContentProps {
 /** Contenedor Superior */
 export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
   return (
-    <div className="grid auto-rows-min gap-4 md:grid-cols-3" >
+    <div className="grid w-full auto-rows-min grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-4" >
       {children}
     </div>
   )
@@ -78,7 +78,7 @@ export const BlogMain = ({ children }: BlogContentProps) => {
   return (
     <>
       <h2>Destacadas</h2>
-      <div className="flex-1 gap-4 rounded-xl min-h-85 bg-mizume-secondary text-mizume-secondary-foreground flex flex-col lg:flex-row justify-center items-center p-4" >
+      <div className="flex w-full min-w-0 max-w-8xl mx-auto min-h-85 flex-col-reverse items-stretch justify-center gap-4 rounded-xl bg-mizume-secondary p-4 text-mizume-secondary-foreground lg:flex-row lg:items-center" >
         {children}
       </div>
     </>
@@ -88,89 +88,100 @@ export const BlogMain = ({ children }: BlogContentProps) => {
 
 interface BlogSectionContentProps {
   work: WorkRecord,
-  posts: PostsGroupedByUser
+  posts: PostsGroupedByUser,
+  users: User[]
 }
 
 
 
-const BlogSectionContent = ({ work, posts }: BlogSectionContentProps) => {
 
 
-  /**
-   * Exclusion de propiedades iterables de work
-   */
-  const WORK_EXCLUDE = [
-    "id", "created_at", "updated_at", "title", "sinopsi",
-    "abbreviation", "tags", "media", "pivot", "cover_url",
-  ] as const;
+const WORK_EXCLUDE = [
+  "id", "created_at", "updated_at", "title", "sinopsi",
+  "abbreviation", "tags", "media", "pivot", "cover_url",
+] as const
 
-  type WorkExclude = (typeof WORK_EXCLUDE)[number];
-
+const BlogSectionContent = ({ work, users }: BlogSectionContentProps) => {
   return (
-    <div className='w-full h-full p-4 flex flex-col justify-center items-center gap-4'>
-      <div className='w-full min-h-15 flex flex-col lg:flex-row justify-between items-center rounded-2xl bg-mizume-primary sm:p-4'>
-        <div className='w-full lg:w-[50%] h-full  flex flex-row justify-center lg:justify-start items-center  px-6'>
-          <h2 className='title text-xl'>{work.title}</h2>
-        </div>
-        <div className='w-full lg:w-[50%] h-full  flex flex-row justify-center items-center px-6'>
-          <select className='bg-mizume-secondary  w-full h-8 rounded-2xl px-3'>
-            <option className='text-mizume-primary-foreground text-md' value="">hola</option>
-          </select>
-        </div>
-
+    <div className="flex h-full w-full flex-col gap-4 p-3 sm:p-4">
+      <div className="flex w-full flex-col items-center justify-between gap-2 rounded-2xl bg-mizume-primary p-3 sm:p-4 lg:flex-row lg:gap-4">
+        <h2 className="title min-w-0 text-center text-xl lg:w-1/2 lg:text-start">
+          {work.title}
+        </h2>
+        <select
+          aria-label="Autor"
+          className="h-9 w-full min-w-0 truncate rounded-2xl bg-mizume-secondary px-3 text-sm lg:w-1/2"
+        >
+          {users.map((p) => (
+            <option key={p.id} value={p.id} className="text-sm">
+              {p.name}
+            </option>
+          ))}
+        </select>
       </div>
-      <div className="w-full min-h-75 bg-mizume-primary p-4 rounded-2xl text-black flex flex-col lg:flex-row">
-        <div className="w-full lg:w-[50%] h-full sm:text-sm lg:border-r-2 border-black flex flex-col gap-6 min-w-0 p-4">
-          {Object.entries(work).map(([key, value]) => {
-            if ((WORK_EXCLUDE as readonly string[]).includes(key)) return null;
-            if (typeof value === "object") return null
-            if (Array.isArray(value)) return null;
-            const styles = key === "sinopsi" ? "text-[12px]" : ""
-
-            const VALUE = key === "publish_date" && typeof value === "string" ? formatDate(value) : value;
 
 
-            return (
-              <div key={key} className="w-full h-10 flex flex-row justify-start items-center gap-2">
-                <h3 className="lg:text-xl capitalize">{key}:</h3>
-                <div className="bg-mizume-secondary p-2 rounded-lg">
-                  <p className={`text-white ${styles} capitalize text-sm`}>{VALUE}</p>
-                </div>
-              </div>
-            );
-          })}
+      <div className="flex w-full flex-1 flex-col gap-4 rounded-2xl bg-mizume-primary p-3 text-black sm:p-4 lg:flex-row lg:gap-0 lg:p-6">
 
-          <div className="w-full grid grid-cols-3 gap-2 mt-2">
-            {work.tags.map((tag) => (
-              <div key={tag.id} className="bg-mizume-secondary p-2 rounded-lg flex items-center justify-center">
-                <p className="text-white text-xs text-center">{tag.name}</p>
-              </div>
+        <div className="flex min-w-0 flex-col gap-3 border-b-2 border-black pb-4 lg:w-1/2 lg:justify-center lg:gap-5 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-6">
+          <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 lg:gap-y-4">
+            {Object.entries(work).map(([key, value]) => {
+              if ((WORK_EXCLUDE as readonly string[]).includes(key)) return null
+              if (typeof value === "object") return null
+
+              const VALUE =
+                key === "publish_date" && typeof value === "string"
+                  ? formatDate(value)
+                  : String(value).replaceAll("_", " ")
+
+              return (
+                <Fragment key={key}>
+                  <dt className="text-sm capitalize lg:text-lg">
+                    {key.replaceAll("_", " ")}:
+                  </dt>
+                  <dd className="justify-self-start break-words rounded-lg bg-mizume-secondary px-2 py-1 text-sm capitalize text-white lg:px-3 lg:text-base">
+                    {VALUE}
+                  </dd>
+                </Fragment>
+              )
+            })}
+          </dl>
+
+          <div className="flex flex-wrap gap-2">
+            {work.tags?.map((tag) => (
+              <span
+                key={tag.id}
+                className="rounded-lg bg-mizume-secondary px-2 py-1 text-xs text-white lg:px-3 lg:text-sm"
+              >
+                {tag.name}
+              </span>
             ))}
           </div>
         </div>
 
-        <div className="w-full lg:w-[50%] h-full min-w-0 overflow-hidden">
-          <div className="w-full h-full flex flex-col items-start justify-start p-4 gap-2 text-center">
-            <h2 className="text-xl font-bold">Sinopsi</h2>
-            <p className="text-sm leading-relaxed break-all text-start">
-              {work.sinopsi}
-            </p>
-          </div>
+        {/* Sinopsis */}
+        <div className="min-w-0 lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:pl-6">
+          <h2 className="mb-2 text-xl font-bold lg:text-2xl">Sinopsi</h2>
+          <p
+            lang="es"
+            className="hyphens-auto break-words text-start text-sm leading-relaxed lg:text-base"
+          >
+            {work.sinopsi}
+          </p>
         </div>
       </div>
     </div>
   )
-
 }
 
 
 
-export const BlogSection = ({ variant, works, work, posts, changeWork }: BlogSectionProps) => {
+export const BlogSection = ({ variant, works, work, posts, changeWork, users }: BlogSectionProps) => {
   const style = variant === "left" ? "border-mizume-fourthary" : "bg-mizume-fourthary border-mizume-primary"
-  const component = variant === "left" ? <BlogCarousel works={works} changeWork={changeWork} /> : <BlogSectionContent posts={posts} work={work} />
+  const component = variant === "left" ? <BlogCarousel works={works} changeWork={changeWork} /> : <BlogSectionContent posts={posts} work={work} users={users} />
 
   return (
-    <div className={`w-full lg:w-[50%] h-full border-4 rounded-2xl ${style}`}>
+    <div className={`min-w-0 lg:w-[50%] h-full border-4 rounded-2xl ${style}`}>
       {component}
     </div>
   );
@@ -180,11 +191,6 @@ export const BlogSection = ({ variant, works, work, posts, changeWork }: BlogSec
 
 const BlogCarousel = ({ works, changeWork }: BlogCarouselProps) => {
   const OPTIONS: EmblaOptionsType = { loop: true };
-  const SLIDE_COUNT = 6;
-  const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
-
-
-
   return <MotionCarousel slides={works} options={OPTIONS} changeWork={changeWork} />;
 };
 

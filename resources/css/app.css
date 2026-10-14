@@ -228,6 +228,7 @@
 }
 
 .dark {
+    --pure-color:hsl(0, 100%, 100%);
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
@@ -259,6 +260,20 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0)
+
+   
+    --mizume-primary:hsl(258, 16%, 71%);
+    --mizume-primary-foreground: hsl(247, 17%, 32%); 
+
+
+    --mizume-secondary:hsl(254, 46%, 32%);
+    --mizume-secondary-foreground:var(--pure-color);
+
+    --mizume-tertiary:hsl(233, 100%, 35%);
+    --mizume-tertiary-foreground:var(--pure-color);
+
+    --mizume-fourthary: var(--mizume-primary-foreground);
+    --mizume-fourthary-foreground: var(--pure-color);
 
 }
 

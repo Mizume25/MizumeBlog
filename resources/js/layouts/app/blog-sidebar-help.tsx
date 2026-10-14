@@ -19,21 +19,22 @@ import {
     MegaphoneIcon,
     GavelIcon
 } from 'lucide-react';
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from '@/components/ui/avatar';
-import { DATA, CONTENT } from './blog-sidebar';
-import { UserType } from '@/types/definitions';
+import { Button } from '@/components/animate-ui/components/buttons/button';
+
+import { User, UserType } from '@/types/definitions';
+import { Link } from "@inertiajs/react";
+import { BlogProfile } from '@/core/desktop/utils-components';
+import { DATA_TYPE } from './blog-sidebar';
 
 interface RenderProfileProps {
     isMobile: boolean
     role: UserType
-
+    user: User | null
+    content: DATA_TYPE
 }
 
-export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
+export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfileProps) => {
+
 
     const RenderAdminSettings = () => {
         return (
@@ -54,15 +55,15 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
     }
 
     const RenderSettingsExtra = () => {
-    switch (role) {
-        case "admin":
-            return <RenderAdminSettings />
-        case "editor":
-            return <RenderEditorSettings />
-        default:
-            return null
+        switch (role) {
+            case "admin":
+                return <RenderAdminSettings />
+            case "editor":
+                return <RenderEditorSettings />
+            default:
+                return null
+        }
     }
-}
 
 
     return (
@@ -74,19 +75,16 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage
-                                    src={DATA.user.avatar}
-                                    alt={DATA.user.name}
-                                />
-                                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                            </Avatar>
+
+                            <BlogProfile name={user?.name} />
+
+
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">
-                                    {DATA.user.name}
+                                    {user?.name}
                                 </span>
                                 <span className="truncate text-xs">
-                                    {DATA.user.email}
+                                    {user?.email}
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
@@ -100,21 +98,13 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage
-                                        src={DATA.user.avatar}
-                                        alt={DATA.user.name}
-                                    />
-                                    <AvatarFallback className="rounded-lg">
-                                        CN
-                                    </AvatarFallback>
-                                </Avatar>
+                                <BlogProfile name={user?.name} />
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        {DATA.user.name}
+                                        {user?.name}
                                     </span>
                                     <span className="truncate text-xs">
-                                        {DATA.user.email}
+                                        {user?.email}
                                     </span>
                                 </div>
                             </div>
@@ -123,21 +113,23 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <Settings2 />
-                                {CONTENT.profile.settings}
+                                {content.sidebar.profile.settings}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <MegaphoneIcon />
-                                {CONTENT.profile.reports}
+                                {content.sidebar.profile.policy}
                             </DropdownMenuItem>
                             {role !== "guest" && <RenderSettingsExtra />}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <LogOut />
-                            Log out
+                            <Link href={route("logout")} method="post" as="button">
+                                {content.sidebar.profile.sessionOut.content}
+                            </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -146,23 +138,33 @@ export const RenderProfileAuth = ({ isMobile, role }: RenderProfileProps) => {
     )
 }
 
-
+interface RenderProfileGuestProps {
+    content: DATA_TYPE,
+    open: boolean
+}
 /**
  * FUncion de Usuario Invitado
  * @returns 
  */
-export const RenderProfileGuest = () => {
+export const RenderProfileGuest = ({ content, open }: RenderProfileGuestProps) => {
+
+    const Login = content.sidebar.profile.sessionIn.icon
+    const Register = content.sidebar.profile.register.icon
+    let style = open ? "block" : "hidden"
     return (
         <SidebarMenu>
             <SidebarMenuItem>
-                <div className='w-full h-full flex justify-center items-center gap-2'>
-                    <div className='w-[50%] h-auto bg-btn-info text-btn-info-foreground  text-sm rounded-md cursor-pointer hover:bg-blue-500/90 text-center'>
-                        <a href={route("login")}>Iniciar Session</a>
-                    </div>
-                    <div className='w-[50%] h-auto bg-btn-danger text-sm text-btn-danger-foreground rounded-md cursor-pointer hover:bg-red-500/70 text-center'>
-                        <a href={route("register")}> Registrarse </a>
-                    </div>
-                </div>
+
+                <Button variant={'ghost'} className='w-full mb-2' >
+                    <Login />
+                    <p className={`${style}`}> {content.sidebar.profile.sessionIn.content}</p>
+                </Button>
+                <Button variant={'default'} className='w-full bg-btn-danger text-btn-danger-foreground hover:bg-red-300' >
+                    <Register />
+                    <p className={`${style}`}> {content.sidebar.profile.register.content}</p>
+                </Button>
+
+
             </SidebarMenuItem>
         </SidebarMenu>
     )

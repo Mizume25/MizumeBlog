@@ -8,9 +8,9 @@ import { PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
 
 
 type PropType = {
-  slides: WorkRecord [];
+  slides: WorkRecord[];
   options?: EmblaOptionsType;
-  changeWork: (work : WorkRecord) => void
+  changeWork: (work: WorkRecord) => void
 };
 
 
@@ -106,58 +106,76 @@ function MotionCarousel(props: PropType) {
   } = useEmblaControls(emblaApi);
 
   React.useEffect(() => {
-  const work = slides[selectedIndex];
-  if (work) changeWork(work);
-}, [selectedIndex, slides, changeWork]);
+    const work = slides[selectedIndex];
+    if (work) changeWork(work);
+  }, [selectedIndex, slides, changeWork]);
+
+  const FALLBACK_COVER = '/IMG/Error-App.png';
 
   return (
-    <div className="rounded-2xl w-full space-y-4 [--slide-height:12rem] sm:[--slide-height:13rem] md:[--slide-height:18rem] [--slide-spacing:1.5rem] [--slide-size:30%]  bg-mizume-primary p-4 ">
+    <div
+      className="w-full space-y-3 rounded-2xl bg-mizume-fourthary  p-3 md:p-4
+    [--slide-height:16rem] sm:[--slide-height:20rem] md:[--slide-height:18rem]
+    [--slide-spacing:0.75rem] md:[--slide-spacing:1.5rem]
+    [--slide-size:100%] max-md:[--slide-size:80%] lg:[--slide-size:30%]"
+    >
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y touch-pinch-zoom ">
+        <div className="flex touch-pan-y touch-pinch-zoom">
           {slides.map((p, i) => {
             const isActive = i === selectedIndex;
-            
+            const cover = p.media?.[0]?.original_url ?? FALLBACK_COVER;
+
             return (
-              <motion.div
+              <div
                 key={i}
-                className="cursor-pointer h-[var(--slide-height)] mr-[var(--slide-spacing)] basis-[var(--slide-size)] flex-none flex min-w-0"
+                className="mr-[var(--slide-spacing)] flex h-[var(--slide-height)] min-w-0 flex-none basis-[var(--slide-size)] cursor-pointer"
               >
                 <motion.div
-                  className=" bg-cover border-mizume-secondary p-3 size-full flex items-center justify-center text-3xl md:text-5xl font-semibold select-none border-4 rounded-xl"
+                  className="flex size-full items-center justify-center rounded-xl border-4 bg-mizume-primary border-mizume-secondary p-2"
                   initial={false}
-                  style={{ backgroundImage: p.media[0].original_url ? `url(${p.media[0].original_url})` : "/IMG/Error-App.png" }}
-                  animate={{
-                    scale: isActive ? 1 : 0.9,
-                  }}
+                  animate={{ scale: isActive ? 1 : 0.9 }}
                   transition={transition}
                 >
-                 
+                  <img
+                    src={cover}
+                    alt={p.abbreviation ?? `Portada ${i + 1}`}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    draggable={false}
+                    className="max-h-full max-w-full select-none rounded-2xl object-cover"
+                  />
                 </motion.div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       </div>
 
-      <div className="flex justify-between">
-        <Button className='size-8 hover:bg-mizume-secondary rounded-2xl' onClick={onPrev} disabled={prevDisabled}>
-          <ChevronLeft className="size-8 text-mizume-primary-foreground cursor-pointer  hover:text-mizume-secondary-foreground" />
+      <div className="flex items-center justify-center gap-2 md:justify-between">
+        <Button
+          className="size-10 rounded-2xl hover:bg-mizume-secondary max-md:hidden"
+          onClick={onPrev}
+          disabled={prevDisabled}
+        >
+          <ChevronLeft className="size-9 text-mizume-fourthary-foreground cursor-pointer" />
         </Button>
 
-        <div className="flex flex-wrap justify-end items-center gap-2 text-mizume-secondary-foreground rounded-2xl bg-mizume-secondary">
+        <div className="flex min-w-0 flex-wrap items-center justify-center gap-2 rounded-2xl bg-mizume-secondary p-1 text-mizume-secondary-foreground">
           {scrollSnaps.map((_, index) => (
             <DotButton
               key={index}
-               label={slides[index]?.abbreviation ?? `Obras ${index + 1}`}
+              label={slides[index]?.abbreviation ?? `Obra ${index + 1}`}
               selected={index === selectedIndex}
               onClick={() => onDotClick(index)}
-            
             />
           ))}
         </div>
 
-        <Button className='size-8 hover:bg-mizume-secondary rounded-2xl' onClick={onNext} disabled={nextDisabled}>
-          <ChevronRight className="size-8 text-mizume-primary-foreground cursor-pointer  hover:text-mizume-secondary-foreground" />
+        <Button
+          className="size-10 rounded-2xl hover:bg-mizume-secondary max-md:hidden"
+          onClick={onNext}
+          disabled={nextDisabled}
+        >
+          <ChevronRight className="size-9 text-mizume-fourthary-foreground cursor-pointer" />
         </Button>
       </div>
     </div>
@@ -186,6 +204,8 @@ function DotButton({ selected = false, label, onClick }: DotButtonProps) {
           opacity: selected ? 1 : 0,
           scale: selected ? 1 : 0,
           filter: selected ? 'blur(0)' : 'blur(4px)',
+          width: selected ? 'auto' : 12,
+          height: selected ? 28 : 12,
         }}
         transition={transition}
       >

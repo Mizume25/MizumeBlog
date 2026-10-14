@@ -4,16 +4,42 @@ interface AvatarProps {
     name?: string;
 }
 
-// Genera un color de fondo único pero consistente según el nombre
+
 function getColorFromName(name: string): string {
     const palette = [
-        "#7B3F00",
-        "#5C4033", 
-        "#4A235A", 
-        "#1A5276", 
+        // Rojos 
+        "#B91C1C", 
+        "#BE123C", 
+        "#BE185D", 
+        "#A21CAF", 
+
+        // Naranjas 
+        "#C2410C", 
+        "#B45309", 
+        "#7B3F00", 
+
+        // Verdes
+        "#4D7C0F", 
+        "#15803D", 
         "#1D6A39", 
-        "#784212", 
-        "#6E2C00", 
+        "#047857", 
+
+        // Azules 
+        "#0F766E", 
+        "#0E7490", 
+        "#0369A1", 
+        "#1D4ED8", 
+        "#1A5276", 
+
+        // Violetas
+        "#4338CA", 
+        "#6D28D9", 
+        "#7E22CE", 
+        "#4A235A", 
+
+        // Neutros
+        "#5C4033", 
+        "#334155",
         "#212F3C", 
     ];
     let hash = 0;
@@ -23,7 +49,8 @@ function getColorFromName(name: string): string {
     return palette[Math.abs(hash) % palette.length];
 }
 
-function HomeProfile({ name }: AvatarProps) {
+export function BlogProfile ({ name }: AvatarProps) {
+
     const initial = useMemo(() => {
         if (!name) return "?";
         return name.trim().charAt(0).toUpperCase();
@@ -36,12 +63,12 @@ function HomeProfile({ name }: AvatarProps) {
 
     return (
         <div
-            className="mx-auto w-[134px] h-[144px] rounded-full border-[3px] border-[#C4A484] flex items-center justify-center select-none"
+            className="mx-auto w-10 h-10 rounded-full border-[3px] border-[#C4A484] flex items-center justify-center select-none"
             style={{ backgroundColor: bgColor }}
         >
             <span
                 className="text-white font-bold"
-                style={{ fontSize: "56px", lineHeight: 1 }}
+                style={{ fontSize: "14px", lineHeight: 1 }}
             >
                 {initial}
             </span>
@@ -49,4 +76,3 @@ function HomeProfile({ name }: AvatarProps) {
     );
 }
 
-export default React.memo(HomeProfile);

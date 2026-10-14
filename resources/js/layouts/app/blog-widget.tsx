@@ -1,5 +1,4 @@
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
-import { WithDepth } from 'motion/react'
 
 
 type WidgetType = "author" | "work" | "post"
@@ -8,49 +7,25 @@ interface BlogWidgetProps {
   variant: WidgetType
 }
 
+const VARIANTS = {
+  author: { Icon: UserCircle2, label: "Autores" },
+  post: { Icon: NotebookTextIcon, label: "Posts" },
+  work: { Icon: BookBookmark, label: "Obras" },
+} as const
+
+const FALLBACK = { Icon: TurtleIcon, label: "Not Found" }
+
 function BlogWidget({ variant }: BlogWidgetProps) {
-
-  const content = "flex flex-col justify-center items-center transition-transform hover:scale-115 cursor-pointer duration-300"
-  const figure = "text-mizume-tertiary w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36"
-  const subtitle = "title text-2xl"
-
-  const RenderTypeIcon = () => {
-    switch (variant) {
-      case "author":
-        return (
-          <figure className={content}>
-            <UserCircle2 size={150} className={figure} />
-            <h3 className={subtitle}>Autores</h3>
-          </figure>
-        )
-      case "post":
-        return (
-          <figure className={content}>
-            <NotebookTextIcon size={150} className={figure} />
-            <h3 className={subtitle}>Posts</h3>
-          </figure>
-        )
-      case "work":
-         return (
-          <figure className={content}>
-            <BookBookmark size={150} className={figure} />
-            <h3 className={subtitle}>Obras</h3>
-          </figure>
-        )
-      default:
-         return (
-          <figure className={content}>
-            <TurtleIcon size={150} className={figure} />
-            <h3 className={subtitle}>Not Found</h3>
-          </figure>
-        )
-    }
-  }
-
+  const { Icon, label } = VARIANTS[variant as keyof typeof VARIANTS] ?? FALLBACK
 
   return (
-    <div className="aspect-video rounded-xl bg-mizume-secondary flex justify-center items-center p-4 hover:bg-mizume-primary transition-transform duration-500 ease-in-out">
-      <RenderTypeIcon />
+    <div className="@container flex aspect-square items-center justify-center rounded-xl bg-mizume-secondary p-2 transition-colors duration-500 ease-in-out hover:bg-mizume-primary sm:aspect-video sm:p-4">
+      <figure className="flex cursor-pointer flex-col items-center justify-center gap-1 transition-transform duration-300 hover:scale-110">
+        <Icon className="size-[42cqw] max-h-36 max-w-36 text-mizume-tertiary" />
+        <h3 className="title text-[length:clamp(0.75rem,13cqw,1.5rem)] leading-tight">
+          {label}
+        </h3>
+      </figure>
     </div>
   )
 }

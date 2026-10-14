@@ -8,7 +8,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { UserType } from '@/types/definitions';
+import { User, UserType } from '@/types/definitions';
+import { useSidebar } from '@/components/animate-ui/components/radix/sidebar';
 import { SiInstagram, SiX, SiTiktok, SiGoodreads, SiLinkerd, SiGithub } from 'react-icons/si'
 import {
   SidebarProvider,
@@ -25,7 +26,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/animate-ui/components/radix/sidebar';
-
+import { LanguagueSwitch } from '@/components/languague-switch'
 import {
   AudioWaveform,
   BookOpen,
@@ -42,7 +43,10 @@ import {
   FolderBookmark,
   UserCircle2,
   BookBookmark,
-  FileWarning
+  FileWarning,
+  LogOutIcon,
+  LogIn,
+  UserPlus
 
 
 } from 'lucide-react';
@@ -93,182 +97,127 @@ const NETWORKS = [
 ]
 
 export const DATA = {
-  user: {
-    name: 'Skyleen',
-    email: 'skyleen@example.com',
-    avatar:
-      'https://pbs.twimg.com/profile_images/1909615404789506048/MTqvRsjo_400x400.jpg',
+  es: {
+    title: "Mizumeblog",
+    subtitle: "comunidad",
+    sidebar: {
+      header: "Contenido Principal",
+      items: [
+        {
+          name: 'Menu Principal',
+          url: '#',
+          icon: Home,
+        },
+        {
+          name: 'Archivador',
+          url: '#',
+          icon: FolderBookmark,
+        },
+        {
+          name: 'Autores',
+          url: '#',
+          icon: UserCircle2,
+        },
+        {
+          name: 'Obras',
+          url: '#',
+          icon: BookBookmark,
+        },
+        {
+          name: 'Reclamaciones',
+          url: '#',
+          icon: FileWarning,
+        },
+        {
+          name: 'Politicas',
+          url: '#',
+          icon: MegaphoneIcon,
+        },
+      ],
+      profile: {
+        settings: "Perfil",
+        sessionOut: {
+          content: "Cerrar Session",
+          icon: LogOutIcon
+        },
+        sessionIn: {
+          content: "Iniciar Session",
+          icon: LogIn
+        },
+        reports: "Reportes",
+        policy: "Politicas",
+        register: {
+          content: "Registrate",
+          icon: UserPlus
+        },
+      }
+    },
+
   },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
-  ],
-  navMain: [
-    {
-      title: 'Playground',
-      url: '#',
-      icon: SquareTerminal,
-      isActive: true,
+  en: {
+    title: "Mizumeblog",
+    subtitle: "community",
+    sidebar: {
+      header: "Main Content",
       items: [
         {
-          title: 'History',
+          name: 'Home',
           url: '#',
+          icon: Home,
         },
         {
-          title: 'Starred',
+          name: 'Archive',
           url: '#',
+          icon: FolderBookmark,
         },
         {
-          title: 'Settings',
+          name: 'Authors',
           url: '#',
+          icon: UserCircle2,
+        },
+        {
+          name: 'Works',
+          url: '#',
+          icon: BookBookmark,
+        },
+        {
+          name: 'Claims',
+          url: '#',
+          icon: FileWarning,
+        },
+        {
+          name: 'Policy',
+          url: '#',
+          icon: MegaphoneIcon,
         },
       ],
-    },
-    {
-      title: 'Models',
-      url: '#',
-      icon: Bot,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
+      profile: {
+        settings: "Profile",
+        sessionOut: {
+          content: "Log out",
+          icon: LogOutIcon
         },
-        {
-          title: 'Explorer',
-          url: '#',
+        sessionIn: {
+          content: "Login",
+          icon: LogIn
         },
-        {
-          title: 'Quantum',
-          url: '#',
+        reports: "Reports",
+        policy: "Policy",
+        register: {
+          content: "Register",
+          icon: UserPlus
         },
-      ],
-    },
-    {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: 'Design Engineering',
-      url: '#',
-      icon: Frame,
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChart,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: Map,
-    },
-  ],
-};
 
-
-/**
- * Texto del Sidebar
- * @returns 
- */
-export const CONTENT = {
-  title: "Mizumeblog",
-  subtitle: "community",
-  sidebar: [
-    {
-      name: 'Home',
-      url: '#',
-      icon: Home,
+      }
     },
-    {
-      name: 'Archive',
-      url: '#',
-      icon: FolderBookmark,
-    },
-    {
-      name: 'Autores',
-      url: '#',
-      icon: UserCircle2,
-    },
-    {
-      name: 'Obras',
-      url: '#',
-      icon: BookBookmark,
-    },
-    {
-      name: 'Reclamaciones',
-      url: '#',
-      icon: FileWarning,
-    },
-    {
-      name: 'Politicas',
-      url: '#',
-      icon: MegaphoneIcon,
-    },
-  ],
-  profile: {
-    settings: "Perfil",
-    session: "Log out",
-    reports: "Reportes",
-    policy: "Politicas"
   }
 }
+
+export type DATA_TYPE = typeof DATA.es
+
+export type LANG_TYPE = "en" | "es"
+
+
 
 interface BlogSidebarProps {
   children: React.ReactNode;
@@ -276,23 +225,28 @@ interface BlogSidebarProps {
 
 export const BlogSidebar = ({ children }: BlogSidebarProps) => {
   const isMobile = useIsMobile();
-  const [activeTeam, setActiveTeam] = React.useState(DATA.teams[0]);
-  const { auth } = usePage<SharedData>().props;
+
+  const { auth, quote } = usePage<SharedData>().props;
+
+  const [lang, SetLang] = React.useState<LANG_TYPE>("es")
+
+  const content: DATA_TYPE = DATA[lang];
 
   const role: UserType = (auth?.user?.role as UserType | undefined) ?? "guest"
 
-  if (!activeTeam) return null;
-
- 
 
 
 
-  const BlogFooter = ( ) => {
+
+
+
+
+  const BlogFooter = () => {
     return (
       <div className='w-full min-h-8 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
         <div className='w-full lg:w-[50%]  h-full p-4'>
           <div className='h-full w-full text-[12px] '>
-            <p> 'Act only according to that maxim whereby you can, at the same time, will that it should become a universal law. - Immanuel Kant'
+            <p> {quote.message} - {quote.author}
             </p>
           </div>
         </div>
@@ -312,14 +266,20 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
   interface ProfileFooterProps {
     isMobile: boolean,
-    role: UserType
+    role: UserType,
+    user: User | null
   }
 
 
-  const RenderProfileType = ({ isMobile, role }: ProfileFooterProps) => {
+  const RenderProfileType = ({ isMobile, role, user }: ProfileFooterProps) => {
+    const { open } = useSidebar();
     return (
       <SidebarFooter>
-        <RenderProfileAuth isMobile={isMobile} role={role} />
+        {role !== "guest" ? (
+          <RenderProfileAuth isMobile={isMobile} role={role} user={user} content={content} />
+        ) : (
+          <RenderProfileGuest content={content} open={open} />
+        )}
       </SidebarFooter>
     )
   }
@@ -340,10 +300,10 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {CONTENT.title}
+                    {content.title}
                   </span>
                   <span className="truncate text-xs">
-                    {CONTENT.subtitle}
+                    {content.subtitle}
                   </span>
                 </div>
               </SidebarMenuButton>
@@ -354,9 +314,9 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
         <SidebarContent>
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel className='text-lg'>Contenido Principal</SidebarGroupLabel>
+            <SidebarGroupLabel className='text-lg'>{content.sidebar.header}</SidebarGroupLabel>
             <SidebarMenu >
-              {CONTENT.sidebar.map((item) => (
+              {content.sidebar.items.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton size={'lg'} asChild>
                     <a href={item.url} className='text-xl'>
@@ -371,27 +331,30 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
           {/* Nav Project */}
         </SidebarContent>
 
-        <RenderProfileType isMobile={isMobile} role={role} />
+        <RenderProfileType isMobile={isMobile} role={role} user={auth.user}  />
         <SidebarRail />
       </Sidebar>
 
       <SidebarInset>
         <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
+          <div className="flex w-full items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Breadcrumb className='text-mizume-secondary-foreground'>
+            <Breadcrumb className="text-mizume-secondary-foreground">
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
                   <BreadcrumbLink href="#">
-                    Home
+
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className='text-mizume-secondary-foreground' />
-                <BreadcrumbItem className='text-mizume-secondary-foreground'>
-                  <BreadcrumbPage className='text-mizume-secondary-foreground"'> Menu </BreadcrumbPage>
+                <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
+                <BreadcrumbItem className="text-mizume-secondary-foreground">
+                  <BreadcrumbPage className="text-mizume-secondary-foreground"> Menu </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
+            <div className="ml-auto">
+              <LanguagueSwitch lang={lang} onLang={SetLang} />
+            </div>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)] p-4">
