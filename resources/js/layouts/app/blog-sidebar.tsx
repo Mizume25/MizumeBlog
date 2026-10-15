@@ -61,6 +61,7 @@ import { SharedData } from '@/types';
 import { url } from 'zod';
 import BlogToggler from '@/components/ui/blog-toggler-';
 import { Button } from '@/components/animate-ui/components/buttons/button';
+import { useLangStore } from '@/store/lang-store';
 
 
 
@@ -217,7 +218,6 @@ export const DATA = {
 
 export type DATA_TYPE = typeof DATA.es
 
-export type LANG_TYPE = "en" | "es"
 
 
 
@@ -230,7 +230,9 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
 
   const { auth, quote } = usePage<SharedData>().props;
 
-  const [lang, SetLang] = React.useState<LANG_TYPE>("es")
+  const lang = useLangStore((l) => l.lang)
+  const setLang = useLangStore((l) => l.setLang)
+
 
   const content: DATA_TYPE = DATA[lang];
 
@@ -355,7 +357,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
               </BreadcrumbList>
             </Breadcrumb>
             <div className="ml-auto flex flex-row items-center justify-center gap-2">
-              <LanguagueSwitch lang={lang} onLang={SetLang} />
+              <LanguagueSwitch lang={lang} onLang={setLang} />
 
               <BlogToggler />
 

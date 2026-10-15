@@ -1,21 +1,26 @@
+import { DATA_MAIN } from '@/pages/main'
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 
 
 type WidgetType = "author" | "work" | "post"
 
 interface BlogWidgetProps {
-  variant: WidgetType
+  variant: WidgetType,
+  content: DATA_MAIN,
 }
 
-const VARIANTS = {
-  author: { Icon: UserCircle2, label: "Autores" },
-  post: { Icon: NotebookTextIcon, label: "Posts" },
-  work: { Icon: BookBookmark, label: "Obras" },
-} as const
+
 
 const FALLBACK = { Icon: TurtleIcon, label: "Not Found" }
 
-function BlogWidget({ variant }: BlogWidgetProps) {
+function BlogWidget({ variant, content }: BlogWidgetProps) {
+
+  const VARIANTS = {
+  author: { Icon: UserCircle2, label: content.widget.authors },
+  post: { Icon: NotebookTextIcon, label: content.widget.posts },
+  work: { Icon: BookBookmark, label: content.widget.work },
+} as const
+
   const { Icon, label } = VARIANTS[variant as keyof typeof VARIANTS] ?? FALLBACK
 
   return (
