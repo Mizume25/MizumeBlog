@@ -114,11 +114,11 @@ function MotionCarousel(props: PropType) {
 
   return (
     <div
-      className="w-full space-y-3 rounded-2xl bg-mizume-fourthary  p-3 md:p-4
-    [--slide-height:16rem] sm:[--slide-height:20rem] md:[--slide-height:18rem]
-    [--slide-spacing:0.75rem] md:[--slide-spacing:1.5rem]
-    [--slide-size:100%] max-md:[--slide-size:80%] lg:[--slide-size:30%]"
-    >
+  className="flex h-full w-full flex-col justify-center gap-3 rounded-2xl bg-mizume-fourthary p-3 md:p-4
+  [--slide-height:16rem] sm:[--slide-height:20rem] md:[--slide-height:18rem]
+  [--slide-spacing:0.75rem] md:[--slide-spacing:1.5rem]
+  [--slide-size:100%] max-md:[--slide-size:80%] lg:[--slide-size:30%]"
+>
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y touch-pinch-zoom">
           {slides.map((p, i) => {
@@ -131,7 +131,7 @@ function MotionCarousel(props: PropType) {
                 className="mr-[var(--slide-spacing)] flex h-[var(--slide-height)] min-w-0 flex-none basis-[var(--slide-size)] cursor-pointer"
               >
                 <motion.div
-                  className="flex size-full items-center justify-center rounded-xl border-4 bg-mizume-primary border-mizume-secondary p-2"
+                  className="flex size-full items-center justify-center rounded-xl border-4 bg-mizume-primary border-mizume-secondary p-2 overflow-hidden"
                   initial={false}
                   animate={{ scale: isActive ? 1 : 0.9 }}
                   transition={transition}
@@ -141,7 +141,7 @@ function MotionCarousel(props: PropType) {
                     alt={p.abbreviation ?? `Portada ${i + 1}`}
                     loading={i === 0 ? 'eager' : 'lazy'}
                     draggable={false}
-                    className="max-h-full max-w-full select-none rounded-2xl object-cover"
+                    className="max-h-full max-w-full select-none rounded-2xl object-cover transition-transform duration-300 ease-in-out hover:scale-120"
                   />
                 </motion.div>
               </div>

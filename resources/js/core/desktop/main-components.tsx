@@ -77,7 +77,6 @@ export const BlogWidgetWrap = ({ children }: BlogContentProps) => {
 export const BlogMain = ({ children }: BlogContentProps) => {
   return (
     <>
-      <h2>Destacadas</h2>
       <div className="flex w-full min-w-0 max-w-8xl mx-auto min-h-85 flex-col-reverse items-stretch justify-center gap-4 rounded-xl bg-mizume-secondary p-4 text-mizume-secondary-foreground lg:flex-row lg:items-center" >
         {children}
       </div>
@@ -123,7 +122,7 @@ const BlogSectionContent = ({ work, users }: BlogSectionContentProps) => {
 
       <div className="flex w-full flex-1 flex-col gap-4 rounded-2xl bg-mizume-primary p-3 text-black sm:p-4 lg:flex-row lg:gap-0 lg:p-6">
 
-        <div className="flex min-w-0 flex-col gap-3 border-b-2 border-black pb-4 lg:w-1/2 lg:justify-center lg:gap-5 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-6">
+        <div className="flex min-w-0 flex-col gap-3 border-b-2 border-black pb-4 lg:w-1/2 lg:justify-start  lg:gap-5 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-6">
           <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 lg:gap-y-4">
             {Object.entries(work).map(([key, value]) => {
               if ((WORK_EXCLUDE as readonly string[]).includes(key)) return null
@@ -148,6 +147,8 @@ const BlogSectionContent = ({ work, users }: BlogSectionContentProps) => {
           </dl>
 
           <div className="flex flex-wrap gap-2">
+            <p className="w-full text-sm capitalize lg:text-lg">Tags:</p>
+
             {work.tags?.map((tag) => (
               <span
                 key={tag.id}
@@ -156,6 +157,7 @@ const BlogSectionContent = ({ work, users }: BlogSectionContentProps) => {
                 {tag.name}
               </span>
             ))}
+            
           </div>
         </div>
 

@@ -59,6 +59,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { url } from 'zod';
+import BlogToggler from '@/components/ui/blog-toggler-';
+import { Button } from '@/components/animate-ui/components/buttons/button';
 
 
 
@@ -331,7 +333,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
           {/* Nav Project */}
         </SidebarContent>
 
-        <RenderProfileType isMobile={isMobile} role={role} user={auth.user}  />
+        <RenderProfileType isMobile={isMobile} role={role} user={auth.user} />
         <SidebarRail />
       </Sidebar>
 
@@ -352,8 +354,11 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-            <div className="ml-auto">
+            <div className="ml-auto flex flex-row items-center justify-center gap-2">
               <LanguagueSwitch lang={lang} onLang={SetLang} />
+
+              <BlogToggler />
+
             </div>
           </div>
         </header>
