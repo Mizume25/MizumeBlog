@@ -17,9 +17,9 @@ import { useLangStore } from '@/store/lang-store';
 const DATA = {
   es: {
     widget: {
-      work: "Obras",
-      posts: "Publicaciones",
-      authors: "Autores"
+      work: "Obra",
+      posts: "Publicacion",
+      authors: "Autor"
     },
     work: {
       category: "Categoria",
@@ -34,8 +34,8 @@ const DATA = {
   en: {
     widget: {
       work: "Work",
-      posts: "Posts",
-      authors: "Authors"
+      posts: "Post",
+      authors: "Author"
     },
     work: {
       category: "Category",

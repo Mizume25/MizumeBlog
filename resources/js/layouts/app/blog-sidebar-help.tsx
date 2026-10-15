@@ -22,7 +22,7 @@ import {
 import { Button } from '@/components/animate-ui/components/buttons/button';
 
 import { User, UserType } from '@/types/definitions';
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { BlogProfile } from '@/core/desktop/utils-components';
 import { DATA_TYPE } from './blog-sidebar';
 
@@ -155,11 +155,11 @@ export const RenderProfileGuest = ({ content, open }: RenderProfileGuestProps) =
         <SidebarMenu>
             <SidebarMenuItem>
 
-                <Button variant={'ghost'} className='w-full mb-2' >
+                <Button variant={'ghost'} className='w-full mb-2' onClick={() => router.get("login")} >
                     <Login />
                     <p className={`${style}`}> {content.sidebar.profile.sessionIn.content}</p>
                 </Button>
-                <Button variant={'default'} className='w-full bg-btn-danger text-btn-danger-foreground hover:bg-red-300' >
+                <Button variant={'default'} className='w-full bg-btn-danger text-btn-danger-foreground hover:bg-red-300' onClick={() => router.get("register")} >
                     <Register />
                     <p className={`${style}`}> {content.sidebar.profile.register.content}</p>
                 </Button>

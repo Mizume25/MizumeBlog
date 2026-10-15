@@ -112,11 +112,6 @@ export const DATA = {
           icon: Home,
         },
         {
-          name: 'Archivador',
-          url: '#',
-          icon: FolderBookmark,
-        },
-        {
           name: 'Autores',
           url: '#',
           icon: UserCircle2,
@@ -167,11 +162,6 @@ export const DATA = {
           name: 'Home',
           url: '#',
           icon: Home,
-        },
-        {
-          name: 'Archive',
-          url: '#',
-          icon: FolderBookmark,
         },
         {
           name: 'Authors',
