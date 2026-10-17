@@ -82,6 +82,8 @@ class Work extends Model implements HasMedia
         return $query->whereHas('posts', fn(Builder $q) => $q->where('featured', true));
     }
 
+    
+
     // --- Tags ---
 
 
@@ -99,6 +101,4 @@ class Work extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('cover') ?: null;
     }
-
-    
 }

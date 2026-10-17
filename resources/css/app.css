@@ -1,7 +1,7 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter';
 
 @plugin 'tailwindcss-animate';
 
@@ -16,7 +16,6 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
 
-
     --breakpoint-lg: 950px;
 
     --background-image-blog: url('/IMG/Fondo.jpg');
@@ -29,10 +28,10 @@
     --color-secondary-foreground: var(--secondary-foreground);
 
     --color-tertiary: var(--tertiary);
-    --color-tertiary-foreground:var(--tertiary-foreground);
+    --color-tertiary-foreground: var(--tertiary-foreground);
 
-    --color-fourth:var(--fourth);
-    --color-fourth:var(--fourth-foreground);
+    --color-fourth: var(--fourth);
+    --color-fourth: var(--fourth-foreground);
 
     --color-pure: var(--pure-color);
 
@@ -56,7 +55,6 @@
 
     --color-btn-warning: var(--btn-warning);
     --color-btn-warning-foreground: var(--btn-warning-foreground);
-
 }
 
 /*
@@ -68,7 +66,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -76,54 +73,51 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
-  * {
-    @apply border-border outline-ring/50;
-
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
-
+    body {
+        @apply bg-background text-foreground;
     }
-  html {
-    @apply font-sans;
-
+    html {
+        @apply font-sans;
     }
 }
 
 /* Colores propios */
 :root {
-
     /* Valores por defecto de las librerias TSX */
-    --pure-color:hsl(0, 100%, 100%);
+    --pure-color: hsl(0, 100%, 100%);
     --primary: oklch(0.205 0 0);
     --primary-foreground: var(--pure-color);
 
-    
-    --btn-primary:#F5EDD8;
-    --btn-primary-foreground:hsl(36, 100%, 27%);
+    --btn-primary: #f5edd8;
+    --btn-primary-foreground: hsl(36, 100%, 27%);
 
-    --btn-secondary:hsl(20, 32%, 13%);
-    --btn-secondary-foreground:hsla(48, 56%, 81%, 0.8);
+    --btn-secondary: hsl(20, 32%, 13%);
+    --btn-secondary-foreground: hsla(48, 56%, 81%, 0.8);
 
-    --btn-tertiary:var(--pure-color);
-    --btn-tertiary-foreground:hsl(30, 55%, 30%);
+    --btn-tertiary: var(--pure-color);
+    --btn-tertiary-foreground: hsl(30, 55%, 30%);
 
-    --btn-danger:hsl(0, 72%, 55%);
-    --btn-success:hsl(142, 100%, 39%);
-    --btn-info:hsl(213, 94%, 52%);
-    --btn-warning:hsl(59, 100%, 50%);
+    --btn-danger: hsl(0, 72%, 55%);
+    --btn-success: hsl(142, 100%, 39%);
+    --btn-info: hsl(213, 94%, 52%);
+    --btn-warning: hsl(59, 100%, 50%);
 
+    --btn-danger-foreground: var(--pure-color);
+    --btn-success-foreground: var(--pure-color);
+    --btn-info-foreground: var(--pure-color);
+    --btn-warning-foreground: var(--pure-color);
 
-    --btn-danger-foreground:var(--pure-color);
-    --btn-success-foreground:var(--pure-color);
-    --btn-info-foreground:var(--pure-color);
-    --btn-warning-foreground:var(--pure-color);
-
-    
-    --background: oklch(1 0 0);
+    --background: var(--app-bg);
     --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card: hsl(34, 55%, 61%);
+    --card-foreground: hsl(34, 44%, 69%);
+    
+    --badge: hsla(0, 0%, 0%, 0.2);
+    --badge-foreground: hsl(0, 0%, 100%);
+
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
     --secondary: oklch(0.97 0 0);
@@ -152,27 +146,25 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
-
-
+    --bg-overlay: linear-gradient(rgba(60, 35, 15, 0.55), rgba(60, 35, 15, 0.78));
+    --app-bg: #2b1b0e;
     /* Valores customizados para la págia web */
-    --mizume-primary:hsl(48, 75%, 81%);
+    --mizume-primary: hsl(48, 75%, 81%);
     --mizume-primary-foreground: hsl(23, 40%, 12%);
 
-    --mizume-secondary:hsl(30, 55%, 30%);
-    --mizume-secondary-foreground:var(--pure-color);
+    --mizume-secondary: hsl(30, 55%, 30%);
+    --mizume-secondary-foreground: var(--pure-color);
 
-    --mizume-tertiary:hsl(53, 100%, 35%);
-    --mizume-tertiary-foreground:var(--pure-color);
+    --mizume-tertiary: hsl(53, 100%, 35%);
+    --mizume-tertiary-foreground: var(--pure-color);
 
     --mizume-fourthary: var(--mizume-primary-foreground);
     --mizume-fourthary-foreground: var(--pure-color);
-    
-
 }
 
 /** Titulo web  */
 .title {
-    @apply text-white tracking-tight drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] truncate;
+    @apply truncate tracking-tight text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)];
 }
 /* Botones */
 ._btn_secondary {
@@ -184,8 +176,8 @@
 }
 
 .dark {
-    --pure-color:hsl(0, 100%, 100%);
-    --background: oklch(0.145 0 0);
+    --pure-color: hsl(0, 100%, 100%);
+    --background: var(--app-bg);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
     --card-foreground: oklch(0.985 0 0);
@@ -216,21 +208,20 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    --bg-overlay: linear-gradient(rgba(25, 15, 55, 0.82), rgba(15, 10, 35, 0.94));
 
-   
-    --mizume-primary:hsl(258, 16%, 71%);
-    --mizume-primary-foreground: hsl(247, 17%, 32%); 
+    --app-bg: #140f26;
+    --mizume-primary: hsl(258, 16%, 71%);
+    --mizume-primary-foreground: hsl(247, 17%, 32%);
 
+    --mizume-secondary: hsl(254, 46%, 32%);
+    --mizume-secondary-foreground: var(--pure-color);
 
-    --mizume-secondary:hsl(254, 46%, 32%);
-    --mizume-secondary-foreground:var(--pure-color);
-
-    --mizume-tertiary:hsl(233, 100%, 35%);
-    --mizume-tertiary-foreground:var(--pure-color);
+    --mizume-tertiary: hsl(233, 100%, 35%);
+    --mizume-tertiary-foreground: var(--pure-color);
 
     --mizume-fourthary: var(--mizume-primary-foreground);
     --mizume-fourthary-foreground: var(--pure-color);
-
 }
 
 @layer base {
@@ -240,8 +231,7 @@
 
     body {
         /*@apply bg-background text-foreground; */
-        background-image: var(--background-image-blog);
-        @apply bg-cover bg-center bg-no-repeat bg-fixed;
+        background-color: var(--app-bg);
     }
 }
 
@@ -299,5 +289,4 @@
     --color-mizume-tertiary-foreground: var(--color-pure);
     --color-mizume-fourthary: var(--mizume-fourthary);
     --color-mizume-fourthary-foreground: var(--color-pure);
-    
 }

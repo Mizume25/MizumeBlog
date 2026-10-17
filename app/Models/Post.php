@@ -116,6 +116,12 @@ class Post extends Model
         return $query->where('featured', true);
     }
 
+    public function scopePublishPosts(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('publish_date')
+            ->where('publish_date', '<=', now());
+    }
 
 
     public function isOwnedBy(User $user): bool

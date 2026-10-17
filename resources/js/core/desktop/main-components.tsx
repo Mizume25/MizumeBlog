@@ -9,7 +9,7 @@ import { PostsGroupedByUser, User, WorkRecord } from '@/types/definitions';
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 import { formatDate } from '@/lib/utils';
 import { DATA_MAIN } from '@/pages/main';
-
+import { ChangeKey, DATA_ENTITIES, type DATA_ENTITIES_TYPE } from '@/core/desktop/utils-components';
 /**
  *  Interfaces necesarias para la pagina
  */
@@ -34,7 +34,7 @@ export interface BlogSectionProps {
   posts: PostsGroupedByUser
   changeWork: (work: WorkRecord) => void
   users: User[],
-  content: DATA_MAIN,
+  ENTITIES: DATA_ENTITIES_TYPE,
 }
 
 /** Interfaz de Blog props */
@@ -94,7 +94,7 @@ interface BlogSectionContentProps {
   work: WorkRecord,
   posts: PostsGroupedByUser,
   users: User[],
-  content: DATA_MAIN,
+  ENTITIES: DATA_ENTITIES_TYPE,
 }
 
 
@@ -106,9 +106,8 @@ const WORK_EXCLUDE = [
   "abbreviation", "tags", "media", "pivot", "cover_url",
 ] as const
 
-const BlogSectionContent = ({ work, users, content }: BlogSectionContentProps) => {
+const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) => {
 
-  console.log(work)
   return (
     <div className="flex h-full w-full flex-col gap-4 p-3 sm:p-4">
       <div className="flex w-full flex-col items-center justify-between gap-2 rounded-2xl bg-mizume-primary p-3 sm:p-4 lg:flex-row lg:gap-4">
@@ -147,11 +146,11 @@ const BlogSectionContent = ({ work, users, content }: BlogSectionContentProps) =
                 VALUE = String(value).replaceAll("_", " ")
               }
 
-
+           
               return (
                 <Fragment key={key}>
                   <dt className="text-sm capitalize lg:text-lg">
-                    {ChangeKey(key, content)}
+                    { ChangeKey(key, ENTITIES, 'works')}
                   </dt>
                   <dd className="justify-self-start break-words rounded-lg bg-mizume-secondary px-2 py-1 text-sm capitalize text-white lg:px-3 lg:text-base">
                     {VALUE}
@@ -178,7 +177,7 @@ const BlogSectionContent = ({ work, users, content }: BlogSectionContentProps) =
 
         {/* Sinopsis */}
         <div className="min-w-0 lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:pl-6">
-          <h2 className="mb-2 text-xl font-bold lg:text-2xl">Sinopsi</h2>
+          <h2 className="mb-2 text-xl font-bold lg:text-2xl">{ENTITIES.work.sinopsi}</h2>
           <p
             lang="es"
             className="hyphens-auto break-words text-start text-sm leading-relaxed lg:text-base"
@@ -193,9 +192,9 @@ const BlogSectionContent = ({ work, users, content }: BlogSectionContentProps) =
 
 
 
-export const BlogSection = ({ variant, works, work, posts, changeWork, users, content }: BlogSectionProps) => {
+export const BlogSection = ({ variant, works, work, posts, changeWork, users, ENTITIES }: BlogSectionProps) => {
   const style = variant === "left" ? "border-mizume-fourthary" : "bg-mizume-fourthary border-mizume-primary"
-  const component = variant === "left" ? <BlogCarousel works={works} changeWork={changeWork} /> : <BlogSectionContent posts={posts} work={work} users={users} content={content} />
+  const component = variant === "left" ? <BlogCarousel works={works} changeWork={changeWork} /> : <BlogSectionContent posts={posts} work={work} users={users} ENTITIES={ENTITIES} />
 
   return (
     <div className={`min-w-0 lg:w-[50%] h-full border-4 rounded-2xl ${style}`}>
@@ -261,20 +260,3 @@ export const BlogWidget = ({ variant }: BlogWidgetProps) => {
 }
 
 
-/** Helpers */
-function ChangeKey(key: string, content: DATA_MAIN) {
-  switch (key) {
-    case "category":
-      return content.work.category
-    case "publish_date":
-      return content.work.publish_date
-    case "medium":
-      return content.work.medium
-    case "authors":
-      return content.work.authors
-    case "tags":
-      return content.work.tags
-    default:
-      return "NOT FOUND"
-  }
-}

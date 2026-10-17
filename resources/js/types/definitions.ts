@@ -97,6 +97,7 @@ export type Work = Field &{
     publish_date: string,
     sinopsi: string,
     medium: Medium,
+    cover_url: string
 }
 
 /**
@@ -207,9 +208,19 @@ export type PostsGroupedByUser = Record<string, PostRecord[]>
 
 export type WorkRecord = Work & {
     media: Media []
-    tags: Tag []
+    tags: Tag [],
+    authors: Author[]
 }
 
 
 
-  
+export type Paginated<T> = {
+  data: T[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  prev_page_url: string | null
+  next_page_url: string | null
+  links: { url: string | null; label: string; active: boolean }[]
+}

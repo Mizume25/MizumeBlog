@@ -11,13 +11,13 @@ import { Author, Post, Tag, Work } from "./definitions"
 /**
  * @type Estados de la tortuga
  */
-type TurtleStatus = 'dead' | 'angry' | 'confused' | 'embarrassed' | 'maintenance' | 'smile' | 'thinking' | 'welcome' | 'worried'
+export type TurtleStatus = 'dead' | 'angry' | 'confused' | 'embarrassed' | 'maintenance' | 'smile' | 'thinking' | 'welcome' | 'worried'
 
 
 /**
  * @interface Tipo de Icono
  */
-type Icon = {
+export type Icon = {
     path: string,
     status: string,
     alt: string,
@@ -25,16 +25,16 @@ type Icon = {
 }
 
 /**
- * @type Tipo Especifico para tortuga
+ * @export type Tipo Especifico para tortuga
  */
-type IconTurtle = Omit<Icon, 'status'> & {
+export type IconTurtle = Omit<Icon, 'status'> & {
     status: TurtleStatus
 }
 
 /**
  * @interface Pet Interfaz de mascota
  */
-type Pet = {
+export type Pet = {
     name: string,
     bullet: string,
     onPath: (status: string) => string,
@@ -43,7 +43,7 @@ type Pet = {
     onObject: (status: string) => { name: string, alt: string },
 }
 
-type TURTLE = Omit<Pet, 'onPath' | 'onImage' | 'onName' | 'onObject'> & {
+export type TURTLE = Omit<Pet, 'onPath' | 'onImage' | 'onName' | 'onObject'> & {
     onPath: (status: TurtleStatus) => string,
     onImage: (status: TurtleStatus, style: string) => string,
     onName: (status: TurtleStatus) => string,

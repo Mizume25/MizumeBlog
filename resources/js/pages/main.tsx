@@ -12,6 +12,7 @@ import {
 import { useMainHook } from '@/hooks/custom/main-hook'
 import { PostsGroupedByUser } from '@/types/definitions';
 import { useLangStore } from '@/store/lang-store';
+import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 
 /** Textos */
 const DATA = {
@@ -20,15 +21,6 @@ const DATA = {
       work: "Obra",
       posts: "Publicacion",
       authors: "Autor"
-    },
-    work: {
-      category: "Categoria",
-      publish_date: "Fecha Pub.",
-      medium: "Medio",
-      tags: "Etiquetas",
-      sinopsi: "Sinopsi",
-      authors: "Autores"
-
     }
   },
   en: {
@@ -36,14 +28,6 @@ const DATA = {
       work: "Work",
       posts: "Post",
       authors: "Author"
-    },
-    work: {
-      category: "Category",
-      publish_date: "Publish date",
-      authors: "Author",
-      medium: "Medium",
-      tags: "Tags",
-      sinopsi: "Synopsis"
     }
   }
 }
@@ -69,20 +53,23 @@ function main({ works, posts }: MainProps) {
 
   const lang = useLangStore((l) => l.lang)
   const { work, changeWork } = useMainHook(works[0])
-  const content = DATA[lang]
+  const CONTENT = DATA[lang]
+  const ENTITIES = DATA_ENTITIES[lang]   
 
   const users = onUsers(posts)
+
+  console.log(works)
 
   return (
     <BlogLayout>
       <BlogWidgetWrap>
-        <BlogWidget variant='work' content={content} />
-        <BlogWidget variant='post' content={content} />
-        <BlogWidget variant='author' content={content} />
+        <BlogWidget variant='work' content={CONTENT} />
+        <BlogWidget variant='post' content={CONTENT} />
+        <BlogWidget variant='author' content={CONTENT} />
       </BlogWidgetWrap>
       <BlogMain>
-        <BlogSection variant='left' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  content={content}  />
-        <BlogSection variant='right' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  content={content}   />
+        <BlogSection variant='left' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  ENTITIES={ENTITIES}  />
+        <BlogSection variant='right' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  ENTITIES={ENTITIES}   />
       </BlogMain>
     </BlogLayout>
   )

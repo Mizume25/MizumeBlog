@@ -2,6 +2,8 @@
  * @fileoverview Servicio de mascota representantiva de la app 
  */
 
+import { TURTLE, TURTLE_ICO } from "@/types/custom";
+
 /**
  * @constant Turtle Objeto mascota listo para poder usarse
  */

@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\Work;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-    public function __invoke()
+    public function home()
     {
         $posts = Post::featuredWithWorksGroupedByUser();
 
@@ -26,4 +24,5 @@ class HomeController extends Controller
             'posts' => $posts,
         ]);
     }
+
 }

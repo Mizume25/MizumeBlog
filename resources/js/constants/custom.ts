@@ -1,6 +1,9 @@
 /**
  * @fileoverview Constantes propias y particulares para usos especificos
  */
+
+import { IconTurtle } from "@/types/custom";
+
 /**
  * @constant TURTLE_ICONS Constante de iconos
  */

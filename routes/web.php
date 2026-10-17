@@ -4,7 +4,7 @@
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
-
+use App\Http\Controllers\Public\WorkController;
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -122,8 +122,10 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 
 
+/** Rutas Publicas */
+Route::get('/', [HomeController::class, 'home'])->name('main');
 
-Route::get('/', HomeController::class)->name('main');
+Route::get('/works', [WorkController::class, 'index'])->name('works.index');
 
 
 

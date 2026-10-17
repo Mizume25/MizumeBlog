@@ -108,7 +108,7 @@ export const DATA = {
       items: [
         {
           name: 'Menu Principal',
-          url: '#',
+          url: route('main'),
           icon: Home,
         },
         {
@@ -118,7 +118,7 @@ export const DATA = {
         },
         {
           name: 'Obras',
-          url: '#',
+          url: route('works.index'),
           icon: BookBookmark,
         },
         {
@@ -160,7 +160,7 @@ export const DATA = {
       items: [
         {
           name: 'Home',
-          url: '#',
+          url: route('main'),
           icon: Home,
         },
         {
@@ -170,7 +170,7 @@ export const DATA = {
         },
         {
           name: 'Works',
-          url: '#',
+          url: route('works.index'),
           icon: BookBookmark,
         },
         {
@@ -354,7 +354,7 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
             </div>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4  bg-[url(/IMG/Fondo.jpg)] p-4">
+        <div className="flex flex-1 flex-col gap-4  p-4">
           {children}
         </div>
         <BlogFooter />
