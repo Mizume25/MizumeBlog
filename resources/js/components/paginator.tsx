@@ -1,3 +1,4 @@
+import { useT } from '@/hooks/use-paginator'
 import { Link } from '@inertiajs/react'
 
 interface PaginationProps {
@@ -22,6 +23,7 @@ const PageButton = ({ url, children }: { url: string | null; children: React.Rea
     )
 
 export const Pagination = ({ prevUrl, nextUrl, current, last, labels }: PaginationProps) => {
+    const t = useT().pagination
     if (last <= 1) return null
 
     return (

@@ -13,26 +13,10 @@ import { useMainHook } from '@/hooks/custom/main-hook'
 import { PostsGroupedByUser } from '@/types/definitions';
 import { useLangStore } from '@/store/lang-store';
 import { DATA_ENTITIES } from '@/core/desktop/utils-components';
+import { DATA } from '@/constants/main-constants';
 
-/** Textos */
-const DATA = {
-  es: {
-    widget: {
-      work: "Obra",
-      posts: "Publicacion",
-      authors: "Autor"
-    }
-  },
-  en: {
-    widget: {
-      work: "Work",
-      posts: "Post",
-      authors: "Author"
-    }
-  }
-}
 
-export type DATA_MAIN = (typeof DATA.es)
+
 
 /**
  * 

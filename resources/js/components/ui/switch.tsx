@@ -75,9 +75,9 @@ const SwitchControl = ({
         type="radio"
         name={name}
         value={value}
-        defaultChecked={defaultChecked}
         disabled={disabled}
         checked={checked}
+        readOnly
         className="hidden"
       />
       <span

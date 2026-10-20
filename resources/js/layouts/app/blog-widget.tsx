@@ -1,4 +1,4 @@
-import { DATA_MAIN } from '@/pages/main'
+import { type DATA_MAIN } from '@/constants/main-constants'
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 
 

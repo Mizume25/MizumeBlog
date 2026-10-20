@@ -1,4 +1,3 @@
-import { DATA_MAIN } from "@/pages/main";
 import { Author, Post, Work, WorkRecord } from "@/types/definitions";
 import React, { ReactNode, useMemo } from "react";
 import { Fragment } from 'react'
@@ -147,13 +146,37 @@ export function BlogProfile({ name }: AvatarProps) {
 
 interface BlogTopUtilProps {
     variant: BlogContentType,
-
+    children: ReactNode
 }
 
-export const BlogTopUtil = () => {
+export const BlogTopUtil = ({ children }: BlogTopUtilProps) => {
     return (
-        <div className="max-w-8xl h-20 bg-mizume-primary text-bg-primary rounded-2xl">
+        <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
+            {children}
+        </div>
+    )
+}
 
+
+interface BlogTopUtilSideProps {
+    children: ReactNode
+    className?: string
+}
+
+// Lado izquierdo: filtros secundarios (tags, fechas), apilados en columna
+export const BlogTopUtilLeft = ({ children, className = "" }: BlogTopUtilSideProps) => {
+    return (
+        <div className={`lg:col-span-5 flex flex-col gap-4 rounded-xl p-4 *:min-w-0 ${className}`}>
+            {children}
+        </div>
+    )
+}
+
+// Lado derecho: filtros principales (categorías, select, buscador) en grid de 2 columnas
+export const BlogTopUtilRight = ({ children, className = "" }: BlogTopUtilSideProps) => {
+    return (
+        <div className={`lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 content-start gap-4 rounded-xl p-4 *:min-w-0 ${className}`}>
+            {children}
         </div>
     )
 }

@@ -8,7 +8,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { PostsGroupedByUser, User, WorkRecord } from '@/types/definitions';
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 import { formatDate } from '@/lib/utils';
-import { DATA_MAIN } from '@/pages/main';
+import { DATA_MAIN } from '@/constants/main-constants';
 import { ChangeKey, DATA_ENTITIES, type DATA_ENTITIES_TYPE } from '@/core/desktop/utils-components';
 /**
  *  Interfaces necesarias para la pagina
@@ -103,7 +103,7 @@ interface BlogSectionContentProps {
 
 const WORK_EXCLUDE = [
   "id", "created_at", "updated_at", "title", "sinopsi",
-  "abbreviation", "tags", "media", "pivot", "cover_url",
+  "abbreviation", "tags", "media", "pivot", "cover_url", "slug"
 ] as const
 
 const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) => {

@@ -9,13 +9,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Work extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use HasSlug;
     protected $appends = ['cover_url'];
 
     protected $fillable = [
@@ -82,7 +85,7 @@ class Work extends Model implements HasMedia
         return $query->whereHas('posts', fn(Builder $q) => $q->where('featured', true));
     }
 
-    
+
 
     // --- Tags ---
 
@@ -100,5 +103,19 @@ class Work extends Model implements HasMedia
     public function getCoverUrlAttribute(): ?string
     {
         return $this->getFirstMediaUrl('cover') ?: null;
+    }
+
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }

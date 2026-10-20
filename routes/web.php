@@ -125,11 +125,10 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 /** Rutas Publicas */
 Route::get('/', [HomeController::class, 'home'])->name('main');
 
-Route::get('/works', [WorkController::class, 'index'])->name('works.index');
-
 
 
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
+require __DIR__ . '/public/work.php';
 

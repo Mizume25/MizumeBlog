@@ -14,6 +14,7 @@ export type Category = 'literatura' | 'animemanga';
  */
 export type Medium = "libro" | "poema" | "novela_ligera" | "novela" | "anime" | "manga" | "pelicula"
 
+
 /**
  * @enum ReportSatatus
  * Categorias de la pagina
@@ -92,6 +93,7 @@ export type Tag = Field & { name: string };
  */
 export type Work = Field &{
     title: string,
+    slug:string,
     abbreviation: string,
     category: Category,
     publish_date: string,
