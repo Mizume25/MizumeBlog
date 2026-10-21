@@ -6,7 +6,7 @@ import { useLangStore } from "@/store/lang-store"
 import { FlipWork } from "@/components/flip-work"
 import { Highlight } from '@/components/animate-ui/primitives/effects/highlight'
 import { useWorkIndex } from "@/hooks/custom/use-workindex-hook"
-import { ANIMEMANGA, LITERATURA, NAV_VALUES_TYPE, SELECT_VALUES_TYPE } from "@/types/custom/work-index-types"
+import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX } from "@/constants/work-index-constants"
 
 
@@ -101,7 +101,7 @@ function WorksIndex({ works, tags }: WorksIndexProps) {
                     data-value={c}
                     className="px-3 py-1 cursor-pointer whitespace-nowrap shrink-0 text-mizume-tertiary capitalize"
                   >
-                    {c.replaceAll('_', ' ')}
+                    {DATA.NAV_LABELS[c]}
                   </button>
                 ))}
               </Highlight>
@@ -110,14 +110,14 @@ function WorksIndex({ works, tags }: WorksIndexProps) {
           <div className="bg-mizume-fourthary flex flex-col gap-2 rounded-lg p-3">
             <h2 className="title">{DATA.filter.medium}</h2>
 
-            <Select key={`${lang}-${category}`} aria-label="Font" defaultValue={select[0]} className={"capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer"} onChange={(key) => filterMedium(key as string)}>
-              <Button>
+            <Select aria-label={DATA.filter.medium} value={medium} onChange={(key) => key && filterMedium(key as MEDIUM_VALUES_TYPE)}>
+              <Button className="w-full text-left capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer outline-none">
                 <SelectValue />
               </Button>
-              <Popover placement="bottom start" offset={4} >
-                <ListBox className={`bg-mizume-secondary p-2`} >
+              <Popover placement="bottom start" offset={4} className="w-(--trigger-width)">
+                <ListBox className={`bg-mizume-secondary p-2 rounded-xl`} >
                   {select.map((v) => {
-                    const label = v.replaceAll('_', '');
+                    const label = DATA.MEDIUM_LABELS[v];
                     return (
                       <ListBoxItem key={v} id={v} textValue={label} className={`capitalize outline-none  py-2 bg-mizume-secondary cursor-pointer  text-mizume-tertiary flex flex-row-reverse justify-center items-center data-focused:bg-mizume-fourthary`}>
                         {label}

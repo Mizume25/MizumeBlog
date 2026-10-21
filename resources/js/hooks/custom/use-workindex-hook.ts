@@ -1,7 +1,7 @@
 import { WorkRecord } from "@/types/definitions";
 import { useDeferredValue, useMemo, useState } from "react";
 import MiniSearch from "minisearch";
-import { ANIMEMANGA, LITERATURA, NAV_VALUES_TYPE, SELECT_VALUES_TYPE } from "@/types/custom/work-index-types"
+import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX_TYPE } from "@/constants/work-index-constants";
 
 
@@ -15,24 +15,17 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE) {
     const [query, setQuery] = useState("");
     const deferredQuery = useDeferredValue(query);
 
-    const [category, setCategory] = useState<NAV_VALUES_TYPE>(DATA.NAV_VALUES[0] as NAV_VALUES_TYPE);
+    // Los valores de categoría y medio no dependen del idioma, así que el filtro se mantiene al cambiarlo
+    const [category, setCategory] = useState<NAV_VALUES_TYPE>(DATA.NAV_VALUES[0]);
 
-    const [medium, setMedium] = useState<LITERATURA | ANIMEMANGA>(DATA.SELECT_VALUES[0]);
+    const [medium, setMedium] = useState<MEDIUM_VALUES_TYPE>(DATA.SELECT_VALUES[0]);
 
     const [selectTag, setSelectTag] = useState<number[]>([]);
 
-    // Al cambiar de idioma, reinicia categoría y medio a los valores del nuevo idioma
-    const [prevDATA, setPrevDATA] = useState(DATA);
-    if (prevDATA !== DATA) {
-        setPrevDATA(DATA);
-        setCategory(DATA.NAV_VALUES[0] as NAV_VALUES_TYPE);
-        setMedium(DATA.SELECT_VALUES[0]);
-    }
-
-    // Opciones del select derivadas de la categoría y el idioma actuales
-    const select = useMemo<string[]>(() => {
-        if (category === "todos" || category === "all") return DATA.SELECT_VALUES;
-        if (category === "literatura" || category === "literature") return DATA.LITERATURA_VALUES;
+    // Opciones del select derivadas de la categoría actual
+    const select = useMemo<MEDIUM_VALUES_TYPE[]>(() => {
+        if (category === "todos") return DATA.SELECT_VALUES;
+        if (category === "literatura") return DATA.LITERATURA_VALUES;
         return DATA.ANIMEMANGA_VALUES;
     }, [category, DATA]);
 
@@ -57,8 +50,9 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE) {
     }, [works]);
 
     const WORKS = useMemo(() => {
-        const noneCategory = category === "all" || category === "todos";
-        const noneMedium = medium === "all" || medium === "todos";
+
+        const noneCategory = category === "todos";
+        const noneMedium = medium === "todos";
         const noneTag = selectTag.length === 0;
         const q = deferredQuery.trim();
         const ids = q ? new Set(mini.search(q).map((r) => r.id)) : null;
@@ -80,7 +74,7 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE) {
         setMedium(DATA.SELECT_VALUES[0]);
     };
 
-    const filterMedium = (m: LITERATURA | ANIMEMANGA) => setMedium(m);
+    const filterMedium = (m: MEDIUM_VALUES_TYPE) => setMedium(m);
 
     const onTag = (id: number, checked: boolean) => {
         setSelectTag((prev) =>

@@ -151,9 +151,12 @@ interface BlogTopUtilProps {
 
 export const BlogTopUtil = ({ children }: BlogTopUtilProps) => {
     return (
+        <>
+        <h2 className="title">Opciones de Filtrado</h2>
         <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
             {children}
         </div>
+        </>
     )
 }
 

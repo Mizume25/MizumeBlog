@@ -19,6 +19,8 @@ class WorkController extends Controller
 
         $works = Work::with('media', 'tags', 'authors')->get();
 
+    
+
         $tags = $works
             ->flatten()
             ->pluck('tags')
