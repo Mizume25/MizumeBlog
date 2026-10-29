@@ -62,6 +62,7 @@ import { url } from 'zod';
 import BlogToggler from '@/components/ui/blog-toggler-';
 import { Button } from '@/components/animate-ui/components/buttons/button';
 import { useLangStore } from '@/store/lang-store';
+import { ROUTE } from '@/constants/routes';
 
 
 
@@ -108,7 +109,7 @@ export const DATA = {
       items: [
         {
           name: 'Menu Principal',
-          url: route('main'),
+          url: ROUTE.main,
           icon: Home,
         },
         {
@@ -118,7 +119,7 @@ export const DATA = {
         },
         {
           name: 'Obras',
-          url: route('works.index'),
+          url: ROUTE.work.index,
           icon: BookBookmark,
         },
         {
@@ -160,7 +161,7 @@ export const DATA = {
       items: [
         {
           name: 'Home',
-          url: route('main'),
+          url: ROUTE.main,
           icon: Home,
         },
         {
@@ -170,7 +171,7 @@ export const DATA = {
         },
         {
           name: 'Works',
-          url: route('works.index'),
+          url: ROUTE.work.index,
           icon: BookBookmark,
         },
         {

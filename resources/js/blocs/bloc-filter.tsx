@@ -52,19 +52,7 @@ const BlocTopRight = ({ children, className = "" }: BlogTopUtilSideProps) => {
     )
 }
 
-type BlocSectionPropities = {
-    sections?: unknown[] | object;
-    value?: unknown
-    onSection?: (v: unknown) => void;
-    contentStyles?: string,
-    itemStyles?: string,
-} | {
-    sections: unknown[] | object;
-    value: unknown
-    onSection: (v: unknown) => void;
-    contentStyles: string,
-    itemStyles: string,
-}
+
 
 type AllOrNone<T> = T | { [K in keyof T]?: never };
 
@@ -121,7 +109,7 @@ interface SelectProps {
     onSelect: (v :unknown) => void,
 
 }
-
+/** 
 const BlocSelect = ({label , onSelect , value, select , data} : SelectProps) => {
     <Select aria-label={label} value={value as string} onChange={(key) => key && onSelect(key as string)}>
         <Button className="w-full text-left capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer outline-none">
@@ -144,7 +132,7 @@ const BlocSelect = ({label , onSelect , value, select , data} : SelectProps) => 
     </Select>
 }
 
-
+*/
 
 const BlocLabel = ({ contentStyles, variant }: BlocLabelProps) => {
 

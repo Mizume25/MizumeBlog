@@ -2,7 +2,9 @@
  * @fileoverview Constantes de works
  */
 
-import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE } from "@/types/custom/work-index-types"
+import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE, WorkOrder } from "@/types/custom/work-index-types"
+import { Tag } from "@/types/definitions"
+import { ArrowDownZA, CalendarCheck2 } from "lucide-react"
 
 /**
  * Valores de filtrado: coinciden con los enums del backend (WorkCategory / WorkMedium),
@@ -12,6 +14,7 @@ const NAV_VALUES: NAV_VALUES_TYPE[] = ['todos', 'literatura', 'animemanga']
 const SELECT_VALUES: MEDIUM_VALUES_TYPE[] = ["todos", "libro", "poema", "novela_ligera", "novela", "anime", "manga", "pelicula"]
 const LITERATURA_VALUES: MEDIUM_VALUES_TYPE[] = ["todos", "libro", "poema", "novela"]
 const ANIMEMANGA_VALUES: MEDIUM_VALUES_TYPE[] = ["todos", "novela_ligera", "anime", "manga", "pelicula"]
+
 
 /**
  * Meta Objeto aglomerado
@@ -38,12 +41,33 @@ export const DATA_WORK_INDEX = {
             manga: "manga",
             pelicula: "película",
         } as Record<MEDIUM_VALUES_TYPE, string>,
-        filter:{
+        filter: {
             tag: "Tags",
             category: "Categorias",
-            publish_date: "Fecha",
+            orderBy: {
+                title:"Ordenar por",
+                types: [
+                    {
+                        type: "date" as WorkOrder,
+                        label: "Fecha",
+                        icon: CalendarCheck2
+                    },
+                    {
+                        type: "alpha" as WorkOrder,
+                        label: "Alfabetico",
+                        icon: ArrowDownZA
+                    },
+                ]
+            },
             medium: "Medio",
-            search: "Buscador"
+            search: "Buscador",
+            apply: "Aplicar",
+            reset: "Resetear",
+            selectTag: "Tags Selecionados"
+        },
+        values: {
+            category: "todos",
+            tags: []
         }
     },
     en: {
@@ -66,14 +90,42 @@ export const DATA_WORK_INDEX = {
             manga: "manga",
             pelicula: "movie",
         } as Record<MEDIUM_VALUES_TYPE, string>,
-        filter:{
+        filter: {
             tag: "Tags",
             category: "Category",
-            publish_date: "Date",
+            orderBy: {
+                title:"Order by",
+                types: [
+                    {
+                        type: "date" as WorkOrder,
+                        label: "Date",
+                        icon: CalendarCheck2
+                    },
+                    {
+                        type: "alpha" as WorkOrder,
+                        label: "Alphabetical",
+                        icon: ArrowDownZA
+                    },
+                ]
+            },
             medium: "Medium",
-            search: "Search"
+            search: "Search",
+            apply: "Apply",
+            reset: "Reset",
+            selectTag: "Select Tags"
+        },
+        values: {
+            category: "todos",
+            tags: []
         }
+
     }
 }
 
 export type DATA_WORK_INDEX_TYPE = typeof DATA_WORK_INDEX.es
+
+const WorkOrderBy = [
+    {
+        name:"wdwd"
+    }
+]

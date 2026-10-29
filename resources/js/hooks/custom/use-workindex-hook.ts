@@ -1,98 +1,134 @@
 import { WorkRecord } from "@/types/definitions";
-import { useDeferredValue, useMemo, useState } from "react";
-import MiniSearch from "minisearch";
-import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE } from "@/types/custom/work-index-types"
+import { useMemo, useState } from "react";
+import { CategorySelect, MEDIUM_VALUES_TYPE, WorkFilters, WorkOrder } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX_TYPE } from "@/constants/work-index-constants";
+import { router } from "@inertiajs/react";
 
 
 
 
 /**
- * Hook de funcio Principal del hook 
+ * Hook de funcio Principal del hook
  */
-export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE) {
-
-    const [query, setQuery] = useState("");
-    const deferredQuery = useDeferredValue(query);
-
-    // Los valores de categoría y medio no dependen del idioma, así que el filtro se mantiene al cambiarlo
-    const [category, setCategory] = useState<NAV_VALUES_TYPE>(DATA.NAV_VALUES[0]);
-
-    const [medium, setMedium] = useState<MEDIUM_VALUES_TYPE>(DATA.SELECT_VALUES[0]);
-
-    const [selectTag, setSelectTag] = useState<number[]>([]);
-
-    // Opciones del select derivadas de la categoría actual
-    const select = useMemo<MEDIUM_VALUES_TYPE[]>(() => {
-        if (category === "todos") return DATA.SELECT_VALUES;
-        if (category === "literatura") return DATA.LITERATURA_VALUES;
-        return DATA.ANIMEMANGA_VALUES;
-    }, [category, DATA]);
+export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, filters: WorkFilters) {
 
 
+    const [category, setCategory] = useState<CategorySelect>((filters.category ?? DATA.values.category) as CategorySelect)
 
-    const mini = useMemo(() => {
-        const m = new MiniSearch<WorkRecord>({
-            idField: "id",
-            fields: ["title", "authors"],
-            extractField: (w, field) =>
-                field === "authors"
-                    ? w.authors
-                        .map((a) => [a.name, a.last_name, a.pseudonym].filter(Boolean).join(" "))
-                        .join(" ")
-                    : (w as Record<string, any>)[field],
-            processTerm: (t) =>
-                t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(),
-            searchOptions: { prefix: true, fuzzy: 0.2, boost: { title: 2 } },
-        });
-        m.addAll(works);
-        return m;
-    }, [works]);
+    const [medium, setMedium] = useState<MEDIUM_VALUES_TYPE>(filters.medium ?? "todos");
 
-    const WORKS = useMemo(() => {
+    const [search , setSearch] = useState(filters.search ?? "");
 
-        const noneCategory = category === "todos";
-        const noneMedium = medium === "todos";
-        const noneTag = selectTag.length === 0;
-        const q = deferredQuery.trim();
-        const ids = q ? new Set(mini.search(q).map((r) => r.id)) : null;
+    /** Opciones de medium disponibles según la categoría */
+    const getMediumOptions = (c: CategorySelect) =>
+        c === "literatura" ? DATA.LITERATURA_VALUES
+            : c === "animemanga" ? DATA.ANIMEMANGA_VALUES
+                : DATA.SELECT_VALUES;
 
-        if (!ids && noneCategory && noneMedium && noneTag) return works;
+    const mediumOptions = getMediumOptions(category);
 
-        return works.filter(
-            (w) =>
-                (!ids || ids.has(w.id)) &&
-                (noneCategory || w.category === category) &&
-                (noneMedium || w.medium === medium) &&
-                (noneTag || selectTag.every((id) => w.tags.some((t) => t.id === id)))
+    const [selectTags, setSelectTags] = useState<number[]>(filters.tags?.map(Number) ?? DATA.values.tags);
+
+    const [orderBy, setOrderBy] = useState<WorkOrder>(DATA.filter.orderBy.types[0].type);
+
+    const [orderRevert, setOrderRevert] = useState(false);
+
+
+    const onFilter = () => {
+        const query = {
+            search: search.trim() || undefined,
+            category: category === "todos" ? undefined : category,
+            medium: medium === "todos" ? undefined : medium,
+            tags: selectTags,
+        }
+
+        router.get(
+            route('works.index'), query,
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true
+            }
         );
-    }, [works, category, medium, deferredQuery, mini, selectTag]);
-
-
-    const filterCategory = (c: NAV_VALUES_TYPE) => {
-        setCategory(c);
-        setMedium(DATA.SELECT_VALUES[0]);
-    };
-
-    const filterMedium = (m: MEDIUM_VALUES_TYPE) => setMedium(m);
+    }
 
     const onTag = (id: number, checked: boolean) => {
-        setSelectTag((prev) =>
+        setSelectTags((prev) =>
             checked ? [...prev, id] : prev.filter((t) => t !== id)
         );
     }
 
+
+
+    // Si el medium elegido no pertenece a la nueva categoría, se vuelve a "todos"
+    const onCategory = (c: CategorySelect) => {
+        setCategory(c);
+        if (!getMediumOptions(c).includes(medium)) setMedium("todos");
+    }
+
+
+    const Works = useMemo(() => {
+
+        const sorted = [...works];
+
+        switch (orderBy) {
+            case "date":
+                sorted.sort((a, b) => new Date(b.publish_date).getTime() - new Date(a.publish_date).getTime());
+                break;
+            case "alpha":
+                sorted.sort((a, b) => a.title.localeCompare(b.title, "es"));
+                break;
+            default:
+                break;
+        }
+
+        if (orderRevert) sorted.reverse();
+
+        return sorted;
+
+    }, [orderBy, orderRevert, works])
+
+
+
+    const onReset = () => {
+        setCategory(DATA.values.category as CategorySelect)
+        setMedium("todos");
+        setSearch("");
+        setSelectTags(DATA.values.tags);
+        setOrderBy(DATA.filter.orderBy.types[0].type);
+        setOrderRevert(false);
+
+        
+        router.get(
+            route('works.index'), {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true
+            }
+        );
+
+    }
+
     return {
-        WORKS,
+        Works,
         medium,
+        setMedium,
+        mediumOptions,
         category,
-        select,
-        filterCategory,
-        filterMedium,
-        query,
-        setQuery,
-        selectTag,
-        onTag
+        setCategory,
+        onCategory,
+        onFilter,
+        onReset,
+        selectTags,
+        setSelectTags,
+        onTag,
+        orderBy,
+        setOrderBy,
+        orderRevert,
+        setOrderRevert,
+        search,
+        setSearch
     }
 
 

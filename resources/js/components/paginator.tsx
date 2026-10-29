@@ -1,6 +1,11 @@
 import { useT } from '@/hooks/use-paginator'
 import { Link } from '@inertiajs/react'
 
+export const PaginatedText = {
+    es: { prev: 'Anterior', next: 'Siguiente', page: 'Página' },
+    en: { prev: 'Previous', next: 'Next', page: 'Page' },
+}
+
 interface PaginationProps {
     prevUrl: string | null
     nextUrl: string | null

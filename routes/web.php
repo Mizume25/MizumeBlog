@@ -125,6 +125,10 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 /** Rutas Publicas */
 Route::get('/', [HomeController::class, 'home'])->name('main');
 
+Route::get('/works', [WorkController::class, 'index'])->name('works.index');
+
+Route::get('/works/{work}', [WorkController::class, 'show'])->name('works.show');
+
 
 
 

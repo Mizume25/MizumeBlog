@@ -42,7 +42,6 @@ function main({ works, posts }: MainProps) {
 
   const users = onUsers(posts)
 
-  console.log(works)
 
   return (
     <BlogLayout>

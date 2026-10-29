@@ -75,15 +75,26 @@ class Work extends Model implements HasMedia
         return $query->where('medium', $medium);
     }
 
-    public function scopeWithTag(Builder $query, string $tagName): Builder
+    public function scopeWithTag(Builder $query, int $tagId): Builder
     {
-        return $query->whereHas('tags', fn(Builder $q) => $q->where('name', $tagName));
+        return $query->whereHas('tags', fn(Builder $q) => $q->where('tags.id', $tagId));
     }
 
     public function scopeWithFeaturedPost(Builder $query): Builder
     {
         return $query->whereHas('posts', fn(Builder $q) => $q->where('featured', true));
     }
+
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $like = '%'  . addcslashes($term, '%_\\') . '%';
+
+        return $query->where(function (Builder $q) use ($like) {
+            $q->where('title', 'like', $like);
+        });
+    }
+
+
 
 
 
