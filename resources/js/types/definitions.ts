@@ -112,6 +112,7 @@ export type Author = Field & {
     pseudonym: string | null,
     birth_year: string | null,
     description: string, 
+    profile_url: string,
 }
 
 

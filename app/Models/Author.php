@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Spatie\MediaLibrary\HasMedia;
 
-class Author extends Model
-{   
+class Author extends Model implements HasMedia
+{
     use HasFactory;
     use InteractsWithMedia;
+
+    protected $appends = ['profile_url'];
 
     protected $fillable = [
         'name',
@@ -26,6 +29,14 @@ class Author extends Model
     {
         $this->addMediaCollection('profile')->singleFile();
     }
+
+    // --- Media ---
+
+    public function getProfileUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('profile') ?: null;
+    }
+
 
     // --- Relaciones ---
 
@@ -45,7 +56,7 @@ class Author extends Model
     protected function displayName(): Attribute
     {
         return Attribute::get(
-            fn () => $this->pseudonym ?: trim("{$this->name} {$this->last_name}")
+            fn() => $this->pseudonym ?: trim("{$this->name} {$this->last_name}")
         );
     }
 
@@ -61,5 +72,32 @@ class Author extends Model
     public function scopeWithoutArticle(Builder $query): Builder
     {
         return $query->whereDoesntHave('articles');
+    }
+
+
+
+    public function scopeBirthYear(Builder $query, int $year): Builder
+    {
+        return $query->where('birth_year', '>=', $year);
+    }
+
+    /**
+     * Funcion de busqueda
+     */
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $tokens = preg_split('/\s+/', trim($term), -1, PREG_SPLIT_NO_EMPTY);
+
+        foreach ($tokens as $token) {
+            $like = '%' . addcslashes($token, '%_\\') . '%';
+
+            $query->where(function (Builder $q) use ($like) {
+                $q->where('name', 'like', $like)
+                    ->orWhere('last_name', 'like', $like)
+                    ->orWhere('pseudonym', 'like', $like);
+            });
+        }
+
+        return $query;
     }
 }

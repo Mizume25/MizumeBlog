@@ -114,7 +114,7 @@
     --foreground: oklch(0.145 0 0);
     --card: hsl(34, 55%, 61%);
     --card-foreground: hsl(34, 44%, 69%);
-    
+
     --badge: hsla(0, 0%, 0%, 0.2);
     --badge-foreground: hsl(0, 0%, 100%);
 
@@ -177,6 +177,7 @@
 
 .dark {
     --pure-color: hsl(0, 100%, 100%);
+    --pure-dark-color: oklch(0.205 0 0);
     --background: var(--app-bg);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
@@ -210,14 +211,24 @@
     --sidebar-ring: oklch(0.556 0 0);
     --bg-overlay: linear-gradient(rgba(25, 15, 55, 0.82), rgba(15, 10, 35, 0.94));
 
+    --btn-danger:  hsl(0, 65%, 40%);
+    --btn-success: hsl(142, 70%, 25%);
+    --btn-info:    hsl(213, 80%, 38%);
+    --btn-warning: hsl(38, 90%, 30%);
+
+    --btn-danger-foreground: var(--pure-color);
+    --btn-success-foreground: var(--pure-color);
+    --btn-info-foreground: var(--pure-color);
+    --btn-warning-foreground: var(--pure-color);
+
     --app-bg: #140f26;
     --mizume-primary: hsl(258, 16%, 71%);
     --mizume-primary-foreground: hsl(247, 17%, 32%);
 
-    --mizume-secondary: hsl(254, 46%, 32%);
+    --mizume-secondary: hsl(257, 46%, 50%);
     --mizume-secondary-foreground: var(--pure-color);
 
-    --mizume-tertiary: hsl(233, 100%, 35%);
+    --mizume-tertiary: hsl(240, 100%, 86%);
     --mizume-tertiary-foreground: var(--pure-color);
 
     --mizume-fourthary: var(--mizume-primary-foreground);

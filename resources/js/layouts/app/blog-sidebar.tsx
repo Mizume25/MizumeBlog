@@ -46,7 +46,8 @@ import {
   FileWarning,
   LogOutIcon,
   LogIn,
-  UserPlus
+  UserPlus,
+  NotebookTextIcon
 
 
 } from 'lucide-react';
@@ -56,8 +57,8 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { usePage } from '@inertiajs/react';
-import { SharedData } from '@/types';
+import { router, usePage } from '@inertiajs/react';
+import { Route, SharedData } from '@/types';
 import { url } from 'zod';
 import BlogToggler from '@/components/ui/blog-toggler-';
 import { Button } from '@/components/animate-ui/components/buttons/button';
@@ -114,7 +115,7 @@ export const DATA = {
         },
         {
           name: 'Autores',
-          url: '#',
+          url: ROUTE.authors.index,
           icon: UserCircle2,
         },
         {
@@ -166,7 +167,7 @@ export const DATA = {
         },
         {
           name: 'Authors',
-          url: '#',
+          url: ROUTE.authors.index,
           icon: UserCircle2,
         },
         {
@@ -214,9 +215,10 @@ export type DATA_TYPE = typeof DATA.es
 
 interface BlogSidebarProps {
   children: React.ReactNode;
+  routes: Route[]
 }
 
-export const BlogSidebar = ({ children }: BlogSidebarProps) => {
+export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
   const isMobile = useIsMobile();
 
   const { auth, quote } = usePage<SharedData>().props;
@@ -338,13 +340,20 @@ export const BlogSidebar = ({ children }: BlogSidebarProps) => {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
                   <BreadcrumbLink href="#">
-
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
-                <BreadcrumbItem className="text-mizume-secondary-foreground">
-                  <BreadcrumbPage className="text-mizume-secondary-foreground"> Menu </BreadcrumbPage>
-                </BreadcrumbItem>
+                {routes.map((r) => (
+                  <>
+                    <BreadcrumbItem className="text-mizume-secondary-foreground">
+                      <BreadcrumbPage className="text-mizume-secondary-foreground" >
+
+                        <Button variant={"link"} className='text-mizume-secondary-foreground' onClick={() => router.get(r.url)}>{r.label}</Button>
+                      </BreadcrumbPage>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
+                  </>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
             <div className="ml-auto flex flex-row items-center justify-center gap-2">

@@ -28,6 +28,7 @@
         "barryvdh/laravel-ide-helper": "^3.7",
         "fakerphp/faker": "^1.23",
         "icanhazstring/composer-unused": "^0.9.6",
+        "laravel-lang/common": "^6.8",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.18",
         "laravel/sail": "^1.41",

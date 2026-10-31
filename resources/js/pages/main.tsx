@@ -14,6 +14,8 @@ import { PostsGroupedByUser } from '@/types/definitions';
 import { useLangStore } from '@/store/lang-store';
 import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 import { DATA } from '@/constants/main-constants';
+import { ROUTE } from '@/constants/routes';
+import { Route } from '@/types';
 
 
 
@@ -32,19 +34,34 @@ export function onUsers(posts : PostsGroupedByUser) {
 }
 
 
+const routes : Route[] = [
+  {
+    label:"Home",
+    url: ROUTE.main,
+  }
+]
+
 
 function main({ works, posts }: MainProps) {
 
+  /** Variable de estado de lenguaje */
   const lang = useLangStore((l) => l.lang)
+
+  /** Works y estado de variable */
   const { work, changeWork } = useMainHook(works[0])
+
+  /** Contenido de la pagina */
   const CONTENT = DATA[lang]
+
+  /** Contenido de entidades */
   const ENTITIES = DATA_ENTITIES[lang]   
 
+  /** Usuarios relacionales  */
   const users = onUsers(posts)
 
 
   return (
-    <BlogLayout>
+    <BlogLayout routes={routes}>
       <BlogWidgetWrap>
         <BlogWidget variant='work' content={CONTENT} />
         <BlogWidget variant='post' content={CONTENT} />

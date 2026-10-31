@@ -30,3 +30,9 @@ export interface WorkFilters {
 }
 
 
+export interface AuthorFilter {
+    search?: string,
+    year?: number,
+}
+
+

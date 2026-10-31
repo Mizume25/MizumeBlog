@@ -1,10 +1,7 @@
 import { useT } from '@/hooks/use-paginator'
 import { Link } from '@inertiajs/react'
 
-export const PaginatedText = {
-    es: { prev: 'Anterior', next: 'Siguiente', page: 'Página' },
-    en: { prev: 'Previous', next: 'Next', page: 'Page' },
-}
+
 
 interface PaginationProps {
     prevUrl: string | null
@@ -14,11 +11,11 @@ interface PaginationProps {
     labels: { prev: string; next: string; page: string }
 }
 
-const BTN = 'rounded-full border-2 border-black bg-card px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+const BTN = 'rounded-full border-2 border-black bg-mizume-secondary text-mizume-secondary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
 
 const PageButton = ({ url, children }: { url: string | null; children: React.ReactNode }) =>
     url ? (
-        <Link href={url} only={['works']} className={`${BTN} transition-transform hover:-translate-y-0.5`}>
+        <Link href={url} only={['paginated']} preserveScroll className={`${BTN} transition-transform hover:-translate-y-0.5`}>
             {children}
         </Link>
     ) : (

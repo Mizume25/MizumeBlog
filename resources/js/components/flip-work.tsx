@@ -9,10 +9,12 @@ import { type WORK_LABELS } from '@/core/desktop/utils-components'
 
 interface BlogCardWorkProps {
     work: WorkRecord
-    labels: WORK_LABELS
+    labels: WORK_LABELS,
+    keyClass: string,
+    labelsClass: string
 }
 
-const FACE = 'absolute inset-0 flex flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+const FACE = 'absolute inset-0 flex flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]  '
 const FACE_STYLE: React.CSSProperties = {
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
@@ -23,12 +25,12 @@ const MOBILE_ONLY  = 'flex lg:hidden'
 
 /** Cabecera compartida por las dos caras */
 const CardHeader = ({ work }: { work: WorkRecord }) => (
-    <header className="flex h-11.5 shrink-0 items-center justify-between border-b-2 border-black bg-card px-4 text-black">
+    <header className="flex h-11.5 shrink-0 items-center justify-between border-b-2 px-4 bg-mizume-fourthary text-mizume-fourthary-foreground ">
         <h2 className="truncate pr-2 text-sm font-bold tracking-tight uppercase">
             {work.title.replaceAll('-', ' ')}
         </h2>
-        <div className="flex shrink-0 gap-1">
-            <span className="rounded-full bg-badge px-3 py-1 text-[0.6rem] font-bold text-white uppercase">
+        <div className="flex shrink-0 gap-1 bg-mizume-secondary rounded-xl">
+            <span className="rounded-full bg-badge px-3 py-1 text-[0.6rem] font-bold uppercase">
                 {work.medium.replaceAll('_', ' ')}
             </span>
 
@@ -36,7 +38,7 @@ const CardHeader = ({ work }: { work: WorkRecord }) => (
     </header>
 )
 
-export const FlipWork = ({ work, labels }: BlogCardWorkProps) => {
+export const FlipWork = ({ work, labels , keyClass , labelsClass }: BlogCardWorkProps) => {
     const [isFlipped, setIsFlipped] = React.useState(false)
 
     // Se evalúa al ocurrir el evento (no en el render), así no rompe SSR ni portátiles táctiles
@@ -139,7 +141,7 @@ interface CardSectionInfoProps {
 
 const CardSectionInfo = ({ work, info, labels, className }: CardSectionInfoProps) => {
     return (
-        <section className={`${className} flex-1 flex-col gap-3 overflow-y-auto bg-card-foreground p-4 text-black [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20`}>
+        <section className={`${className} flex-1 flex-col gap-3 overflow-y-auto bg-mizume-primary p-4 text-black [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20`}>
             <BlogItems
                 data={info}
                 formatKey={(key) => (labels as Record<string, string>)[key] ?? key}
@@ -153,6 +155,8 @@ const CardSectionInfo = ({ work, info, labels, className }: CardSectionInfoProps
                     }
                     return String(value ?? '—').replaceAll('_', ' ')
                 }}
+                keyClass='text-sm capitalize lg:text-md'
+                labelClass='justify-self-start break-words rounded-lg bg-mizume-secondary px-2 py-1 text-sm capitalize text-white lg:px-3 lg:text-md'
             />
 
             {work.tags?.length > 0 && (
@@ -180,7 +184,7 @@ interface CardSectionSinopsiProps {
 
 const CardSectionSinopsi = ({ work, labels, className }: CardSectionSinopsiProps) => {
     return (
-        <main className={`${className} flex-1 flex-col overflow-hidden bg-card-foreground p-4 text-black`}>
+        <main className={`${className} flex-1 flex-col overflow-hidden bg-mizume-primary p-6 text-black `}>
             <h3 className="mb-2 text-lg font-bold">{labels.sinopsi}</h3>
             <p
                 lang="es"

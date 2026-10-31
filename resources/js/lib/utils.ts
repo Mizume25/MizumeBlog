@@ -16,3 +16,11 @@ export function formatDate(iso: string): string {
   const [year, month, day] = iso.slice(0, 10).split("-");
   return `${day}/${month}/${year}`;
 }
+
+
+export const CURRENT_YEAR = new Date().getFullYear();
+
+export const PaginatedText = {
+    es: { prev: 'Anterior', next: 'Siguiente', page: 'Página' },
+    en: { prev: 'Previous', next: 'Next', page: 'Page' },
+}

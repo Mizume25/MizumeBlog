@@ -22,6 +22,7 @@ const ANIMEMANGA_VALUES: MEDIUM_VALUES_TYPE[] = ["todos", "novela_ligera", "anim
 
 export const DATA_WORK_INDEX = {
     es: {
+        main_title: "Opciones de Filtrados",
         NAV_VALUES,
         SELECT_VALUES,
         LITERATURA_VALUES,
@@ -45,7 +46,7 @@ export const DATA_WORK_INDEX = {
             tag: "Tags",
             category: "Categorias",
             orderBy: {
-                title:"Ordenar por",
+                title: "Ordenar por",
                 types: [
                     {
                         type: "date" as WorkOrder,
@@ -60,7 +61,10 @@ export const DATA_WORK_INDEX = {
                 ]
             },
             medium: "Medio",
-            search: "Buscador",
+            search: {
+                label: "Buscador",
+                placeholder: "Buscar Obras..."
+            },
             apply: "Aplicar",
             reset: "Resetear",
             selectTag: "Tags Selecionados"
@@ -71,6 +75,7 @@ export const DATA_WORK_INDEX = {
         }
     },
     en: {
+        main_title: "Filter Options",
         NAV_VALUES,
         SELECT_VALUES,
         LITERATURA_VALUES,
@@ -94,7 +99,7 @@ export const DATA_WORK_INDEX = {
             tag: "Tags",
             category: "Category",
             orderBy: {
-                title:"Order by",
+                title: "Order by",
                 types: [
                     {
                         type: "date" as WorkOrder,
@@ -109,7 +114,10 @@ export const DATA_WORK_INDEX = {
                 ]
             },
             medium: "Medium",
-            search: "Search",
+            search: {
+                label: "Search",
+                placeholder: "Search Works..."
+            },
             apply: "Apply",
             reset: "Reset",
             selectTag: "Select Tags"
@@ -126,6 +134,6 @@ export type DATA_WORK_INDEX_TYPE = typeof DATA_WORK_INDEX.es
 
 const WorkOrderBy = [
     {
-        name:"wdwd"
+        name: "wdwd"
     }
 ]

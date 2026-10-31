@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -38,7 +39,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // 3. Middlewares para el grupo 'web'
+        //    SetLocale va antes de Inertia para que los props compartidos ya salgan traducidos
         $middleware->web(append: [
+            SetLocale::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
@@ -46,6 +49,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // 4. Trata las peticiones a /api/* como stateful cuando vienen del propio SPA,
         //    para que Sanctum acepte la cookie de sesión en vez de exigir un token.
         $middleware->statefulApi();
+
+        // 5. La cookie 'lang' la escribe el cliente en texto plano, no se cifra
+        $middleware->encryptCookies(except: ['lang']);
 
     })
     ->withExceptions(function (Exceptions $exceptions) {

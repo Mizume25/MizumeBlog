@@ -69,6 +69,7 @@ export const DATA_ENTITIES = {
 
 export type DATA_ENTITIES_TYPE = typeof DATA_ENTITIES.es
 export type WORK_LABELS = DATA_ENTITIES_TYPE["work"]
+export type AUTHOR_LABELS = DATA_ENTITIES_TYPE["author"]
 
 
 function getColorFromName(name: string): string {
@@ -152,10 +153,10 @@ interface BlogTopUtilProps {
 export const BlogTopUtil = ({ children }: BlogTopUtilProps) => {
     return (
         <>
-        <h2 className="title">Opciones de Filtrado</h2>
-        <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
-            {children}
-        </div>
+            <h2 className="title">Opciones de Filtrado</h2>
+            <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
+                {children}
+            </div>
         </>
     )
 }
@@ -188,6 +189,7 @@ export const BlogTopUtilRight = ({ children, className = "" }: BlogTopUtilSidePr
 
 
 
+
 export interface BlogCardProps {
     variant: BlogContentType,
     onId: (id: number) => void
@@ -200,6 +202,8 @@ interface BlogItemsProps<T extends Record<string, unknown>> {
     formatKey?: (key: keyof T & string, data: T) => ReactNode;
     formatValue?: (value: T[keyof T], key: keyof T & string, data: T) => ReactNode;
     omit?: (keyof T & string)[];
+    keyClass: string,
+    labelClass: string,
 }
 
 
@@ -208,6 +212,8 @@ export function BlogItems<T extends Record<string, unknown>>({
     formatKey = (key) => key,
     formatValue = (value) => String(value ?? "—"),
     omit = [],
+    keyClass,
+    labelClass
 }: BlogItemsProps<T>) {
     const entries = (Object.keys(data) as (keyof T & string)[]).filter(
         (key) => !omit.includes(key)
@@ -217,16 +223,43 @@ export function BlogItems<T extends Record<string, unknown>>({
         <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2">
             {entries.map((key) => (
                 <Fragment key={key}>
-                    <dt className="text-sm capitalize lg:text-md">
+                    <dt className={`${keyClass}`}>
                         {formatKey(key, data)}
                     </dt>
-                    <dd className="justify-self-start break-words rounded-lg bg-mizume-secondary px-2 py-1 text-sm capitalize text-white lg:px-3 lg:text-md">
+                    <dd className={`${labelClass}`}>
                         {formatValue(data[key], key, data)}
                     </dd>
                 </Fragment>
             ))}
         </dl>
     );
+}
+
+
+
+interface FilterSearchProps {
+    search: string,
+    setSearch: (v: string) => void,
+    onFilter: () => void,
+    placeholder: string,
+    content: string,
+    inputClass: string
+}
+
+
+export const FilterSearch = ({ search, setSearch, onFilter , placeholder }: FilterSearchProps) => {
+    return (
+        <div className="bg-mizume-primary rounded-md p-1">
+            <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && onFilter()}
+                placeholder={placeholder}
+                className="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+            />
+        </div>
+    )
 }
 
 
