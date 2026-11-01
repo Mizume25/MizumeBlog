@@ -11,10 +11,12 @@ interface BlogCardWorkProps {
     work: WorkRecord
     labels: WORK_LABELS,
     keyClass: string,
-    labelsClass: string
+    labelsClass: string,
+    selectWork: WorkRecord | null
+    onWork: (v: number) => void,
 }
 
-const FACE = 'absolute inset-0 flex flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]  '
+const FACE = 'absolute inset-0 flex flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]   '
 const FACE_STYLE: React.CSSProperties = {
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
@@ -38,7 +40,7 @@ const CardHeader = ({ work }: { work: WorkRecord }) => (
     </header>
 )
 
-export const FlipWork = ({ work, labels , keyClass , labelsClass }: BlogCardWorkProps) => {
+export const FlipWork = ({ work, labels , keyClass , labelsClass, selectWork , onWork }: BlogCardWorkProps) => {
     const [isFlipped, setIsFlipped] = React.useState(false)
 
     // Se evalúa al ocurrir el evento (no en el render), así no rompe SSR ni portátiles táctiles
@@ -58,17 +60,21 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass }: BlogCardWork
             role="button"
             tabIndex={0}
             aria-pressed={isFlipped}
-            className="group relative h-96 w-full cursor-pointer focus:outline-none sm:h-80"
+            className="group relative h-96 w-full cursor-pointer focus:outline-none sm:h-80 "
             style={{ perspective: 1000 }}
             onMouseEnter={() => canHover() && setIsFlipped(true)}
             onMouseLeave={() => canHover() && setIsFlipped(false)}
-            onClick={() => !canHover() && setIsFlipped((f) => !f)}
+            onClick={() => {
+                if (!canHover()) setIsFlipped((f) => !f)
+                onWork(work.id)
+            }}
             onFocus={() => setIsFlipped(true)}
             onBlur={() => setIsFlipped(false)}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
                     setIsFlipped((f) => !f)
+                    onWork(work.id)
                 }
             }}
         >
@@ -79,7 +85,7 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass }: BlogCardWork
                 transition={{ duration: 0.5, ease: easeOut }}
             >
                 {/* FRONT: cover izquierda + información derecha */}
-                <div className={FACE} style={FACE_STYLE}>
+                <div className={`${FACE}  ${work.id === selectWork?.id ? "border-4 border-mizume-tertiary rounded-lg" : "" }`} style={FACE_STYLE}>
                     <CardHeader work={work} />
 
                     <CardMain>
@@ -89,7 +95,7 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass }: BlogCardWork
                 </div>
 
                 {/* BACK: extracto de la sinopsis */}
-                <div className={FACE} style={{ ...FACE_STYLE, transform: 'rotateY(180deg)' }}>
+                <div className={`${FACE} ${work.id === selectWork?.id ? "border-4 border-mizume-tertiary rounded-lg" : "" }`} style={{ ...FACE_STYLE, transform: 'rotateY(180deg)' }}>
                     <CardHeader work={work} />
                     <CardSectionSinopsi className={DESKTOP_ONLY}  labels={labels} work={work} />
                     <CardSectionInfo className={MOBILE_ONLY} info={info} labels={labels} work={work} />

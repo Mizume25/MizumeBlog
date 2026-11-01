@@ -10,13 +10,15 @@ import { DATA_WORK_INDEX } from "@/constants/work-index-constants"
 import { Paginated } from "@/types/definitions"
 import { Button } from '@/components/ui/button';
 import { Pagination } from "@/components/paginator"
-import { FilterIcon, PictureInPicture2, RotateCcw, Tag as CategoryIcon, Tags, Search, Calendar } from "lucide-react"
+import { FilterIcon, PictureInPicture2, RotateCcw, Tag as CategoryIcon, Tags, Search, Calendar, Notebook } from "lucide-react"
 import RevertButton from "@/components/revert-buttono"
 import { useEffect } from "react"
 import { BlocContent, BlocLabel, BlocSection, BlocTopLeft, BlocTopRight } from "@/blocs/bloc-filter"
 import { Route } from "@/types"
 import { ROUTE } from "@/constants/routes"
 import { PaginatedText } from "@/lib/utils"
+import { SiNotebooklm } from "react-icons/si"
+import { router } from "@inertiajs/react"
 
 
 interface WorksIndexProps {
@@ -53,7 +55,10 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
 
   const MEDIUM = DATA.MEDIUM_LABELS
 
-  const { Works, medium, setMedium, mediumOptions, category, onCategory, onFilter, onReset, setSelectTags, selectTags, onTag, orderBy, setOrderBy, orderRevert, setOrderRevert, search, setSearch } = useWorkIndex(paginated.data, DATA, filters)
+  const { Works, medium, setMedium, mediumOptions, category, onCategory, onFilter,
+    onReset, setSelectTags, selectTags, onTag, orderBy, setOrderBy, orderRevert,
+    setOrderRevert, search, setSearch, selectWork, setSelectWork, onWork
+  } = useWorkIndex(paginated.data, DATA, filters)
 
   return (
     <BlogLayout routes={routes}>
@@ -148,11 +153,22 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
           </Button>
 
 
+          {selectWork !== null ? (
+            <Button className="col-span-full w-full bg-btn-info text-btn-info-foreground cursor-pointer text-md py-6" onClick={() => router.get(route("works.show", selectWork.slug))}>
+              <Notebook />
+              {lang === "es" ? `Ver ${selectWork.title}` : `Show ${selectWork.title}`}
+            </Button>
+          ) : null}
+
+
+
+
+
         </BlocTopRight>
       </BlocContent>
       <WorkIndexMain>
         {Works.map((work) => (
-          <FlipWork key={work.id} work={work} labels={WORK} keyClass="" labelsClass="" />
+          <FlipWork key={work.id} work={work} labels={WORK} keyClass="" labelsClass="" selectWork={selectWork} onWork={onWork} />
         ))}
 
         <div className="col-span-full">

@@ -23,8 +23,8 @@ const routes: Route[] = [
     url: ROUTE.main,
   },
   {
-    label: "Posts",
-    url: ROUTE.post.index
+    label: "Authors",
+    url: ROUTE.authors.index
   }
 ]
 

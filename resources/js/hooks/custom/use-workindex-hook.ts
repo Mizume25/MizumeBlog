@@ -1,5 +1,5 @@
 import { WorkRecord } from "@/types/definitions";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CategorySelect, MEDIUM_VALUES_TYPE, WorkFilters, WorkOrder } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX_TYPE } from "@/constants/work-index-constants";
 import { router } from "@inertiajs/react";
@@ -17,7 +17,9 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
 
     const [medium, setMedium] = useState<MEDIUM_VALUES_TYPE>(filters.medium ?? "todos");
 
-    const [search , setSearch] = useState(filters.search ?? "");
+    const [search, setSearch] = useState(filters.search ?? "");
+
+
 
     /** Opciones de medium disponibles según la categoría */
     const getMediumOptions = (c: CategorySelect) =>
@@ -89,6 +91,21 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
     }, [orderBy, orderRevert, works])
 
 
+    const [selectWork, setSelectWork] = useState<WorkRecord | null>(Works[0] ?? null);
+
+    // Al filtrar o paginar: mantiene la obra si sigue en la lista, si no pasa a la primera (o null sin resultados)
+    useEffect(() => {
+        setSelectWork((prev) => Works.find((w) => w.id === prev?.id) ?? Works[0] ?? null);
+    }, [Works]);
+
+    const onWork = (id: number) => {
+        const work = Works.find((w) => w.id === id);
+        if(work === undefined) return;
+        setSelectWork(work)
+
+    }
+
+
 
     const onReset = () => {
         setCategory(DATA.values.category as CategorySelect)
@@ -98,7 +115,7 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
         setOrderBy(DATA.filter.orderBy.types[0].type);
         setOrderRevert(false);
 
-        
+
         router.get(
             route('works.index'), {},
             {
@@ -128,7 +145,10 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
         orderRevert,
         setOrderRevert,
         search,
-        setSearch
+        setSearch,
+        selectWork,
+        setSelectWork,
+        onWork
     }
 
 

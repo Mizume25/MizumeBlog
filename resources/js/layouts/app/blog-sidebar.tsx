@@ -332,11 +332,11 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
         <SidebarRail />
       </Sidebar>
 
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex w-full items-center gap-2 px-4">
+          <div className="flex w-full min-w-0 items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Breadcrumb className="text-mizume-secondary-foreground">
+            <Breadcrumb className="min-w-0 text-mizume-secondary-foreground">
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
                   <BreadcrumbLink href="#">
@@ -348,7 +348,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
                     <BreadcrumbItem className="text-mizume-secondary-foreground">
                       <BreadcrumbPage className="text-mizume-secondary-foreground" >
 
-                        <Button variant={"link"} className='text-mizume-secondary-foreground' onClick={() => router.get(r.url)}>{r.label}</Button>
+                        <Button variant={"link"} className='max-w-[40vw] text-mizume-secondary-foreground md:max-w-none' onClick={() => router.get(r.url)}><span className='truncate'>{r.label}</span></Button>
                       </BreadcrumbPage>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="text-mizume-secondary-foreground" />

@@ -34,17 +34,15 @@ class AuthorController extends Controller
 
     private function message(array $filters, int $total): string
     {
-        $labels = [
-            'search' => 'Búsqueda',
-            'year'   => 'Desde el año',
-        ];
-
         $parts = [];
 
         foreach ($filters as $k => $v) {
-            $parts[] = ($labels[$k] ?? $k) . ": {$v}";
+            $parts[] = __("filters.authors.messages.{$k}") . ": {$v}";
         }
 
-        return "Filtros aplicados (" . implode(', ', $parts) . ") — {$total} resultado(s)";
+        return trans_choice('filters.authors.applied', $total, [
+            'filters' => implode(', ', $parts),
+            'total'   => $total,
+        ]);
     }
 }
