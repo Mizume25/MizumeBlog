@@ -2,13 +2,8 @@
  * @fileoverview Componentes de Blog Show
  */
 
-import * as React from 'react';
-import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import {
-    Sidebar,
-    SidebarContent,
     SidebarGroup,
-    SidebarHeader,
     SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
@@ -18,22 +13,11 @@ import {
     SidebarMenuSubItem,
 } from '@/components/animate-ui/components/radix/sidebar';
 import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-} from '@/components/animate-ui/components/radix/sheet';
-import { Button } from '@/components/animate-ui/components/buttons/button';
-import { cn } from '@/lib/utils';
-
-import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { ArrowRight } from 'lucide-react';
-import useBlogShow, { BlogShowContext, useBlogShowContext } from '@/hooks/custom/use-blog-show';
-import type { BlogShowProps, Nodo } from '@/types/custom/blog-show-types';
+import type { Nodo } from '@/types/custom/blog-show-types';
 
 const Leaf = ({ n }: { n: Nodo }) => (
     <SidebarMenuSubItem>
@@ -47,10 +31,8 @@ const Leaf = ({ n }: { n: Nodo }) => (
 
 
 const Header = ({ n }: { n: Nodo }) => (
-    <CollapsibleTrigger >
-        <SidebarMenuSubButton>
-            <span>{n.title}</span>
-        </SidebarMenuSubButton>
+    <CollapsibleTrigger nativeButton={false} render={<SidebarMenuSubButton />}>
+        <span>{n.title}</span>
     </CollapsibleTrigger>
 );
 
@@ -67,10 +49,8 @@ export const BlogShowSidebarContent = ({ data }: { data: Nodo[] }) => {
                 {data.map((n1) => (
                     <Collapsible key={n1.id} defaultOpen className="group/collapsible">
                         <SidebarMenuItem>
-                            <CollapsibleTrigger >
-                                <SidebarMenuButton tooltip={n1.title}>
-                                    <span>{n1.title}</span>
-                                </SidebarMenuButton>
+                            <CollapsibleTrigger render={<SidebarMenuButton tooltip={n1.title} />}>
+                                <span>{n1.title}</span>
                             </CollapsibleTrigger>
 
                             {have(n1) && (

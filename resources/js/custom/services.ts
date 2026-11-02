@@ -2,12 +2,13 @@
  * @fileoverview Servicio de mascota representantiva de la app 
  */
 
-import { TURTLE, TURTLE_ICO } from "@/types/custom";
+import { TURTLE } from "@/types/custom";
+import { TURTLE_ICONS } from "@/constants/custom";
 
 /**
  * @constant Turtle Objeto mascota listo para poder usarse
  */
-const Turtle: TURTLE = {
+export const TurtleService: TURTLE = {
     name: 'Turtle',
     bullet: "🐢",
     onPath(status) {

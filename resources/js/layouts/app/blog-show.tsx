@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/animate-ui/components/buttons/button';
 import { cn } from '@/lib/utils';
 import useBlogShow, { BlogShowContext, useBlogShowContext } from '@/hooks/custom/use-blog-show';
-import type { BlogShowProps, Nodo } from '@/types/custom/blog-show-types';
+import type { BlogShowProps } from '@/types/custom/blog-show-types';
 
 
 
@@ -34,7 +34,7 @@ import type { BlogShowProps, Nodo } from '@/types/custom/blog-show-types';
  * Debe usarse DENTRO de BlogLayout: reutiliza el contexto del SidebarProvider
  * principal y usa collapsible="none" para no afectar al sidebar principal.
  */
-export const BlogShow = ({ children, aside, asideTitle, asideWidth = '20rem' }: BlogShowProps) => {
+export const BlogShow = ({ children, aside, asideTitle, asideWidth = '23rem' }: BlogShowProps) => {
     
 
     const { openMobile, setOpenMobile, openDesktop, toggleDesktop, contextValue } = useBlogShow(!!aside);
@@ -99,7 +99,14 @@ export const BlogShow = ({ children, aside, asideTitle, asideWidth = '20rem' }: 
                         <SheetHeader>
                             <SheetTitle>{asideTitle ?? ''}</SheetTitle>
                         </SheetHeader>
-                        <div className="overflow-y-auto px-4 pb-4">{aside}</div>
+                        {/* Sidebar provee el contexto Highlight que necesitan los SidebarMenuButton */}
+                        <Sidebar
+                            collapsible="none"
+                            containerClassName="min-h-0 flex-1"
+                            className="h-full w-full overflow-y-auto bg-transparent px-4 pb-4"
+                        >
+                            {aside}
+                        </Sidebar>
                     </SheetContent>
                 </Sheet>
             )}

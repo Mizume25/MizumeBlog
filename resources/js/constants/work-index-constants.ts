@@ -72,6 +72,9 @@ export const DATA_WORK_INDEX = {
         values: {
             category: "todos",
             tags: []
+        },
+        err:{
+            withOutWorks: "No hay obras disponibles"
         }
     },
     en: {
@@ -125,6 +128,9 @@ export const DATA_WORK_INDEX = {
         values: {
             category: "todos",
             tags: []
+        },
+        err:{
+            withOutWorks: "No works available"
         }
 
     }

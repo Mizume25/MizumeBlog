@@ -19,6 +19,8 @@ import { ROUTE } from "@/constants/routes"
 import { PaginatedText } from "@/lib/utils"
 import { SiNotebooklm } from "react-icons/si"
 import { router } from "@inertiajs/react"
+import { div } from "motion/react-client"
+import { TurtleService } from "@/custom/services"
 
 
 interface WorksIndexProps {
@@ -59,6 +61,9 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
     onReset, setSelectTags, selectTags, onTag, orderBy, setOrderBy, orderRevert,
     setOrderRevert, search, setSearch, selectWork, setSelectWork, onWork
   } = useWorkIndex(paginated.data, DATA, filters)
+
+  
+
 
   return (
     <BlogLayout routes={routes}>
@@ -167,9 +172,19 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
         </BlocTopRight>
       </BlocContent>
       <WorkIndexMain>
-        {Works.map((work) => (
-          <FlipWork key={work.id} work={work} labels={WORK} keyClass="" labelsClass="" selectWork={selectWork} onWork={onWork} />
-        ))}
+        {Works.length !== 0 ? (
+          Works.map((work) => (
+            <FlipWork key={work.id} work={work} labels={WORK} keyClass="" labelsClass="" selectWork={selectWork} onWork={onWork} />
+          ))
+        ) : (
+          <div className="col-span-full flex items-center justify-center flex-row gap-5">
+            <p>{DATA.err.withOutWorks}</p>
+            <img src={TurtleService.onPath("dead")} alt={TurtleService.onName("dead")} className="h-30 w-30"/>
+          </div>
+        )}
+
+
+
 
         <div className="col-span-full">
           <Pagination

@@ -7,7 +7,7 @@ import { IconTurtle } from "@/types/custom";
 /**
  * @constant TURTLE_ICONS Constante de iconos
  */
-const TURTLE_ICONS: IconTurtle[] = [
+export const TURTLE_ICONS: IconTurtle[] = [
     {
         path: '/Icons/turtle/angry.png',
         status: 'angry',
