@@ -62,7 +62,7 @@ export default function HomeFooter() {
                     >
                         {doubled.map((card, i) => {
 
-                            const route = card.cover_card === null ? `/IMG/IconApp.png` : `/IMG/Cards/${card.cover_card}` 
+                            const route = card.cover_card === null ? `/IMG/IconApp.png` : `/IMG/Cards/${card.cover_card}`
                             return (
                                 <div
                                     key={i}
@@ -75,7 +75,7 @@ export default function HomeFooter() {
                                         transition: 'transform 0.3s',
                                         cursor: 'pointer',
                                         backgroundImage: `url(${route})`,
-                                        backgroundColor:'#8694a2',
+                                        backgroundColor: '#8694a2',
                                         backgroundSize: 'contain',
                                         backgroundRepeat: 'no-repeat'
                                     }}
@@ -157,7 +157,7 @@ export default function HomeFooter() {
                             marginBottom: 8,
                         }}
                     >
-                        Cita 
+                        Cita
                     </p>
                     <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', lineHeight: 1.65, margin: 0 }}>
                         {quote.message}
@@ -199,6 +199,9 @@ export default function HomeFooter() {
                                 <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', cursor: 'default' }}>{s}</span>
                             </li>
                         ))}
+                        <li>
+                            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', cursor: 'default' }}><a href="/privacidad.html">Privacidad</a></span>
+                        </li>
                     </ul>
                 </div>
 

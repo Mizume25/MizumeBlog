@@ -15,11 +15,15 @@
     @viteReactRefresh
     @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
     @inertiaHead
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600|lexend:300,400,500,600,700" rel="stylesheet" />
+    <!---
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
-    <!-- Google Analytics -->
+    -->
+    <!-- Google Analytics 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFL9WHYM9D"></script>
+   
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -29,7 +33,7 @@
         gtag('js', new Date());
         gtag('config', 'G-ZFL9WHYM9D');
     </script>
-
+     -->
    
 </head>
 
