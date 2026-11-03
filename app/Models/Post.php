@@ -184,6 +184,11 @@ class Post extends Model
             ->groupBy('user_id');
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 
     /**
      * 

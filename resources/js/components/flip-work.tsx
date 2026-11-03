@@ -10,10 +10,10 @@ import { type WORK_LABELS } from '@/core/desktop/utils-components'
 interface BlogCardWorkProps {
     work: WorkRecord
     labels: WORK_LABELS,
-    keyClass: string,
-    labelsClass: string,
-    selectWork: WorkRecord | null
-    onWork: (v: number) => void,
+    keyClass?: string,
+    labelsClass?: string,
+    selectWork?: WorkRecord | null
+    onWork?: (v: number) => void,
 }
 
 const FACE = 'absolute inset-0 flex flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]   '
@@ -47,6 +47,7 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass, selectWork , o
     const canHover = () =>
         typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches
 
+   
     const info: Record<string, unknown> = {
         category: work.category,
         abbreviation: work.abbreviation,
@@ -66,7 +67,7 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass, selectWork , o
             onMouseLeave={() => canHover() && setIsFlipped(false)}
             onClick={() => {
                 if (!canHover()) setIsFlipped((f) => !f)
-                onWork(work.id)
+                onWork?.(work.id)
             }}
             onFocus={() => setIsFlipped(true)}
             onBlur={() => setIsFlipped(false)}
@@ -74,7 +75,7 @@ export const FlipWork = ({ work, labels , keyClass , labelsClass, selectWork , o
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
                     setIsFlipped((f) => !f)
-                    onWork(work.id)
+                    onWork?.(work.id)
                 }
             }}
         >

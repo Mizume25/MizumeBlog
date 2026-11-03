@@ -193,6 +193,7 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
             current={paginated.current_page}
             last={paginated.last_page}
             labels={PaginatedText[lang]}
+            spanClass='text-sm font-bold text-mizume-secondary-foreground'
           />
         </div>
 

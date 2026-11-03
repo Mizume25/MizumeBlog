@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\WorkFilterRequest;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\Work;
@@ -11,7 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use App\Filters\WorkFilters;
+use App\Http\Requests\Filters\PostFilterRequest;
+use App\Models\User;
 use Storage;
+
+use function PHPUnit\Framework\isEmpty;
 
 class WorkController extends Controller
 {
@@ -19,17 +24,17 @@ class WorkController extends Controller
      * Lista de Obras 
      */
     public function index(WorkFilterRequest $request)
-    {   
+    {
         $filters = $request->validated();
 
         $filter = new WorkFilters($filters);
 
         $paginated = $filter
-        ->apply(Work::query()->with('media', 'tags', 'authors'))
-        ->paginate(6)
-        ->withQueryString();
-        
-       
+            ->apply(Work::query()->with('media', 'tags', 'authors'))
+            ->paginate(6)
+            ->withQueryString();
+
+
         $tags = Tag::whereHas('works')->orderBy('name')->get();
 
         // filled() descarta null, '' y arrays vacíos (tags: [])
@@ -50,12 +55,23 @@ class WorkController extends Controller
     /**
      * Vista de Work
      */
-    public function show(Work $work)
+    public function show(PostFilterRequest $request, Work $work)
     {
-
         $content = Storage::disk('local')->get('Plantilla.md');
 
-        return Inertia::render('works/show', compact('work', 'content'));
+        $paginated = $work->posts()->publishPosts()->with('user:id,uuid,name')->latest('publish_date')->paginate(1)
+            ->withQueryString();
+
+        $users = $work->posts()
+            ->publishPosts()
+            ->with('user:id,uuid,name')
+            ->get()
+            ->pluck('user')
+            ->filter()       
+            ->unique('id')    
+            ->values();
+
+        return Inertia::render('works/show', compact('work', 'content', 'paginated', 'users'));
     }
 
     private function message(array $filters, int $total, Collection $tags): string
@@ -63,7 +79,7 @@ class WorkController extends Controller
         $parts = [];
 
         foreach ($filters as $k => $v) {
-            // category y medium traducen su valor; tags muestra los nombres a partir de los ids
+           
             $value = match ($k) {
                 'category' => __("filters.works.categories.{$v}"),
                 'medium'   => __("filters.works.mediums.{$v}"),
@@ -79,7 +95,4 @@ class WorkController extends Controller
             'total'   => $total,
         ]);
     }
-
-
-
 }

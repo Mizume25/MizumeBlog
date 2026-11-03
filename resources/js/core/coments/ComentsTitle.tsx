@@ -1,4 +1,4 @@
-import { Comment } from '@/types'
+import { Comment } from '@/types/definitions';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 

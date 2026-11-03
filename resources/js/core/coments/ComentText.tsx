@@ -1,9 +1,10 @@
 import { router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
-import { SharedData, CommentRecord } from '@/types';
+import { SharedData } from '@/types';
 import { useRef, useState } from 'react';
 import ReplyBTN from './ReplyBTN';
 import ReplyComent from './ReplyComent';
+import { CommentRecord } from '@/types/definitions';
 
 function ComentText({ coment }: { coment: CommentRecord }) {
     const { auth } = usePage<SharedData>().props;
@@ -48,13 +49,13 @@ function ComentText({ coment }: { coment: CommentRecord }) {
 
             {auth.user.id != coment.user.id && (
                 <ReplyBTN openAnswer={openReply} />
-            )} { /* Boton Respuesta */}
+            )} 
 
-            {reply && (
+            {/* {reply && (
 
-                <ReplyComent closeReply={closeReply} coment={coment} />
+                 <ReplyComent closeReply={closeReply} coment={coment.replies[]} /> 
 
-            )}
+            )} */}
 
 
 

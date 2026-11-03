@@ -110,6 +110,9 @@ const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) 
 
   return (
     <div className="flex h-full w-full flex-col gap-4 p-3 sm:p-4">
+
+
+      
       <div className="flex w-full flex-col items-center justify-between gap-2 rounded-2xl bg-mizume-primary p-3 sm:p-4 lg:flex-row lg:gap-4">
         <h2 className="title min-w-0 text-center text-xl lg:w-1/2 lg:text-start">
           {work.title}

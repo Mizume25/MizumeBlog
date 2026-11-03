@@ -57,7 +57,7 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Route, SharedData } from '@/types';
 import { url } from 'zod';
 import BlogToggler from '@/components/ui/blog-toggler-';
@@ -112,6 +112,7 @@ export const DATA = {
           name: 'Menu Principal',
           url: ROUTE.main,
           icon: Home,
+
         },
         {
           name: 'Autores',
@@ -164,26 +165,31 @@ export const DATA = {
           name: 'Home',
           url: ROUTE.main,
           icon: Home,
+
         },
         {
           name: 'Authors',
           url: ROUTE.authors.index,
           icon: UserCircle2,
+
         },
         {
           name: 'Works',
           url: ROUTE.work.index,
           icon: BookBookmark,
+
         },
         {
           name: 'Claims',
           url: '#',
           icon: FileWarning,
+
         },
         {
           name: 'Policy',
           url: '#',
           icon: MegaphoneIcon,
+
         },
       ],
       profile: {
@@ -226,7 +232,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
   const lang = useLangStore((l) => l.lang)
   const setLang = useLangStore((l) => l.setLang)
 
-
+  const { url:currentURL } = usePage();
   const content: DATA_TYPE = DATA[lang];
 
   const role: UserType = (auth?.user?.role as UserType | undefined) ?? "guest"
@@ -234,7 +240,13 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
 
 
 
-
+  // El item activo se deriva de la URL actual: no depende del idioma ni se pierde al recargar
+  const isActive = (itemUrl: string) => {
+    if (itemUrl === '#') return false
+    const path = new URL(itemUrl, window.location.origin).pathname
+    const current = currentURL.split('?')[0]
+    return path === '/' ? current === '/' : current.startsWith(path)
+  }
 
 
 
@@ -314,12 +326,13 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
             <SidebarGroupLabel className='text-lg'>{content.sidebar.header}</SidebarGroupLabel>
             <SidebarMenu >
               {content.sidebar.items.map((item) => (
+
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton size={'lg'} asChild>
-                    <a href={item.url} className='text-xl'>
+                  <SidebarMenuButton size={'lg'} asChild isActive={isActive(item.url)}>
+                    <Link href={item.url} className='text-xl'>
                       <item.icon />
                       <span>{item.name}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

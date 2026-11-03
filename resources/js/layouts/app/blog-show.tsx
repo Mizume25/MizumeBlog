@@ -49,8 +49,6 @@ export const BlogShow = ({ children, aside, asideTitle, asideWidth = '23rem' }: 
                 {aside && (
                     <Sidebar
                         collapsible="none"
-                        // Las clases de layout van al contenedor de Highlight,
-                        // que es el hijo real del flex (no el div del sidebar).
                         containerClassName="sticky top-4 hidden shrink-0 self-start lg:block"
                         style={{ '--aside-width': asideWidth } as React.CSSProperties}
                         className={cn(

@@ -1,4 +1,4 @@
-import { type CommentRecord , type Reply } from '@/types'
+import { CommentRecord , Reply } from '@/types/definitions';
 import { router } from '@inertiajs/react';
 
 /** Componentes compartidos  */

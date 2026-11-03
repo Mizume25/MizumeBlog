@@ -1,4 +1,4 @@
-import { type CommentRecord } from '@/types'
+import { type CommentRecord } from '@/types/definitions';
 import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { ComentForm, ComentContent } from './index'

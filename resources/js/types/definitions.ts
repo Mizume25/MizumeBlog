@@ -215,6 +215,17 @@ export type WorkRecord = Work & {
     authors: Author[]
 }
 
+export type Reply = Comment & {
+    user: User;
+};
+
+export type CommentRecord = Comment & {
+    replies: Reply[];
+    user: User;
+    post?: Post;
+};
+
+
 
 
 export type Paginated<T> = {
