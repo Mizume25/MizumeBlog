@@ -3,6 +3,9 @@ import React, { ReactNode, useMemo } from "react";
 import { Fragment } from 'react'
 interface AvatarProps {
     name?: string;
+    /** Identificador estable (p. ej. user.uuid) usado para calcular el color */
+    seed?: string;
+    className?: string
 }
 
 export type BlogContentType = "works" | "authors" | "posts"
@@ -13,6 +16,7 @@ export const DATA_ENTITIES = {
     es: {
         work: {
             title: "Titulo",
+            abbreviation: "Abbreviation",
             category: "Categoria",
             publish_date: "Fecha Pub.",
             medium: "Medio",
@@ -22,7 +26,6 @@ export const DATA_ENTITIES = {
         },
         post: {
             title: "Titulo",
-            abbreviation: "Abreviatura",
             publish_date: "Fecha Pub.",
             description: "Descripcion",
             featured: "Destacado",
@@ -41,6 +44,7 @@ export const DATA_ENTITIES = {
     en: {
         work: {
             title: "Title",
+            abbreviation: "Abreviatura",
             category: "Category",
             publish_date: "Publish date",
             authors: "Author",
@@ -50,7 +54,6 @@ export const DATA_ENTITIES = {
         },
         post: {
             title: "Title",
-            abbreviation: "Abbreviation",
             publish_date: "Publish Date",
             description: "Description",
             featured: "Featured",
@@ -72,65 +75,40 @@ export type WORK_LABELS = DATA_ENTITIES_TYPE["work"]
 export type AUTHOR_LABELS = DATA_ENTITIES_TYPE["author"]
 
 
-function getColorFromName(name: string): string {
-    const palette = [
-        // Rojos 
-        "#B91C1C",
-        "#BE123C",
-        "#BE185D",
-        "#A21CAF",
-
-        // Naranjas 
-        "#C2410C",
-        "#B45309",
-        "#7B3F00",
-
-        // Verdes
-        "#4D7C0F",
-        "#15803D",
-        "#1D6A39",
-        "#047857",
-
-        // Azules 
-        "#0F766E",
-        "#0E7490",
-        "#0369A1",
-        "#1D4ED8",
-        "#1A5276",
-
-        // Violetas
-        "#4338CA",
-        "#6D28D9",
-        "#7E22CE",
-        "#4A235A",
-
-        // Neutros
-        "#5C4033",
-        "#334155",
-        "#212F3C",
-    ];
+/**
+ * Color estable a partir de un texto (uuid/id/nombre).
+ * Usa 360 tonos HSL en vez de una paleta fija: casi sin colisiones
+ * y con luminosidad baja para que la inicial blanca siempre se lea.
+ */
+function getColorFromSeed(seed: string): string {
     let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    for (let i = 0; i < seed.length; i++) {
+        hash = (seed.charCodeAt(i) + ((hash << 5) - hash)) | 0;
     }
-    return palette[Math.abs(hash) % palette.length];
+    const hue = Math.abs(hash) % 360;
+    const saturation = 50 + (Math.abs(hash >> 8) % 20); // 50–69 %
+    const lightness = 30 + (Math.abs(hash >> 16) % 10); // 30–39 %
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
-export function BlogProfile({ name }: AvatarProps) {
+export function BlogProfile({ name, seed, className = "" }: AvatarProps) {
 
     const initial = useMemo(() => {
         if (!name) return "?";
         return name.trim().charAt(0).toUpperCase();
     }, [name]);
 
+    // Prioriza el seed (uuid) para que dos usuarios con el mismo nombre no compartan color
+    const key = seed ?? name;
+
     const bgColor = useMemo(() => {
-        if (!name) return "#3D1F08";
-        return getColorFromName(name);
-    }, [name]);
+        if (!key) return "#3D1F08";
+        return getColorFromSeed(key);
+    }, [key]);
 
     return (
         <div
-            className="mx-auto w-10 h-10 rounded-full border-[3px] border-[#C4A484] flex items-center justify-center select-none"
+            className={className}
             style={{ backgroundColor: bgColor }}
         >
             <span
@@ -247,7 +225,7 @@ interface FilterSearchProps {
 }
 
 
-export const FilterSearch = ({ search, setSearch, onFilter , placeholder }: FilterSearchProps) => {
+export const FilterSearch = ({ search, setSearch, onFilter, placeholder }: FilterSearchProps) => {
     return (
         <div className="bg-mizume-primary rounded-md p-1">
             <input
@@ -413,8 +391,6 @@ function ChangeKeyPost(key: string, ENTITIES: DATA_ENTITIES_TYPE) {
     switch (key) {
         case "title":
             return ENTITIES.post.title
-        case "abbreviation":
-            return ENTITIES.post.abbreviation
         case "description":
             return ENTITIES.post.description
         case "featured":

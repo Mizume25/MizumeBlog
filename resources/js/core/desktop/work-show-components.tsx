@@ -18,7 +18,7 @@ import { Lang } from '@/store/lang-store';
 import { Button } from '@/components/animate-ui/components/buttons/button';
 import { RotateCw, UserCircle2 } from 'lucide-react';
 import { FlipWork } from '@/components/flip-work';
-import { WORK_LABELS } from './utils-components';
+import { BlogProfile, WORK_LABELS } from './utils-components';
 import { div } from 'motion/react-client';
 import { Pagination } from '@/components/paginator';
 import { BlogShowTrigger } from '@/layouts/app/blog-show';
@@ -159,15 +159,25 @@ interface PostIndexProps {
     lang: Lang
 }
 
-export const PostsIndex = ({ paginated , lang }: PostIndexProps) => {
-  
+export const PostsIndex = ({ paginated, lang }: PostIndexProps) => {
+
     return (
-        <div className='w-full h-full grid grid-cols-1 gap-3'>
+        <div className='w-full h-full grid grid-cols-1 gap-6'>
             {paginated.data.map((p) => (
-                <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                    <h2>{p.title}</h2>
-                    <p>{p.user.name}</p>
-                    <p>{p.publish_date}</p>
+                <div
+                    key={p.id || p.title}
+                    className='bg-mizume-primary text-mizume-primary-foreground flex flex-col justify-between p-5 rounded-xl gap-4 shadow-sm transition-transform duration-300 hover:scale-103 cursor-pointer'
+                >
+
+                    <div className='flex items-center justify-between w-full'>
+                        <BlogProfile name={p.user.name} seed={p.user.uuid} className='w-10 h-10 rounded-full border-[3px] border-mizume-primary flex items-center justify-center  ' />
+                        <span className='text-sm opacity-80'>{p.publish_date}</span>
+                    </div>
+
+
+                    <div>
+                        <h2 className='text-xl font-semibold tracking-tight'>{p.title}</h2>
+                    </div>
                 </div>
             ))}
 
@@ -180,7 +190,7 @@ export const PostsIndex = ({ paginated , lang }: PostIndexProps) => {
                     labels={PaginatedText[lang]}
                     classBTN='rounded-full border-2 border-black bg-mizume-primary text-mizume-primary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
                     spanClass='text-sm font-bold text-mizume-secondary-foreground'
-                /> 
+                />
             </div>
 
             {/*
@@ -278,7 +288,8 @@ export const WorkShowHeader = ({ children, work, lang, WORK }: WorkShowHeaderPro
 
             {/* <WorkPostTitle title={post.title} className='flex min-h-25 items-center justify-start rounded-2xl bg-mizume-fourthary p-8 lg:col-span-2' /> */}
             {/* <BlocSelectUser className='lg:col-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-fourthary p-4' onUser={onUser} user={user} users={users} /> */}
-            <div className="lg:col-span-2 lg:row-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-fourthary p-4">
+             <BlogShowTrigger className="text-mizume-secondary-foreground bold" />
+            <div className="lg:col-span-2 lg:row-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-secondary p-4">
                 <FlipWork work={work} labels={WORK} />
             </div>
             {/* <BlocCurrentUser className='lg:col-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-fourthary  p-4' user={currentUser} /> */}
@@ -287,8 +298,8 @@ export const WorkShowHeader = ({ children, work, lang, WORK }: WorkShowHeaderPro
             {/* <BlocSectionPage className="lg:col-span-2 flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4" lang={lang}
                 sections={sections}
             /> */}
-            <BlogShowTrigger />
-            
+           
+
         </div>
     );
 
@@ -369,7 +380,7 @@ interface WorkShowMainProps {
 
 export const WorkShowMain = ({ children, mainRef }: WorkShowMainProps) => {
     return (
-        <div ref={mainRef} className="bg-mizume-secondary relative mt-4 min-h-screen w-full rounded-xl p-6">
+        <div ref={mainRef} className="bg-mizume-secondary relative min-h-screen w-full rounded-xl p-6">
             {children}
         </div>
     );

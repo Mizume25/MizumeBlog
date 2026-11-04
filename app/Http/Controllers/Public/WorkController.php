@@ -58,8 +58,9 @@ class WorkController extends Controller
     public function show(PostFilterRequest $request, Work $work)
     {
         $content = Storage::disk('local')->get('Plantilla.md');
-
-        $paginated = $work->posts()->publishPosts()->with('user:id,uuid,name')->latest('publish_date')->paginate(1)
+        $work->load('authors');
+        
+        $paginated = $work->posts()->publishPosts()->with('user:id,uuid,name')->latest('publish_date')->paginate(6)
             ->withQueryString();
 
         $users = $work->posts()

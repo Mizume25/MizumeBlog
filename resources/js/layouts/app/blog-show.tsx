@@ -34,8 +34,8 @@ import type { BlogShowProps } from '@/types/custom/blog-show-types';
  * Debe usarse DENTRO de BlogLayout: reutiliza el contexto del SidebarProvider
  * principal y usa collapsible="none" para no afectar al sidebar principal.
  */
-export const BlogShow = ({ children, aside, asideTitle, asideWidth = '23rem' }: BlogShowProps) => {
-    
+export const BlogShow = ({ children, header, aside, asideTitle, asideWidth = '23rem' }: BlogShowProps) => {
+
 
     const { openMobile, setOpenMobile, openDesktop, toggleDesktop, contextValue } = useBlogShow(!!aside);
 
@@ -43,18 +43,30 @@ export const BlogShow = ({ children, aside, asideTitle, asideWidth = '23rem' }: 
 
     return (
         <BlogShowContext.Provider value={contextValue}>
-            <div className="flex w-full gap-4">
+            {/* Cabecera a ancho completo (dentro del provider para que BlogShowTrigger funcione) */}
+            {header}
+
+            <div className={cn('flex w-full items-stretch gap-4', header && 'mt-4')}>
                 <div className="min-w-0 flex-1">{children}</div>
 
                 {aside && (
-                    <Sidebar
-                        collapsible="none"
-                        containerClassName="sticky top-4 hidden shrink-0 self-start lg:block"
+                    // La columna solo aporta ANCHO; su altura la marca el main (items-stretch).
+                    // El panel va en absoluto para que su contenido nunca agrande la fila
+                    // (si no cabe, hace scroll dentro de SidebarContent).
+                    <div
                         style={{ '--aside-width': asideWidth } as React.CSSProperties}
                         className={cn(
-                            'h-auto max-h-[calc(100svh-2rem)] overflow-hidden rounded-lg bg-mizume-primary transition-[width] duration-300',
+                            'relative hidden shrink-0 transition-[width] duration-300 lg:block',
                             openDesktop ? 'w-(--aside-width)' : 'w-12',
                         )}
+                    >
+                    {/* Wrapper propio: Highlight fuerza position:relative inline en su contenedor,
+                        por eso el absolute va aquí y no en containerClassName */}
+                    <div className="absolute inset-0">
+                    <Sidebar
+                        collapsible="none"
+                        containerClassName="h-full"
+                        className="h-full w-full overflow-hidden rounded-lg bg-mizume-primary"
                     >
                         <SidebarHeader
                             className={cn(
@@ -88,6 +100,8 @@ export const BlogShow = ({ children, aside, asideTitle, asideWidth = '23rem' }: 
                             </SidebarContent>
                         )}
                     </Sidebar>
+                    </div>
+                    </div>
                 )}
             </div>
 

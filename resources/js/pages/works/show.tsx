@@ -60,13 +60,13 @@ function WorkShow({ work, content, paginated , users}: WorkShowProps) {
       <BlogShow
         asideTitle={work.title}
         aside={<BlogShowSidebarContent data={SIDEBAR_DATA} />}
-
+        header={
+          <WorkShowHeader work={work} lang={lang} WORK={WORK}>
+            <div></div>
+          </WorkShowHeader>
+        }
       >
-        <PageProgress targetRef={mainRef} />
-
-        <WorkShowHeader  work={work} lang={lang} WORK={WORK}>
-          <div></div>
-        </WorkShowHeader>
+        {/* <PageProgress targetRef={mainRef} /> */}
 
         <WorkShowMain mainRef={mainRef}>
          <PostsIndex paginated={paginated} lang={lang} />

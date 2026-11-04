@@ -14,6 +14,8 @@ export interface BlogShowContextProps {
 
 export interface BlogShowProps {
     children: React.ReactNode;
+    /** Cabecera a ancho completo encima de la fila main + sidebar */
+    header?: React.ReactNode;
     /** Contenido del sidebar secundario (derecha) */
     aside?: React.ReactNode;
     /** Título del bloque del sidebar secundario */

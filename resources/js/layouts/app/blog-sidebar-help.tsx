@@ -25,6 +25,17 @@ import { User, UserType } from '@/types/definitions';
 import { Link, router } from "@inertiajs/react";
 import { BlogProfile } from '@/core/desktop/utils-components';
 import { DATA_TYPE } from './blog-sidebar';
+import { Route } from '@/types';
+import React from 'react';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { goBack } from '@/lib/utils';
 
 interface RenderProfileProps {
     isMobile: boolean
@@ -98,7 +109,7 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <BlogProfile name={user?.name} />
+                                <BlogProfile name={user?.name} className='mx-auto w-10 h-10 rounded-full border-[3px] border-mizume-primary flex items-center justify-center select-none' />
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
                                         {user?.name}
@@ -176,6 +187,57 @@ function BlogSidebarHelp() {
         <div>blog-sidebar-help</div>
     )
 }
+
+interface BlogNavigationProps {
+    routes: Route[],
+    isMobile: boolean
+}
+
+export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
+    let ROUTES: Route[] = [];
+
+    const safeRoutes = Array.isArray(routes) ? routes : [];
+
+    if (isMobile) {
+        if (safeRoutes.length <= 2) {
+            ROUTES.push(...safeRoutes);
+        } else {
+
+            ROUTES = [
+                safeRoutes[0],
+                {
+                    label: "...",
+                    url: route("main"),
+                },
+                safeRoutes[safeRoutes.length - 1]
+            ];
+        }
+    } else {
+        ROUTES.push(...safeRoutes);
+    }
+
+    const LAST_ITEM = ROUTES.length - 1
+
+    return ROUTES.map((r, index) => (
+        <React.Fragment key={r.url || index}>
+            <BreadcrumbItem className="text-mizume-secondary-foreground text-sm">
+                <BreadcrumbPage className="text-mizume-secondary-foreground text-sm">
+                    <Button
+                        variant="link"
+                        className="max-w-[40vw] text-mizume-secondary-foreground md:max-w-none text-sm m-0 px-3" 
+                        onClick={() =>  r.label === "..." ?  goBack() :  router.get(r.url)}
+                    >
+                        <span className="truncate">{r.label}</span>
+                    </Button>
+                </BreadcrumbPage>
+            </BreadcrumbItem>
+            {LAST_ITEM != index && (
+                <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
+            )}
+
+        </React.Fragment>
+    ));
+};
 
 
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RenderProfileGuest, RenderProfileAuth } from './blog-sidebar-help';
+import { RenderProfileGuest, RenderProfileAuth, BlogNavigation } from './blog-sidebar-help';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -232,7 +232,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
   const lang = useLangStore((l) => l.lang)
   const setLang = useLangStore((l) => l.setLang)
 
-  const { url:currentURL } = usePage();
+  const { url: currentURL } = usePage();
   const content: DATA_TYPE = DATA[lang];
 
   const role: UserType = (auth?.user?.role as UserType | undefined) ?? "guest"
@@ -248,19 +248,38 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
     return path === '/' ? current === '/' : current.startsWith(path)
   }
 
+  const blogWebPolicies = [
+    {
+      title: "Aviso Legal",
+    },
+    {
+      title: "Política de Privacidad",
+    },
+    {
+      title: "Política de Cookies"
+    },
+    {
+      title: "Términos y Condiciones de Uso"
+    },
+    {
+      title: "Banner y Panel de Gestión de Cookies",
+    },
+    {
+      title: "Cláusulas en Formularios y Comentarios",
+    }
+  ];
+
 
 
   const BlogFooter = () => {
     return (
-      <div className='w-full min-h-8 bg-mizume-fourthary text-mizume-fourthary-foreground flex flex-col lg:flex-row justify-center items-center p-4'>
-        <div className='w-full lg:w-[50%]  h-full p-4'>
-          <div className='h-full w-full text-[12px] '>
-            <p> {quote.message} - {quote.author}
-            </p>
-          </div>
-        </div>
-        <div className='w-full lg:w-[50%] h-full p-4'>
-          <div className='h-full w-full justify-center lg:justify-end items-center flex flex-row gap-4'>
+      <footer className="w-full  text-mizume-fourthary-foreground px-5 bg-mizume-fourthary ">
+
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
+          <p className="text-xs">
+            {quote.message} - {quote.author}
+          </p>
+          <div className="flex flex-row items-center gap-4">
             {NETWORKS.map((p) => (
               <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer">
                 <p.icon size={30} />
@@ -268,10 +287,18 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
             ))}
           </div>
         </div>
-      </div>
-    )
-  }
 
+
+        <ul className="list-none mt-4  pt-4 border-t border-current/40 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-x-6 gap-y-2">
+          {blogWebPolicies.map((p) => (
+            <li key={p.title} className="text-xs opacity-80">
+              {p.title}
+            </li>
+          ))}
+        </ul>
+      </footer>
+    );
+  };
 
   interface ProfileFooterProps {
     isMobile: boolean,
@@ -346,30 +373,27 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
       </Sidebar>
 
       <SidebarInset className="min-w-0">
-        <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex w-full min-w-0 items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Breadcrumb className="min-w-0 text-mizume-secondary-foreground">
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
-                  <BreadcrumbLink href="#">
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
-                {routes.map((r) => (
-                  <>
-                    <BreadcrumbItem className="text-mizume-secondary-foreground">
-                      <BreadcrumbPage className="text-mizume-secondary-foreground" >
+        <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex min-h-16 shrink-0 items-center transition-[width,height] ease-linear md:group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex w-full min-w-0 flex-col gap-2 px-4 py-2 md:flex-row md:items-center md:py-0">
+            {/* Móvil: fila superior con trigger + navegación */}
+            <div className="flex min-w-0 items-center gap-2">
+              <SidebarTrigger className="-ml-1 shrink-0" />
+              <Breadcrumb className="min-w-0 text-mizume-secondary-foreground">
+                <BreadcrumbList className="flex-nowrap">
+                  <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
+                    <BreadcrumbLink href="#">
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
 
-                        <Button variant={"link"} className='max-w-[40vw] text-mizume-secondary-foreground md:max-w-none' onClick={() => router.get(r.url)}><span className='truncate'>{r.label}</span></Button>
-                      </BreadcrumbPage>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
-                  </>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-            <div className="ml-auto flex flex-row items-center justify-center gap-2">
+
+                  <BlogNavigation isMobile={isMobile} routes={routes} />
+
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+
+            {/* Móvil: fila inferior con botones; escritorio: a la derecha */}
+            <div className="flex shrink-0 flex-row items-center justify-end gap-2 md:ml-auto">
               <LanguagueSwitch lang={lang} onLang={setLang} />
 
               <BlogToggler />
@@ -382,6 +406,6 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
         </div>
         <BlogFooter />
       </SidebarInset>
-    </SidebarProvider>
+    </SidebarProvider >
   );
 };
