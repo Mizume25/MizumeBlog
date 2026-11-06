@@ -55,7 +55,10 @@ class Work extends Model implements HasMedia
 
     public function posts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'articles_works')->withTimestamps();
+        return $this->belongsToMany(Post::class, 'articles_works')
+            ->using(ArticleWork::class)
+            ->withPivot('user_id')
+            ->withTimestamps();
     }
 
     public function tags(): BelongsToMany

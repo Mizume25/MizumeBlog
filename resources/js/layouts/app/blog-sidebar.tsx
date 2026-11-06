@@ -289,7 +289,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
         </div>
 
 
-        <ul className="list-none mt-4  pt-4 border-t border-current/40 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-x-6 gap-y-2">
+        <ul className="list-none mt-4  pt-4 border-t border-current/40 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-x-6 py-4">
           {blogWebPolicies.map((p) => (
             <li key={p.title} className="text-xs opacity-80">
               {p.title}

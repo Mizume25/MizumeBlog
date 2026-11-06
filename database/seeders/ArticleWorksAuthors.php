@@ -19,10 +19,19 @@ class ArticleWorksAuthors extends Seeder
         $works = Work::all();
         $authors = Author::all();
 
-        Post::all()->each(function (Post $post) use ($works) {
-            $post->works()->attach(
-                $works->random(rand(1, min(3, $works->count())))->pluck('id')
-            );
+        /** Un usuario solo puede tener un post por work: excluimos los works que ya usó */
+        $usedWorksByUser = [];
+
+        Post::all()->each(function (Post $post) use ($works, &$usedWorksByUser) {
+            $used = $usedWorksByUser[$post->user_id] ?? [];
+            $available = $works->whereNotIn('id', $used);
+
+            if ($available->isEmpty()) return;
+
+            $ids = $available->random(rand(1, min(3, $available->count())))->pluck('id');
+            $post->works()->attach($ids);
+
+            $usedWorksByUser[$post->user_id] = array_merge($used, $ids->all());
         });
 
         $usedAuthorIds = collect();

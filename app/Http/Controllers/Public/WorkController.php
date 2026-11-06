@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Filters\UserFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\WorkFilterRequest;
 use App\Models\Comment;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use App\Filters\WorkFilters;
+use App\Filters\PostFilter;
 use App\Http\Requests\Filters\PostFilterRequest;
 use App\Models\User;
 use Storage;
@@ -57,22 +59,42 @@ class WorkController extends Controller
      */
     public function show(PostFilterRequest $request, Work $work)
     {
-        $content = Storage::disk('local')->get('Plantilla.md');
+        
         $work->load('authors');
         
-        $paginated = $work->posts()->publishPosts()->with('user:id,uuid,name')->latest('publish_date')->paginate(6)
+        $filters = $request->validated();
+
+        /** Posts publicados de este work, filtrables por nombre de usuario (?search=) */
+        $paginated = (new PostFilter($filters))
+            ->apply(
+                Post::query()
+                    ->whereHas('works', fn($q) => $q->whereKey($work->id))
+                    ->publishPosts()
+                    ->with('user:id,uuid,name')
+                    ->latest('publish_date')
+            )
+            ->paginate(6)
             ->withQueryString();
 
-        $users = $work->posts()
-            ->publishPosts()
-            ->with('user:id,uuid,name')
-            ->get()
-            ->pluck('user')
-            ->filter()       
-            ->unique('id')    
-            ->values();
+   
+        $users = User::query()
+            ->whereHas('posts', fn($q) => $q->publishPosts()->whereHas('works', fn($w) => $w->whereKey($work->id)))
+            ->get(['id', 'uuid', 'name']);
 
-        return Inertia::render('works/show', compact('work', 'content', 'paginated', 'users'));
+      
+        if (filled($filters['search'] ?? null)) {
+            session()->now('success', __('filters.users.applied', [
+                'filters' => __('filters.users.messages.search') . ": {$filters['search']}",
+                'total'   => $paginated->total(),
+            ]));
+        }
+
+        return Inertia::render('works/show', [
+            'work'      => $work,
+            'paginated' => $paginated,
+            'users'     => $users,
+            'filters'   => (object) $filters,
+        ]);
     }
 
     private function message(array $filters, int $total, Collection $tags): string

@@ -23,7 +23,7 @@ class PostFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_uuid' => ['nullable', 'string', 'uuid'],
+            'search' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

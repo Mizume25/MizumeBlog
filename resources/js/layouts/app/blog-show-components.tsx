@@ -17,30 +17,56 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import type { Nodo } from '@/types/custom/blog-show-types';
+import { Nodo } from '@/services/MarkdownService';
+import { createContext, useContext } from 'react';
 
-const Leaf = ({ n }: { n: Nodo }) => (
-    <SidebarMenuSubItem>
-        <SidebarMenuSubButton asChild>
-            <a href={`#${n.id}`}>
-                <span>{n.title}</span>
-            </a>
-        </SidebarMenuSubButton>
-    </SidebarMenuSubItem>
-);
+/** Callback al pulsar un nodo del índice (evita pasarlo por los 6 niveles) */
+const SelectContext = createContext<((n: Nodo) => void) | undefined>(undefined);
+
+const Leaf = ({ n }: { n: Nodo }) => {
+    const onSelect = useContext(SelectContext);
+
+    return (
+        <SidebarMenuSubItem>
+            <SidebarMenuSubButton asChild>
+                <a
+                    href={`#${n.id}`}
+                    onClick={(e) => {
+                        if (!onSelect) return;
+                        e.preventDefault();
+                        onSelect(n);
+                    }}
+                >
+                    <span>{n.title}</span>
+                </a>
+            </SidebarMenuSubButton>
+        </SidebarMenuSubItem>
+    );
+};
 
 
-const Header = ({ n }: { n: Nodo }) => (
-    <CollapsibleTrigger nativeButton={false} render={<SidebarMenuSubButton />}>
-        <span>{n.title}</span>
-    </CollapsibleTrigger>
-);
+const Header = ({ n }: { n: Nodo }) => {
+    const onSelect = useContext(SelectContext);
+
+    return (
+        <CollapsibleTrigger nativeButton={false} render={<SidebarMenuSubButton />} onClick={() => onSelect?.(n)}>
+            <span>{n.title}</span>
+        </CollapsibleTrigger>
+    );
+};
 
 
 const have = (n: Nodo) => !!n.children && n.children.length > 0;
 
-export const BlogShowSidebarContent = ({ data }: { data: Nodo[] }) => {
+interface BlogShowSidebarContentProps {
+    data: Nodo[];
+    /** Se llama al pulsar cualquier nodo (también los que abren/cierran grupo) */
+    onSelect?: (n: Nodo) => void;
+}
+
+export const BlogShowSidebarContent = ({ data, onSelect }: BlogShowSidebarContentProps) => {
     return (
+        <SelectContext.Provider value={onSelect}>
         <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
@@ -49,7 +75,7 @@ export const BlogShowSidebarContent = ({ data }: { data: Nodo[] }) => {
                 {data.map((n1) => (
                     <Collapsible key={n1.id} defaultOpen className="group/collapsible">
                         <SidebarMenuItem>
-                            <CollapsibleTrigger render={<SidebarMenuButton tooltip={n1.title} />}>
+                            <CollapsibleTrigger render={<SidebarMenuButton tooltip={n1.title} />} onClick={() => onSelect?.(n1)}>
                                 <span>{n1.title}</span>
                             </CollapsibleTrigger>
 
@@ -143,6 +169,7 @@ export const BlogShowSidebarContent = ({ data }: { data: Nodo[] }) => {
 
             </SidebarMenu>
         </SidebarGroup>
+        </SelectContext.Provider>
     );
 };
 

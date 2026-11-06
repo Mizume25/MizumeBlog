@@ -11,7 +11,7 @@ import { Author, Post, Tag, Work } from "./definitions"
 /**
  * @type Estados de la tortuga
  */
-export type TurtleStatus = 'dead' | 'angry' | 'confused' | 'embarrassed' | 'maintenance' | 'smile' | 'thinking' | 'welcome' | 'worried'
+export type TurtleStatus = 'dead' | 'angry' | 'confused' | 'embarrassed' | 'maintenance' | 'smile' | 'thinking' | 'welcome' | 'worried' |'load'
 
 
 /**

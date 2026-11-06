@@ -9,6 +9,13 @@ return [
         'applied' => 'Filters applied (:filters) — :total result|Filters applied (:filters) — :total results',
     ],
 
+    'users' => [
+        'messages' => [
+            'search' => 'Search',
+        ],
+        'applied' => 'Filters applied (:filters) - :total result'
+    ],
+
     'works' => [
         'messages' => [
             'search'   => 'Search',
@@ -16,12 +23,10 @@ return [
             'medium'   => 'Format',
             'tags'     => 'Tags',
         ],
-        // Valores de App\Enums\WorkCategory
         'categories' => [
             'literatura' => 'Literature',
             'animemanga' => 'Anime & Manga',
         ],
-        // Valores de App\Enums\WorkMedium
         'mediums' => [
             'libro'         => 'Book',
             'poema'         => 'Poem',

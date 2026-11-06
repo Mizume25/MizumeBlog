@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Public\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::put('/post/{post_id}/format/article', [ApiController::class, 'updateArticleConfig'])->name('updateArticleConfig');
     */
 });
+
+
+Route::get('/post/{post_id}',[PostController::class, 'build'])->name('post.build');

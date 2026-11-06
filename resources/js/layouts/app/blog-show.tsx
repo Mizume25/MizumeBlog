@@ -34,7 +34,7 @@ import type { BlogShowProps } from '@/types/custom/blog-show-types';
  * Debe usarse DENTRO de BlogLayout: reutiliza el contexto del SidebarProvider
  * principal y usa collapsible="none" para no afectar al sidebar principal.
  */
-export const BlogShow = ({ children, header, aside, asideTitle, asideWidth = '23rem' }: BlogShowProps) => {
+export const BlogShow = ({ children, header, subheader, asideHeader, aside, asideTitle, asideWidth = '23rem' }: BlogShowProps) => {
 
 
     const { openMobile, setOpenMobile, openDesktop, toggleDesktop, contextValue } = useBlogShow(!!aside);
@@ -45,6 +45,28 @@ export const BlogShow = ({ children, header, aside, asideTitle, asideWidth = '23
         <BlogShowContext.Provider value={contextValue}>
             {/* Cabecera a ancho completo (dentro del provider para que BlogShowTrigger funcione) */}
             {header}
+
+            {/*
+              * Fila subheader: [subheader | asideHeader]. El hueco del aside replica su ancho
+              * (abierto/plegado) para quedar alineado. Sin margen propio: si el contenido
+              * se colapsa a 0 no deja hueco (el espaciado lo pone el contenido).
+              */}
+            {(subheader || asideHeader) && (
+                <div className="flex w-full items-stretch gap-4">
+                    <div className="min-w-0 flex-1">{subheader}</div>
+                    {aside && (
+                        <div
+                            style={{ '--aside-width': asideWidth } as React.CSSProperties}
+                            className={cn(
+                                'hidden shrink-0 overflow-hidden transition-[width] duration-300 lg:block',
+                                openDesktop ? 'w-(--aside-width)' : 'w-12',
+                            )}
+                        >
+                            {asideHeader}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className={cn('flex w-full items-stretch gap-4', header && 'mt-4')}>
                 <div className="min-w-0 flex-1">{children}</div>

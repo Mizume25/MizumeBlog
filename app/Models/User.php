@@ -162,4 +162,21 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->where('role', UserRole::Admin);
     }
+
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $like = '%'  . addcslashes($term, '%_\\') . '%';
+
+        return $query->where(function (Builder $q) use ($like) {
+            $q->where('name', 'like', $like);
+        });
+    }
+
+    /**
+     * Path de contenido relativo al usuario
+     */
+    public function path(string $code)
+    {
+        return 'blog/' . $this->uuid . '/' . $code . '/';
+    }
 }

@@ -1,11 +1,39 @@
-import { BlocSectionPage, BlocTabs, SectionsTypes } from '@/blocs/bloc-manage-info';
-import { cn, PaginatedText } from '@/lib/utils';
-import { Nodo } from '@/types/custom/blog-show-types';
-import { ArticleProps, PageProgressProps } from '@/types/custom/work-show-types';
-import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
-import { useState } from 'react';
-// Select y Button no los exporta animate-ui: vienen de react-aria-components
-import { Button as AriaButton, Select } from 'react-aria-components';
+
+
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+
+/** Stores */
+import { Lang } from '@/store/lang-store';
+
+/** Hooks */
+import { useEffect, useState } from 'react';
+
+import { TurtleService } from '@/custom/services';
+
+
+/** Types */
+import { Paginated, PostContent, PostRecord, User, WorkRecord } from '@/types/definitions';
+import { PostOrder } from '@/types/custom/work-show-types';
+import { ArticleProps, PageProgressProps, PostManageTab, WorkShowTab } from '@/types/custom/work-show-types';
+/* Constantes */
+import { DATA_WORK_SHOW_TYPE } from '@/constants/work-show-constants';
+
+/** Modules CSS */
+import animateStyles from '../../../css/AnimateCSS.module.css';
+import MarkdownRenderer from '../post/MarkdownRenderer';
+
+/** Utilidades */
+import { BlogProfile, FilterSearch, WORK_LABELS } from './utils-components';
+import Loading from '@/components/ui/loading';
+import { Pagination } from '@/components/paginator';
+import { BlogShowTrigger } from '@/layouts/app/blog-show';
+import { BlogShowSidebarContent } from '@/layouts/app/blog-show-components';
+import { BlocLabel } from '@/blocs/bloc-filter';
+import { Button as UIButton } from '@/components/ui/button';
+import { Highlight } from '@/components/animate-ui/primitives/effects/highlight';
+import RevertButton from '@/components/revert-buttono';
+import { Button } from '@/components/animate-ui/components/buttons/button';
+import { FlipWork } from '@/components/flip-work';
 import {
     ListBox,
     ListBoxItem,
@@ -13,113 +41,39 @@ import {
     SelectionIndicator,
     SelectValue,
 } from '@animate-ui/react/primitives/react-aria';
-import { Paginated, PostRecord, User, WorkRecord } from '@/types/definitions';
-import { Lang } from '@/store/lang-store';
-import { Button } from '@/components/animate-ui/components/buttons/button';
-import { RotateCw, UserCircle2 } from 'lucide-react';
-import { FlipWork } from '@/components/flip-work';
-import { BlogProfile, WORK_LABELS } from './utils-components';
-import { div } from 'motion/react-client';
-import { Pagination } from '@/components/paginator';
-import { BlogShowTrigger } from '@/layouts/app/blog-show';
+import { BlocSectionPage, BlocTabs, findSectionIndex } from '@/blocs/bloc-manage-info';
+import { cn, PaginatedText } from '@/lib/utils';
 
+// Select y Button no los exporta animate-ui: vienen de react-aria-components
+import { Button as AriaButton, Select } from 'react-aria-components';
 
-export const SIDEBAR_DATA: Nodo[] = [
-    {
-        id: 'introduccion',
-        title: '1. Introducción',
-        children: [
-            {
-                id: 'palabras-destacadas',
-                title: '1.1 Palabras destacadas',
-                children: [
-                    {
-                        id: 'ejemplo-parrafo-largo',
-                        title: '1.1.1 Ejemplo de párrafo largo',
-                        children: [
-                            {
-                                id: 'encabezado-nivel-5',
-                                title: '1.1.1.1 Encabezado de nivel 5',
-                                children: [
-                                    {
-                                        id: 'encabezado-nivel-6',
-                                        title: '1.1.1.1.1 Encabezado de nivel 6',
-                                        children: [
-                                            // Nivel 6 de anidación: solo existe si añades el "#" como raíz
-                                            { id: 'hoja-nivel-6', title: 'Hoja de nivel 6' },
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    },
-    { id: 'citas', title: '2. Citas' },
-    {
-        id: 'listas',
-        title: '3. Listas',
-        children: [
-            { id: 'lista-sin-ordenar', title: '3.1 Lista sin ordenar' },
-            { id: 'lista-ordenada', title: '3.2 Lista ordenada' },
-            { id: 'lista-de-tareas', title: '3.3 Lista de tareas' },
-        ],
-    },
-    {
-        id: 'tablas',
-        title: '4. Tablas',
-        children: [
-            { id: 'tabla-simple', title: '4.1 Tabla simple' },
-            { id: 'tabla-con-alineacion', title: '4.2 Tabla con alineación' },
-            { id: 'tabla-comparativa', title: '4.3 Tabla comparativa' },
-        ],
-    },
-    {
-        id: 'codigo',
-        title: '5. Código',
-        children: [
-            { id: 'codigo-javascript', title: '5.1 Bloque de código JavaScript' },
-            { id: 'codigo-python', title: '5.2 Bloque de código Python' },
-            { id: 'codigo-bash', title: '5.3 Bloque de código Bash' },
-        ],
-    },
-    {
-        id: 'mas-contenido',
-        title: '6. Más contenido Lorem Ipsum',
-        children: [
-            { id: 'seccion-a', title: '6.1 Sección A' },
-            {
-                id: 'seccion-b',
-                title: '6.2 Sección B',
-                children: [{ id: 'puntos-clave-seccion-b', title: 'Puntos clave de la sección B' }],
-            },
-            { id: 'seccion-c', title: '6.3 Sección C' },
-        ],
-    },
-    { id: 'enlaces-e-imagenes', title: '7. Enlaces e imágenes' },
-    { id: 'notas-finales', title: '8. Notas finales' },
-];
+/** Iconos */
+import { ArrowDownZA, Calendar, CalendarCheck2, FilterIcon, RotateCcw, ArrowLeft, RotateCw, Search, UserCircle2 } from 'lucide-react';
+
 
 /**
- * Barra de progreso de lectura del post.
- * Mide el scroll de la ventana relativo a `targetRef`:
- * 0% cuando el inicio del post llega arriba de la pantalla,
- * 100% cuando el final del post llega abajo de la pantalla.
+ * Barra de progreso de lectura del post por secciones.
+ * Progreso = (sección actual + 1) / total: la última sección es el 100%.
  * Sticky: se queda pegada arriba y solo ocupa el ancho de la columna.
  */
-export function PageProgress({ targetRef }: PageProgressProps) {
-    const { scrollYProgress } = useScroll({
-        target: targetRef,
-        offset: ['start start', 'end end'],
-    });
-    const smooth = useSpring(scrollYProgress, { stiffness: 250, damping: 40, bounce: 0 });
+export function PageProgress({ section, total }: PageProgressProps) {
     const reduce = useReducedMotion();
+    const progress = total > 0 ? Math.min((section + 1) / total, 1) : 0;
 
     return (
-        <div className="sticky top-0 z-30 h-1 w-full overflow-hidden rounded-full bg-black/10">
-            <motion.div className="bg-mizume-fourthary h-full origin-left" style={{ scaleX: reduce ? scrollYProgress : smooth }} />
+        <div
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={total}
+            aria-valuenow={section + 1}
+            className="sticky top-0 z-30 h-1 w-full overflow-hidden rounded-full bg-black/10"
+        >
+            <motion.div
+                className="bg-mizume-fourthary-foreground h-full origin-left"
+                initial={false}
+                animate={{ scaleX: progress }}
+                transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 250, damping: 40, bounce: 0 }}
+            />
         </div>
     );
 }
@@ -132,139 +86,350 @@ export function Article({ children, className }: ArticleProps) {
 }
 
 interface WorkShowHeaderProps {
-    children: React.ReactNode;
     work: WorkRecord,
     lang: Lang
-    WORK: WORK_LABELS
+    WORK: WORK_LABELS,
+    tab: WorkShowTab
 }
 
-interface WorkPostTitleProps {
-    className: string
-    title: string
+interface SmoothCollapseProps {
+    show: boolean,
+    children: React.ReactNode,
+    className?: string
 }
 
-const WorkPostTitle = ({ title, className }: WorkPostTitleProps) => {
+/**
+ * Muestra/oculta su contenido animando altura (grid-rows 0fr ↔ 1fr), opacidad y un leve desplazamiento.
+ * El contenido sigue montado para que la salida también se anime.
+ */
+const SmoothCollapse = ({ show, children, className }: SmoothCollapseProps) => {
+
+    // Solo se permite overflow visible cuando la expansión ha terminado (evita recortar hovers como scale)
+    const [settled, setSettled] = useState(show);
+
+    useEffect(() => {
+        if (!show) setSettled(false);
+    }, [show]);
+
     return (
-        <div className={`${className}`}>
-            <div className='w-full h-full flex flex-col items-center justify-center gap-4'>
-
+        <div
+            inert={!show}
+            aria-hidden={!show}
+            onTransitionEnd={(e) => {
+                if (e.target === e.currentTarget && e.propertyName === 'grid-template-rows' && show) setSettled(true);
+            }}
+            className={cn(
+                'grid transition-[grid-template-rows,opacity] duration-500 ease-in-out motion-reduce:transition-none',
+                show ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none',
+            )}
+        >
+            <div className={cn('min-h-0', show && settled ? 'overflow-visible' : 'overflow-hidden')}>
+                <div className={cn(
+                    'transition-transform duration-500 ease-in-out motion-reduce:transition-none',
+                    show ? 'translate-y-0' : '-translate-y-4',
+                    className,
+                )}>
+                    {children}
+                </div>
             </div>
-            <h2 className='title'>{title}</h2>
         </div>
-    )
-}
+    );
+};
 
 interface PostIndexProps {
     paginated: Paginated<PostRecord>,
-    lang: Lang
+    lang: Lang,
+    user: User | null,
+    onUser: (v: string) => void,
+    tab: WorkShowTab,
+    DATA: DATA_WORK_SHOW_TYPE,
+    content: PostContent | null,
+    body: string,
+    section: number,
+    direction: 1 | -1
 }
 
-export const PostsIndex = ({ paginated, lang }: PostIndexProps) => {
+/** Desplazamiento horizontal (px) de la transición entre secciones */
+const SECTION_SHIFT = 60;
+
+/**
+ * Transición entre secciones: `dir` = 1 avanza (entra por la derecha y sale por la izquierda),
+ * `dir` = -1 vuelve (entra por la izquierda y sale por la derecha).
+ */
+const sectionVariants = {
+    enter: (dir: 1 | -1) => ({ x: dir * SECTION_SHIFT, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: 1 | -1) => ({ x: -dir * SECTION_SHIFT, opacity: 0 }),
+};
+
+export const PostsIndex = ({ paginated, lang, onUser, tab, DATA, content, body, section, direction }: PostIndexProps) => {
+
+    const reduce = useReducedMotion();
 
     return (
-        <div className='w-full h-full grid grid-cols-1 gap-6'>
-            {paginated.data.map((p) => (
-                <div
-                    key={p.id || p.title}
-                    className='bg-mizume-primary text-mizume-primary-foreground flex flex-col justify-between p-5 rounded-xl gap-4 shadow-sm transition-transform duration-300 hover:scale-103 cursor-pointer'
-                >
+        <>
+            <SmoothCollapse show={tab !== "index"}>
 
-                    <div className='flex items-center justify-between w-full'>
-                        <BlogProfile name={p.user.name} seed={p.user.uuid} className='w-10 h-10 rounded-full border-[3px] border-mizume-primary flex items-center justify-center  ' />
-                        <span className='text-sm opacity-80'>{p.publish_date}</span>
+
+                {content === null ? (
+                    <Loading className='w-full h-full flex flex-col items-center justify-center' text='Loading . . .' textStyles='text-2xl text-mizume-secondary-foreground' />
+                ) : (
+                    <div className='w-full h-full overflow-x-hidden'>
+                        <AnimatePresence mode="wait" initial={false} custom={direction}>
+                            <motion.div
+                                key={`${content.post.data.id}-${section}`}
+                                custom={direction}
+                                variants={reduce ? undefined : sectionVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <MarkdownRenderer content={body} className="mb-12" selectedId={"hola"} />
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
+                )
+
+                }
+            </SmoothCollapse>
+
+            <SmoothCollapse show={tab === "index"}>
+                <div className='w-full h-full grid grid-cols-1 gap-6'>
+
+                    {paginated.data.length !== 0 ? (
+                        paginated.data.map((p) => (
+                            <PostItem record={p} onUser={onUser} key={p.id} />
+                        ))
+                    ) : (
+                        <div className="col-span-full flex items-center justify-center flex-row gap-5">
+                            <p className='text-mizume-secondary-foreground'>{DATA.error.withOutPosts}</p>
+                            <img src={TurtleService.onPath("dead")} alt={TurtleService.onName("dead")} className="h-30 w-30" />
+                        </div>
+                    )}
 
 
-                    <div>
-                        <h2 className='text-xl font-semibold tracking-tight'>{p.title}</h2>
+                    <div className="col-span-full">
+                        <Pagination
+                            prevUrl={paginated.prev_page_url}
+                            nextUrl={paginated.next_page_url}
+                            current={paginated.current_page}
+                            last={paginated.last_page}
+                            labels={PaginatedText[lang]}
+                            classBTN='rounded-full border-2 border-black bg-mizume-primary text-mizume-primary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                            spanClass='text-sm font-bold text-mizume-secondary-foreground'
+                        />
                     </div>
                 </div>
+            </SmoothCollapse>
+        </>
+    )
+}
+
+interface PostItemProps {
+    record: PostRecord,
+    onUser: (v: string) => void,
+}
+
+const PostItem = ({ record, onUser }: PostItemProps) => {
+    return (
+        <div
+            onClick={() => onUser(record.user.uuid)}
+            className='bg-mizume-primary text-mizume-primary-foreground flex flex-col justify-between p-5 rounded-xl gap-4 shadow-sm transition-transform duration-300 hover:scale-103 cursor-pointer'
+        >
+
+            <div className='flex items-center justify-between w-full'>
+                <div>
+                    <BlogProfile name={record.user.name} seed={record.user.uuid} className='w-10 h-10 rounded-full border-[3px] border-mizume-primary flex items-center justify-center  ' />
+                    <p>{record.user.name}</p>
+                </div>
+                <span className='text-sm opacity-80'>{record.publish_date}</span>
+            </div>
+
+
+            <div>
+                <h2 className='text-xl font-semibold tracking-tight'>{record.title}</h2>
+            </div>
+        </div>
+    )
+}
+
+
+interface PostIndexHeaderProps {
+    lang: Lang,
+    search: string,
+    setSearch: (v: string) => void,
+    onFilter: () => void,
+    onReset: () => void,
+    orderBy: PostOrder,
+    setOrderBy: (v: PostOrder) => void,
+    onRevert: () => void,
+    tab: WorkShowTab,
+    users: User[],
+    user: User | null,
+    onUser: (uuid: string) => void,
+    onBack: () => void,
+    DATA: DATA_WORK_SHOW_TYPE,
+    content: PostContent | null,
+    totalSections: number,
+    section: number,
+    setSection: (section: number) => void,
+    isMobile: boolean
+}
+
+export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, orderBy, setOrderBy, onRevert, tab, users, user, onUser, onBack, DATA, content, totalSections, section, setSection }: PostIndexHeaderProps) => {
+
+    const userIndex = findSectionIndex(users, (u) => u.uuid === user?.uuid)
+
+    return (
+        <div className='w-full rounded-2xl bg-mizume-primary mb-5'>
+
+            <SmoothCollapse show={tab === "index"}>
+                <div className='p-4 grid grid-cols-1 md:grid-cols-12 gap-4 *:min-w-0'>
+                    {/* Búsqueda por usuario */}
+                    <BlocLabel
+                        className='md:col-span-6 '
+                        icon={Search}
+                        title={DATA.search.label}
+                        titleStyles='title ms-2'
+                    >
+                        <FilterSearch
+                            search={search}
+                            onFilter={onFilter}
+                            setSearch={setSearch}
+                            content="bg-mizume-primary rounded-md p-1"
+                            inputClass="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+                            placeholder={DATA.search.placeholder}
+                        />
+                    </BlocLabel>
+
+                    {/* Orden */}
+                    <BlocLabel
+                        className='md:col-span-3'
+                        icon={Calendar}
+                        title={DATA.orderBy.title}
+                        titleStyles='title mx-2'
+                        sideTitle={<RevertButton onToggle={onRevert} className="ms-auto bg-btn-info text-btn-info-foreground hover:bg-btn-info-foreground hover:text-btn-info" />}
+                    >
+                        <div className="grid grid-cols-2 gap-2 bg-mizume-secondary rounded-lg">
+                            <Highlight
+                                value={orderBy}
+                                onValueChange={(v) => setOrderBy(v as PostOrder)}
+                                className="inset-0 rounded-lg bg-mizume-fourthary border-2 border-black"
+                            >
+                                {DATA.orderBy.types.map((o) => (
+                                    <button
+                                        key={o.type}
+                                        aria-label={o.label}
+                                        title={o.label}
+                                        data-value={o.type}
+                                        className="px-3 py-1 flex justify-center text-mizume-tertiary cursor-pointer"
+                                    >
+                                        <o.icon />
+                                    </button>
+                                ))}
+                            </Highlight>
+                        </div>
+                    </BlocLabel>
+
+                    {/* Acciones */}
+                    <div className='md:col-span-3 flex flex-col gap-2 justify-center'>
+                        <UIButton className="bg-btn-success text-btn-success-foreground cursor-pointer text-md py-6" onClick={onFilter}>
+                            <FilterIcon />
+                            {DATA.apply}
+                        </UIButton>
+                        <UIButton variant={"ghost"} className="bg-btn-danger text-btn-danger-foreground cursor-pointer text-md py-6" onClick={onReset}>
+                            <RotateCcw />
+                            {DATA.reset}
+                        </UIButton>
+                    </div>
+                </div>
+            </SmoothCollapse>
+
+            <SmoothCollapse show={tab !== "index"}>
+
+
+
+                {/*
+                  * Container query: el layout depende del ancho real del bloque, no de la ventana.
+                  * Las pestañas viven en WorkShowHeader; aquí solo Volver + Secciones.
+                  * Estrecho: uno debajo de otro · Ancho (@md): [Volver | Secciones]
+                  */}
+                <div className='@container p-4'>
+                    <div className='grid grid-cols-1 @md:grid-cols-[auto_minmax(0,1fr)] gap-4 *:min-w-0'>
+                        {content === null ? (
+                            <>
+                                <span className="sr-only" role="status">Loading</span>
+                                <div aria-hidden="true" className={cn(animateStyles.shimmer, '@md:w-28 h-20 rounded-2xl')} />
+                                <div aria-hidden="true" className={cn(animateStyles.shimmer, 'h-20 rounded-2xl')} />
+                            </>
+                        ) : (
+                            <>
+                                <BlocBack text={DATA.postManage.back} onBack={onBack} />
+
+                                <BlocSectionPage variant='numbers' className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4" lang={lang} key={content.post.data.id} sections={{ min: 1, max: totalSections }} value={section + 1} onChange={(n) => setSection(n - 1)} />
+                            </>
+                        )}
+
+                    </div>
+                </div>
+            </SmoothCollapse>
+        </div>
+    )
+}
+
+interface PostSidebarProps {
+    tab: WorkShowTab,
+    content: PostContent | null,
+    DATA: DATA_WORK_SHOW_TYPE,
+    /** Clic en un nodo del índice (recibe su id, p. ej. "2.1") */
+    onIndex?: (id: string) => void
+}
+
+/** Anchos de las líneas del skeleton, imitando una lista de índice */
+const SIDEBAR_SKELETON = ['w-4/5', 'w-3/5', 'w-2/3', 'w-1/2', 'w-3/4', 'w-2/5'];
+
+/**
+ * Sidebar del post con tres estados:
+ * sin post elegido (mensaje + tortuga), cargando (líneas brillantes) y listo (índice del post).
+ */
+export const PostSidebar = ({ tab, content, DATA, onIndex }: PostSidebarProps) => {
+
+    if (content !== null) return <BlogShowSidebarContent data={content.post.index} onSelect={(n) => onIndex?.(n.id)} />;
+
+    if (tab === "index") {
+        return (
+            <div className='flex flex-col items-center justify-center gap-4 p-6 text-center'>
+                <img src={TurtleService.onPath("smile")} alt={TurtleService.onName("smile")} className="h-30 w-30" />
+                <p className='text-sm opacity-80'>{DATA.sidebar.empty}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className='flex flex-col gap-3 p-4'>
+            <span className="sr-only" role="status">{DATA.sidebar.loading}</span>
+            {SIDEBAR_SKELETON.map((w, i) => (
+                <div key={i} aria-hidden="true" className={cn(animateStyles.shimmer, 'h-6 rounded-md', w)} />
             ))}
+        </div>
+    );
+}
 
-            <div className="col-span-full">
-                <Pagination
-                    prevUrl={paginated.prev_page_url}
-                    nextUrl={paginated.next_page_url}
-                    current={paginated.current_page}
-                    last={paginated.last_page}
-                    labels={PaginatedText[lang]}
-                    classBTN='rounded-full border-2 border-black bg-mizume-primary text-mizume-primary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
-                    spanClass='text-sm font-bold text-mizume-secondary-foreground'
-                />
-            </div>
+interface BlocBackProps {
+    text: string,
+    onBack: () => void,
+    className?: string
+}
 
-            {/*
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-            <div className='bg-mizume-primary text-mizume-primary-foreground flex flex-col flex-center justify-center p-4 h-35 rounded-xl'>
-                <h2>"hokla"</h2>
-                <p>"wdwdwdw</p>
-                <p>lkjrferjkner </p>
-            </div>
-                */}
+/** El span de columnas lo decide el padre (className), así no rompe el grid en móvil */
+const BlocBack = ({ text, onBack, className }: BlocBackProps) => {
+    return (
+        <div className={cn('flex h-20 flex-row items-center justify-center', className)}>
+            <UIButton variant={'default'} className='bg-mizume-secondary flex h-full w-full flex-row items-center justify-center gap-2 px-6 cursor-pointer transform-transition hover:-translate-x-1 ease-in-out duration-200' onClick={onBack}>
+                <ArrowLeft />
+                {text}
+            </UIButton>
         </div>
     )
 }
@@ -274,33 +439,94 @@ export const PostsIndex = ({ paginated, lang }: PostIndexProps) => {
 
 
 
-export const WorkShowHeader = ({ children, work, lang, WORK }: WorkShowHeaderProps) => {
+interface PostTabsBarProps {
+    postTab: PostManageTab,
+    setPostTab: (tab: PostManageTab) => void,
+    DATA: DATA_WORK_SHOW_TYPE,
+    tab: WorkShowTab
+}
 
-
-    const sections: SectionsTypes = {
-        min: 1,
-        max: 10
-    }
-
-
+/**
+ * Barra de pestañas del post (posts / comments / reports).
+ * Ocupa el lugar de la card del work cuando se abre un post.
+ * Container query: ancho → BlocTabs · estrecho → BlocTabsSelect (mismo estado).
+ */
+const PostTabsBar = ({ postTab, setPostTab, DATA, tab }: PostTabsBarProps) => {
     return (
-        <div className="grid min-h-45 w-full grid-cols-1 gap-4 rounded-xl bg-mizume-secondary/80 p-4 lg:grid-cols-4 lg:grid-rows-2">
+        <div className="@container w-full rounded-xl bg-mizume-secondary/80 p-4">
+            <div className="flex flex-row items-center gap-4">
 
-            {/* <WorkPostTitle title={post.title} className='flex min-h-25 items-center justify-start rounded-2xl bg-mizume-fourthary p-8 lg:col-span-2' /> */}
-            {/* <BlocSelectUser className='lg:col-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-fourthary p-4' onUser={onUser} user={user} users={users} /> */}
-             <BlogShowTrigger className="text-mizume-secondary-foreground bold" />
-            <div className="lg:col-span-2 lg:row-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-secondary p-4">
-                <FlipWork work={work} labels={WORK} />
+                <BlocTabs tabs={DATA.postManage.POST_TABS} labels={DATA.postManage.TAB_LABELS} value={postTab} onChange={setPostTab} className='hidden @2xl:flex flex-1 h-16 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' />
+
+                <BlocTabsSelect tab={postTab} onTab={setPostTab} DATA={DATA} className='@2xl:hidden flex flex-1 h-16 items-center rounded-2xl bg-mizume-fourthary px-4 py-2' />
+
+                {/* En móvil es la única forma de abrir el aside: la card (donde estaba) queda oculta */}
+                {postTab === "posts" && (
+                    <BlogShowTrigger className="text-mizume-secondary-foreground bold shrink-0" />
+                )}
             </div>
-            {/* <BlocCurrentUser className='lg:col-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-fourthary  p-4' user={currentUser} /> */}
-            <div className="lg:col-span-2  flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-yellow-300/50 p-4">Backend</div>
-            {/* <BlocTabs tabs={["Post", "Comentarios", "Reportes"] as const} className='lg:col-span-2 flex flex-row h-20 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' onLabel={(v: string) => console.log(v)} /> */}
-            {/* <BlocSectionPage className="lg:col-span-2 flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4" lang={lang}
-                sections={sections}
-            /> */}
-           
-
         </div>
+    )
+}
+
+
+/**
+ * Subheader del show (solo ancho de la columna main): la barra de pestañas
+ * aparece cuando se abre un post, a la vez que se pliega la card del work.
+ */
+export const WorkShowTabsBar = ({ postTab, setPostTab, DATA, tab }: PostTabsBarProps) => {
+    return (
+        <SmoothCollapse show={tab !== "index"}>
+            <div className="pt-4">
+                <PostTabsBar postTab={postTab} setPostTab={setPostTab} DATA={DATA} tab={tab} />
+            </div>
+        </SmoothCollapse>
+    )
+}
+
+interface WorkShowAsideHeaderProps {
+    tab: WorkShowTab,
+    children?: React.ReactNode
+}
+
+/**
+ * Hueco encima del aside (misma fila que WorkShowTabsBar, solo lg+).
+ * Misma altura que la barra de pestañas: pt-4 + p-4 + h-16 = h-24.
+ */
+export const WorkShowAsideHeader = ({ tab, children }: WorkShowAsideHeaderProps) => {
+    return (
+        <SmoothCollapse show={tab !== "index"}>
+            <div className="pt-4">
+                <div className="flex h-24 items-center justify-center rounded-xl bg-mizume-secondary/80">
+                    {children}
+                </div>
+            </div>
+        </SmoothCollapse>
+    )
+}
+
+
+/**
+ * Cabecera a ancho completo del show: card del work, se pliega al abrir un post
+ */
+export const WorkShowHeader = ({ work, lang, WORK, tab }: WorkShowHeaderProps) => {
+    const isHidden = tab != "index";
+    return (
+        <>
+            <div className={`grid transition-[grid-template-rows] duration-700 ease-in-out ${isHidden ? "grid-rows-[0fr]" : "grid-rows-[1fr]"}`}>
+                <div className="overflow-hidden">
+                    <div className={`grid min-h-45 w-full grid-cols-1 gap-4 rounded-xl bg-mizume-secondary/80 p-4 lg:grid-cols-4 lg:grid-rows-2 transition-all duration-700 ease-in-out ${isHidden ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"}`}>
+
+
+
+                        <div className="lg:col-span-2 lg:row-span-2 flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-mizume-secondary p-4">
+                            <FlipWork work={work} labels={WORK} />
+                        </div>
+                        <div className="lg:col-span-2  flex min-h-25 flex-col gap-3 items-start justify-center rounded-2xl bg-yellow-300/50 p-4">Backend</div>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 
 
@@ -373,6 +599,47 @@ export const BlocSelectUser = ({ user, users, onUser, className }: BlocSelectUse
 }
 
 
+interface BlocTabsSelectProps {
+    tab: PostManageTab,
+    onTab: (v: PostManageTab) => void,
+    DATA: DATA_WORK_SHOW_TYPE,
+    className?: string,
+}
+
+/**
+ * Select de pestañas (versión móvil de BlocTabs).
+ * Mismo patrón que WorkFilterMedium: el id es el valor fijo y solo se traduce el label.
+ */
+export const BlocTabsSelect = ({ tab, onTab, DATA, className }: BlocTabsSelectProps) => {
+    const LABELS = DATA.postManage.TAB_LABELS
+
+    return (
+        <div className={className}>
+            <Select
+                aria-label={LABELS[tab]}
+                value={tab}
+                onChange={(key) => key && onTab(key as PostManageTab)}
+                className="w-full"
+            >
+                <AriaButton className="w-full text-left capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer outline-none">
+                    <SelectValue />
+                </AriaButton>
+                <Popover placement="bottom start" offset={4} className="w-(--trigger-width)">
+                    <ListBox className="bg-mizume-secondary p-2 rounded-xl">
+                        {DATA.postManage.POST_TABS.map((key) => (
+                            <ListBoxItem key={key} id={key} textValue={LABELS[key]} className="capitalize outline-none py-2 bg-mizume-secondary cursor-pointer text-mizume-tertiary flex flex-row-reverse justify-center items-center data-focused:bg-mizume-fourthary">
+                                {LABELS[key]}
+                                <SelectionIndicator animation="pop">✓</SelectionIndicator>
+                            </ListBoxItem>
+                        ))}
+                    </ListBox>
+                </Popover>
+            </Select>
+        </div>
+    )
+}
+
+
 interface WorkShowMainProps {
     children: React.ReactNode;
     mainRef?: React.Ref<HTMLDivElement>;
@@ -380,7 +647,7 @@ interface WorkShowMainProps {
 
 export const WorkShowMain = ({ children, mainRef }: WorkShowMainProps) => {
     return (
-        <div ref={mainRef} className="bg-mizume-secondary relative min-h-screen w-full rounded-xl p-6">
+        <div ref={mainRef} className="bg-mizume-secondary relative min-h-screen w-full rounded-b-xl p-6">
             {children}
         </div>
     );

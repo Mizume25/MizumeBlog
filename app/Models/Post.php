@@ -11,12 +11,14 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use App\Models\PostImage;
 use Illuminate\Support\Collection;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
 
     use HasFactory;
@@ -63,7 +65,10 @@ class Post extends Model
 
     public function works(): BelongsToMany
     {
-        return $this->belongsToMany(Work::class, 'articles_works')->withTimestamps();
+        return $this->belongsToMany(Work::class, 'articles_works')
+            ->using(ArticleWork::class)
+            ->withPivot('user_id')
+            ->withTimestamps();
     }
 
     public function authors(): BelongsToMany

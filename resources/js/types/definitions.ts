@@ -2,6 +2,8 @@
  * @fileoverview Tipados de la base de datos
  */
 
+import { Nodo } from "@/services/MarkdownService";
+
 /**
  * @enum Category
  * Categorias de la pagina
@@ -50,12 +52,12 @@ export type Field = {
  * Interfaz de usuario
  */
 export type User = Field & {
-     id: number
-     name: string
-     email: string
-     role: string
-     avatar: string
-     uuid: string
+    id: number
+    name: string
+    email: string
+    role: string
+    avatar: string
+    uuid: string
 };
 
 /**
@@ -63,22 +65,22 @@ export type User = Field & {
  * Interfaz de media
  */
 export type Media = Field & {
-  model_type: string
-  model_id: number
-  collection_name: string
-  name: string
-  file_name: string
-  mime_type: string | null
-  disk: string
-  conversions_disk: string | null
-  size: number
-  custom_properties: Record<string, unknown>
-  generated_conversions: Record<string, boolean>
-  responsive_images: Record<string, unknown>
-  order_column: number | null
-  original_url: string
-  preview_url?: string
-} 
+    model_type: string
+    model_id: number
+    collection_name: string
+    name: string
+    file_name: string
+    mime_type: string | null
+    disk: string
+    conversions_disk: string | null
+    size: number
+    custom_properties: Record<string, unknown>
+    generated_conversions: Record<string, boolean>
+    responsive_images: Record<string, unknown>
+    order_column: number | null
+    original_url: string
+    preview_url?: string
+}
 
 /**
  * @type Tags
@@ -91,9 +93,9 @@ export type Tag = Field & { name: string };
  * @type Work
  * interfaz de work
  */
-export type Work = Field &{
+export type Work = Field & {
     title: string,
-    slug:string,
+    slug: string,
     abbreviation: string,
     category: Category,
     publish_date: string,
@@ -111,7 +113,7 @@ export type Author = Field & {
     last_name: string | null,
     pseudonym: string | null,
     birth_year: string | null,
-    description: string, 
+    description: string,
     profile_url: string,
 }
 
@@ -135,7 +137,7 @@ export type Comment = Field & {
 export type Post = Field & {
     title: string,
     publish_date: string,
-    description : string | null,
+    description: string | null,
     featured: boolean,
     type: string,
     code: string | null,
@@ -182,36 +184,36 @@ export type Violation = Field & {
     action: string,
     attempts_count: number,
     post_id: number | null,
-    user_id: number 
+    user_id: number
 }
 
 /**
  * @type REQUESTS_PERMISSIONS
  * Interfaz de REQUESTS_PERMISSIONS
  */
-export type Permissions = Field &{
+export type Permissions = Field & {
     message: string,
     status: PermissionsSatatus,
     granted_at: string | null,
     access_expires_at: string | null,
-    requested_at: string | null ,
+    requested_at: string | null,
     granted_by: number,
     user_id: number,
-    post_id: number,  
+    post_id: number,
 }
 
 // -- Tipados customizados
 
 export type PostRecord = Post & {
-    user:User,
-    works: Work []
+    user: User,
+    works: Work[]
 }
 
 export type PostsGroupedByUser = Record<string, PostRecord[]>
 
 export type WorkRecord = Work & {
-    media: Media []
-    tags: Tag [],
+    media: Media[]
+    tags: Tag[],
     authors: Author[]
 }
 
@@ -229,12 +231,23 @@ export type CommentRecord = Comment & {
 
 
 export type Paginated<T> = {
-  data: T[]
-  current_page: number
-  last_page: number
-  per_page: number
-  total: number
-  prev_page_url: string | null
-  next_page_url: string | null
-  links: { url: string | null; label: string; active: boolean }[]
+    data: T[]
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
+    prev_page_url: string | null
+    next_page_url: string | null
+    links: { url: string | null; label: string; active: boolean }[]
 }
+
+
+
+export type PostContent = {
+    post: {
+        data: Post,
+        content: string,
+        index: Nodo[],
+        sections: number,
+    }
+}        

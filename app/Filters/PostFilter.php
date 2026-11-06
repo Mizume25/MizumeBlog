@@ -4,16 +4,17 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class AuthorFilter
+class PostFilter
 {
     public function __construct(private array $filters) {}
 
     public function apply(Builder $query)
     {
-        $query
-            ->when($this->filters['search'] ?? null, fn($q, $v) => $q->search($v))
-            ->when(isset($this->filters['year']), fn($q) => $q->birthYear((int) $this->filters['year']))
-        ;
+        $query->when(
+            $this->filters['search'] ?? null,
+            fn($q, $v) => $q->whereHas('user', fn($u) => $u->search($v))
+        );
+
         return $query;
     }
 }

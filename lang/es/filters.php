@@ -9,6 +9,13 @@ return [
         'applied' => 'Filtros aplicados (:filters) — :total resultado|Filtros aplicados (:filters) — :total resultados',
     ],
 
+    'users' => [
+        'messages' => [
+            'search' => 'Busqueda',
+        ],
+        'applied' => 'Filtro Aplicado (:filters) - :total resultados'
+    ],
+
     'works' => [
         'messages' => [
             'search'   => 'Búsqueda',

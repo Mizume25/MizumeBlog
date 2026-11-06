@@ -1,6 +1,8 @@
 /** Archivo de Apis utilizadas */
 
-import { ArticleConfig } from './interfaces';
+import { Lang } from "@/store/lang-store";
+import { PostContent } from "./definitions";
+
 
 /** Cifrado Token */
 function getCsrfToken(): string {
@@ -33,6 +35,17 @@ async function apiFetch(url: string, options: RequestInit = {}) {
     return data;
 }
 
+
+/** Peticion de Post */
+export const apiPost = {
+    getBuild: (post_id: number | null, lang: Lang, name: string) : Promise<PostContent> => {
+        const message = lang === 'es' ? `No se ha encontrado ningun post de ${name} ` : `No posts found for ${name}`;
+        if (post_id === null)  return Promise.reject(new Error(message))
+        return apiFetch(`/api/post/${post_id}`);
+    }
+}
+
+/**  
 export const artworkApi = {
     getAvailable: (postId: number | undefined, artworkId: number | undefined) => {
         if (postId == null || artworkId == null) {
@@ -131,3 +144,4 @@ export const configApi = {
         });
     },
 };
+*/

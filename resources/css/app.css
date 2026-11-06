@@ -160,6 +160,13 @@
 
     --mizume-fourthary: var(--mizume-primary-foreground);
     --mizume-fourthary-foreground: var(--pure-color);
+
+    /* Markdown (pensado sobre bg-mizume-secondary) */
+    --md-text: hsl(45, 60%, 94%);
+    --md-muted: hsl(40, 45%, 78%);
+    --md-accent: var(--mizume-primary);
+    --md-surface: color-mix(in oklab, var(--mizume-primary-foreground) 45%, transparent);
+    --md-border: color-mix(in oklab, var(--md-accent) 30%, transparent);
 }
 
 /** Titulo web  */
@@ -233,6 +240,13 @@
 
     --mizume-fourthary: var(--mizume-primary-foreground);
     --mizume-fourthary-foreground: var(--pure-color);
+
+    /* Markdown: el primary lila no contrasta sobre el secondary violeta, se usa el tertiary */
+    --md-text: hsl(250, 40%, 96%);
+    --md-muted: hsl(250, 30%, 84%);
+    --md-accent: var(--mizume-tertiary);
+    --md-surface: color-mix(in oklab, var(--mizume-primary-foreground) 45%, transparent);
+    --md-border: color-mix(in oklab, var(--md-accent) 30%, transparent);
 }
 
 @layer base {
@@ -300,4 +314,11 @@
     --color-mizume-tertiary-foreground: var(--color-pure);
     --color-mizume-fourthary: var(--mizume-fourthary);
     --color-mizume-fourthary-foreground: var(--color-pure);
+
+    /* Markdown */
+    --color-md-text: var(--md-text);
+    --color-md-muted: var(--md-muted);
+    --color-md-accent: var(--md-accent);
+    --color-md-surface: var(--md-surface);
+    --color-md-border: var(--md-border);
 }

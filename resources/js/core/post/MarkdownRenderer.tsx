@@ -18,7 +18,7 @@ interface MarkdownRendererProps {
 const components: Components = {
   // ── Headings ──────────────────────────────────────────────────────────────
   h1: ({ children }) => (
-    <h1 className="text-3xl font-bold text-white px-5 border-b border-[#C8AD7F]/40 pb-4 mb-8 mt-10 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+    <h1 className="text-3xl font-bold text-mizume-secondary-foreground px-5 border-b border-md-accent/40 pb-4 mb-8 mt-10 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
       {children}
     </h1>
   ),
@@ -26,35 +26,47 @@ const components: Components = {
   h2: ({ children, ...props }) => (
     <h2
       {...props}
-      className="text-sm sm:text-base md:text-lg font-bold text-[#ffffff] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]"
+      className="text-sm sm:text-base md:text-lg font-bold text-mizume-secondary-foreground mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-md-accent/60"
     >
       {children}
     </h2>
   ),
 
   h3: ({ children }) => (
-    <h3 className="text-sm sm:text-base md:text-lg font-bold text-[#C8AD7F] mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-[#eee]">
+    <h3 className="text-sm sm:text-base md:text-lg font-bold text-md-accent mb-2 mx-2 sm:mx-4 md:mx-7 my-4 sm:my-6 md:my-7 px-3 sm:px-5 uppercase tracking-wide drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)] border-b-2 border-md-accent/60">
       - {children}
     </h3>
   ),
 
   h4: ({ children }) => (
-    <h4 className="text-base font-semibold text-[#A18B75] mb-2 mt-6 px-5 uppercase tracking-wider">
+    <h4 className="text-base font-semibold text-md-muted mb-2 mt-6 px-5 uppercase tracking-wider">
       {children}
     </h4>
   ),
 
+  h5: ({ children, ...props }) => (
+    <h5 {...props} className="text-sm font-semibold text-md-accent mb-2 mt-5 px-5 uppercase tracking-wider">
+      {children}
+    </h5>
+  ),
+
+  h6: ({ children, ...props }) => (
+    <h6 {...props} className="text-xs font-semibold text-md-muted italic mb-2 mt-4 px-5 uppercase tracking-widest">
+      {children}
+    </h6>
+  ),
+
   // ── Párrafo ───────────────────────────────────────────────────────────────
   p: ({ children }) => (
-    <p className="text-gray-200 leading-[1.8] mb-8 px-3 md:px-6 text-justify [text-shadow:_1px_1px_2px_rgba(0,0,0,0.6)]">
+    <p className="text-md-text leading-[1.8] mb-8 px-3 md:px-6 text-justify [text-shadow:_1px_1px_2px_rgba(0,0,0,0.6)]">
       {children}
     </p>
   ),
 
   // ── Blockquote → recuadro destacado ───────────────────────────────────────
   blockquote: ({ children }) => (
-    <div className="bg-black/20 p-6 rounded-lg border-t border-white/5 my-6">
-      <div className="text-gray-300 italic leading-relaxed [&>p]:mb-0">
+    <div className="bg-md-surface p-6 rounded-lg border-t border-md-border my-6">
+      <div className="text-md-muted italic leading-relaxed [&>p]:mb-0">
         {children}
       </div>
     </div>
@@ -63,7 +75,7 @@ const components: Components = {
   // ── Tabla ─────────────────────────────────────────────────────────────────
   table: ({ children }) => (
     <div className="overflow-x-auto my-8 text-center">
-      <table className="mx-auto w-full max-w-2xl border-collapse rounded-lg overflow-hidden shadow-2xl border border-[#C8AD7F]/30 text-white">
+      <table className="mx-auto w-full max-w-2xl border-collapse rounded-lg overflow-hidden shadow-2xl border border-md-border text-md-text">
         {children}
       </table>
     </div>
@@ -74,23 +86,23 @@ const components: Components = {
   ),
 
   tbody: ({ children }) => (
-    <tbody className="bg-black/40 backdrop-blur-sm">{children}</tbody>
+    <tbody className="bg-md-surface backdrop-blur-sm">{children}</tbody>
   ),
 
   tr: ({ children }) => (
-    <tr className="border-b border-white/10 hover:bg-white/5 transition-colors">
+    <tr className="border-b border-md-border hover:bg-md-accent/10 transition-colors">
       {children}
     </tr>
   ),
 
   th: ({ children }) => (
-    <th className="text-center py-4 px-6 bg-[#C8AD7F] text-white uppercase text-xs tracking-widest font-bold text-left border-b border-[#C8AD7F]/50 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
+    <th className="text-center py-4 px-6 bg-mizume-fourthary text-mizume-fourthary-foreground uppercase text-xs tracking-widest font-bold text-left border-b border-md-border drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)] [text-shadow:_2px_2px_4px_rgba(0,0,0,0.8),_0_0_10px_rgba(0,0,0,0.5)]">
       {children}
     </th>
   ),
 
   td: ({ children }) => (
-    <td className="py-4 px-6 font-medium text-[#C8AD7F] first:text-[#C8AD7F] [&:not(:first-child)]:text-gray-300 [&:not(:first-child)]:italic">
+    <td className="py-4 px-6 font-medium text-md-accent first:text-md-accent [&:not(:first-child)]:text-md-muted [&:not(:first-child)]:italic">
       {children}
     </td>
   ),
@@ -107,19 +119,19 @@ const components: Components = {
 
   // ── Listas ────────────────────────────────────────────────────────────────
   ul: ({ children }) => (
-    <ul className="list-disc list-outside text-gray-200 space-y-4 mb-8 ml-10 mr-6">
+    <ul className="list-disc list-outside text-md-text space-y-4 mb-8 ml-10 mr-6">
       {children}
     </ul>
   ),
 
   ol: ({ children }) => (
-    <ol className="list-decimal list-outside text-gray-200 space-y-4 mb-8 ml-10 mr-6">
+    <ol className="list-decimal list-outside text-md-text space-y-4 mb-8 ml-10 mr-6">
       {children}
     </ol>
   ),
 
   li: ({ children }) => (
-    <li className="text-gray-300 leading-relaxed">
+    <li className="text-md-text leading-relaxed">
       {children}
     </li>
   ),
@@ -135,7 +147,7 @@ const components: Components = {
       );
     }
     return (
-      <code className="bg-black/30 text-[#C8AD7F] px-1.5 py-0.5 rounded text-sm font-mono border border-[#C8AD7F]/20">
+      <code className="bg-md-surface text-md-accent px-1.5 py-0.5 rounded text-sm font-mono border border-md-border">
         {children}
       </code>
     );
@@ -143,23 +155,23 @@ const components: Components = {
 
   // ── Bloque de código ──────────────────────────────────────────────────────
   pre: ({ children }) => (
-    <pre className="bg-black/30 border border-[#C8AD7F]/20 rounded-lg p-4 my-6 overflow-x-auto text-sm font-mono text-gray-300">
+    <pre className="bg-md-surface border border-md-border rounded-lg p-4 my-6 overflow-x-auto text-sm font-mono text-md-text">
       {children}
     </pre>
   ),
 
   // ── Separador horizontal ──────────────────────────────────────────────────
   hr: () => (
-    <hr className="border-none border-t border-white/10 " />
+    <hr className="border-none border-t border-md-border " />
   ),
 
   // ── Negrita y cursiva ─────────────────────────────────────────────────────
   strong: ({ children }) => (
-    <strong className="text-white font-semibold">{children}</strong>
+    <strong className="text-mizume-secondary-foreground font-semibold">{children}</strong>
   ),
 
   em: ({ children }) => (
-    <em className="text-[#A18B75] italic">{children}</em>
+    <em className="text-md-muted italic">{children}</em>
   ),
 
   // ── Enlace ────────────────────────────────────────────────────────────────
@@ -168,7 +180,7 @@ const components: Components = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-[#C8AD7F] underline underline-offset-2 hover:text-white transition-colors"
+      className="text-md-accent underline underline-offset-2 hover:text-mizume-secondary-foreground transition-colors"
     >
       {children}
     </a>
@@ -212,7 +224,7 @@ export default function MarkdownRenderer({ content, className = '', selectedId }
 
   return (
     <div className={`prose-custom max-w-none ${className}`}>
-      <style>{`mjx-container { color: #e5e7eb; }`}</style>
+      <style>{`mjx-container { color: var(--md-text); }`}</style>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkHeadingId, remarkMath]}
         rehypePlugins={[rehypeSlug, rehypeMathjax]}

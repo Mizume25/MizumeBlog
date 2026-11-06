@@ -61,5 +61,11 @@ export const TURTLE_ICONS: IconTurtle[] = [
         status: 'worried',
         alt: 'worried turtle',
         name: 'worried.png'
-    } 
+    },
+    {
+        path: '/Icons/turtle/load.gif',
+        status: 'load',
+        alt: 'animate turtle',
+        name: 'load.gif'
+    }  
 ]
