@@ -16,6 +16,9 @@ class PostController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Maquetacion de el contenido de un post
+     */
     public function build(string $id)
     {
         $post = Post::findOrFail($id);

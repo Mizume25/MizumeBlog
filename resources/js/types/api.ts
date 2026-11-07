@@ -1,7 +1,7 @@
 /** Archivo de Apis utilizadas */
 
 import { Lang } from "@/store/lang-store";
-import { PostContent } from "./definitions";
+import { CommentRecord, PostContent } from "./definitions";
 
 
 /** Cifrado Token */
@@ -15,6 +15,8 @@ async function apiFetch(url: string, options: RequestInit = {}) {
         ...options,
         headers: {
             'Content-Type': 'application/json',
+            // Laravel responde JSON (401/422...) en vez de redirigir con HTML
+            'Accept': 'application/json',
             'X-CSRF-TOKEN': getCsrfToken(),
             ...options.headers,
         },
@@ -43,6 +45,27 @@ export const apiPost = {
         if (post_id === null)  return Promise.reject(new Error(message))
         return apiFetch(`/api/post/${post_id}`);
     }
+}
+
+/** Peticiones de Comentarios (entidad separada del build del post) */
+export const apiComments = {
+    list: (post_id: number): Promise<CommentRecord[]> =>
+        apiFetch(route('comments.index', post_id)),
+
+    store: (post_id: number, body: string, parent_id: number | null = null): Promise<CommentRecord> =>
+        apiFetch(route('comments.store'), {
+            method: 'POST',
+            body: JSON.stringify({ post_id, body, parent_id }),
+        }),
+
+    update: (id: number, body: string): Promise<CommentRecord> =>
+        apiFetch(route('comments.update', id), {
+            method: 'PUT',
+            body: JSON.stringify({ body }),
+        }),
+
+    destroy: (id: number): Promise<{ message: string }> =>
+        apiFetch(route('comments.destroy', id), { method: 'DELETE' }),
 }
 
 /**  

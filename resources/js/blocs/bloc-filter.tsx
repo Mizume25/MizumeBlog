@@ -14,7 +14,7 @@ export const BlocContent = ({ children , title} : BlocContentProps) => {
     return (
         <>
             <h2 className="title">{title}</h2>
-            <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
+            <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-mizume-primary-foreground p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
                 {children}
             </div>
         </>
@@ -60,10 +60,10 @@ export const BlocSection = ({ title, titleStyles, children, icon: Icon }: BlocSe
 
         <div className={`bg-mizume-fourthary sm:col-span-2 flex flex-col gap-2 rounded-lg p-4 `}>
             <div className="flex flex-row items-center justify-start">
-                <Icon className="size-5 shrink-0 text-white" aria-hidden="true" />
+                <Icon className="size-5 shrink-0 text-mizume-fourthary-foreground" aria-hidden="true" />
                 <h2 className={`${titleStyles}`}>{title}</h2>
             </div>
-            <div className={`bg-mizume-secondary rounded-md p-2 flex flex-row`}>
+            <div className={`bg-item rounded-md p-2 flex flex-row`}>
                 {children}
             </div>
         </div>
@@ -88,7 +88,7 @@ export const BlocLabel = ({ children, icon: Icon, title, titleStyles, className,
     return (
         <div className={`bg-mizume-fourthary flex flex-col gap-2 rounded-lg p-3 ${className}`}>
             <div className="flex flex-row items-center justify-start">
-                <Icon className="size-5 shrink-0 text-white" aria-hidden="true" />
+                <Icon className="size-5 shrink-0 text-mizume-fourthary-foreground" aria-hidden="true" />
                 <h2 className={`${titleStyles}`}>{title}</h2>
                 {sideTitle}
             </div>

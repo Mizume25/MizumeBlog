@@ -207,6 +207,7 @@ export type Permissions = Field & {
 export type PostRecord = Post & {
     user: User,
     works: Work[]
+    comments: CommentRecord[]
 }
 
 export type PostsGroupedByUser = Record<string, PostRecord[]>
@@ -242,12 +243,15 @@ export type Paginated<T> = {
 }
 
 
-
+/**
+ * Interfaz de post maquetado , numero de seciones , indice , datos del post
+ * (los comentarios se cargan aparte con apiComments / useComments)
+ */
 export type PostContent = {
     post: {
-        data: Post,
+        data: PostRecord,
         content: string,
         index: Nodo[],
-        sections: number,
+        sections: number
     }
 }        

@@ -1,54 +1,58 @@
-import { Reply } from '@/types';
-import { useForm } from '@inertiajs/react';
-import React from 'react'
+import React, { useState } from 'react'
 
 interface ReplyComentProps {
     closeReply: () => void,
-    comment: Reply
+    /** Publica la respuesta (el padre ya conoce el parent_id). Debe lanzar si falla */
+    onReply: (body: string) => Promise<void>
 }
 
-export function ReplyComent({closeReply , comment} : ReplyComentProps) {
+export function ReplyComent({ closeReply, onReply }: ReplyComentProps) {
 
+    const [body, setBody] = useState('');
+    const [processing, setProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleClose = (e:React.MouseEvent<HTMLButtonElement>) => {
+    const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
         closeReply()
     }
 
-   
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setProcessing(true);
+        setError(null);
+        try {
+            await onReply(body);
+            setBody('');
+            closeReply();
+        } catch (err) {
+            // Mensaje de validación de Laravel (422) u otro error
+            setError((err as Error).message);
+        } finally {
+            setProcessing(false);
+        }
+    };
 
-    /**
-        const { data, setData, post, processing, errors, reset } = useForm({
-            body: '', 
-            parent_id: coment.id,
-            post_id: coment.post_id,
-        })
-    
-
-    const handleSubmit = (e: React.FormEvent) => {
-            e.preventDefault();
-            post(route('comments.store'), {
-                preserveScroll: true,
-                onSuccess: () => reset('body'),
-            });
-        };
-    
-        //Convertismo El comentario en respueta y accedemos a los datos que hereda 
-     */
     return (
-        <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+        <form onSubmit={handleSubmit} className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
             <textarea
-            
-               
-                className="w-full bg-[#2a1d15] border border-[#5a4234] rounded-lg p-3 
-                           text-[#f3e5ab] placeholder-[#5a4234]/70 
-                           focus:outline-none focus:border-[#d4a373] focus:ring-1 focus:ring-[#d4a373] 
-                           transition-all duration-200 ease-in-out 
+                autoFocus
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="Escribe tu respuesta"
+                className="w-full bg-[#2a1d15] border border-[#5a4234] rounded-lg p-3
+                           text-[#f3e5ab] placeholder-[#5a4234]/70
+                           focus:outline-none focus:border-[#d4a373] focus:ring-1 focus:ring-[#d4a373]
+                           transition-all duration-200 ease-in-out
                            resize-none min-h-[80px] shadow-inner"
             ></textarea>
-            
+
+            {error && <div className="text-xs text-red-500 mt-1">{error}</div>}
+
             <div className="flex justify-end gap-3 mt-2">
                 {/* Botón Cancelar - Sutil */}
-                <button 
+                <button
+                    type="button"
                     onClick={handleClose}
                     className="px-3 py-1 text-xs font-semibold text-[#8b5e3c] hover:text-[#d4a373] transition-colors cursor-pointer"
                 >
@@ -56,17 +60,18 @@ export function ReplyComent({closeReply , comment} : ReplyComentProps) {
                 </button>
 
                 {/* Botón Publicar - Estilo principal */}
-                <button 
-                 
-                    className="px-4 py-1.5 bg-[#d4a373] hover:bg-[#b88b5d] text-[#1e140f] 
-                               text-xs font-bold rounded-md shadow-sm 
-                               transition-all active:scale-95 cursor-pointer"
+                <button
+                    type="submit"
+                    disabled={processing}
+                    className="px-4 py-1.5 bg-[#d4a373] hover:bg-[#b88b5d] text-[#1e140f]
+                               text-xs font-bold rounded-md shadow-sm
+                               transition-all active:scale-95 cursor-pointer disabled:opacity-50"
                 >
-                    Publicar respuesta
+                    {processing ? 'Publicando...' : 'Publicar respuesta'}
                 </button>
             </div>
-        </div>
-        
+        </form>
+
     )
 }
 

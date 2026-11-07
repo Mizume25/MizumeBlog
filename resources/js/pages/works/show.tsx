@@ -3,7 +3,7 @@ import { BlogLayout } from "@/layouts/app"
 import { BlogShow, BlogShowTrigger } from "@/layouts/app/blog-show"
 import { Route, SharedData } from "@/types"
 import { Paginated, Post, PostRecord, User, Work, WorkRecord } from "@/types/definitions"
-import { Article, PageProgress, PostIndexHeader, PostSidebar, PostsIndex, WorkShowAsideHeader, WorkShowHeader, WorkShowMain, WorkShowTabsBar } from "@/core/desktop/work-show-components"
+import { Article, BlocBack, PageProgress, PostIndexHeader, PostSidebar, PostsIndex, WorkShowAsideHeader, WorkShowHeader, WorkShowMain, WorkShowTabsBar } from "@/core/desktop/work-show-components"
 import useWorkShow from "@/hooks/custom/use-work-show"
 import { useLangStore } from "@/store/lang-store"
 import { usePage } from "@inertiajs/react"
@@ -12,6 +12,9 @@ import { PostUserFilter } from "@/types/custom/work-show-types"
 import { DATA_WORK_SHOW } from "@/constants/work-show-constants"
 import { useMobileNavigation } from "@/hooks/use-mobile-navigation"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { useToast } from "@/hooks/use-toast"
+import ApiToast from "@/components/api-toast"
+import { TurtleService } from "@/custom/services"
 
 
 
@@ -29,14 +32,39 @@ function WorkShow({ work, paginated, users, filters }: WorkShowProps) {
 
   const lang = useLangStore((l) => l.lang)
 
-  const { search, setSearch, orderBy, setOrderBy, setOrderRevert, Posts, onFilter, onReset, user, setUser, setTab, tab, postTab, setPostTab, onUser, onBack, content, setContent, body, section, setSection, direction, totalSections, onIndex } = useWorkShow(filters, paginated.data, work.slug, users, lang);
+  const { 
+    search, 
+    setSearch, 
+    orderBy, 
+    setOrderBy, 
+    setOrderRevert, 
+    Posts, onFilter, 
+    onReset, 
+    user, 
+    setUser, 
+    setTab, 
+    tab, 
+    postTab, 
+    setPostTab, 
+    onUser, 
+    onBack, 
+    content, 
+    setContent, 
+    body, 
+    section, 
+    setSection, 
+    direction, 
+    totalSections, 
+    onIndex,
+    toast 
+  } = useWorkShow(filters, paginated.data, work.slug, users, lang);
 
   const isMobile = useIsMobile();
 
 
   const WORK = DATA_ENTITIES[lang].work
 
-
+  
   const DATA = DATA_WORK_SHOW[lang]
 
 
@@ -61,6 +89,7 @@ function WorkShow({ work, paginated, users, filters }: WorkShowProps) {
 
   return (
     <BlogLayout routes={routes}>
+      <ApiToast toast={toast}/>
       <BlogShow
         asideTitle={content === null ? "" : content.post.data.title}
         aside={<PostSidebar tab={tab} content={content} DATA={DATA} onIndex={onIndex} />}
@@ -72,7 +101,10 @@ function WorkShow({ work, paginated, users, filters }: WorkShowProps) {
         }
         asideHeader={
           <WorkShowAsideHeader tab={tab}>
-            {/* Aquí va la turtle */}
+            <div className="flex flex-row justify-between items-center gap-4 ">
+              <BlocBack text={DATA.postManage.back} onBack={onBack} />
+            <img src={TurtleService.onPath("welcome")} alt={TurtleService.onName("welcome")} className="h-20 w-20" />
+            </div>
           </WorkShowAsideHeader>
         }
       >
@@ -101,8 +133,19 @@ function WorkShow({ work, paginated, users, filters }: WorkShowProps) {
             section={section}
             setSection={setSection}
             isMobile={isMobile}
+            postab={postTab}
           />
-          <PostsIndex paginated={{ ...paginated, data: Posts }} lang={lang} onUser={onUser} user={user} tab={tab} DATA={DATA} content={content} body={body} section={section} direction={direction} />
+          <PostsIndex 
+          paginated={{ ...paginated, data: Posts }} 
+          lang={lang} onUser={onUser} 
+          user={user} tab={tab} 
+          DATA={DATA} 
+          content={content} 
+          body={body} 
+          section={section} 
+          direction={direction} 
+          postTab={postTab}
+          />
         </WorkShowMain>
       </BlogShow>
     </BlogLayout>

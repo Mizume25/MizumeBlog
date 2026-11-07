@@ -13,7 +13,7 @@ interface PaginationProps {
     spanClass: string,
 }
 
-const BTN = 'rounded-full border-2 border-black bg-mizume-secondary text-mizume-secondary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+const BTN = 'rounded-full border-2 border-black bg-mizume-secondary text-mizume-secondary-foreground px-4 py-1.5 text-sm font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
 
 interface PageButtonProps {
     url: string | null,

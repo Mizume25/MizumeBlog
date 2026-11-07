@@ -132,7 +132,7 @@ export const BlogTopUtil = ({ children }: BlogTopUtilProps) => {
     return (
         <>
             <h2 className="title">Opciones de Filtrado</h2>
-            <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-bg-primary p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
+            <div className="mx-auto w-full max-w-7xl rounded-2xl bg-mizume-primary text-mizume-primary-foreground p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 *:min-w-0">
                 {children}
             </div>
         </>
@@ -227,14 +227,14 @@ interface FilterSearchProps {
 
 export const FilterSearch = ({ search, setSearch, onFilter, placeholder }: FilterSearchProps) => {
     return (
-        <div className="bg-mizume-primary rounded-md p-1">
+        <div className="bg-input-border rounded-md p-1">
             <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && onFilter()}
                 placeholder={placeholder}
-                className="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+                className="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
             />
         </div>
     )
@@ -326,13 +326,13 @@ export const BlogCardWork = ({ work, WORK }: BlogCardWorkProps) => {
             href="#"
             className={`group relative focus:outline-none`}
         >
-            <div className="flex min-h-70 w-full flex-col overflow-hidden rounded-[25px] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform duration-200 group-hover:z-10 group-hover:scale-[1.02]">
+            <div className="flex min-h-70 w-full flex-col overflow-hidden rounded-[25px] border-2 border-card-border shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform duration-200 group-hover:z-10 group-hover:scale-[1.02]">
 
-                <header className="flex h-11.5 shrink-0 items-center justify-between border-b-2 border-black bg-card  px-4 text-black">
+                <header className="flex h-11.5 shrink-0 items-center justify-between border-b-2 border-card-border bg-card-header px-4 text-card-header-foreground">
                     <h2 className="truncate pr-2 text-sm font-bold tracking-tight uppercase">{work.title.replaceAll('-', ' ')}</h2>
                     <div className="flex shrink-0 gap-1">
                         {work.tags.slice(0, 1).map((g, i) => (
-                            <span key={i} className="rounded-full bg-[#8c6c44] px-3 py-1 text-[0.6rem] font-bold text-white uppercase shadow-sm">
+                            <span key={i} className="rounded-full bg-tag px-3 py-1 text-[0.6rem] font-bold text-tag-foreground uppercase shadow-sm">
                                 {g.name}
                             </span>
                         ))}
@@ -342,7 +342,7 @@ export const BlogCardWork = ({ work, WORK }: BlogCardWorkProps) => {
 
                 <main className="flex h-full flex-row overflow-hidden">
 
-                    <section className="w-[35%] shrink-0 overflow-hidden border-r-2 border-black/20 bg-[#e5e5e5] sm:w-[30%]">
+                    <section className="w-[35%] shrink-0 overflow-hidden border-r-2 border-card-border/20 bg-card-muted-foreground/10 sm:w-[30%]">
                         {work.cover_url ? (
                             <img
                                 src={`${work.cover_url}`}
@@ -355,7 +355,7 @@ export const BlogCardWork = ({ work, WORK }: BlogCardWorkProps) => {
                     </section>
 
 
-                    <section className=" flex-1 overflow-y-auto bg-card-foreground p-4 [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20">
+                    <section className=" flex-1 overflow-y-auto bg-card-muted text-card-muted-foreground p-4 [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-muted-foreground/20">
                         {/* <BlogItems
                             data={work}
                             omit={[...WORK_EXCLUDE]}

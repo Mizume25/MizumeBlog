@@ -166,11 +166,11 @@ export const RenderProfileGuest = ({ content, open }: RenderProfileGuestProps) =
         <SidebarMenu>
             <SidebarMenuItem>
 
-                <Button variant={'ghost'} className='w-full mb-2' onClick={() => router.get("login")} >
+                <Button variant={'ghost'} className='w-full mb-2' onClick={() => router.get(route("login"))} >
                     <Login />
                     <p className={`${style}`}> {content.sidebar.profile.sessionIn.content}</p>
                 </Button>
-                <Button variant={'default'} className='w-full bg-btn-danger text-btn-danger-foreground hover:bg-red-300' onClick={() => router.get("register")} >
+                <Button variant={'default'} className='w-full bg-btn-danger text-btn-danger-foreground hover:bg-red-300' onClick={() => router.get(route("register"))} >
                     <Register />
                     <p className={`${style}`}> {content.sidebar.profile.register.content}</p>
                 </Button>
@@ -220,11 +220,11 @@ export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
 
     return ROUTES.map((r, index) => (
         <React.Fragment key={r.url || index}>
-            <BreadcrumbItem className="text-mizume-secondary-foreground text-sm">
-                <BreadcrumbPage className="text-mizume-secondary-foreground text-sm">
+            <BreadcrumbItem className="text-header-muted text-sm">
+                <BreadcrumbPage className="text-header-muted text-sm">
                     <Button
                         variant="link"
-                        className="max-w-[40vw] text-mizume-secondary-foreground md:max-w-none text-sm m-0 px-3" 
+                        className="max-w-[40vw] text-header-muted md:max-w-none text-sm m-0 px-3" 
                         onClick={() =>  r.label === "..." ?  goBack() :  router.get(r.url)}
                     >
                         <span className="truncate">{r.label}</span>
@@ -232,7 +232,7 @@ export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
                 </BreadcrumbPage>
             </BreadcrumbItem>
             {LAST_ITEM != index && (
-                <BreadcrumbSeparator className="text-mizume-secondary-foreground" />
+                <BreadcrumbSeparator className="text-header-muted" />
             )}
 
         </React.Fragment>

@@ -30,7 +30,7 @@ export default function AuthorCard({
     }
 
     return (
-        <div className="w-full h-auto bg-mizume-secondary rounded-2xl flex flex-col items-center gap-4 p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10">
+        <div className="w-full h-auto bg-card text-card-foreground rounded-2xl flex flex-col items-center gap-4 p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10">
             <div className="shrink-0 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full overflow-hidden flex items-center justify-center">
                 {avatarUrl && (
                     <img
@@ -48,8 +48,8 @@ export default function AuthorCard({
                     formatValue={(value) =>
                         value === null || value === undefined || value === "" ? "—" : String(value)
                     }
-                    keyClass="text-sm capitalize lg:text-md bg-mizume-primary rounded-lg p-1"
-                    labelClass="justify-self-start break-words rounded-lg px-2 py-1 text-sm capitalize lg:px-3 lg:text-md bg-mizume-primary rounded-lg p-1 text-mizume-primary-foreground"
+                    keyClass="text-sm capitalize lg:text-md bg-card-muted text-card-muted-foreground rounded-lg p-1"
+                    labelClass="justify-self-start break-words rounded-lg px-2 py-1 text-sm capitalize lg:px-3 lg:text-md bg-card-muted rounded-lg p-1 text-card-muted-foreground"
                 />
             </div>
         </div>

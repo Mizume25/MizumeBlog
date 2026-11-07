@@ -815,7 +815,7 @@ const PostForm = forwardRef<PostFormHandle, PostFormProps>(
                             {/* ACCION UPDATE */}
                             <Button
                                 type="submit"
-                                className="bg-tertiary text-tertiary-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
+                                className="bg-tag-accent text-tag-accent-foreground btn-hover-scale mt-5 h-12 w-full rounded-2xl font-bold"
                                 tabIndex={4}
                                 disabled={processing}
                             >

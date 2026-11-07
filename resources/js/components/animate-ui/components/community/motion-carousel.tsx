@@ -5,6 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/animate-ui/primitives/buttons/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
+import { router } from '@inertiajs/react';
 
 
 type PropType = {
@@ -135,6 +136,7 @@ function MotionCarousel(props: PropType) {
                   initial={false}
                   animate={{ scale: isActive ? 1 : 0.9 }}
                   transition={transition}
+                  onClick={() => router.get(route("works.show", p.slug))}
                 >
                   <img
                     src={cover}

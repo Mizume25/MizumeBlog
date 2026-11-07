@@ -1,25 +1,36 @@
 import { CommentRecord , Reply } from '@/types/definitions';
-import { router } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
+import { useState } from 'react';
+
+type OnDelete = (id: number) => Promise<void>
+type OnCreate = (body: string, parent_id?: number | null) => Promise<void>
+type OnUpdate = (id: number, body: string) => Promise<void>
 
 /** Componentes compartidos  */
-import {    
+import {
     ComentProfile,
     ComentText
 } from './index'
+import EditComent from './EditComent';
 
 
-/*** 
+/***
  * REPLAY DISPLAY
  * Contenido de Respuesta deplegado
  */
-function ReplyContent({ answer }: { answer: Reply }) {
-    
+function ReplyContent({ answer, onDelete: deleteComment, onUpdate }: { answer: Reply, onDelete: OnDelete, onUpdate: OnUpdate }) {
+
+    const { auth } = usePage<SharedData>().props;
+
+    /** Solo el autor puede editar (el backend también lo comprueba) */
+    const isOwner = auth.user.id == answer.user.id;
+
+    const [editing, setEditing] = useState(false);
+
     /** Borrar Respuesta */
     const onDelete = () => {
-        router.delete(route('comments.destroy', answer.id), {
-                preserveScroll: true
-        });
-        
+        deleteComment(answer.id);
     };
 
     return (
@@ -32,11 +43,28 @@ function ReplyContent({ answer }: { answer: Reply }) {
                     <h5 className="font-bold text-[#d4a373] text-xs">{answer.user.name}</h5>
                     <span className="text-[10px] text-[#8b5e3c]">{answer.publish_date}</span>
                 </div>
-                <p className="text-xs leading-relaxed text-[#c8ad7f]">
-                    {answer.description}
-                </p>
+                {editing ? (
+                    <EditComent
+                        initial={answer.description}
+                        closeEdit={() => setEditing(false)}
+                        onSave={(body) => onUpdate(answer.id, body)}
+                    />
+                ) : (
+                    <p className="text-xs leading-relaxed text-[#c8ad7f]">
+                        {answer.description}
+                    </p>
+                )}
 
-                <div className="flex justify-start mt-1">
+                {!editing && (
+                <div className="flex justify-start gap-3 mt-1">
+                    {isOwner && (
+                        <button
+                            onClick={() => setEditing(true)}
+                            className="text-[12px] font-medium text-[#d4a373] hover:text-[#f3e5ab] transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
+                        >
+                            Editar
+                        </button>
+                    )}
                     <button
                         onClick={onDelete}
                         className="text-[12px] font-medium text-red-900 hover:text-red-600 transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
@@ -44,6 +72,7 @@ function ReplyContent({ answer }: { answer: Reply }) {
                         Eliminar
                     </button>
                 </div>
+                )}
             </div>
         </div>
     )
@@ -56,7 +85,7 @@ function ReplyContent({ answer }: { answer: Reply }) {
  * @param coments Comment
  * @returns 
  */
-const content = (coments: CommentRecord[]) => {
+const content = (coments: CommentRecord[], onDelete: OnDelete, onCreate: OnCreate, onUpdate: OnUpdate) => {
         return (
             <>
                 {coments.map((comment) => {
@@ -69,7 +98,7 @@ const content = (coments: CommentRecord[]) => {
                                 <ComentProfile avatar={comment.user.avatar} />
                                 
                                  {/*** Comentario de texto */}
-                                <ComentText coment={comment} />
+                                <ComentText coment={comment} onDelete={onDelete} onCreate={onCreate} onUpdate={onUpdate} />
 
 
                             </div>
@@ -83,6 +112,8 @@ const content = (coments: CommentRecord[]) => {
                                             <ReplyContent
                                                 key={reply.id}
                                                 answer={reply}
+                                                onDelete={onDelete}
+                                                onUpdate={onUpdate}
                                             />
                                         ))}
                                     </div>
@@ -96,14 +127,14 @@ const content = (coments: CommentRecord[]) => {
 
 
 
-function ComentContent({ coments }: { coments: CommentRecord[] }) {
+function ComentContent({ coments, onDelete, onCreate, onUpdate }: { coments: CommentRecord[], onDelete: OnDelete, onCreate: OnCreate, onUpdate: OnUpdate }) {
 
 
-    
+
 
     return (
         <div className="space-y-6 mb-10" id='contentForm'>
-            {content(coments)}
+            {content(coments, onDelete, onCreate, onUpdate)}
         </div>
     );
 }

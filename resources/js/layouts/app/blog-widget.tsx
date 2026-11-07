@@ -1,4 +1,5 @@
 import { type DATA_MAIN } from '@/constants/main-constants'
+import { router } from '@inertiajs/react'
 import { BookBookmark, NotebookTextIcon, UserCircle2, TurtleIcon } from 'lucide-react'
 
 
@@ -16,15 +17,15 @@ const FALLBACK = { Icon: TurtleIcon, label: "Not Found" }
 function BlogWidget({ variant, content }: BlogWidgetProps) {
 
   const VARIANTS = {
-  author: { Icon: UserCircle2, label: content.widget.authors },
-  post: { Icon: NotebookTextIcon, label: content.widget.posts },
-  work: { Icon: BookBookmark, label: content.widget.work },
+  author: { Icon: UserCircle2, label: content.widget.authors , url: route("authors.index")},
+  post: { Icon: TurtleIcon, label: content.widget.posts , url: "#"},
+  work: { Icon: BookBookmark, label: content.widget.work, url: route("works.index") },
 } as const
 
-  const { Icon, label } = VARIANTS[variant as keyof typeof VARIANTS] ?? FALLBACK
+  const { Icon, label, url } = VARIANTS[variant as keyof typeof VARIANTS] ?? FALLBACK
 
   return (
-    <div className="@container flex aspect-square items-center justify-center rounded-xl bg-mizume-secondary p-2 transition-colors duration-500 ease-in-out hover:bg-mizume-primary sm:aspect-video sm:p-4">
+    <div className="@container flex aspect-square items-center justify-center rounded-xl bg-mizume-secondary p-2 transition-colors duration-500 ease-in-out hover:bg-mizume-primary sm:aspect-video sm:p-4" onClick={() => router.get(url)}>
       <figure className="flex cursor-pointer flex-col items-center justify-center gap-1 transition-transform duration-300 hover:scale-110">
         <Icon className="size-[42cqw] max-h-36 max-w-36 text-mizume-tertiary" />
         <h3 className="title text-[length:clamp(0.75rem,13cqw,1.5rem)] leading-tight">

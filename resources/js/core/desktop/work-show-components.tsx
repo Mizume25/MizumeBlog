@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Lang } from '@/store/lang-store';
 
 /** Hooks */
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { TurtleService } from '@/custom/services';
 
@@ -49,6 +49,9 @@ import { Button as AriaButton, Select } from 'react-aria-components';
 
 /** Iconos */
 import { ArrowDownZA, Calendar, CalendarCheck2, FilterIcon, RotateCcw, ArrowLeft, RotateCw, Search, UserCircle2 } from 'lucide-react';
+import { ToastType } from '@/hooks/use-toast';
+import { BlocComents } from '@/blocs/bloc-post';
+import { div } from 'motion/react-client';
 
 
 /**
@@ -66,7 +69,7 @@ export function PageProgress({ section, total }: PageProgressProps) {
             aria-valuemin={1}
             aria-valuemax={total}
             aria-valuenow={section + 1}
-            className="sticky top-0 z-30 h-1 w-full overflow-hidden rounded-full bg-black/10"
+            className="sticky top-0 z-30 h-1 w-full overflow-hidden rounded-full bg-mizume-primary-foreground/10"
         >
             <motion.div
                 className="bg-mizume-fourthary-foreground h-full origin-left"
@@ -146,7 +149,8 @@ interface PostIndexProps {
     content: PostContent | null,
     body: string,
     section: number,
-    direction: 1 | -1
+    direction: 1 | -1,
+    postTab: PostManageTab
 }
 
 /** Desplazamiento horizontal (px) de la transición entre secciones */
@@ -162,9 +166,10 @@ const sectionVariants = {
     exit: (dir: 1 | -1) => ({ x: -dir * SECTION_SHIFT, opacity: 0 }),
 };
 
-export const PostsIndex = ({ paginated, lang, onUser, tab, DATA, content, body, section, direction }: PostIndexProps) => {
+export const PostsIndex = ({ paginated, lang, onUser, tab, DATA, content, body, section, direction, postTab }: PostIndexProps) => {
 
     const reduce = useReducedMotion();
+
 
     return (
         <>
@@ -185,7 +190,19 @@ export const PostsIndex = ({ paginated, lang, onUser, tab, DATA, content, body, 
                                 exit="exit"
                                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                             >
-                                <MarkdownRenderer content={body} className="mb-12" selectedId={"hola"} />
+                                {postTab === "posts" ? (
+                                    <MarkdownRenderer content={body} className="mb-12" selectedId={"hola"} />
+                                ) : postTab === "comments" ? (
+                                    <BlocComents post_id={content.post.data.id} />
+                                ) : postTab === "reports" ? (
+                                    <>
+                                    </>
+                                ) : (
+                                    <>
+                                    </>
+                                )}
+
+
                             </motion.div>
                         </AnimatePresence>
                     </div>
@@ -216,7 +233,7 @@ export const PostsIndex = ({ paginated, lang, onUser, tab, DATA, content, body, 
                             current={paginated.current_page}
                             last={paginated.last_page}
                             labels={PaginatedText[lang]}
-                            classBTN='rounded-full border-2 border-black bg-mizume-primary text-mizume-primary-foreground px-4 py-1.5 text-sm font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                            classBTN='rounded-full border-2 border-mizume-primary-foreground bg-mizume-primary text-mizume-primary-foreground px-4 py-1.5 text-sm font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
                             spanClass='text-sm font-bold text-mizume-secondary-foreground'
                         />
                     </div>
@@ -235,7 +252,7 @@ const PostItem = ({ record, onUser }: PostItemProps) => {
     return (
         <div
             onClick={() => onUser(record.user.uuid)}
-            className='bg-mizume-primary text-mizume-primary-foreground flex flex-col justify-between p-5 rounded-xl gap-4 shadow-sm transition-transform duration-300 hover:scale-103 cursor-pointer'
+            className='bg-card-header text-card-header-foreground flex flex-col justify-between p-5 rounded-xl gap-4 shadow-sm transition-transform duration-300 hover:scale-103 cursor-pointer'
         >
 
             <div className='flex items-center justify-between w-full'>
@@ -274,12 +291,16 @@ interface PostIndexHeaderProps {
     totalSections: number,
     section: number,
     setSection: (section: number) => void,
-    isMobile: boolean
+    isMobile: boolean,
+    postab: PostManageTab
 }
 
-export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, orderBy, setOrderBy, onRevert, tab, users, user, onUser, onBack, DATA, content, totalSections, section, setSection }: PostIndexHeaderProps) => {
+export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, orderBy, setOrderBy, onRevert, tab, users, user, onUser, onBack, DATA, content, totalSections, section, setSection , postab }: PostIndexHeaderProps) => {
 
     const userIndex = findSectionIndex(users, (u) => u.uuid === user?.uuid)
+
+
+
 
     return (
         <div className='w-full rounded-2xl bg-mizume-primary mb-5'>
@@ -297,8 +318,8 @@ export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, or
                             search={search}
                             onFilter={onFilter}
                             setSearch={setSearch}
-                            content="bg-mizume-primary rounded-md p-1"
-                            inputClass="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+                            content="bg-input-border rounded-md p-1"
+                            inputClass="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
                             placeholder={DATA.search.placeholder}
                         />
                     </BlocLabel>
@@ -311,11 +332,11 @@ export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, or
                         titleStyles='title mx-2'
                         sideTitle={<RevertButton onToggle={onRevert} className="ms-auto bg-btn-info text-btn-info-foreground hover:bg-btn-info-foreground hover:text-btn-info" />}
                     >
-                        <div className="grid grid-cols-2 gap-2 bg-mizume-secondary rounded-lg">
+                        <div className="grid grid-cols-2 gap-2 bg-item rounded-lg">
                             <Highlight
                                 value={orderBy}
                                 onValueChange={(v) => setOrderBy(v as PostOrder)}
-                                className="inset-0 rounded-lg bg-mizume-fourthary border-2 border-black"
+                                className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
                             >
                                 {DATA.orderBy.types.map((o) => (
                                     <button
@@ -323,7 +344,7 @@ export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, or
                                         aria-label={o.label}
                                         title={o.label}
                                         data-value={o.type}
-                                        className="px-3 py-1 flex justify-center text-mizume-tertiary cursor-pointer"
+                                        className="px-3 py-1 flex justify-center text-item-foreground cursor-pointer"
                                     >
                                         <o.icon />
                                     </button>
@@ -352,22 +373,31 @@ export const PostIndexHeader = ({ lang, search, setSearch, onFilter, onReset, or
 
                 {/*
                   * Container query: el layout depende del ancho real del bloque, no de la ventana.
-                  * Las pestañas viven en WorkShowHeader; aquí solo Volver + Secciones.
-                  * Estrecho: uno debajo de otro · Ancho (@md): [Volver | Secciones]
+                  * Estrecho: uno debajo de otro · Ancho (@2xl): [Título (flexible) | Fecha | Secciones]
+                  * Flex en vez de grid: funciona igual con 2 hijos (comments/reports) que con 3 (posts).
                   */}
                 <div className='@container p-4'>
-                    <div className='grid grid-cols-1 @md:grid-cols-[auto_minmax(0,1fr)] gap-4 *:min-w-0'>
+                    <div className='flex flex-col @2xl:flex-row gap-4'>
                         {content === null ? (
                             <>
                                 <span className="sr-only" role="status">Loading</span>
-                                <div aria-hidden="true" className={cn(animateStyles.shimmer, '@md:w-28 h-20 rounded-2xl')} />
-                                <div aria-hidden="true" className={cn(animateStyles.shimmer, 'h-20 rounded-2xl')} />
+                                <div aria-hidden="true" className={cn(animateStyles.shimmer, 'h-20 rounded-2xl @2xl:flex-1')} />
+                                <div aria-hidden="true" className={cn(animateStyles.shimmer, 'h-20 rounded-2xl @2xl:w-36')} />
+                                <div aria-hidden="true" className={cn(animateStyles.shimmer, 'h-20 rounded-2xl @2xl:w-64')} />
                             </>
                         ) : (
                             <>
-                                <BlocBack text={DATA.postManage.back} onBack={onBack} />
+                                {/* Título: ocupa el espacio libre y se recorta si es largo */}
+                                <PostWidget heading text={content.post.data.title} className='min-w-0 @2xl:flex-1' />
 
-                                <BlocSectionPage variant='numbers' className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4" lang={lang} key={content.post.data.id} sections={{ min: 1, max: totalSections }} value={section + 1} onChange={(n) => setSection(n - 1)} />
+                                {/* Fecha: solo lo que mide */}
+                                <PostWidget text={content.post.data.publish_date} className='@2xl:shrink-0' />
+
+                                <PostWidget text={content.post.data.user.name} className='@2xl:shrink-0' />
+
+                                {postab == "posts" && (
+                                    <BlocSectionPage variant='numbers' className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4 @2xl:shrink-0 @2xl:min-w-64" lang={lang} key={content.post.data.id} sections={{ min: 1, max: totalSections }} value={section + 1} onChange={(n) => setSection(n - 1)} />
+                                )}
                             </>
                         )}
 
@@ -423,10 +453,10 @@ interface BlocBackProps {
 }
 
 /** El span de columnas lo decide el padre (className), así no rompe el grid en móvil */
-const BlocBack = ({ text, onBack, className }: BlocBackProps) => {
+export const BlocBack = ({ text, onBack, className }: BlocBackProps) => {
     return (
-        <div className={cn('flex h-20 flex-row items-center justify-center', className)}>
-            <UIButton variant={'default'} className='bg-mizume-secondary flex h-full w-full flex-row items-center justify-center gap-2 px-6 cursor-pointer transform-transition hover:-translate-x-1 ease-in-out duration-200' onClick={onBack}>
+        <div className={cn('flex h-15 flex-row items-center justify-center', className)}>
+            <UIButton variant={'link'} className='bg-mizume-primary text-mizume-primary-foreground flex h-full w-full flex-row items-center justify-center gap-2 px-6 cursor-pointer transform-transition hover:-translate-x-1 ease-in-out duration-200' onClick={onBack}>
                 <ArrowLeft />
                 {text}
             </UIButton>
@@ -570,13 +600,13 @@ export const BlocSelectUser = ({ user, users, onUser, className }: BlocSelectUse
                     onChange={(key) => key && onUser(key as number)}
                     className={`w-full`}
                 >
-                    <AriaButton className="w-full text-left capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer outline-none">
+                    <AriaButton className="w-full text-left capitalize bg-input text-input-foreground p-2 rounded-xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-input-focus">
                         <SelectValue />
                     </AriaButton>
                     <Popover placement="bottom start" offset={4} className="w-(--trigger-width)">
-                        <ListBox className={`bg-mizume-secondary p-2 rounded-xl`} >
+                        <ListBox className={`bg-popover text-popover-foreground p-2 rounded-xl`} >
                             {users.map((user) => (
-                                <ListBoxItem key={user.uuid} id={user.id} textValue={user.name} className={`capitalize outline-none  py-2 bg-mizume-secondary cursor-pointer  text-mizume-tertiary flex flex-row-reverse justify-center items-center data-focused:bg-mizume-fourthary`}>
+                                <ListBoxItem key={user.uuid} id={user.id} textValue={user.name} className={`capitalize outline-none  py-2 bg-popover cursor-pointer  text-item-foreground flex flex-row-reverse justify-center items-center data-focused:bg-item-hover data-selected:text-item-active-foreground`}>
                                     {user.name}
                                     <SelectionIndicator animation="pop">✓</SelectionIndicator>
                                 </ListBoxItem>
@@ -621,13 +651,13 @@ export const BlocTabsSelect = ({ tab, onTab, DATA, className }: BlocTabsSelectPr
                 onChange={(key) => key && onTab(key as PostManageTab)}
                 className="w-full"
             >
-                <AriaButton className="w-full text-left capitalize bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-xl cursor-pointer outline-none">
+                <AriaButton className="w-full text-left capitalize bg-input text-input-foreground p-2 rounded-xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-input-focus">
                     <SelectValue />
                 </AriaButton>
                 <Popover placement="bottom start" offset={4} className="w-(--trigger-width)">
-                    <ListBox className="bg-mizume-secondary p-2 rounded-xl">
+                    <ListBox className="bg-popover text-popover-foreground p-2 rounded-xl">
                         {DATA.postManage.POST_TABS.map((key) => (
-                            <ListBoxItem key={key} id={key} textValue={LABELS[key]} className="capitalize outline-none py-2 bg-mizume-secondary cursor-pointer text-mizume-tertiary flex flex-row-reverse justify-center items-center data-focused:bg-mizume-fourthary">
+                            <ListBoxItem key={key} id={key} textValue={LABELS[key]} className="capitalize outline-none py-2 bg-popover cursor-pointer text-item-foreground flex flex-row-reverse justify-center items-center data-focused:bg-item-hover data-selected:text-item-active-foreground">
                                 {LABELS[key]}
                                 <SelectionIndicator animation="pop">✓</SelectionIndicator>
                             </ListBoxItem>
@@ -635,6 +665,25 @@ export const BlocTabsSelect = ({ tab, onTab, DATA, className }: BlocTabsSelectPr
                     </ListBox>
                 </Popover>
             </Select>
+        </div>
+    )
+}
+
+interface PostTitleProps {
+    text: string,
+    /** true = título del post (h1); false = dato secundario (fecha, etc.) */
+    heading?: boolean,
+    className?: string
+}
+
+const PostWidget = ({ text, heading = false, className }: PostTitleProps) => {
+    const Tag = heading ? 'h1' : 'span';
+    return (
+        <div className={cn('flex h-20 items-center justify-center rounded-2xl bg-mizume-secondary p-4', className)}>
+            <div className="w-full h-full min-w-0 bg-mizume-fourthary flex flex-row items-center justify-center rounded-xl text-sm px-4">
+                {/* truncate + title: los títulos largos no rompen el layout y se leen al pasar el ratón */}
+                <Tag className='title truncate whitespace-nowrap' title={text}>{text}</Tag>
+            </div>
         </div>
     )
 }

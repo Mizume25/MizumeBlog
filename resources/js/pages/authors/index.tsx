@@ -72,8 +72,8 @@ function AuthorsIndex({ paginated, filters }: AuthorsIndexProps) {
                   search={search}
                   onFilter={onFilter}
                   setSearch={setSearch}
-                  content="bg-mizume-primary rounded-md p-1"
-                  inputClass="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+                  content="bg-input-border rounded-md p-1"
+                  inputClass="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
                   placeholder={DATA.filter.search.placeholder}
                 />
               </BlocLabel>

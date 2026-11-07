@@ -28,42 +28,25 @@ import {
 } from '@/components/animate-ui/components/radix/sidebar';
 import { LanguagueSwitch } from '@/components/languague-switch'
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
   MegaphoneIcon,
   Home,
-  FolderBookmark,
   UserCircle2,
   BookBookmark,
   FileWarning,
   LogOutIcon,
   LogIn,
   UserPlus,
-  NotebookTextIcon
+  TurtleIcon
 
 
 } from 'lucide-react';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, router, usePage } from '@inertiajs/react';
 import { Route, SharedData } from '@/types';
-import { url } from 'zod';
 import BlogToggler from '@/components/ui/blog-toggler-';
-import { Button } from '@/components/animate-ui/components/buttons/button';
 import { useLangStore } from '@/store/lang-store';
 import { ROUTE } from '@/constants/routes';
+
 
 
 
@@ -108,6 +91,12 @@ export const DATA = {
     sidebar: {
       header: "Contenido Principal",
       items: [
+        {
+          name: 'Sobre MizumeBlog',
+          url: "#",
+          icon: TurtleIcon,
+
+        },
         {
           name: 'Menu Principal',
           url: ROUTE.main,
@@ -161,6 +150,12 @@ export const DATA = {
     sidebar: {
       header: "Main Content",
       items: [
+        {
+          name: 'About MizumeBlog',
+          url: "#",
+          icon: TurtleIcon,
+
+        },
         {
           name: 'Home',
           url: ROUTE.main,
@@ -273,7 +268,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
 
   const BlogFooter = () => {
     return (
-      <footer className="w-full  text-mizume-fourthary-foreground px-5 bg-mizume-fourthary ">
+      <footer className="w-full  text-header-foreground px-5 bg-header ">
 
         <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
           <p className="text-xs">
@@ -373,14 +368,14 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
       </Sidebar>
 
       <SidebarInset className="min-w-0">
-        <header className="bg-mizume-fourthary text-mizume-fourthary-foreground flex min-h-16 shrink-0 items-center transition-[width,height] ease-linear md:group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="bg-header text-header-foreground flex min-h-16 shrink-0 items-center transition-[width,height] ease-linear md:group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex w-full min-w-0 flex-col gap-2 px-4 py-2 md:flex-row md:items-center md:py-0">
             {/* Móvil: fila superior con trigger + navegación */}
             <div className="flex min-w-0 items-center gap-2">
               <SidebarTrigger className="-ml-1 shrink-0" />
-              <Breadcrumb className="min-w-0 text-mizume-secondary-foreground">
+              <Breadcrumb className="min-w-0 text-header-muted">
                 <BreadcrumbList className="flex-nowrap">
-                  <BreadcrumbItem className="hidden md:block text-mizume-secondary-foreground">
+                  <BreadcrumbItem className="hidden md:block text-header-muted">
                     <BreadcrumbLink href="#">
                     </BreadcrumbLink>
                   </BreadcrumbItem>

@@ -6,16 +6,16 @@
 export const DATA = {
   es: {
     widget: {
-      work: "Obra",
-      posts: "Publicacion",
-      authors: "Autor"
+      work: "Obras",
+      posts: "Sobre MizumeBlog",
+      authors: "Autores"
     }
   },
   en: {
     widget: {
-      work: "Work",
-      posts: "Post",
-      authors: "Author"
+      work: "Works",
+      posts: "About MizumeBlog",
+      authors: "Authors"
     }
   }
 }

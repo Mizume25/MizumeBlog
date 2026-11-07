@@ -5,6 +5,7 @@ import { PostContent, PostRecord, User } from "@/types/definitions"
 import { router } from "@inertiajs/react"
 import MarkdownService from "@/services/MarkdownService"
 import { useEffect, useMemo, useState } from "react"
+import { useToast } from "../use-toast"
 
 
 export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[], slug: string, users: User[], lang: Lang) {
@@ -26,6 +27,8 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
     const [postTab, setPostTab] = useState<PostManageTab>("posts");
 
     const [content, setContent] = useState<PostContent | null>(null);
+
+    const { toast, showToast } = useToast();
 
 
     /** Servicio de markdown: se crea una vez por cada post que llega */
@@ -129,8 +132,14 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
         if (next) setPost(next)
 
         apiPost.getBuild(next?.id ?? null, lang, user.name)
-            .then((data) => { if (!cancelled) setContent(data) })
-            .catch((err) => console.error(err.message))
+            .then((data) => {
+                if (!cancelled) setContent(data)
+                showToast('success', 'Se ha cargado el contenido perfectamente')
+                console.log(data)
+            })
+            .catch((err) => {
+                showToast('error', `Se ha producido un error ${err}`)
+            })
 
         return () => { cancelled = true }
     }, [user])
@@ -183,6 +192,7 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
         setSection: changeSection,
         direction,
         totalSections,
-        onIndex
+        onIndex,
+        toast
     }
 }

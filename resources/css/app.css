@@ -27,12 +27,6 @@
     --color-secondary: var(--secondary);
     --color-secondary-foreground: var(--secondary-foreground);
 
-    --color-tertiary: var(--tertiary);
-    --color-tertiary-foreground: var(--tertiary-foreground);
-
-    --color-fourth: var(--fourth);
-    --color-fourth: var(--fourth-foreground);
-
     --color-pure: var(--pure-color);
 
     --color-btn-primary: var(--btn-primary);
@@ -112,40 +106,88 @@
 
     --background: var(--app-bg);
     --foreground: oklch(0.145 0 0);
-    --card: hsl(34, 55%, 61%);
-    --card-foreground: hsl(34, 44%, 69%);
-
     --badge: hsla(0, 0%, 0%, 0.2);
     --badge-foreground: hsl(0, 0%, 100%);
 
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
 
-    /* Valores del sidebar*/
-    --sidebar: var(--mizume-primary);
-    --sidebar-foreground: var(--mizume-primary-foreground);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    /* ============================================================
+       Paleta extendida (modo claro): familia cálida crema / café / oro.
+       Cada grupo tiene valores propios (no heredados) para poder
+       afinar cada pieza de la UI de forma independiente.
+       ============================================================ */
+
+    /* Cards: tarjetas de obras, autores, posts */
+    --card: hsl(31, 50%, 33%);
+    --card-foreground: hsl(45, 70%, 93%);
+    --card-header: hsl(34, 55%, 61%);
+    --card-header-foreground: hsl(23, 40%, 12%);
+    --card-muted: hsl(36, 48%, 72%);
+    --card-muted-foreground: hsl(24, 40%, 14%);
+    --card-border: hsl(24, 48%, 15%);
+    --card-hover: hsl(31, 52%, 38%);
+
+    /* Items: segmentos, opciones de listbox, pestañas */
+    --item: hsl(29, 50%, 27%);
+    --item-foreground: hsl(50, 92%, 48%);
+    --item-hover: hsl(30, 48%, 34%);
+    --item-active: hsl(24, 42%, 15%);
+    --item-active-foreground: hsl(50, 100%, 60%);
+    --item-border: hsl(42, 60%, 70%);
+
+    /* Tags / chips de datos */
+    --tag: hsl(28, 55%, 32%);
+    --tag-foreground: hsl(46, 80%, 92%);
+    --tag-accent: hsl(52, 90%, 38%);
+    --tag-accent-foreground: hsl(48, 100%, 97%);
+
+    /* Inputs y triggers de select */
+    --input: hsl(30, 45%, 26%);
+    --input-foreground: hsl(45, 75%, 92%);
+    --input-placeholder: hsl(40, 35%, 68%);
+    --input-border: hsl(46, 70%, 76%);
+    --input-focus: hsl(52, 95%, 45%);
+
+    /* Popovers / dropdowns / listbox */
+    --popover: hsl(28, 48%, 24%);
+    --popover-foreground: hsl(45, 75%, 92%);
+
+    /* Header de la app (inset del sidebar, footer, cabeceras de panel) */
+    --header: hsl(23, 42%, 13%);
+    --header-foreground: hsl(45, 80%, 95%);
+    --header-muted: hsl(40, 40%, 78%);
+
+    /* Topbar pública */
+    --topbar: hsl(47, 72%, 80%);
+    --topbar-foreground: hsl(23, 42%, 14%);
+
+    /* Sidebar */
+    --sidebar: hsl(47, 70%, 82%);
+    --sidebar-foreground: hsl(23, 40%, 13%);
+    --sidebar-primary: hsl(30, 55%, 30%);
+    --sidebar-primary-foreground: hsl(45, 80%, 95%);
+    --sidebar-accent: hsl(42, 60%, 72%);
+    --sidebar-accent-foreground: hsl(23, 45%, 12%);
+    --sidebar-border: hsl(38, 45%, 62%);
+    --sidebar-ring: hsl(53, 100%, 35%);
+
+    /* Globales shadcn */
+    --secondary: hsl(44, 60%, 86%);
+    --secondary-foreground: hsl(28, 50%, 22%);
+    --muted: hsl(40, 45%, 85%);
+    --muted-foreground: hsl(28, 30%, 35%);
+    --accent: hsl(44, 65%, 76%);
+    --accent-foreground: hsl(23, 40%, 12%);
+    --border: hsl(36, 40%, 60%);
+    --ring: hsl(52, 95%, 42%);
+
+    /* Charts: oro -> café */
+    --chart-1: hsl(53, 100%, 35%);
+    --chart-2: hsl(42, 85%, 50%);
+    --chart-3: hsl(32, 70%, 45%);
+    --chart-4: hsl(24, 60%, 32%);
+    --chart-5: hsl(20, 45%, 20%);
     --bg-overlay: linear-gradient(rgba(60, 35, 15, 0.55), rgba(60, 35, 15, 0.78));
     --app-bg: #2b1b0e;
     /* Valores customizados para la págia web */
@@ -187,35 +229,85 @@
     --pure-dark-color: oklch(0.205 0 0);
     --background: var(--app-bg);
     --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
     --primary: oklch(0.922 0 0);
     --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: var(--color-mizume-primary);
-    --sidebar-foreground: var(--color-mizume-primary-foreground);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(86.07% 0.0001 271.152);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+
+    /* ============================================================
+       Paleta extendida (modo oscuro): familia nocturna índigo / violeta.
+       Mismos grupos que en :root, con valores propios.
+       ============================================================ */
+
+    /* Cards */
+    --card: hsl(252, 24%, 17%);
+    --card-foreground: hsl(250, 35%, 94%);
+    --card-header: hsl(252, 26%, 20%);
+    --card-header-foreground: hsl(250, 30%, 92%);
+    --card-muted: hsl(250, 26%, 11%);
+    --card-muted-foreground: hsl(250, 25%, 86%);
+    --card-border: hsl(255, 30%, 7%);
+    --card-hover: hsl(252, 22%, 22%);
+
+    /* Items */
+    --item: hsl(252, 25%, 14%);
+    --item-foreground: hsl(258, 70%, 76%);
+    --item-hover: hsl(254, 26%, 20%);
+    --item-active: hsl(250, 28%, 8%);
+    --item-active-foreground: hsl(262, 85%, 84%);
+    --item-border: hsl(258, 45%, 55%);
+
+    /* Tags */
+    --tag: hsl(254, 28%, 24%);
+    --tag-foreground: hsl(255, 60%, 90%);
+    --tag-accent: hsl(258, 75%, 74%);
+    --tag-accent-foreground: hsl(250, 30%, 8%);
+
+    /* Inputs */
+    --input: hsl(252, 25%, 13%);
+    --input-foreground: hsl(250, 35%, 94%);
+    --input-placeholder: hsl(250, 18%, 60%);
+    --input-border: hsl(250, 18%, 24%);
+    --input-focus: hsl(258, 75%, 70%);
+
+    /* Popovers */
+    --popover: hsl(252, 26%, 12%);
+    --popover-foreground: hsl(250, 35%, 94%);
+
+    /* Header de la app */
+    --header: hsl(250, 28%, 8%);
+    --header-foreground: hsl(250, 35%, 95%);
+    --header-muted: hsl(250, 22%, 75%);
+
+    /* Topbar pública */
+    --topbar: hsl(250, 20%, 20%);
+    --topbar-foreground: hsl(250, 30%, 92%);
+
+    /* Sidebar */
+    --sidebar: hsl(250, 18%, 20%);
+    --sidebar-foreground: hsl(250, 30%, 92%);
+    --sidebar-primary: hsl(258, 75%, 74%);
+    --sidebar-primary-foreground: hsl(250, 30%, 8%);
+    --sidebar-accent: hsl(252, 22%, 27%);
+    --sidebar-accent-foreground: hsl(255, 60%, 95%);
+    --sidebar-border: hsl(250, 18%, 28%);
+    --sidebar-ring: hsl(258, 75%, 70%);
+
+    /* Globales shadcn */
+    --secondary: hsl(252, 22%, 22%);
+    --secondary-foreground: hsl(250, 35%, 94%);
+    --muted: hsl(252, 22%, 16%);
+    --muted-foreground: hsl(250, 18%, 68%);
+    --accent: hsl(252, 24%, 24%);
+    --accent-foreground: hsl(255, 60%, 95%);
+    --border: hsl(250, 18%, 26%);
+    --ring: hsl(258, 70%, 68%);
+
+    /* Charts: violeta -> índigo profundo */
+    --chart-1: hsl(258, 75%, 74%);
+    --chart-2: hsl(265, 60%, 62%);
+    --chart-3: hsl(245, 45%, 52%);
+    --chart-4: hsl(250, 30%, 38%);
+    --chart-5: hsl(250, 25%, 24%);
     --bg-overlay: linear-gradient(rgba(25, 15, 55, 0.82), rgba(15, 10, 35, 0.94));
 
     --btn-danger:  hsl(0, 65%, 40%);
@@ -228,24 +320,30 @@
     --btn-info-foreground: var(--pure-color);
     --btn-warning-foreground: var(--pure-color);
 
-    --app-bg: #140f26;
-    --mizume-primary: hsl(258, 16%, 71%);
-    --mizume-primary-foreground: hsl(247, 17%, 32%);
+    /* Paleta nocturna: las capas suben en luminosidad (fondo < fourthary < secondary < primary) */
+    --app-bg: hsl(250, 30%, 5%);
 
-    --mizume-secondary: hsl(257, 46%, 50%);
+    /* Bloques: superficie más elevada */
+    --mizume-primary: hsl(250, 18%, 21%);
+    --mizume-primary-foreground: hsl(250, 30%, 92%);
+
+    /* Contenedores, chips, inputs */
+    --mizume-secondary: hsl(252, 25%, 15%);
     --mizume-secondary-foreground: var(--pure-color);
 
-    --mizume-tertiary: hsl(240, 100%, 86%);
-    --mizume-tertiary-foreground: var(--pure-color);
+    /* Acento violeta */
+    --mizume-tertiary: hsl(258, 75%, 74%);
+    --mizume-tertiary-foreground: hsl(250, 30%, 8%);
 
-    --mizume-fourthary: var(--mizume-primary-foreground);
+    /* Marcos / secciones: casi fondo */
+    --mizume-fourthary: hsl(250, 25%, 9%);
     --mizume-fourthary-foreground: var(--pure-color);
 
-    /* Markdown: el primary lila no contrasta sobre el secondary violeta, se usa el tertiary */
+    /* Markdown (sobre bg-mizume-secondary): acento tertiary, superficie hundida con fourthary */
     --md-text: hsl(250, 40%, 96%);
     --md-muted: hsl(250, 30%, 84%);
     --md-accent: var(--mizume-tertiary);
-    --md-surface: color-mix(in oklab, var(--mizume-primary-foreground) 45%, transparent);
+    --md-surface: color-mix(in oklab, var(--mizume-fourthary) 60%, transparent);
     --md-border: color-mix(in oklab, var(--md-accent) 30%, transparent);
 }
 
@@ -309,11 +407,46 @@
     --color-mizume-primary: var(--mizume-primary);
     --color-mizume-primary-foreground: var(--mizume-primary-foreground);
     --color-mizume-secondary: var(--mizume-secondary);
-    --color-mizume-secondary-foreground: var(--color-pure);
+    --color-mizume-secondary-foreground: var(--mizume-secondary-foreground);
     --color-mizume-tertiary: var(--mizume-tertiary);
-    --color-mizume-tertiary-foreground: var(--color-pure);
+    --color-mizume-tertiary-foreground: var(--mizume-tertiary-foreground);
     --color-mizume-fourthary: var(--mizume-fourthary);
-    --color-mizume-fourthary-foreground: var(--color-pure);
+    --color-mizume-fourthary-foreground: var(--mizume-fourthary-foreground);
+
+    /* Paleta extendida */
+    --color-badge: var(--badge);
+    --color-badge-foreground: var(--badge-foreground);
+
+    --color-card-header: var(--card-header);
+    --color-card-header-foreground: var(--card-header-foreground);
+    --color-card-muted: var(--card-muted);
+    --color-card-muted-foreground: var(--card-muted-foreground);
+    --color-card-border: var(--card-border);
+    --color-card-hover: var(--card-hover);
+
+    --color-item: var(--item);
+    --color-item-foreground: var(--item-foreground);
+    --color-item-hover: var(--item-hover);
+    --color-item-active: var(--item-active);
+    --color-item-active-foreground: var(--item-active-foreground);
+    --color-item-border: var(--item-border);
+
+    --color-tag: var(--tag);
+    --color-tag-foreground: var(--tag-foreground);
+    --color-tag-accent: var(--tag-accent);
+    --color-tag-accent-foreground: var(--tag-accent-foreground);
+
+    --color-input-foreground: var(--input-foreground);
+    --color-input-placeholder: var(--input-placeholder);
+    --color-input-border: var(--input-border);
+    --color-input-focus: var(--input-focus);
+
+    --color-header: var(--header);
+    --color-header-foreground: var(--header-foreground);
+    --color-header-muted: var(--header-muted);
+
+    --color-topbar: var(--topbar);
+    --color-topbar-foreground: var(--topbar-foreground);
 
     /* Markdown */
     --color-md-text: var(--md-text);

@@ -34,7 +34,7 @@ export function SliderYearAuthor( { title , value, onValueChange } : SliderYearA
   return (
     <Slider.Root value={value} onValueChange={(v) => onValueChange(v)} min={AUTHOR_YEAR_MIN} max={CURRENT_YEAR} className="w-full">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-white font-semibold">{title}</span>
+        <span className="text-mizume-fourthary-foreground font-semibold">{title}</span>
         <Slider.Value className="text-mizume-tertiary font-semibold tabular-nums" />
       </div>
 
@@ -59,14 +59,14 @@ interface AuthorFilterSearchProps {
 
 export const AuthorFilterSearch = ({ search, setSearch, onFilter }: AuthorFilterSearchProps) => {
     return (
-        <div className="bg-mizume-primary rounded-md p-1">
+        <div className="bg-input-border rounded-md p-1">
             <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter"}
                 placeholder="Buscar obras..."
-                className="w-full bg-mizume-secondary text-mizume-secondary-foreground p-2 rounded-md"
+                className="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
             />
         </div>
     )
@@ -80,18 +80,18 @@ interface AuthorFilterOrderByProps {
 
 export const AuthorFilterOrderBy = ({ orderBy, setOrderBy, DATA }: AuthorFilterOrderByProps) => {
     return (
-        <div className="grid grid-cols-2 gap-2 bg-mizume-secondary rounded-lg ">
+        <div className="grid grid-cols-2 gap-2 bg-item rounded-lg ">
             <Highlight
                 value={orderBy}
                 onValueChange={(v) => setOrderBy(v as AuthorOrder)}
-                className="inset-0 rounded-lg bg-mizume-fourthary border-2 border-black"
+                className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
             >
                 {DATA.filter.orderBy.types.map((c) => (
                     <button
                         key={c.type}
                         aria-label={c.label}
                         data-value={c.type}
-                        className="px-3 py-1  whitespace-nowrap shrink-0 text-mizume-tertiary capitalize cursor-pointer"
+                        className="px-3 py-1  whitespace-nowrap shrink-0 text-item-foreground capitalize cursor-pointer"
                     >
                         <c.icon />
                     </button>

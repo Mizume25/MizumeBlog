@@ -114,25 +114,15 @@ const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) 
 
       
       <div className="flex w-full flex-col items-center justify-between gap-2 rounded-2xl bg-mizume-primary p-3 sm:p-4 lg:flex-row lg:gap-4">
-        <h2 className="title min-w-0 text-center text-xl lg:w-1/2 lg:text-start">
+        <h2 className="title min-w-0 text-center text-xl w-full lg:text-start">
           {work.title}
         </h2>
-        <select
-          aria-label="Autor"
-          className="h-9 w-full min-w-0 truncate rounded-2xl bg-mizume-secondary px-3 text-sm lg:w-1/2"
-        >
-          {users.map((p) => (
-            <option key={p.id} value={p.id} className="text-sm">
-              {p.name}
-            </option>
-          ))}
-        </select>
       </div>
 
 
-      <div className="flex w-full flex-1 flex-col gap-4 rounded-2xl bg-mizume-primary p-3 text-black sm:p-4 lg:flex-row lg:gap-0 lg:p-6">
+      <div className="flex w-full flex-1 flex-col gap-4 rounded-2xl bg-mizume-primary p-3 text-mizume-primary-foreground sm:p-4 lg:flex-row lg:gap-0 lg:p-6">
 
-        <div className="flex min-w-0 flex-col gap-3 border-b-2 border-black pb-4 lg:w-1/2 lg:justify-start  lg:gap-5 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-6">
+        <div className="flex min-w-0 flex-col gap-3 border-b-2 border-mizume-primary-foreground/60 pb-4 lg:w-1/2 lg:justify-start  lg:gap-5 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-6">
           <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 lg:gap-y-4">
             {Object.entries(work).map(([key, value]) => {
               if ((WORK_EXCLUDE as readonly string[]).includes(key)) return null
@@ -155,7 +145,7 @@ const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) 
                   <dt className="text-sm capitalize lg:text-lg">
                     { ChangeKey(key, ENTITIES, 'works')}
                   </dt>
-                  <dd className="justify-self-start break-words rounded-lg bg-mizume-secondary px-2 py-1 text-sm capitalize text-white lg:px-3 lg:text-base">
+                  <dd className="justify-self-start break-words rounded-lg bg-tag px-2 py-1 text-sm capitalize text-tag-foreground lg:px-3 lg:text-base">
                     {VALUE}
                   </dd>
                 </Fragment>
@@ -169,7 +159,7 @@ const BlogSectionContent = ({ work, users, ENTITIES }: BlogSectionContentProps) 
             {work.tags?.map((tag) => (
               <span
                 key={tag.id}
-                className="rounded-lg bg-mizume-secondary px-2 py-1 text-xs text-white lg:px-3 lg:text-sm"
+                className="rounded-lg bg-tag px-2 py-1 text-xs text-tag-foreground lg:px-3 lg:text-sm"
               >
                 {tag.name}
               </span>
