@@ -1,5 +1,6 @@
 import { AUTHOR_LABELS, BlogItems, DATA_ENTITIES } from "@/core/desktop/utils-components";
 import { Author } from "@/types/definitions";
+import { router } from "@inertiajs/react";
 
 /**
  * @fileoverview Archivo de el componente 
@@ -30,7 +31,7 @@ export default function AuthorCard({
     }
 
     return (
-        <div className="w-full h-auto bg-card text-card-foreground rounded-2xl flex flex-col items-center gap-4 p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10">
+        <div className="w-full h-auto bg-card text-card-foreground rounded-2xl flex flex-col items-center gap-4 p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10 cursor-pointer" onClick={() => router.get(route("authors.show", author.slug))}>
             <div className="shrink-0 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full overflow-hidden flex items-center justify-center">
                 {avatarUrl && (
                     <img

@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Author extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
-
+    use HasSlug;
     protected $appends = ['profile_url'];
 
     protected $fillable = [
@@ -45,10 +48,18 @@ class Author extends Model implements HasMedia
         return $this->belongsToMany(Work::class, 'works_authors')->withTimestamps();
     }
 
-    /** unique(author_id) en la pivote: nunca hay más de un artículo vivo. */
+    /** Solo para escribir (attach/detach). Para leer usa article(): la relación es 1:1. */
     public function articles(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'articles_authors')->withTimestamps();
+        return $this->belongsToMany(Post::class, 'articles_authors')
+            ->using(ArticleAuthor::class)
+            ->withTimestamps();
+    }
+
+    /** Único artículo del author: unique(author_id) y unique(post_id) en articles_authors. */
+    public function article(): HasOneThrough
+    {
+        return $this->hasOneThrough(Post::class, ArticleAuthor::class, 'author_id', 'id', 'id', 'post_id');
     }
 
     // --- Accessors ---
@@ -64,14 +75,14 @@ class Author extends Model implements HasMedia
 
     public function hasLiveArticle(): bool
     {
-        return $this->articles()->exists();
+        return $this->article()->exists();
     }
 
     // --- Scopes ---
 
     public function scopeWithoutArticle(Builder $query): Builder
     {
-        return $query->whereDoesntHave('articles');
+        return $query->whereDoesntHave('article');
     }
 
 
@@ -99,5 +110,18 @@ class Author extends Model implements HasMedia
         }
 
         return $query;
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(fn (Author $author) => $author->display_name)
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }

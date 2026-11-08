@@ -39,7 +39,8 @@ class DatabaseSeeder extends Seeder
 
     private function createPosts(): void
     {
-        Post::factory(10)->create();
+        Post::factory(10)->create();            // artículos de works
+        Post::factory(10)->forAuthor()->create(); // un artículo por cada author
     }
 
     private function createComments(): void

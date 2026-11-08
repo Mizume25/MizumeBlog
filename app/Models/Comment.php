@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,6 +40,18 @@ class Comment extends Model
     }
 
     
+    /**
+     * Hilo de un post: comentarios principales (más recientes primero) con sus respuestas y autores
+     */
+    public function scopeThreadOf(Builder $query, int $postId): Builder
+    {
+        return $query
+            ->where('post_id', $postId)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies.user'])
+            ->latest('id');
+    }
+
     public function reply(): bool
     {
         return !is_null($this->parent_id);

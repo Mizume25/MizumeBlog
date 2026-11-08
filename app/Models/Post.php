@@ -6,10 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\ArticleType;
 use App\Enums\PostType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -17,13 +19,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use App\Models\PostImage;
 use Illuminate\Support\Collection;
+use Spatie\Sluggable\HasSlug;
+
 
 class Post extends Model implements HasMedia
 {
 
     use HasFactory;
     use InteractsWithMedia;
-
     private const CONTENT_DISK = 'local';
     private const DEFAULT_LOCALE = 'es';
     private const SUPPORTED_LOCALES = ['es', 'en'];
@@ -36,6 +39,7 @@ class Post extends Model implements HasMedia
         'featured',
         'code',
         'type',
+        'article_type',
         'user_id'
     ];
 
@@ -43,11 +47,13 @@ class Post extends Model implements HasMedia
     {
         return [
             'type' => PostType::class,
+            /** Solo en type = article: decide si va en articles_works o en articles_authors (la BD lo exige). */
+            'article_type' => ArticleType::class,
             'user_id' => 'integer',
         ];
     }
 
-
+   
 
     public function registerMediaCollections(): void
     {
@@ -71,9 +77,18 @@ class Post extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    /** Solo para escribir (attach/detach). Para leer usa author(): la relación es 1:1. */
     public function authors(): BelongsToMany
     {
-        return $this->belongsToMany(Author::class, 'articles_authors')->withTimestamps();
+        return $this->belongsToMany(Author::class, 'articles_authors')
+            ->using(ArticleAuthor::class)
+            ->withTimestamps();
+    }
+
+    /** Author al que pertenece este post (solo article_type = author). */
+    public function author(): HasOneThrough
+    {
+        return $this->hasOneThrough(Author::class, ArticleAuthor::class, 'post_id', 'id', 'id', 'author_id');
     }
 
 
@@ -104,6 +119,11 @@ class Post extends Model implements HasMedia
     public function scopeArticles(Builder $query): Builder
     {
         return $query->ofType(PostType::Article);
+    }
+
+    public function scopeOfArticleType(Builder $query, ArticleType $type): Builder
+    {
+        return $query->articles()->where('article_type', $type);
     }
 
     public function scopePolicies(Builder $query): Builder
@@ -183,7 +203,8 @@ class Post extends Model implements HasMedia
 
     public static function featuredWithWorksGroupedByUser(): Collection
     {
-        return static::where('featured', true)
+        return static::ofArticleType(ArticleType::Work)
+            ->where('featured', true)
             ->with(['works.media', 'user', 'works.tags', 'works.authors'])
             ->get()
             ->groupBy('user_id');

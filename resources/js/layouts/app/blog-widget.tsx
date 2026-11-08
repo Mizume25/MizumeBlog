@@ -25,10 +25,10 @@ function BlogWidget({ variant, content }: BlogWidgetProps) {
   const { Icon, label, url } = VARIANTS[variant as keyof typeof VARIANTS] ?? FALLBACK
 
   return (
-    <div className="@container flex aspect-square items-center justify-center rounded-xl bg-mizume-secondary p-2 transition-colors duration-500 ease-in-out hover:bg-mizume-primary sm:aspect-video sm:p-4" onClick={() => router.get(url)}>
+    <div className="@container flex aspect-square items-center justify-center rounded-xl bg-mizume-secondary p-2 transition-colors duration-500 ease-in-out hover:bg-mizume-primary sm:aspect-video sm:p-4  animate__fadeIn" onClick={() => router.get(url)}>
       <figure className="flex cursor-pointer flex-col items-center justify-center gap-1 transition-transform duration-300 hover:scale-110">
         <Icon className="size-[42cqw] max-h-36 max-w-36 text-mizume-tertiary" />
-        <h3 className="title text-[length:clamp(0.75rem,13cqw,1.5rem)] leading-tight">
+        <h3 className="title text-xl leading-tight">
           {label}
         </h3>
       </figure>

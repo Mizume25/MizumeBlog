@@ -89,7 +89,7 @@ class WorkController extends Controller
             ]));
         }
 
-        return Inertia::render('works/show', [
+        return Inertia::render('works/show/index', [
             'work'      => $work,
             'paginated' => $paginated,
             'users'     => $users,

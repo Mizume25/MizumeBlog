@@ -229,6 +229,11 @@ export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
                     >
                         <span className="truncate">{r.label}</span>
                     </Button>
+                    {LAST_ITEM === index &&(
+                        <>
+                        🐢
+                        </>
+                    )}
                 </BreadcrumbPage>
             </BreadcrumbItem>
             {LAST_ITEM != index && (

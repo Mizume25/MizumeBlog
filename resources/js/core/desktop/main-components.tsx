@@ -199,7 +199,11 @@ export const BlogSection = ({ variant, works, work, posts, changeWork, users, EN
 
 
 const BlogCarousel = ({ works, changeWork }: BlogCarouselProps) => {
-  const OPTIONS: EmblaOptionsType = { loop: true };
+  /**
+   * containScroll: false → un snap por slide aunque Embla desactive el loop por falta de slides
+   * (selectedScrollSnap() se usa como índice de works). align center encaja con el scale del activo.
+   */
+  const OPTIONS: EmblaOptionsType = { loop: true, align: 'center', containScroll: false };
   return <MotionCarousel slides={works} options={OPTIONS} changeWork={changeWork} />;
 };
 

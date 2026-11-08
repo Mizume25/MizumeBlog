@@ -115,6 +115,7 @@ export type Author = Field & {
     birth_year: string | null,
     description: string,
     profile_url: string,
+    slug: string,
 }
 
 
@@ -208,6 +209,7 @@ export type PostRecord = Post & {
     user: User,
     works: Work[]
     comments: CommentRecord[]
+    authors: Author[]
 }
 
 export type PostsGroupedByUser = Record<string, PostRecord[]>
@@ -244,14 +246,11 @@ export type Paginated<T> = {
 
 
 /**
- * Interfaz de post maquetado , numero de seciones , indice , datos del post
- * (los comentarios se cargan aparte con apiComments / useComments)
+ * Maquetación de un post (prop `build` de la página works/show/post):
+ * markdown completo, índice jerárquico y número de secciones ##
  */
-export type PostContent = {
-    post: {
-        data: PostRecord,
-        content: string,
-        index: Nodo[],
-        sections: number
-    }
+export type PostBuild = {
+    content: string,
+    index: Nodo[],
+    sections: number,
 }        

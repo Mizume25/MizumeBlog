@@ -2,13 +2,11 @@
 
 use App\Http\Controllers\Public\CommentsController;
 
-/** Lectura de comentarios: fuera del throttle de escritura para poder refrescar tras cada acción */
-Route::middleware(['auth', 'verified'])->group(function () {
-
-    Route::get('/comentarios/post/{post_id}', [CommentsController::class, 'index'])->name('comments.index');
-
-});
-
+/**
+ * La lectura de comentarios ya no es un endpoint propio: es la página works.posts.comments
+ * (WorkPostController@comments). Aquí solo quedan las escrituras, que responden con back()
+ * para que Inertia vuelva a enviar la prop `comments` actualizada.
+ */
 Route::middleware(['auth', 'verified' , 'throttle:comments'])->group(function () {
 
     

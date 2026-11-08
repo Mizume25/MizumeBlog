@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ArticleType;
 use App\Enums\PostType;
 use App\Enums\UserRole;
 use App\Models\Post;
@@ -26,14 +27,25 @@ class PostFactory extends Factory
             'code' => strtoupper(Str::substr(Str::slug($title, ''), 0, 2) . '-' . Str::random(4))
                 . fake()->unique()->numerify('##'),
             'type' => PostType::Article,
+            'article_type' => ArticleType::Work,
             'user_id' => User::where('role', UserRole::Editor)->inRandomOrder()->value('id')
         ];
+    }
+
+    /** Artículo de un author (va en articles_authors, nunca en articles_works). */
+    public function forAuthor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => PostType::Article,
+            'article_type' => ArticleType::Author,
+        ]);
     }
 
     public function policy(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => PostType::Policy,
+            'article_type' => null,
             'featured' => false,
         ]);
     }

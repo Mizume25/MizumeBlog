@@ -92,8 +92,8 @@ export const DATA = {
       header: "Contenido Principal",
       items: [
         {
-          name: 'Sobre MizumeBlog',
-          url: "#",
+          name: 'Comunidad',
+          url: ROUTE.community,
           icon: TurtleIcon,
 
         },
@@ -151,8 +151,8 @@ export const DATA = {
       header: "Main Content",
       items: [
         {
-          name: 'About MizumeBlog',
-          url: "#",
+          name: 'Community',
+          url: ROUTE.community,
           icon: TurtleIcon,
 
         },
@@ -211,7 +211,24 @@ export const DATA = {
 
 export type DATA_TYPE = typeof DATA.es
 
-
+const blogWebPolicies: Route[] = [
+  {
+    label: "Aviso Legal",
+    url: route("legality.show", "aviso-legal")
+  },
+  {
+    label: "Política de Privacidad",
+    url: route("legality.show", "cookies")
+  },
+  {
+    label: "Política de Cookies",
+    url: route("legality.show", "politica-privacidad")
+  },
+  {
+    label: "Términos y Condiciones de Uso",
+    url: route("legality.show", "terminos-condiciones")
+  },
+];
 
 
 interface BlogSidebarProps {
@@ -243,27 +260,6 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
     return path === '/' ? current === '/' : current.startsWith(path)
   }
 
-  const blogWebPolicies = [
-    {
-      title: "Aviso Legal",
-    },
-    {
-      title: "Política de Privacidad",
-    },
-    {
-      title: "Política de Cookies"
-    },
-    {
-      title: "Términos y Condiciones de Uso"
-    },
-    {
-      title: "Banner y Panel de Gestión de Cookies",
-    },
-    {
-      title: "Cláusulas en Formularios y Comentarios",
-    }
-  ];
-
 
 
   const BlogFooter = () => {
@@ -285,9 +281,9 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
 
 
         <ul className="list-none mt-4  pt-4 border-t border-current/40 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-x-6 py-4">
-          {blogWebPolicies.map((p) => (
-            <li key={p.title} className="text-xs opacity-80">
-              {p.title}
+          {blogWebPolicies.map((p, i) => (
+            <li key={i} className="text-xs opacity-80">
+              <a href={p.url}>{p.label}</a>
             </li>
           ))}
         </ul>

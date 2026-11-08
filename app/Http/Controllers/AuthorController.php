@@ -2,13 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ArticleType;
 use App\Filters\AuthorFilter;
 use App\Http\Requests\Filters\AuthorFilterRequest;
 use App\Models\Author;
+use App\Services\MarkdownService;
 use Inertia\Inertia;
 
 class AuthorController extends Controller
 {
+
+    private MarkdownService $markdown;
+
+
+    public function __construct(MarkdownService $markdown)
+    {
+        $this->markdown = $markdown;
+    }
+    /**
+     * Indice de Authores
+     */
     public function index(AuthorFilterRequest $request)
     {
 
@@ -29,6 +42,26 @@ class AuthorController extends Controller
         return Inertia::render('authors/index', [
             'paginated' => $paginated,
             'filters'   => (object) $filters,
+        ]);
+    }
+
+    public function show(Author $author)
+    {
+        $post = $author->article()->publishPosts()->with('user:id,uuid,name')->first();
+        
+        if (empty($post)) {
+            $name = $author->display_name;
+
+            $msg = __('author.exceptions.withOutPost',['name' => $name]);
+
+            return back()->with('error', $msg);
+        }
+
+
+        return Inertia::render('authors/show', [
+            'author' => $author,
+            'post' => $post,
+            'build' => fn() => $this->markdown->build($post, ArticleType::Author),
         ]);
     }
 

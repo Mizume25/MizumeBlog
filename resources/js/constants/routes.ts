@@ -3,6 +3,7 @@
  */
 export const ROUTE = {
     main: route('main'),
+    community: route("community"),
     work:{
         index: route('works.index')
     },

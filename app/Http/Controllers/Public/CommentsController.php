@@ -11,20 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class CommentsController extends Controller
 {
     /**
-     * Listado de comentarios principales de un post con sus respuestas
-     */
-    public function index(string $post_id)
-    {
-        $comments = Comment::where('post_id', $post_id)
-            ->whereNull('parent_id')
-            ->with(['user', 'replies.user'])
-            ->latest('id')
-            ->get();
-
-        return response()->json($comments);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -48,11 +34,6 @@ class CommentsController extends Controller
             'parent_id' => $request->parent_id,
             'user_id'   => Auth::id(),
         ]);
-
-        /** Peticiones fetch (vista works/show) reciben el comentario; Inertia sigue con back() */
-        if ($request->expectsJson()) {
-            return response()->json($comment->load(['user', 'replies.user']), 201);
-        }
 
         return back()->with('success', '¡Comentario Subido!');
     }
@@ -86,10 +67,6 @@ class CommentsController extends Controller
 
         $comment->update(['description' => $validated['body']]);
 
-        if ($request->expectsJson()) {
-            return response()->json($comment->load(['user', 'replies.user']));
-        }
-
         return back()->with('success', 'Comentario editado.');
     }
 
@@ -107,11 +84,6 @@ class CommentsController extends Controller
 
 
         $comment->delete();
-
-        /** Peticiones fetch reciben JSON; Inertia (settings/history) sigue con back() */
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'Comentario eliminado.']);
-        }
 
         return back()->with('success', 'Comentario eliminado.');
     }

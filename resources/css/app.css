@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'animate.css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/inter';
 
@@ -454,4 +455,40 @@
     --color-md-accent: var(--md-accent);
     --color-md-surface: var(--md-surface);
     --color-md-border: var(--md-border);
+}
+
+/*
+ * Banner de cookies (@whotechs/react-gdpr-cookie-banner)
+ * La librería fija el texto de "Accept All" en negro y construye el hover
+ * concatenando "1A" al color (no válido con var()), así que se sobrescribe aquí.
+ * Selector con "button" / "div" para ganar en especificidad a styled-components.
+ */
+
+/* Entrada suave: la librería solo anima transform (0.3s) y cambia opacity/visibility de golpe */
+div.mizume-cookie-banner {
+    transition:
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.6s ease,
+        visibility 0.6s;
+}
+
+/* La descripción trae color blanco fijo: que herede textColor del banner */
+.mizume-cookie-banner p {
+    color: inherit;
+}
+
+/* Los tres botones iguales: fondo secondary, texto secondary-foreground (blanco) */
+.mizume-cookie-banner button.accept-all,
+.mizume-cookie-banner button.accept-selected,
+.mizume-cookie-banner button.decline-all {
+    background: var(--mizume-secondary);
+    color: var(--mizume-secondary-foreground);
+    border: 1px solid var(--mizume-secondary);
+}
+
+.mizume-cookie-banner button.accept-all:hover,
+.mizume-cookie-banner button.accept-selected:hover,
+.mizume-cookie-banner button.decline-all:hover {
+    background: var(--mizume-secondary);
+    filter: brightness(1.15);
 }

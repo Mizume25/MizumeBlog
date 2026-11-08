@@ -2,8 +2,11 @@
 
 namespace App\Enums;
 
+/** Debe coincidir con el enum de la columna posts.type */
 enum PostType : string
 {
     case Article = 'article';
-    case Policy = 'policy';
+    case Legality = 'legality';
+    case Community = 'community';
+    case Policy = 'policies';
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\WorkController;
 
 /**
@@ -124,16 +125,29 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 
 
-/** Rutas Publicas */
+/** Ruta Principal al Home */
 Route::get('/', [HomeController::class, 'home'])->name('main');
 
+Route::get('/community', [AboutController::class , 'community'])->name('community');
+
+/** Politica y Condiciones */
+Route::get('/legal/{code}', [AboutController::class, 'legality'])
+    ->whereIn('code', ['aviso-legal', 'cookies', 'politica-privacidad', 'terminos-condiciones'])
+    ->name('legality.show');
+
+
+/** Rutas Publicas Entidades */
 Route::get('/works', [WorkController::class, 'index'])->name('works.index');
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
 Route::get('/authors', [AuthorController::class, 'index'])->name('authors.index');
 
+Route::get('/authors/{author}', [AuthorController::class, 'show'])->name('authors.show');
+
 Route::get('/works/{work}', [WorkController::class, 'show'])->name('works.show');
+
+
 
 
 

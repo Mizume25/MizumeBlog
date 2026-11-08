@@ -63,8 +63,8 @@ function main({ works, posts }: MainProps) {
   return (
     <BlogLayout routes={routes}>
       <BlogWidgetWrap>
-        <BlogWidget variant='work' content={CONTENT} />
         <BlogWidget variant='post' content={CONTENT} />
+        <BlogWidget variant='work' content={CONTENT} />
         <BlogWidget variant='author' content={CONTENT} />
       </BlogWidgetWrap>
       <BlogMain>

@@ -1,73 +1,21 @@
-import { Lang } from "@/store/lang-store"
-import { apiPost } from "@/types/api"
-import { PostManageTab, PostOrder, PostUserFilter, WorkShowTab } from "@/types/custom/work-show-types"
-import { PostContent, PostRecord, User } from "@/types/definitions"
+import { PostOrder, PostUserFilter } from "@/types/custom/work-show-types"
+import { PostRecord } from "@/types/definitions"
 import { router } from "@inertiajs/react"
-import MarkdownService from "@/services/MarkdownService"
-import { useEffect, useMemo, useState } from "react"
-import { useToast } from "../use-toast"
+import { useMemo, useState } from "react"
 
-
-export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[], slug: string, users: User[], lang: Lang) {
-
+/**
+ * Estado del listado de posts de un work (página works/show/index).
+ *
+ * Ya no gestiona el post abierto ni su contenido: abrir un post es navegar a
+ * works.posts.show y cada pestaña (posts / comments / reports) es su propia página.
+ */
+export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[], slug: string) {
 
     const [search, setSearch] = useState<string>(filter.search ?? "");
 
     const [orderBy, setOrderBy] = useState<PostOrder>("date");
 
     const [orderRevert, setOrderRevert] = useState(false);
-
-    const [user, setUser] = useState<User | null>(null);
-
-    const [post, setPost] = useState<PostRecord | null>(null);
-
-    const [tab, setTab] = useState<WorkShowTab>("index");
-
-    /** Pestaña de gestión del post (posts / comments / reports): guarda el valor, no el label */
-    const [postTab, setPostTab] = useState<PostManageTab>("posts");
-
-    const [content, setContent] = useState<PostContent | null>(null);
-
-    const { toast, showToast } = useToast();
-
-
-    /** Servicio de markdown: se crea una vez por cada post que llega */
-    const markdown = useMemo(
-        () => content
-            ? new MarkdownService(content.post.content, content.post.index)
-            : null,
-        [content]
-    );
-
-    /** Sección actual (base 0); vuelve a la primera al cambiar de post */
-    const [section, setSection] = useState(0);
-
-    /** Dirección del último cambio: 1 = avanza (entra por la derecha), -1 = vuelve (entra por la izquierda) */
-    const [direction, setDirection] = useState<1 | -1>(1);
-
-    useEffect(() => {
-        setSection(0)
-        setDirection(1)
-    }, [content])
-
-    /** Cambia de sección guardando hacia dónde se mueve */
-    const changeSection = (next: number) => {
-        if (next === section) return
-        setDirection(next > section ? 1 : -1)
-        setSection(next)
-    }
-
-    /** Clic en un nodo del índice: salta a la sección ## a la que pertenece */
-    const onIndex = (id: string) => {
-        if (markdown) changeSection(markdown.sectionOf(id))
-    }
-
-    /** Total de secciones del post actual */
-    const totalSections = markdown?.total() ?? 0;
-
-    /** Trozo de markdown a renderizar: la sección actual */
-    const body = markdown?.section(section) ?? "";
-
 
     /** Orden en cliente sobre la página actual (igual que works/index) */
     const Posts = useMemo(() => {
@@ -89,7 +37,6 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
 
     }, [posts, orderBy, orderRevert]);
 
-
     /** Búsqueda por nombre de usuario en servidor (?search=) */
     const onFilter = () => {
         const term = search.trim();
@@ -103,53 +50,6 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
             }
         );
     }
-
-
-
-
-
-    const onUser = (uuid: string) => {
-        const user = users.find((p) => p.uuid === uuid)
-        if (user) setUser(user)
-    }
-
-
-    useEffect(() => {
-        // Cada post nuevo (o volver al índice) empieza en la pestaña de publicaciones
-        setPostTab("posts")
-
-        if (user == null) {
-            setTab("index")
-            setContent(null)
-            return
-        }
-
-        setTab("post")
-        setContent(null)
-        let cancelled = false
-
-        const next = posts.find((p) => p.user.uuid === user.uuid)
-        if (next) setPost(next)
-
-        apiPost.getBuild(next?.id ?? null, lang, user.name)
-            .then((data) => {
-                if (!cancelled) setContent(data)
-                showToast('success', 'Se ha cargado el contenido perfectamente')
-                console.log(data)
-            })
-            .catch((err) => {
-                showToast('error', `Se ha producido un error ${err}`)
-            })
-
-        return () => { cancelled = true }
-    }, [user])
-
-
-    const onBack = () => setUser(null)
-
-
-
-
 
     const onReset = () => {
         setSearch("");
@@ -166,7 +66,6 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
         );
     }
 
-
     return {
         search,
         setSearch,
@@ -177,22 +76,5 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
         Posts,
         onFilter,
         onReset,
-        tab,
-        setTab,
-        postTab,
-        setPostTab,
-        user,
-        setUser,
-        onUser,
-        onBack,
-        content,
-        setContent,
-        body,
-        section,
-        setSection: changeSection,
-        direction,
-        totalSections,
-        onIndex,
-        toast
     }
 }

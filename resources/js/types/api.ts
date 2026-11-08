@@ -1,7 +1,9 @@
-/** Archivo de Apis utilizadas */
-
-import { Lang } from "@/store/lang-store";
-import { CommentRecord, PostContent } from "./definitions";
+/**
+ * Archivo de Apis utilizadas
+ *
+ * El build del post y los comentarios ya no pasan por aquí: son props de Inertia
+ * de las páginas works/show/* (ver WorkPostController y WorkShowLayout).
+ */
 
 
 /** Cifrado Token */
@@ -10,7 +12,7 @@ function getCsrfToken(): string {
 }
 
 /** Fetch Api Principal */
-async function apiFetch(url: string, options: RequestInit = {}) {
+export async function apiFetch(url: string, options: RequestInit = {}) {
     const response = await fetch(url, {
         ...options,
         headers: {
@@ -37,36 +39,6 @@ async function apiFetch(url: string, options: RequestInit = {}) {
     return data;
 }
 
-
-/** Peticion de Post */
-export const apiPost = {
-    getBuild: (post_id: number | null, lang: Lang, name: string) : Promise<PostContent> => {
-        const message = lang === 'es' ? `No se ha encontrado ningun post de ${name} ` : `No posts found for ${name}`;
-        if (post_id === null)  return Promise.reject(new Error(message))
-        return apiFetch(`/api/post/${post_id}`);
-    }
-}
-
-/** Peticiones de Comentarios (entidad separada del build del post) */
-export const apiComments = {
-    list: (post_id: number): Promise<CommentRecord[]> =>
-        apiFetch(route('comments.index', post_id)),
-
-    store: (post_id: number, body: string, parent_id: number | null = null): Promise<CommentRecord> =>
-        apiFetch(route('comments.store'), {
-            method: 'POST',
-            body: JSON.stringify({ post_id, body, parent_id }),
-        }),
-
-    update: (id: number, body: string): Promise<CommentRecord> =>
-        apiFetch(route('comments.update', id), {
-            method: 'PUT',
-            body: JSON.stringify({ body }),
-        }),
-
-    destroy: (id: number): Promise<{ message: string }> =>
-        apiFetch(route('comments.destroy', id), { method: 'DELETE' }),
-}
 
 /**  
 export const artworkApi = {

@@ -2,9 +2,39 @@
 
 namespace App\Services;
 
+use App\Enums\ArticleType;
+use App\Enums\PostType;
+use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
+use RuntimeException;
+
 class MarkdownService
 {
-    
+    private const DISK = 'local';
+
+    /** Idioma base: sus archivos no llevan sufijo (content.md); el resto lleva _{locale} (content_en.md) */
+    private const DEFAULT_LOCALE = 'es';
+
+    /**
+     * Maquetación de un post: markdown, índice (index.json) y número de secciones.
+     *
+     * El tipo se toma de $post->type. Solo los posts de tipo article necesitan
+     * $article para saber si pertenecen a un work o a un author.
+     *
+     * @return array{content: string, index: array, sections: int}
+     */
+    public function build(Post $post, ?ArticleType $article = null): array
+    {
+        [$content, $index] = $this->read($this->resolvePaths($post, $article));
+
+        return [
+            'content'  => $content,
+            'index'    => $index,
+            'sections' => $this->countSections($content),
+        ];
+    }
+
 
     /**
      * Funcion para conter el numero de secciones
@@ -80,15 +110,89 @@ class MarkdownService
         return $index;
     }
 
-    public static function layout (string $content) 
+
+
+    /**
+     * Resuelve las rutas (content + index) según el tipo del post.
+     *
+     * - Contenido del sitio (community, legality, policies): estricto, debe existir
+     *   en el idioma activo.
+     * - Contenido de usuario (article): si no existe en el idioma activo se muestra
+     *   en castellano.
+     *
+     * @return array{content: string, index: string}
+     */
+    private function resolvePaths(Post $post, ?ArticleType $article): array
     {
-        $sections = static::countSections($content);
+        return match ($post->type) {
+            PostType::Article   => $this->articlePaths(
+                $post,
+                $article ?? throw new InvalidArgumentException('Un post de tipo article requiere ArticleType')
+            ),
+            PostType::Community => $this->localized('community/Mizumeblog', 'community/Mizumeblog', strict: true),
+            PostType::Legality  => $this->localized("legality/{$post->code}/content", "legality/{$post->code}/index", strict: true),
+            PostType::Policy    => $this->localized("policies/{$post->code}/content", "policies/{$post->code}/index", strict: true),
+        };
+    }
 
+    /**
+     * Artículos: work → blog/{uuid}/{code}/ · author → authors/{code}/
+     */
+    private function articlePaths(Post $post, ArticleType $article): array
+    {
+        $post->loadMissing('user');
 
+        $base = match ($article) {
+            ArticleType::Work   => $post->user->path($post->code),
+            ArticleType::Author => "authors/{$post->code}/",
+        };
+
+        return $this->localized($base . 'content', $base . 'index', strict: false);
+    }
+
+    /**
+     * Rutas del idioma activo a partir de rutas sin extensión ni sufijo.
+     * es → content.md / index.json · en → content_en.md / index_en.json
+     *
+     * @param bool $strict true: falla si no existe en el idioma activo ·
+     *                     false: recurre al castellano
+     * @throws RuntimeException si $strict y falta el archivo del idioma activo
+     */
+    private function localized(string $content, string $index, bool $strict): array
+    {
+        $locale = app()->getLocale();
+        $suffix = $locale === self::DEFAULT_LOCALE ? '' : "_{$locale}";
+
+        $paths = [
+            'content' => "{$content}{$suffix}.md",
+            'index'   => "{$index}{$suffix}.json",
+        ];
+
+        if (Storage::disk(self::DISK)->exists($paths['content'])) {
+            return $paths;
+        }
+
+        if ($strict) {
+            throw new RuntimeException("Falta el contenido del sitio en '{$locale}': {$paths['content']}");
+        }
 
         return [
-            'sections' => $sections,
-            
+            'content' => "{$content}.md",
+            'index'   => "{$index}.json",
         ];
+    }
+
+    /**
+     * Lee markdown e índice del disco; si no existen devuelve vacío
+     * @return array{0: string, 1: array}
+     */
+    private function read(array $paths): array
+    {
+        $disk = Storage::disk(self::DISK);
+
+        $content = $disk->get($paths['content']) ?? '';
+        $index   = json_decode($disk->get($paths['index']) ?? '[]', true) ?? [];
+
+        return [$content, $index];
     }
 }

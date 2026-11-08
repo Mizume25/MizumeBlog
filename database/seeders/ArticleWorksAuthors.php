@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\PostType;
+use App\Enums\ArticleType;
 use App\Models\Author;
 use App\Models\Post;
 use App\Models\Work;
@@ -22,7 +22,7 @@ class ArticleWorksAuthors extends Seeder
         /** Un usuario solo puede tener un post por work: excluimos los works que ya usó */
         $usedWorksByUser = [];
 
-        Post::all()->each(function (Post $post) use ($works, &$usedWorksByUser) {
+        Post::ofArticleType(ArticleType::Work)->each(function (Post $post) use ($works, &$usedWorksByUser) {
             $used = $usedWorksByUser[$post->user_id] ?? [];
             $available = $works->whereNotIn('id', $used);
 
@@ -34,18 +34,17 @@ class ArticleWorksAuthors extends Seeder
             $usedWorksByUser[$post->user_id] = array_merge($used, $ids->all());
         });
 
+        /** Author ↔ Post es 1:1: un author por post y ningún author repetido */
         $usedAuthorIds = collect();
 
-        Post::where('type', PostType::Article)->each(function (Post $post) use (&$usedAuthorIds) {
-            $available = Author::whereNotIn('id', $usedAuthorIds)->inRandomOrder()->get();
+        Post::ofArticleType(ArticleType::Author)->each(function (Post $post) use (&$usedAuthorIds) {
+            $author = Author::whereNotIn('id', $usedAuthorIds)->inRandomOrder()->first();
 
-            if ($available->isEmpty()) return;
+            if (! $author) return;
 
+            $post->authors()->attach($author->id);
 
-            $chosen = $available->random(min(2, $available->count()));
-            $post->authors()->attach($chosen->pluck('id'));
-
-            $usedAuthorIds = $usedAuthorIds->merge($chosen->pluck('id'));
+            $usedAuthorIds->push($author->id);
         });
 
         
