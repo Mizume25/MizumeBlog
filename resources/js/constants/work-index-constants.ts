@@ -22,6 +22,7 @@ const ANIMEMANGA_VALUES: MEDIUM_VALUES_TYPE[] = ["todos", "novela_ligera", "anim
 
 export const DATA_WORK_INDEX = {
     es: {
+        head:"Obras",
         main_title: "Opciones de Filtrados",
         NAV_VALUES,
         SELECT_VALUES,
@@ -78,6 +79,7 @@ export const DATA_WORK_INDEX = {
         }
     },
     en: {
+        head:"Works",
         main_title: "Filter Options",
         NAV_VALUES,
         SELECT_VALUES,
@@ -138,8 +140,3 @@ export const DATA_WORK_INDEX = {
 
 export type DATA_WORK_INDEX_TYPE = typeof DATA_WORK_INDEX.es
 
-const WorkOrderBy = [
-    {
-        name: "wdwd"
-    }
-]

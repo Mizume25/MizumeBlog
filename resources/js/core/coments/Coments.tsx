@@ -25,10 +25,10 @@ interface ComentsProps {
 function Coments({ coments, loading = false, error = null, onCreate, onDelete, onUpdate, onRefresh }: ComentsProps) {
     const { auth } = usePage<SharedData>().props;
     return (
-        <section id='comentarios' className="mt-12 lg:col-start-4 lg:col-span-6 bg-[#2c1e17] text-[#f3e5ab] p-8 rounded-lg shadow-2xl border border-[#4a3728] mx-auto max-w w-full">
+        <section id='comentarios' className="mt-12 lg:col-start-4 lg:col-span-6 bg-header text-header-foreground p-8 rounded-lg shadow-2xl border border-card-border mx-auto max-w w-full">
 
             {/*** Titulo de la Seccción */}
-            <h3 className="flex items-center justify-between gap-4 text-2xl font-semibold mb-8 border-b border-[#4a3728] pb-2  text-[#d4a373]">
+            <h3 className="flex items-center justify-between gap-4 text-2xl font-semibold mb-8 border-b border-card-border pb-2  text-card-header">
                 <span>Comentarios {auth?.user ? (coments.length) : ("")}</span>
 
                 {auth?.user && onRefresh && (
@@ -38,7 +38,7 @@ function Coments({ coments, loading = false, error = null, onCreate, onDelete, o
                         disabled={loading}
                         aria-label="Actualizar comentarios"
                         title="Actualizar comentarios"
-                        className="rounded-md p-1.5 text-[#d4a373] transition-colors hover:bg-[#3d2b1f] disabled:opacity-50 cursor-pointer"
+                        className="rounded-md p-1.5 text-card-header transition-colors hover:bg-item-active disabled:opacity-50 cursor-pointer"
                     >
                         <RotateCw className={cn('size-5', loading && 'animate-spin')} />
                     </button>
@@ -49,7 +49,7 @@ function Coments({ coments, loading = false, error = null, onCreate, onDelete, o
             {auth?.user ? (
                 <>
                     {error && (
-                        <div className="mb-4 text-sm text-red-400">{error}</div>
+                        <div className="mb-4 text-sm text-destructive">{error}</div>
                     )}
 
                     {coments.length != 0 ? (
@@ -58,11 +58,11 @@ function Coments({ coments, loading = false, error = null, onCreate, onDelete, o
 
 
                     ) : loading ? (
-                        <div className="flex justify-center p-4 text-[#8b5e3c]">
+                        <div className="flex justify-center p-4 text-header-muted">
                             <Loading className='w-full h-full flex flex-col items-center justify-center' text='Loading . . .' textStyles='text-2xl text-mizume-secondary-foreground' />
                         </div>
                     ) : (
-                        <div className="flex justify-center gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
+                        <div className="flex justify-center gap-4 p-4 rounded-md bg-mizume-fourthary hover:bg-item-active transition-colors duration-300 border border-card-border/50">
                             <span> ¡Se el primero en comentar! </span>
                         </div>
                     )}
@@ -72,7 +72,7 @@ function Coments({ coments, loading = false, error = null, onCreate, onDelete, o
                 </>
 
             ) : (
-                <div className="flex gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
+                <div className="flex gap-4 p-4 rounded-md bg-mizume-fourthary hover:bg-item-active transition-colors duration-300 border border-card-border/50">
                     <span> Si quieres ver los comentarios, registrate !</span>
                 </div>
 

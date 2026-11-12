@@ -21,7 +21,7 @@ import { ROUTE } from '@/constants/routes';
 import { DATA_WORK_SHOW } from '@/constants/work-show-constants';
 import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 import {
-    BlocBack,
+    WorkShowAsideBack,
     PostHeader,
     PostSidebar,
     SmoothCollapse,
@@ -46,6 +46,8 @@ export interface WorkShowSlots {
     top?: ReactNode,
     /** Al final de la cabecera del post (p. ej. selector de secciones) */
     headerExtra?: ReactNode,
+
+    head?: ReactNode
 }
 
 const SlotsContext = createContext<(slots: WorkShowSlots) => void>(() => { });
@@ -135,6 +137,7 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
         ...(post ? [{ label: post.title, url: tabUrl('posts') }] : []),
     ];
 
+ 
     return (
         <BlogLayout routes={routes}>
             <SlotsContext.Provider value={setSlots}>
@@ -142,12 +145,11 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
                     asideTitle={post?.title ?? ''}
                     aside={slots.aside ?? <PostSidebar DATA={DATA} />}
                     header={<WorkShowHeader work={work} WORK={WORK} collapsed={open} />}
-                    subheader={<WorkShowTabsBar show={open} active={active} onTab={onTab} DATA={DATA} />}
+                    subheader={<WorkShowTabsBar show={open} active={active} onTab={onTab} DATA={DATA} post={post} />}
                     asideHeader={
                         <WorkShowAsideHeader show={open}>
                             <div className="flex flex-row justify-between items-center gap-4 ">
-                                <BlocBack text={DATA.postManage.back} href={route('works.show', work.slug)} />
-                                <img src={TurtleService.onPath("welcome")} alt={TurtleService.onName("welcome")} className="h-20 w-20" />
+                                <WorkShowAsideBack text={DATA.postManage.back} href={route('works.show', work.slug)} />
                             </div>
                         </WorkShowAsideHeader>
                     }
@@ -155,7 +157,7 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
                     {slots.top}
 
                     <WorkShowMain>
-                        <SmoothCollapse show={open}>
+                        <SmoothCollapse show={open && active === 'posts'}>
                             {lastPost && <PostHeader post={lastPost}>{slots.headerExtra}</PostHeader>}
                         </SmoothCollapse>
 

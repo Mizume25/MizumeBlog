@@ -4,6 +4,7 @@ import WorkShowLayout from "@/layouts/app/work-show-layout"
 import { useLangStore } from "@/store/lang-store"
 import { DATA_WORK_SHOW } from "@/constants/work-show-constants"
 import { WorkShowIndexProps } from "@/types/custom/work-show-types"
+import { Head } from "@inertiajs/react"
 
 /**
  * works/show/index: listado de posts del work (filtros + tarjetas).
@@ -20,6 +21,7 @@ function WorkShowIndex({ work, paginated, filters }: WorkShowIndexProps) {
 
   return (
     <>
+      <Head title={DATA.heads.index} />
       <PostsFilterHeader
         search={search}
         setSearch={setSearch}

@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { User, UserType } from '@/types/definitions';
+import { Post, User, UserType } from '@/types/definitions';
 import { useSidebar } from '@/components/animate-ui/components/radix/sidebar';
 import { SiInstagram, SiX, SiTiktok, SiGoodreads, SiLinkerd, SiGithub } from 'react-icons/si'
 import {
@@ -42,7 +42,7 @@ import {
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Route, SharedData } from '@/types';
+import { Route, SharedData, Terms } from '@/types';
 import BlogToggler from '@/components/ui/blog-toggler-';
 import { useLangStore } from '@/store/lang-store';
 import { ROUTE } from '@/constants/routes';
@@ -147,6 +147,7 @@ export const DATA = {
   en: {
     title: "Mizumeblog",
     subtitle: "community",
+    
     sidebar: {
       header: "Main Content",
       items: [
@@ -211,26 +212,6 @@ export const DATA = {
 
 export type DATA_TYPE = typeof DATA.es
 
-const blogWebPolicies: Route[] = [
-  {
-    label: "Aviso Legal",
-    url: route("legality.show", "aviso-legal")
-  },
-  {
-    label: "Política de Privacidad",
-    url: route("legality.show", "cookies")
-  },
-  {
-    label: "Política de Cookies",
-    url: route("legality.show", "politica-privacidad")
-  },
-  {
-    label: "Términos y Condiciones de Uso",
-    url: route("legality.show", "terminos-condiciones")
-  },
-];
-
-
 interface BlogSidebarProps {
   children: React.ReactNode;
   routes: Route[]
@@ -239,7 +220,10 @@ interface BlogSidebarProps {
 export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
   const isMobile = useIsMobile();
 
-  const { auth, quote } = usePage<SharedData>().props;
+  const { auth, quote, terms } = usePage<SharedData>().props;
+
+
+
 
   const lang = useLangStore((l) => l.lang)
   const setLang = useLangStore((l) => l.setLang)
@@ -260,9 +244,11 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
     return path === '/' ? current === '/' : current.startsWith(path)
   }
 
+  interface BlogFooterProps {
+    terms: Terms[]
+  }
 
-
-  const BlogFooter = () => {
+  const BlogFooter = ({ terms } : BlogFooterProps) => {
     return (
       <footer className="w-full  text-header-foreground px-5 bg-header ">
 
@@ -281,9 +267,9 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
 
 
         <ul className="list-none mt-4  pt-4 border-t border-current/40 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-x-6 py-4">
-          {blogWebPolicies.map((p, i) => (
+          {terms.map((p, i) => (
             <li key={i} className="text-xs opacity-80">
-              <a href={p.url}>{p.label}</a>
+              <a href={route("legality.show", p.code)}>{p.title}</a>
             </li>
           ))}
         </ul>
@@ -395,7 +381,7 @@ export const BlogSidebar = ({ children, routes }: BlogSidebarProps) => {
         <div className="flex flex-1 flex-col gap-4  p-4">
           {children}
         </div>
-        <BlogFooter />
+        <BlogFooter terms={terms}/>
       </SidebarInset>
     </SidebarProvider >
   );

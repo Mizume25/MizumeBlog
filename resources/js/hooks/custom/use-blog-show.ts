@@ -34,8 +34,8 @@ export default function useBlogShow(hasAside: boolean) {
     }, []);
 
     const contextValue = React.useMemo<BlogShowContextProps>(
-        () => ({ hasAside, openMobile, setOpenMobile }),
-        [hasAside, openMobile],
+        () => ({ hasAside, openMobile, setOpenMobile, openDesktop }),
+        [hasAside, openMobile, openDesktop],
     );
 
     return {

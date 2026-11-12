@@ -44,6 +44,8 @@ interface RenderProfileProps {
     content: DATA_TYPE
 }
 
+
+
 export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfileProps) => {
 
 
@@ -76,6 +78,20 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
         }
     }
 
+    const Profile: Route[] = [
+        {
+            label: content.sidebar.profile.settings,
+            url: route("logout"),
+            luciIcon: Settings2,
+        },
+        {
+            label: content.sidebar.profile.sessionOut.content,
+            url: route("profile.edit"),
+            luciIcon: LogOut
+        }
+    ]
+
+
 
     return (
         <SidebarMenu>
@@ -87,7 +103,7 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
 
-                            <BlogProfile name={user?.name} />
+                            <BlogProfile name={user?.name} className='w-4 h-4 rounded-xl p-4 flex flex-col justify-center items-center bg-input-border' />
 
 
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -123,21 +139,16 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Settings2 />
-                                {content.sidebar.profile.settings}
+                                <Settings2 className='text-sidebar-accent' />
+                                <Link href={route("profile.edit")} method="get" as="button">
+                                    {content.sidebar.profile.settings}
+                                </Link>
+
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <MegaphoneIcon />
-                                {content.sidebar.profile.policy}
-                            </DropdownMenuItem>
-                            {role !== "guest" && <RenderSettingsExtra />}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <LogOut />
+                            <LogOut className='text-sidebar-accent' />
                             <Link href={route("logout")} method="post" as="button">
                                 {content.sidebar.profile.sessionOut.content}
                             </Link>
@@ -224,14 +235,14 @@ export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
                 <BreadcrumbPage className="text-header-muted text-sm">
                     <Button
                         variant="link"
-                        className="max-w-[40vw] text-header-muted md:max-w-none text-sm m-0 px-3" 
-                        onClick={() =>  r.label === "..." ?  goBack() :  router.get(r.url)}
+                        className="max-w-[40vw] text-header-muted md:max-w-none text-sm m-0 px-3"
+                        onClick={() => r.label === "..." ? goBack() : router.get(r.url)}
                     >
                         <span className="truncate">{r.label}</span>
                     </Button>
-                    {LAST_ITEM === index &&(
+                    {LAST_ITEM === index && (
                         <>
-                        🐢
+                            🐢
                         </>
                     )}
                 </BreadcrumbPage>

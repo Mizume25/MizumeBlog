@@ -6,7 +6,7 @@ function ComentsTitle({ coments }:{ coments: Comment[]}) {
  const { auth } = usePage<SharedData>().props;
 
     return (
-        <h3 className="text-2xl font-semibold mb-8 border-b border-[#4a3728] pb-2  text-[#d4a373]">
+        <h3 className="text-2xl font-semibold mb-8 border-b border-card-border pb-2  text-card-header">
             Comentarios {auth?.user ? (coments.length) : ("")}
         </h3>
     )

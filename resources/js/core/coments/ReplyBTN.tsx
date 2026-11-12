@@ -6,7 +6,7 @@ function ReplyBTN({ openAnswer } : { openAnswer: () => void }) {
     return (
         <button
             onClick={handleButton}
-            className="text-blue-500 hover:text-blue-400 text-xs font-semibold transition-colors cursor-pointer"
+            className="text-btn-info hover:text-btn-info/80 text-xs font-semibold transition-colors cursor-pointer"
         >
             Responder
         </button>

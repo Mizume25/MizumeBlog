@@ -18,7 +18,7 @@ import { Route } from "@/types"
 import { ROUTE } from "@/constants/routes"
 import { PaginatedText } from "@/lib/utils"
 import { SiNotebooklm } from "react-icons/si"
-import { router } from "@inertiajs/react"
+import { Head, router } from "@inertiajs/react"
 import { div } from "motion/react-client"
 import { TurtleService } from "@/custom/services"
 
@@ -67,6 +67,7 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
 
   return (
     <BlogLayout routes={routes}>
+      <Head title={DATA.head} />
       <BlocContent title={DATA.main_title}>
         <BlocTopLeft>
 

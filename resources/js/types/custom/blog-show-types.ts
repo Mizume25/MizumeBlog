@@ -10,6 +10,8 @@ export interface BlogShowContextProps {
     hasAside: boolean;
     openMobile: boolean;
     setOpenMobile: (open: boolean) => void;
+    /** Aside de escritorio desplegado (true) o plegado a w-12 (false) */
+    openDesktop: boolean;
 }
 
 export interface BlogShowProps {

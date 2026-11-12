@@ -1,298 +1,247 @@
-import BlogLayout from "@/layouts/app/blog-layout"
+import { BlogLayout } from "@/layouts/app";
 import SettingsLayout from "@/layouts/settings/layout"
-import { CommentRecord, confirmDelete, Post } from "@/types"
-import { router } from "@inertiajs/react";
-import { ChevronDown, ChevronFirst, ChevronLast, ChevronUp, Pencil, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react"
+import { confirmDelete, Route, SharedData } from "@/types"
+import { router, usePage } from "@inertiajs/react";
+import { ChevronDown, ChevronFirst, ChevronLast, ChevronUp, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react"
+import { CommentRecord, Post, Reply } from "@/types/definitions";
 
-/*** Botones de indezar post */
-interface ButtonsProps {
+/**
+ * settings/history: historial de comentarios del usuario agrupados por post.
+ * `comments` llega resuelto del servidor (ProfileController@history) con su `post` y `replies.user`.
+ * Los borrados responden con back() y solo se vuelve a pedir la prop `comments`.
+ */
+
+/** Props que se recargan tras borrar */
+const RELOAD = ['comments', 'flash']
+
+/** Imagen fija que representa al post */
+const TURTLE = '/Icons/turtle/turtle-reader.png'
+
+type PostGroup = {
+    post: Post
+    comments: CommentRecord[]
+}
+
+interface HistoryProps {
+    comments: CommentRecord[]
+}
+
+interface NavProps {
     goPrev: () => void
     goNext: () => void
     index: number
-    posts: Post[]
+    total: number
 }
 
 /**
- * Boorar Comentario
+ * Borrar un comentario
  * @param id Comentario
  */
 const onDelete = (id: number) => {
     confirmDelete(
-        '¿Quieres Eliminar este comentario?',
-        `Esta acción borrará permanentemente.`,
+        '¿Quieres eliminar este comentario?',
+        'Esta acción lo borrará permanentemente.',
         () => router.delete(route('comments.destroy', id), {
-            preserveScroll: true
+            only: RELOAD,
+            preserveScroll: true,
         })
     );
-
 }
 
 /**
- * Borrar todo slos cmentario de el post
- * @param post_id 
+ * Borrar todos los comentarios del usuario en un post
+ * @param post_id Post
  */
 const onDeletePost = (post_id: number) => {
     confirmDelete(
         '¿Quieres eliminar todos los comentarios de este post?',
-        `Esta accion borrara permanetemente tus comentarios`,
+        'Esta acción borrará permanentemente tus comentarios.',
         () => router.delete(route('comments.destroyByPost', post_id), {
-            preserveScroll: true
+            only: RELOAD,
+            preserveScroll: true,
         })
     )
 }
 
+/**
+ * Agrupa los comentarios por post manteniendo el orden (más recientes primero)
+ */
+function groupByPost(comments: CommentRecord[]): PostGroup[] {
+    const map = new Map<number, PostGroup>()
+
+    for (const comment of comments) {
+        if (!comment.post) continue
+        if (!map.has(comment.post_id)) map.set(comment.post_id, { post: comment.post, comments: [] })
+        map.get(comment.post_id)!.comments.push(comment)
+    }
+
+    return [...map.values()]
+}
 
 /**
- * Botones Responsivos
- * @param goNext siguiene post
- * @param goPrev previo post
- * @param index indice actual
- * @param posts Post Actuales
- * @returns 
+ * Navegación entre posts (móvil): horizontal
  */
-function ButtonsRepo({ goNext, goPrev, posts, index }: ButtonsProps) {
+function NavMobile({ goPrev, goNext, index, total }: NavProps) {
     return (
-        <div className="lg:hidden w-35 flex flex-row justify-between items-center">
-            <button className="rounded-2xl hover:bg-white/90 hover:text-black p-1 duration-150 ease-in-out transition-transform hover:scale-105" onClick={goPrev}><ChevronFirst size={20} /></button>
-            <p className="capitalize">{posts[index].title.length > 10 ? posts[index].web_title ?? `Lectura de ${posts[index].author}` : posts[index].title}</p>
-            <button className="rounded-2xl hover:bg-white/90 hover:text-black p-1 duration-150 ease-in-out transition-transform hover:scale-105" onClick={goNext}><ChevronLast size={20} /></button>
+        <div className="lg:hidden flex items-center gap-2">
+            <button
+                onClick={goPrev}
+                aria-label="Anterior"
+                className="cursor-pointer rounded-full p-1 hover:bg-card-hover hover:text-card-foreground transition-colors"
+            >
+                <ChevronFirst size={20} />
+            </button>
+            <span className="text-xs font-medium">{index + 1}/{total}</span>
+            <button
+                onClick={goNext}
+                aria-label="Siguiente"
+                className="cursor-pointer rounded-full p-1 hover:bg-card-hover hover:text-card-foreground transition-colors"
+            >
+                <ChevronLast size={20} />
+            </button>
         </div>
     )
 }
 
-
 /**
- * Botones Responsivos
- * @param goNext siguiene post
- * @param goPrev previo post
- * @param index indice actual
- * @param posts Post Actuales
- * @returns 
+ * Navegación entre posts (escritorio): vertical
  */
-function Buttons({ goNext, goPrev, index, posts }: ButtonsProps) {
+function NavDesktop({ goPrev, goNext, index, total }: NavProps) {
     return (
-        <>
+        <div className="hidden lg:flex w-16 shrink-0 flex-col items-center justify-center gap-4 border-l border-card-border bg-card-muted text-card-muted-foreground">
             <button
                 onClick={goPrev}
-                className="p-2 rounded-full hover:bg-gray-200 transition"
                 aria-label="Anterior"
+                className="cursor-pointer rounded-full p-2 hover:bg-card-header transition-colors"
             >
                 <ChevronUp size={20} />
             </button>
-
-            <span className="text-xs font-medium text-gray-500">
-                {index + 1}/{posts.length}
-            </span>
-
+            <span className="text-xs font-medium">{index + 1}/{total}</span>
             <button
                 onClick={goNext}
-                className="p-2 rounded-full hover:bg-gray-200 transition"
                 aria-label="Siguiente"
+                className="cursor-pointer rounded-full p-2 hover:bg-card-header transition-colors"
             >
                 <ChevronDown size={20} />
             </button>
-        </>
-    )
-}
-
-/**
- * Sere de comentarios
- * @param comments Array de Comentarios
- * @returns 
- */
-function RenderComents({ comments }: { comments: CommentRecord[] }) {
-    return (
-        <div className="flex flex-col gap-3 p-4">
-
-
-            {comments.length != 0 ? (comments.map((comment) => (
-                <div key={comment.id} className="max-w-full bg-amber-200 flex flex-row justify-between items-start rounded-2xl px-4 py-2 max-h-25 overflow-y-auto">
-                    <p className="ms-1 min-w-0 flex-1 break-words break-all">
-                        🐢 {comment.description}
-                    </p>
-                    <div className="flex items-center justify-center gap-1.5 shrink-0">
-
-                        <a type="button"
-                            href={route('post.show', comment.post_id)}
-                            title="Editar"
-                            className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(118,77,35)] text-white hover:bg-[#624a2e] transition-colors"
-                        >
-                            <Pencil size={14} />
-                        </a>
-                        <button
-                            type="button"
-                            title="Eliminar"
-                            onClick={() => onDelete(comment.id)}
-                            className="cursor-pointer flex items-center justify-center w-8 h-8 rounded-full bg-red-900/70 text-white hover:bg-red-800 transition-colors"
-                        >
-                            <Trash2 size={14} />
-                        </button>
-                    </div>
-                </div>))
-
-            ) : (
-                <>
-                    <h2 className="text-white text-xl font-bold">No hay mas comentarios</h2>
-                </>
-            )}
-
         </div>
     )
 }
 
-interface NavProps {
-    loadBack: () => void,
-    loadMore: () => void,
-    hasMore: boolean,
-    page: number,
-    onDeletePost: (id: number) => void,
-    post_id: number
-}
-
-function NavCommand({ loadBack, loadMore, page, hasMore, onDeletePost, post_id }: NavProps) {
+/**
+ * Tortuga que representa al post con su título
+ */
+function PostCover({ post }: { post: Post }) {
     return (
-        <>
-            <button
-                onClick={() => onDeletePost(post_id)}
-                className="w-25 h-15 bg-red-500 text-white rounded-2xl p-2 text-[12px] cursor-pointer transition-transform duration-150 hover:-translate-y-1.5">
-                Borrar Todos
-            </button>
-
-            <button onClick={loadBack} disabled={page === 1} className="flex items-center justify-center w-25 h-15 bg-amber-200 text-white rounded-2xl p-2 text-[12px] cursor-pointer hover:bg-amber-200/90">
-                <ChevronFirst className="text-black" />
-            </button>
-
-            <button onClick={loadMore} disabled={!hasMore} className="flex items-center justify-center w-25 h-15 bg-amber-200 text-white rounded-2xl p-2 text-[12px] cursor-pointer hover:bg-amber-200/90">
-                <ChevronLast className="text-black" />
-            </button>
-        </>
+        <div className="flex lg:w-60 shrink-0 lg:flex-col items-center gap-3 p-4 bg-card-header text-card-header-foreground">
+            <img src={TURTLE} alt="" className="w-16 lg:w-40 h-auto object-contain" />
+            <h3 className="capitalize font-bold text-sm lg:text-base lg:text-center break-words">
+                {post.title}
+            </h3>
+        </div>
     )
 }
 
-
-
-interface historyProps {
-    posts: Post[],
+/**
+ * Respuesta de otro usuario a un comentario propio
+ */
+function ReplyItem({ reply }: { reply: Reply }) {
+    return (
+        <div className="ml-6 flex flex-col gap-0.5 rounded-lg border-l-2 border-item-border bg-card-muted px-3 py-2 text-card-muted-foreground">
+            <div className="flex justify-between gap-2 text-[11px]">
+                <span className="font-bold">{reply.user?.name ?? 'Usuario'}</span>
+                <span className="opacity-70">{reply.publish_date}</span>
+            </div>
+            <p className="text-xs break-words">{reply.description}</p>
+        </div>
+    )
 }
 
+/**
+ * Comentario propio con sus respuestas
+ */
+function CommentItem({ comment }: { comment: CommentRecord }) {
+    return (
+        <div className="flex flex-col gap-2">
+            <div className="flex items-start justify-between gap-3 rounded-2xl border border-card-border bg-item px-4 py-2 text-card-foreground hover:bg-item-hover transition-colors">
+                <div className="min-w-0 flex-1">
+                    <span className="text-[11px] text-item-foreground">{comment.publish_date}</span>
+                    <p className="break-words">🐢 {comment.description}</p>
+                </div>
+                <button
+                    type="button"
+                    title="Eliminar"
+                    onClick={() => onDelete(comment.id)}
+                    className="cursor-pointer flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-btn-danger text-btn-danger-foreground hover:opacity-90 transition-opacity"
+                >
+                    <Trash2 size={14} />
+                </button>
+            </div>
 
-function history({ posts }: historyProps) {
+            {comment.replies?.map((reply) => <ReplyItem key={reply.id} reply={reply} />)}
+        </div>
+    )
+}
+
+function History({ comments }: HistoryProps) {
+
+    const { auth } = usePage<SharedData>().props;
+
+    const groups = useMemo(() => groupByPost(comments), [comments])
 
     const [index, setIndex] = useState(0);
 
-    const [page, setPage] = useState(1);
+    /** Si se borra el último grupo visible, se cae al último disponible */
+    const current = Math.min(index, Math.max(groups.length - 1, 0))
 
-    const [hasMore, setHasMore] = useState(true);
+    const goPrev = () => setIndex(current === 0 ? groups.length - 1 : current - 1)
 
-    const [comments, setComments] = useState<CommentRecord[]>([]);
+    const goNext = () => setIndex(current === groups.length - 1 ? 0 : current + 1)
 
-    const goPrev = () => {
-        setIndex((prev) => (prev === 0 ? posts.length - 1 : prev - 1));
-        setPage(1);
-        setComments([])
-    }
+    const routes: Route[] = [
+        { label: "Home", url: route("main") },
+        { label: auth.user.name, url: route("profile.edit") },
+    ]
 
-    const goNext = () => {
-        setIndex((prev) => (prev === posts.length - 1 ? 0 : prev + 1))
-        setPage(1);
-        setComments([])
-    };
-
-    const loadMore = () => setPage(prev => prev + 1);
-
-    const loadBack = () => setPage(prev => prev == 1 ? 1 : prev - 1);
-
-
-    /** Api key commments */
-    useEffect(() => {
-        if(posts.length === 0) return;
-        const controller = new AbortController();
-        fetch(`/api/posts/${posts[index].id}/comments?page=${page}`, {
-            credentials: 'same-origin',
-            headers: { 'Accept': 'application/json' },
-            signal: controller.signal
-        })
-            .then(res => res.json())
-            .then(data => {
-
-                setComments(data.data);
-                setHasMore(data.next_page_url !== null);
-
-            })
-            .catch(err => {
-                if (err.name !== 'AbortError') console.log(err)
-            });
-
-        return () => controller.abort();
-    }, [page, index]);
-
+    const group = groups[current]
 
     return (
-        <BlogLayout>
+        <BlogLayout routes={routes}>
             <SettingsLayout>
-                {posts.length != 0 ? (
-                    <>
+                {group ? (
+                    <div className="w-full overflow-hidden rounded-xl border border-card-border">
 
-                        <div className="w-full h-15 -mb-1 rounded-t-xl  p-3 bg-gray-600/50 flex flex-start gap-3 overflow-hidden">
-                            <ButtonsRepo goNext={goNext} goPrev={goPrev} index={index} posts={posts} />
-                            <NavCommand
-                                loadBack={loadBack}
-                                loadMore={loadMore}
-                                page={page}
-                                hasMore={hasMore}
-                                onDeletePost={onDeletePost}
-                                post_id={posts[index].id}
-                            />
-
+                        {/** Barra de acciones */}
+                        <div className="flex items-center justify-between gap-3 p-3 bg-card-header text-card-header-foreground">
+                            <NavMobile goPrev={goPrev} goNext={goNext} index={current} total={groups.length} />
+                            <button
+                                onClick={() => onDeletePost(group.post.id)}
+                                className="ms-auto cursor-pointer rounded-2xl px-3 py-2 text-[12px] bg-btn-danger text-btn-danger-foreground transition-transform duration-150 hover:-translate-y-0.5"
+                            >
+                                Borrar todos
+                            </button>
                         </div>
 
+                        <div className="flex flex-col lg:flex-row bg-card text-card-foreground lg:h-100">
+                            <PostCover post={group.post} />
 
-                        <div className="w-full flex lg:flex-row flex-col h-full overflow-hidden ">
-
-
-
-                            <div className="w-full h-100 border-black bg-gray-700 flex items-end justify-between bg-no-repeat bg-cover p-1  ">
-
-                                <div
-                                    className="hidden lg:block h-full w-70 bg-gray-100 bg-cover bg-center bg-no-repeat "
-                                    style={{
-                                        backgroundImage: `url(/IMG/Cards/${posts[index].cover_card})`,
-                                        objectPosition: `${posts[index].config?.card_config}`,
-                                    }}
-                                />
-
-
-                                <div className="w-full lg:columns-1 gap-1 p-2 auto-rows-min">
-                                    <div className="w-full bg-amber-100/10 rounded-2xl">
-
-                                        <RenderComents comments={comments} />
-
-                                    </div>
-
-                                    <div className="w-full bg-amber-100/10 rounded-2xl">
-
-
-                                    </div>
-                                </div>
-
-
-                                {/** Container de comentarios */}
-                                <div className="hidden min-lg:flex w-16 h-full flex-shrink-0 border-l border-gray-200 flex-col items-center justify-center gap-4 bg-gray-50">
-                                    <Buttons goPrev={goPrev} goNext={goNext} index={index} posts={posts} />
-                                </div>
+                            {/** Comentarios del post */}
+                            <div className="flex-1 min-w-0 flex flex-col gap-3 p-4 overflow-y-auto max-h-100">
+                                {group.comments.map((comment) => (
+                                    <CommentItem key={comment.id} comment={comment} />
+                                ))}
                             </div>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                    <h2>No hay Comentarios</h2>
-                    </>
-                )}
 
+                            <NavDesktop goPrev={goPrev} goNext={goNext} index={current} total={groups.length} />
+                        </div>
+                    </div>
+                ) : (
+                    <h2 className="text-card-foreground text-xl font-bold">No hay comentarios</h2>
+                )}
             </SettingsLayout>
-        </BlogLayout >
+        </BlogLayout>
     )
 }
 
-export default history
+export default History

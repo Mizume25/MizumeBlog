@@ -38,7 +38,7 @@ export const BlogShow = ({ children, header, subheader, asideHeader, aside, asid
 
 
     const { openMobile, setOpenMobile, openDesktop, toggleDesktop, contextValue } = useBlogShow(!!aside);
-
+    
 
 
     return (

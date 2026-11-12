@@ -34,14 +34,14 @@ function ReplyContent({ answer, onDelete: deleteComment, onUpdate }: { answer: R
     };
 
     return (
-        <div className="ml-10 mt-4 flex gap-3 items-start border-l-2 border-[#5a4234] pl-4" >
+        <div className="ml-10 mt-4 flex gap-3 items-start border-l-2 border-item pl-4" >
             {/* Avatar Emoji */}
             <div className="text-xl pt-1">🐢</div>
 
-            <div className="flex-grow bg-[#2a1d15]/40 p-3 rounded-r-lg" data-id={answer.id} >
+            <div className="flex-grow bg-mizume-fourthary/40 p-3 rounded-r-lg" data-id={answer.id} >
                 <div className="flex justify-between items-center mb-1">
-                    <h5 className="font-bold text-[#d4a373] text-xs">{answer.user.name}</h5>
-                    <span className="text-[10px] text-[#8b5e3c]">{answer.publish_date}</span>
+                    <h5 className="font-bold text-card-header text-xs">{answer.user.name}</h5>
+                    <span className="text-[10px] text-header-muted">{answer.publish_date}</span>
                 </div>
                 {editing ? (
                     <EditComent
@@ -50,7 +50,7 @@ function ReplyContent({ answer, onDelete: deleteComment, onUpdate }: { answer: R
                         onSave={(body) => onUpdate(answer.id, body)}
                     />
                 ) : (
-                    <p className="text-xs leading-relaxed text-[#c8ad7f]">
+                    <p className="text-xs leading-relaxed text-md-muted">
                         {answer.description}
                     </p>
                 )}
@@ -60,14 +60,14 @@ function ReplyContent({ answer, onDelete: deleteComment, onUpdate }: { answer: R
                     {isOwner && (
                         <button
                             onClick={() => setEditing(true)}
-                            className="text-[12px] font-medium text-[#d4a373] hover:text-[#f3e5ab] transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
+                            className="text-[12px] font-medium text-card-header hover:text-header-foreground transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
                         >
                             Editar
                         </button>
                     )}
                     <button
                         onClick={onDelete}
-                        className="text-[12px] font-medium text-red-900 hover:text-red-600 transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
+                        className="text-[12px] font-medium text-btn-danger/70 hover:text-btn-danger transition-colors duration-200 cursor-pointer uppercase tracking-tighter"
                     >
                         Eliminar
                     </button>
@@ -92,7 +92,7 @@ const content = (coments: CommentRecord[], onDelete: OnDelete, onCreate: OnCreat
 
                     return (
                         <div key={comment.id} className="space-y-2">
-                            <div className="flex gap-4 p-4 rounded-md bg-[#3d2b1f] hover:bg-[#4a3728] transition-colors duration-300 border border-[#4a3728]/50">
+                            <div className="flex gap-4 p-4 rounded-md bg-mizume-fourthary hover:bg-item-active transition-colors duration-300 border border-card-border/50">
 
 
                                 <ComentProfile avatar={comment.user.avatar} />

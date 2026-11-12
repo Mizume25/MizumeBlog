@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 /**
  * Categorias a escoger
  */
@@ -8,7 +10,8 @@ export const OPTION_CATEGORY = ["literatura", "animemanga", "reflexiones"];
 export interface Route {
     label: string,
     url: string
-    icon?: string
+    icon?: string,
+    luciIcon?:LucideIcon,
 }
 
 /**

@@ -16,6 +16,7 @@ import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 import { DATA } from '@/constants/main-constants';
 import { ROUTE } from '@/constants/routes';
 import { Route } from '@/types';
+import { Head } from '@inertiajs/react';
 
 
 
@@ -25,7 +26,7 @@ import { Route } from '@/types';
  * @param posts Filtra usuarios agrupados
  * @returns 
  */
-export function onUsers(posts : PostsGroupedByUser) {
+export function onUsers(posts: PostsGroupedByUser) {
   const users = Object.values(posts)
     .flat()
     .map((post) => post.user);
@@ -34,9 +35,9 @@ export function onUsers(posts : PostsGroupedByUser) {
 }
 
 
-const routes : Route[] = [
+const routes: Route[] = [
   {
-    label:"Home",
+    label: "Home",
     url: ROUTE.main,
   }
 ]
@@ -54,7 +55,7 @@ function main({ works, posts }: MainProps) {
   const CONTENT = DATA[lang]
 
   /** Contenido de entidades */
-  const ENTITIES = DATA_ENTITIES[lang]   
+  const ENTITIES = DATA_ENTITIES[lang]
 
   /** Usuarios relacionales  */
   const users = onUsers(posts)
@@ -62,14 +63,15 @@ function main({ works, posts }: MainProps) {
 
   return (
     <BlogLayout routes={routes}>
+        <Head title={CONTENT.head} />
       <BlogWidgetWrap>
         <BlogWidget variant='post' content={CONTENT} />
         <BlogWidget variant='work' content={CONTENT} />
         <BlogWidget variant='author' content={CONTENT} />
       </BlogWidgetWrap>
       <BlogMain>
-        <BlogSection variant='left' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  ENTITIES={ENTITIES}  />
-        <BlogSection variant='right' works={works} work={work} posts={posts} changeWork={changeWork} users={users}  ENTITIES={ENTITIES}   />
+        <BlogSection variant='left' works={works} work={work} posts={posts} changeWork={changeWork} users={users} ENTITIES={ENTITIES} />
+        <BlogSection variant='right' works={works} work={work} posts={posts} changeWork={changeWork} users={users} ENTITIES={ENTITIES} />
       </BlogMain>
     </BlogLayout>
   )

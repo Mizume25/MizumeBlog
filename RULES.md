@@ -1,9 +1,6 @@
 # MizumeBlog
-
 Reglas explícitas para el uso de MizumeBlog como repertorio de escritos personales.
-
 ## Permisos y Roles
-
 MizumeBlog acoge 4 tipos de perfiles:
 
 - Guest
@@ -30,7 +27,7 @@ Se considera altercado mayor todo aquello que involucre:
 - Abuso de privilegios.
 - Creación sistemática de contenido fantasma.
 - Intentos reiterados de eliminación o modificación de contenido ajeno.
-- Insultos o agresiones personales dirigidos al administrador, usuarios o cualquier editor.
+- Insultos o agresiones personales dirigidos a cualquier usuario de la página
 - Abuso de las líneas de reporte especializadas para la atención de usuarios, editores, etc.
  
 ## Reglas aplicadas al Usuario Especial Editor
@@ -38,7 +35,7 @@ Se considera altercado mayor todo aquello que involucre:
 Debido a la naturaleza jerárquica que establecen estas reglas, se evidencia una clara discrepancia de permisos que hay que poner en rigor cuanto antes.
 
 ### Regla 1
-El editor tiene derecho a decidir qué hacer con su contenido: si preservarlo, promoverlo o guardarlo. Cuando se elimine una cuenta de editor, se le enviará un archivo ZIP con todas las contribuciones que realizó en la página, junto con un mensaje de agradecimiento por su aportación.
+El editor tiene derecho a decidir qué hacer con su contenido: si preservarlo, promoverlo o guardarlo. Cuando se elimine una cuenta de editor, se le enviará un ZIP con todas las contribuciones que realizó en la página, junto con un mensaje de agradecimiento por su aportación.
 
 Antes de eliminar la cuenta, se le notificará para que elija si prefiere borrar o mantener sus contribuciones en la página, y será su decisión la que determine el procedimiento a seguir.
 
@@ -49,13 +46,13 @@ En caso de que la pérdida de privilegios o el borrado de la cuenta se deba a mo
 
 
 ### Regla 3
-Al crear contenido relacional (obras, artículos, autores), cada usuario es responsable de lo que sube, escribe y visualiza. Aun con los monitoreos pertinentes, la aplicación no se hace responsable de cualquier actividad de naturaleza inmoral.
+Al crear contenido relacional (obras, artículos, autores), cada usuario es responsable de lo que sube, escribe y visualiza. Aun con los monitoreos pertinentes, la aplicación no se hace responsable de cualquier actividad de naturaleza inmoral / antietica.
 
 ### Regla 4
 En caso de que un usuario quiera ampliar la información sobre un autor cuyo artículo fue publicado por otro editor, deberá solicitar permiso al creador original o en caso necesario al adminstrador principal de la entrada. En ningún caso se tolerará la eliminación de contenido ajeno, por lo que se impondrán restricciones técnicas para impedir cualquier altercado.
 
 ### Regla 5
-Ningún editor podrá editar el artículo o *post* sobre una obra (*work*) de otro usuario. Para ello existe la opción de crear un articulo propi. A diferencia del artículo sobre un autor, del cual solo existirá uno por autor (el cual se gestionará según las reglas antes mencionadas), las obras podrán crearse de forma independiente.
+Ningún editor podrá editar el artículo o *post* sobre una obra (*work*) de otro usuario. Para ello existe la opción de crear un articulo propio. A diferencia del artículo sobre un autor, del cual solo existirá uno por autor (el cual se gestionará según las reglas antes mencionadas), las obras podrán crearse de forma independiente.
 
 ### Regla 6
 El editor deberá mantener una actividad mínima en la página para conservar sus privilegios. Se monitoreará su actividad para evitar el contenido fantasma (campos vacíos, artículos incompletos, galimatías, *Lorem ipsum*, etc.). Tras su registro inicial, dispondrá siempre de un plazo de 2 meses para publicar al menos un *post*; cumplido este requisito, el contador se reiniciará. Se le notificará sobre su inactividad una semana antes de la fecha límite. En caso de no cumplir con este requisito, el editor perderá sus privilegios (aplicando las reglas estipuladas para un "altercado menor").

@@ -46,7 +46,7 @@ export function usePostReader(post: PostRecord, build: PostBuild, headerExtra?: 
             <PostHeader post={post}>
                 <BlocSectionPage
                     variant='numbers'
-                    className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4 @2xl:shrink-0 @2xl:min-w-56"
+                    className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4 min-w-90"
                     lang={lang}
                     key={post.id}
                     sections={{ min: 1, max: totalSections }}

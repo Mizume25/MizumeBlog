@@ -63,7 +63,7 @@ class ProfileController extends Controller
         return redirect('/');
     }
 
-    public function appearance () 
+    public function appearance()
     {
         return Inertia::render('settings/appearance');
     }
@@ -74,36 +74,13 @@ class ProfileController extends Controller
      */
     public function history()
     {
-        $ids = Comment::where('user_id', Auth::id())
-            ->select('post_id')
-            ->groupBy('post_id')
-            ->orderBy('publish_date', 'desc')
+        $comments = Auth::user()->comments()
+            ->with(['post', 'replies.user'])
+            ->latest('id')
             ->get();
 
-        $postIds = $ids->pluck('post_id');
+        return Inertia::render('settings/history', compact('comments'));
 
-        $posts = Post::whereIn('id', $postIds)->get();
-
-        return Inertia::render('settings/history', compact('posts'));
+  
     }
-
-    /*public function history()
-    {
-        
-        $posts = Comment::where('user_id', Auth::id())
-            ->select('post_id')
-            ->groupBy('post_id')
-            ->orderBy('publish_date', 'desc')
-            ->paginate(10);
-
-       
-        $comments = Comment::with(['user', 'replies.user', 'post'])
-            ->where('user_id', Auth::id())
-            ->whereIn('post_id', $posts->pluck('post_id'))
-            ->get()
-            ->groupBy('post_id');
-
-
-        
-    } */
 }

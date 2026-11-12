@@ -2,7 +2,7 @@
  * @fileoverview Archivos de exportacion de interfaces web
  */
 import { LucideIcon } from 'lucide-react';
-import { User } from './definitions';
+import { Post, User } from './definitions';
 /**
  * @interface Auth
  * Sesion Autentificada
@@ -47,6 +47,12 @@ export interface FlashMessage {
     warning?: string | null;
 }
 
+export interface Terms {
+    id: number,
+    title: string,
+    code: string,
+}
+
 /**
  * @interface
  * Datos Compartidos
@@ -57,6 +63,7 @@ export interface SharedData {
     auth: Auth;
     [key: string]: unknown;
     flash: FlashMessage;
+    terms: Terms[],
 }
 
 

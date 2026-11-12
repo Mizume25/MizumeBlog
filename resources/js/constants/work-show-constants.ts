@@ -15,6 +15,11 @@ const POST_TABS: PostManageTab[] = ["posts", "comments", "reports"]
 
 export const DATA_WORK_SHOW = {
     es: {
+        heads:{
+            index: "Publicaciones",
+            comments: "Comentarios",
+            reports:"Reportes"
+        },
         search: { label: "Buscar usuario", placeholder: "Nombre del usuario..." },
         orderBy: {
             title: "Ordenar por",
@@ -43,6 +48,11 @@ export const DATA_WORK_SHOW = {
         }
     },
     en: {
+        heads:{
+            index: "Works",
+            comments: "Comments",
+            reports:"Reports"
+        },
         search: { label: "Search user", placeholder: "User name..." },
         orderBy: {
             title: "Order by",

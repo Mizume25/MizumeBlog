@@ -5,6 +5,7 @@
 /** Textos */
 export const DATA = {
   es: {
+    head: "Menu Principal",
     widget: {
       work: "Obras",
       posts: "Sobre MizumeBlog",
@@ -12,6 +13,7 @@ export const DATA = {
     }
   },
   en: {
+    head: "Home",
     widget: {
       work: "Works",
       posts: "About MizumeBlog",

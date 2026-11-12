@@ -24,6 +24,7 @@ import MarkdownRenderer from '../post/MarkdownRenderer';
 import { BlogProfile, FilterSearch, WORK_LABELS } from './utils-components';
 import { Pagination } from '@/components/paginator';
 import { BlogShowTrigger } from '@/layouts/app/blog-show';
+import { useBlogShowContext } from '@/hooks/custom/use-blog-show';
 import { BlogShowSidebarContent } from '@/layouts/app/blog-show-components';
 import { BlocLabel } from '@/blocs/bloc-filter';
 import { Button as UIButton } from '@/components/ui/button';
@@ -46,7 +47,7 @@ import { cn, PaginatedText } from '@/lib/utils';
 import { Button as AriaButton, Select } from 'react-aria-components';
 
 /** Iconos */
-import { Calendar, FilterIcon, RotateCcw, ArrowLeft, RotateCw, Search, UserCircle2 } from 'lucide-react';
+import { Calendar, FilterIcon, RotateCcw, ArrowLeft, RotateCw, Search, UserCircle2, FileTextIcon, Download } from 'lucide-react';
 
 
 /**
@@ -291,15 +292,22 @@ interface PostHeaderProps {
 export const PostHeader = ({ post, children }: PostHeaderProps) => {
     return (
         <div className='w-full rounded-2xl bg-mizume-primary mb-5'>
-            <div className='@container p-4'>
-                <div className='flex flex-col @2xl:flex-row gap-4'>
+            <div className='@container w-full p-4'>
+                <div className='flex flex-row justify-between items-center gap-4'>
+                    {/** 
                     <PostWidget heading text={post.title} className='min-w-0 @2xl:flex-3' />
 
                     <PostWidget text={post.publish_date} className='whitespace-nowrap @2xl:shrink-0' />
 
                     <PostWidget text={post.user.name} className='min-w-0 @2xl:flex-2' />
+                    */}
 
                     {children}
+
+                    <Button variant={'default'} className='flex shrink-0 flex-row h-15 gap-4 bg-btn-danger text-btn-danger-foreground py-2 px-4 @md:px-6 rounded-xl duration-300 transform-transition hover:scale-105 '>
+                        <Download />
+                        <span className='hidden @md:inline'>PDF</span>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -368,24 +376,40 @@ export const PostSidebar = ({ DATA, index, onIndex }: PostSidebarProps) => {
 interface BlocBackProps {
     text: string,
     href: string,
-    className?: string
+    className?: string,
+    /** Solo icono (aside plegado) */
+    compact?: boolean
 }
 
 /** Volver al listado del work. El span de columnas lo decide el padre (className) */
-export const BlocBack = ({ text, href, className }: BlocBackProps) => {
+export const BlocBack = ({ text, href, className, compact = false }: BlocBackProps) => {
     return (
-        <div className={cn('flex h-15 flex-row items-center justify-center', className)}>
+        <div className={cn('flex flex-row items-center justify-center', compact ? 'size-9' : 'h-15', className)}>
             <Link
                 href={href}
                 prefetch
                 preserveScroll
-                className='bg-mizume-primary text-mizume-primary-foreground flex h-full w-full flex-row items-center justify-center gap-2 rounded-md px-6 text-sm font-medium cursor-pointer transform-transition hover:-translate-x-1 ease-in-out duration-200'
+                aria-label={text}
+                title={compact ? text : undefined}
+                className={cn(
+                    'bg-mizume-primary text-mizume-primary-foreground flex h-full w-full flex-row items-center justify-center gap-2 rounded-md text-sm font-medium cursor-pointer transform-transition hover:-translate-x-1 ease-in-out duration-200',
+                    compact ? 'px-0' : 'px-6',
+                )}
             >
-                <ArrowLeft className='size-4' />
-                {text}
+                <ArrowLeft className='size-4 shrink-0' />
+                {!compact && text}
             </Link>
         </div>
     )
+}
+
+/**
+ * Volver del asideHeader: se reduce a solo icono cuando el aside está plegado (w-12).
+ * Debe renderizarse dentro de <BlogShow> (lee su contexto).
+ */
+export const WorkShowAsideBack = ({ text, href }: Omit<BlocBackProps, 'compact' | 'className'>) => {
+    const { openDesktop } = useBlogShowContext();
+    return <BlocBack text={text} href={href} compact={!openDesktop} />
 }
 
 
@@ -395,25 +419,55 @@ interface PostTabsBarProps {
     /** Navega a la página de la pestaña */
     onTab: (tab: PostManageTab) => void,
     DATA: DATA_WORK_SHOW_TYPE,
+    post: PostRecord | undefined
 }
 
 /**
- * Barra de pestañas del post (posts / comments / reports).
- * Container query: ancho → BlocTabs · estrecho → BlocTabsSelect (mismo valor).
+ * Datos del post junto a las pestañas: título arriba, fecha · autor debajo.
+ * Cabe en h-16 para no romper la alineación con WorkShowAsideHeader (h-24).
  */
-const PostTabsBar = ({ active, onTab, DATA }: PostTabsBarProps) => {
+const PostTabsInfo = ({ post }: { post: PostRecord }) => {
+    return (
+        <div className="flex h-16 min-w-0 flex-col justify-center gap-1 rounded-2xl bg-mizume-fourthary px-4 py-2 @xl:flex-1">
+            {/* truncate + title: los títulos largos no rompen el layout y se leen al pasar el ratón */}
+            <h1 className="title truncate text-base" title={post.title}>{post.title}</h1>
+
+            <div className="flex min-w-0 flex-row items-center gap-3 text-mizume-secondary">
+                <span className="flex shrink-0 items-center gap-1 whitespace-nowrap">
+                    <Calendar className="size-3.5" />
+                    {post.publish_date}
+                </span>
+                <span className="flex min-w-0 items-center gap-1 text-mizume-secondary">
+                    <UserCircle2 className="size-3.5 shrink-0" />
+                    <span className="truncate" title={post.user.name}>{post.user.name}</span>
+                </span>
+            </div>
+        </div>
+    )
+}
+
+/**
+ * Barra de pestañas del post (posts / comments / reports) con los datos del post al lado.
+ * Container query: estrecho → info encima, BlocTabsSelect debajo · @xl → info | select
+ * · @3xl → info | BlocTabs (mismo valor).
+ */
+const PostTabsBar = ({ active, onTab, DATA, post }: PostTabsBarProps) => {
     return (
         <div className="@container w-full rounded-xl bg-mizume-secondary/80 p-4">
-            <div className="flex flex-row items-center gap-4">
+            <div className="flex flex-col gap-4 @xl:flex-row @xl:items-center">
 
-                <BlocTabs tabs={DATA.postManage.POST_TABS} labels={DATA.postManage.TAB_LABELS} value={active} onChange={onTab} className='hidden @2xl:flex flex-1 h-16 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' />
+                {post && <PostTabsInfo post={post} />}
 
-                <BlocTabsSelect tab={active} onTab={onTab} DATA={DATA} className='@2xl:hidden flex flex-1 h-16 items-center rounded-2xl bg-mizume-fourthary px-4 py-2' />
+                <div className="flex min-w-0 flex-row items-center gap-4 @xl:flex-1">
+                    <BlocTabs tabs={DATA.postManage.POST_TABS} labels={DATA.postManage.TAB_LABELS} value={active} onChange={onTab} className='hidden @3xl:flex flex-1 h-16 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' />
 
-                {/* En móvil es la única forma de abrir el aside: la card (donde estaba) queda oculta */}
-                {active === "posts" && (
-                    <BlogShowTrigger className="text-mizume-secondary-foreground bold shrink-0" />
-                )}
+                    <BlocTabsSelect tab={active} onTab={onTab} DATA={DATA} className='@3xl:hidden flex flex-1 h-16 items-center rounded-2xl bg-mizume-fourthary px-4 py-2' />
+
+                    {/* En móvil es la única forma de abrir el aside: la card (donde estaba) queda oculta */}
+                    {active === "posts" && (
+                        <BlogShowTrigger className="text-mizume-secondary-foreground bold shrink-0" />
+                    )}
+                </div>
             </div>
         </div>
     )
@@ -428,7 +482,7 @@ export const WorkShowTabsBar = ({ show, ...props }: PostTabsBarProps & { show: b
     return (
         <SmoothCollapse show={show}>
             <div className="pt-4">
-                <PostTabsBar {...props} />
+                <PostTabsBar {...props} post={props.post} />
             </div>
         </SmoothCollapse>
     )

@@ -1,4 +1,4 @@
-import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Route, type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import SettingsLayout from '@/layouts/settings/layout';
-import BlogLayout from '@/layouts/app/blog-layout';
+import { BlogLayout } from '@/layouts/app';
+import { useLangStore } from '@/store/lang-store';
+import { PROFILE_DATA } from '@/constants/profile-constants';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,8 +22,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+
+
+
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
+
+
+    const lang = useLangStore((l) => l.lang)
+
+    const DATA = PROFILE_DATA[lang];
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
@@ -33,17 +44,28 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         patch(route('profile.update'));
     };
 
+    const routes : Route [] = [
+    {
+        label: "Home",
+        url: route("main")
+    }, 
+    {
+        label: auth.user.name,
+        url: route("profile.edit")
+    }
+];
+
     return (
-        <BlogLayout>
+        <BlogLayout routes={routes} >
             <Head title="Perfil" />
 
             <SettingsLayout>
-                <div className="space-y-6 p-4 bg-[#f3e5ab]">
-                    <HeadingSmall title="Informacion de Perfil" description="Actualiza tu email aquí" />
+                <div className="space-y-6 p-4 bg-mizume-fourthary rounded-xl">
+                    <HeadingSmall title={DATA.profile.title} description={DATA.profile.subtitle}/>
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">{DATA.profile.labels.name}</Label>
 
                             <Input
                                 id="name"
@@ -52,14 +74,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
-                                placeholder="Full name"
+                                placeholder={DATA.profile.labels.name}
                             />
 
                             <InputError className="mt-2" message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">{DATA.profile.labels.email}</Label>
 
                             <Input
                                 id="email"
@@ -69,13 +91,13 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
                                 autoComplete="username"
-                                placeholder="Email address"
+                                placeholder={DATA.profile.labels.email}
                             />
 
                             <InputError className="mt-2" message={errors.email} />
                         </div>
 
-                        {mustVerifyEmail && auth.user.email_verified_at === null && (
+                        {mustVerifyEmail === null && (
                             <div>
                                 <p className="mt-2 text-sm text-neutral-800">
                                     Your email address is unverified.
@@ -100,7 +122,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         <div className="flex items-center gap-4">
                             <Button disabled={processing}
                             className='bg-amber-600 rounded-2xl cursor-pointer transition-transform duration-150 hover:scale-105 hover:bg-amber-700'
-                            >Guardar Cambios</Button>
+                            >{DATA.profile.actions.save}</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -109,13 +131,13 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-neutral-600">{lang === "es" ? "Guardado" : "Saved"}</p>
                             </Transition>
                         </div>
                     </form>
                 </div>
 
-                <DeleteUser />
+                <DeleteUser  DATA={DATA} lang={lang} />
             </SettingsLayout>
         </BlogLayout>
     );

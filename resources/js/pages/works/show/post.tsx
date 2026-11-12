@@ -5,6 +5,7 @@ import WorkShowLayout, { useWorkShowSlots } from "@/layouts/app/work-show-layout
 import { useLangStore } from "@/store/lang-store"
 import { DATA_WORK_SHOW } from "@/constants/work-show-constants"
 import { WorkShowPostProps } from "@/types/custom/work-show-types"
+import { Head } from "@inertiajs/react"
 
 /**
  * works/show/post: lectura del post por secciones.
@@ -18,13 +19,15 @@ function WorkShowPost({ post, build }: WorkShowPostProps) {
 
   const { section, setSection, direction, onIndex, totalSections, body } = usePostSections(build)
 
+  
+
   useWorkShowSlots({
     aside: <PostSidebar DATA={DATA} index={build.index} onIndex={onIndex} />,
     top: totalSections > 0 && <PageProgress section={section} total={totalSections} />,
     headerExtra: (
       <BlocSectionPage
         variant='numbers'
-        className="flex h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4 @2xl:shrink-0 @2xl:min-w-56"
+        className="flex min-w-0 flex-1 h-20 items-center justify-center rounded-2xl bg-mizume-fourthary py-2 px-4 @2xl:shrink-0 @2xl:min-w-56"
         lang={lang}
         key={post.id}
         sections={{ min: 1, max: totalSections }}
@@ -34,7 +37,12 @@ function WorkShowPost({ post, build }: WorkShowPostProps) {
     ),
   }, [build, section, lang])
 
-  return <PostSections postId={post.id} body={body} section={section} direction={direction} />
+  return (
+    <>
+      <Head title={post.title} />
+      <PostSections postId={post.id} body={body} section={section} direction={direction} />
+    </>
+  )
 }
 
 WorkShowPost.layout = WorkShowLayout

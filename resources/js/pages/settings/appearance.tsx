@@ -12,6 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Appearance settings',
         href: '/settings/appearance',
+        
     },
 ];
 
