@@ -131,7 +131,6 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
     }, [post?.id, active]);
 
     const routes: Route[] = [
-        { label: 'Home', url: ROUTE.main },
         { label: 'Works', url: ROUTE.work.index },
         { label: work.title, url: route('works.show', work.slug) },
         ...(post ? [{ label: post.title, url: tabUrl('posts') }] : []),

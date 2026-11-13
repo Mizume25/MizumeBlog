@@ -14,7 +14,6 @@ import { PostsGroupedByUser } from '@/types/definitions';
 import { useLangStore } from '@/store/lang-store';
 import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 import { DATA } from '@/constants/main-constants';
-import { ROUTE } from '@/constants/routes';
 import { Route } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -35,12 +34,8 @@ export function onUsers(posts: PostsGroupedByUser) {
 }
 
 
-const routes: Route[] = [
-  {
-    label: "Home",
-    url: ROUTE.main,
-  }
-]
+/** Home lo añade el sidebar: aquí no hay circuito propio */
+const routes: Route[] = []
 
 
 function main({ works, posts }: MainProps) {

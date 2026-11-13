@@ -16,10 +16,6 @@ function LegalityShow({ post, build, code, title }: LegalityShowProps) {
 
     const routes: Route[] = [
         {
-            label: "Home",
-            url: route("main"),
-        },
-        {
             label: title,
             url: route("legality.show", code)
         },

@@ -46,10 +46,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     const routes : Route [] = [
     {
-        label: "Home",
-        url: route("main")
-    }, 
-    {
         label: auth.user.name,
         url: route("profile.edit")
     }

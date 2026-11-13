@@ -27,10 +27,6 @@ interface LoginProps {
 
 const routes: Route[] = [
     {
-        label: "Home",
-        url: route("main")
-    },
-    {
         label: "Login",
         url: route("login")
     }

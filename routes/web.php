@@ -156,4 +156,5 @@ require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/public/work.php';
 require __DIR__ . '/public/comments.php';
+require __DIR__ . '/private/panel.php';
 

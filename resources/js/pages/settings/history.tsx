@@ -2,7 +2,7 @@ import { BlogLayout } from "@/layouts/app";
 import SettingsLayout from "@/layouts/settings/layout"
 import { confirmDelete, Route, SharedData } from "@/types"
 import { router, usePage } from "@inertiajs/react";
-import { ChevronDown, ChevronFirst, ChevronLast, ChevronUp, Trash2 } from "lucide-react";
+import { CalendarDays, ChevronDown, ChevronFirst, ChevronLast, ChevronUp, MessageSquare, Star, Tag, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react"
 import { CommentRecord, Post, Reply } from "@/types/definitions";
 
@@ -58,6 +58,20 @@ const onDeletePost = (post_id: number) => {
         '¿Quieres eliminar todos los comentarios de este post?',
         'Esta acción borrará permanentemente tus comentarios.',
         () => router.delete(route('comments.destroyByPost', post_id), {
+            only: RELOAD,
+            preserveScroll: true,
+        })
+    )
+}
+
+/**
+ * Borrar todos los comentarios del usuario
+ */
+const onDeleteAll = () => {
+    confirmDelete(
+        '¿Quieres eliminar todos tus comentarios?',
+        'Esta acción borrará permanentemente todos tus comentarios en todos los posts.',
+        () => router.delete(route('comments.deleteAll'), {
             only: RELOAD,
             preserveScroll: true,
         })
@@ -130,15 +144,49 @@ function NavDesktop({ goPrev, goNext, index, total }: NavProps) {
 }
 
 /**
- * Tortuga que representa al post con su título
+ * Tortuga que representa al post con su título y propiedades
  */
-function PostCover({ post }: { post: Post }) {
+function PostCover({ post, total }: { post: Post, total: number }) {
     return (
         <div className="flex lg:w-60 shrink-0 lg:flex-col items-center gap-3 p-4 bg-card-header text-card-header-foreground">
-            <img src={TURTLE} alt="" className="w-16 lg:w-40 h-auto object-contain" />
-            <h3 className="capitalize font-bold text-sm lg:text-base lg:text-center break-words">
-                {post.title}
-            </h3>
+            <img src={TURTLE} alt="" className="w-16 lg:w-32 h-auto object-contain" />
+
+            <div className="flex min-w-0 flex-col gap-2 lg:items-center">
+                <h3 className="capitalize font-bold text-sm lg:text-base lg:text-center break-words">
+                    {post.title}
+                </h3>
+
+                {/** Propiedades del post */}
+                <div className="flex flex-wrap gap-1.5 lg:justify-center text-[11px]">
+                    {post.type && (
+                        <span className="flex items-center gap-1 rounded-full bg-card-muted px-2 py-0.5 text-card-muted-foreground capitalize">
+                            <Tag size={11} /> {post.type}
+                        </span>
+                    )}
+                    {post.featured && (
+                        <span className="flex items-center gap-1 rounded-full bg-card-muted px-2 py-0.5 text-card-muted-foreground">
+                            <Star size={11} /> Destacado
+                        </span>
+                    )}
+                </div>
+
+                <div className="flex flex-col gap-1 text-[11px] opacity-80 lg:items-center">
+                    {post.publish_date && (
+                        <span className="flex items-center gap-1">
+                            <CalendarDays size={12} /> {post.publish_date}
+                        </span>
+                    )}
+                    <span className="flex items-center gap-1">
+                        <MessageSquare size={12} /> {total} {total === 1 ? 'comentario' : 'comentarios'}
+                    </span>
+                </div>
+
+                {post.description && (
+                    <p className="hidden lg:block line-clamp-4 text-xs text-center opacity-80 break-words">
+                        {post.description}
+                    </p>
+                )}
+            </div>
         </div>
     )
 }
@@ -200,7 +248,6 @@ function History({ comments }: HistoryProps) {
     const goNext = () => setIndex(current === groups.length - 1 ? 0 : current + 1)
 
     const routes: Route[] = [
-        { label: "Home", url: route("main") },
         { label: auth.user.name, url: route("profile.edit") },
     ]
 
@@ -215,16 +262,24 @@ function History({ comments }: HistoryProps) {
                         {/** Barra de acciones */}
                         <div className="flex items-center justify-between gap-3 p-3 bg-card-header text-card-header-foreground">
                             <NavMobile goPrev={goPrev} goNext={goNext} index={current} total={groups.length} />
-                            <button
-                                onClick={() => onDeletePost(group.post.id)}
-                                className="ms-auto cursor-pointer rounded-2xl px-3 py-2 text-[12px] bg-btn-danger text-btn-danger-foreground transition-transform duration-150 hover:-translate-y-0.5"
-                            >
-                                Borrar todos
-                            </button>
+                            <div className="ms-auto flex items-center gap-2">
+                                <button
+                                    onClick={() => onDeletePost(group.post.id)}
+                                    className="cursor-pointer rounded-2xl px-3 py-2 text-[12px] border border-btn-danger text-btn-danger-foreground bg-btn-danger/70 transition-transform duration-150 hover:-translate-y-0.5"
+                                >
+                                    Borrar del post
+                                </button>
+                                <button
+                                    onClick={onDeleteAll}
+                                    className="cursor-pointer rounded-2xl px-3 py-2 text-[12px] bg-btn-danger text-btn-danger-foreground transition-transform duration-150 hover:-translate-y-0.5"
+                                >
+                                    Borrar todos
+                                </button>
+                            </div>
                         </div>
 
                         <div className="flex flex-col lg:flex-row bg-card text-card-foreground lg:h-100">
-                            <PostCover post={group.post} />
+                            <PostCover post={group.post} total={group.comments.length} />
 
                             {/** Comentarios del post */}
                             <div className="flex-1 min-w-0 flex flex-col gap-3 p-4 overflow-y-auto max-h-100">

@@ -19,10 +19,6 @@ import { Calendar, FilterIcon, RotateCcw, Search } from "lucide-react"
 
 const routes: Route[] = [
   {
-    label: "Home",
-    url: ROUTE.main,
-  },
-  {
     label: "Authors",
     url: ROUTE.authors.index
   }

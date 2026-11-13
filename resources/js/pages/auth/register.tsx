@@ -21,10 +21,6 @@ interface RegisterForm {
 
 const routes: Route[] = [
     {
-        label: "Home",
-        url: route("main")
-    },
-    {
         label: "Register",
         url: route("register")
     }

@@ -33,10 +33,6 @@ interface WorksIndexProps {
 
 const routes: Route[] = [
   {
-    label: "Home",
-    url: ROUTE.main,
-  },
-  {
     label: "Works",
     url: ROUTE.work.index
   }

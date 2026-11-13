@@ -6,10 +6,6 @@ import { Route } from "@/types"
 
 const routes : Route[] = [
     {
-        label:"Home",
-        url: ROUTE.main,
-    }, 
-    {
         label:"Posts",
         url: ROUTE.post.index
     }

@@ -129,7 +129,7 @@ class MarkdownService
                 $post,
                 $article ?? throw new InvalidArgumentException('Un post de tipo article requiere ArticleType')
             ),
-            PostType::Community => $this->localized('community/Mizumeblog', 'community/Mizumeblog', strict: true),
+            PostType::Community => $this->localized("{$post->code}/Mizumeblog", "{$post->code}/Mizumeblog", strict: true),
             PostType::Legality  => $this->localized("legality/{$post->code}/content", "legality/{$post->code}/index", strict: true),
             PostType::Policy    => $this->localized("policies/{$post->code}/content", "policies/{$post->code}/index", strict: true),
         };

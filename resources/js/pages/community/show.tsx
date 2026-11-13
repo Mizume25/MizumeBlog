@@ -5,10 +5,6 @@ import { PostBuild, PostRecord } from '@/types/definitions'
 
 const routes: Route[] = [
     {
-        label: "Home",
-        url: route("main"),
-    },
-    {
         label: "Community",
         url: route("community")
     }

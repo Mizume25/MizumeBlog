@@ -36,7 +36,8 @@ import {
   LogOutIcon,
   LogIn,
   UserPlus,
-  TurtleIcon
+  TurtleIcon,
+  Toolbox
 
 
 } from 'lucide-react';
@@ -126,6 +127,10 @@ export const DATA = {
       ],
       profile: {
         settings: "Perfil",
+        workshop: {
+          content: "Taller",
+          icon: Toolbox
+        },
         sessionOut: {
           content: "Cerrar Session",
           icon: LogOutIcon
@@ -190,6 +195,10 @@ export const DATA = {
       ],
       profile: {
         settings: "Profile",
+        workshop: {
+          content: "WorkShop",
+          icon: Toolbox
+        },
         sessionOut: {
           content: "Log out",
           icon: LogOutIcon

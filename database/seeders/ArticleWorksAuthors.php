@@ -19,7 +19,10 @@ class ArticleWorksAuthors extends Seeder
         $works = Work::all();
         $authors = Author::all();
 
-        /** Un usuario solo puede tener un post por work: excluimos los works que ya usó */
+        /**
+         * Un post tiene un único work (unique(post_id) en articles_works)
+         * y un usuario solo puede tener un post por work: excluimos los works que ya usó
+         */
         $usedWorksByUser = [];
 
         Post::ofArticleType(ArticleType::Work)->each(function (Post $post) use ($works, &$usedWorksByUser) {
@@ -28,10 +31,10 @@ class ArticleWorksAuthors extends Seeder
 
             if ($available->isEmpty()) return;
 
-            $ids = $available->random(rand(1, min(3, $available->count())))->pluck('id');
-            $post->works()->attach($ids);
+            $id = $available->random()->id;
+            $post->works()->attach($id);
 
-            $usedWorksByUser[$post->user_id] = array_merge($used, $ids->all());
+            $usedWorksByUser[$post->user_id] = [...$used, $id];
         });
 
         /** Author ↔ Post es 1:1: un author por post y ningún author repetido */

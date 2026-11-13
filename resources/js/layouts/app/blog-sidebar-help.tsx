@@ -17,7 +17,8 @@ import {
     LogOut,
     Settings2,
     MegaphoneIcon,
-    GavelIcon
+    GavelIcon,
+    Toolbox
 } from 'lucide-react';
 import { Button } from '@/components/animate-ui/components/buttons/button';
 
@@ -78,18 +79,7 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
         }
     }
 
-    const Profile: Route[] = [
-        {
-            label: content.sidebar.profile.settings,
-            url: route("logout"),
-            luciIcon: Settings2,
-        },
-        {
-            label: content.sidebar.profile.sessionOut.content,
-            url: route("profile.edit"),
-            luciIcon: LogOut
-        }
-    ]
+    
 
 
 
@@ -142,6 +132,16 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
                                 <Settings2 className='text-sidebar-accent' />
                                 <Link href={route("profile.edit")} method="get" as="button">
                                     {content.sidebar.profile.settings}
+                                </Link>
+
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <Toolbox className='text-sidebar-accent' />
+                                <Link href={route("panel.workshop",)} method="get" as="button">
+                                    {content.sidebar.profile.workshop.content}
                                 </Link>
 
                             </DropdownMenuItem>
@@ -204,10 +204,13 @@ interface BlogNavigationProps {
     isMobile: boolean
 }
 
+/** Punto de partida fijo del breadcrumb: cada página solo aporta su propio circuito */
+const HOME: Route = { label: "Home", url: route("main") };
+
 export const BlogNavigation = ({ routes, isMobile }: BlogNavigationProps) => {
     let ROUTES: Route[] = [];
 
-    const safeRoutes = Array.isArray(routes) ? routes : [];
+    const safeRoutes: Route[] = [HOME, ...(Array.isArray(routes) ? routes : [])];
 
     if (isMobile) {
         if (safeRoutes.length <= 2) {

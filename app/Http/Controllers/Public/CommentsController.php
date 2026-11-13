@@ -91,17 +91,14 @@ class CommentsController extends Controller
 
     /**
      * Borrar todos los comentarios relativos a un usuario dentro de un post
+     * Siempre se limita a los comentarios propios (también para admin)
      */
     public function destroyByPost(string $post_id)
     {
 
-        $query = Comment::where('post_id', $post_id);
-
-        if (Auth::user()->role !== "admin") {
-            $query->where('user_id', Auth::id());
-        }
-
-        $ids = $query->pluck('id');
+        $ids = Comment::where('post_id', $post_id)
+            ->where('user_id', Auth::id())
+            ->pluck('id');
 
         Comment::whereIn('parent_id', $ids)->delete();
 

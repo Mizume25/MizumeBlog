@@ -55,10 +55,6 @@ export default function Password() {
 
     const routes: Route[] = [
         {
-            label: "Home",
-            url: route("main")
-        },
-        {
             label: auth.user.name,
             url: route("profile.edit")
         }

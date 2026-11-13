@@ -19,10 +19,10 @@ function InfoPanel({ data } : { data:Data }) {
                 { label: 'Usuarios registrados', val: allUsers.length },
                 { label: 'Comentarios', val: allComents.length },
             ].map((stat, i) => (
-                <div key={i} className="bg-white border border-[#EAD9B8] rounded-xl p-5 relative overflow-hidden group">
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C8AD7F]/40"></div>
-                    <p className="text-[11px] uppercase tracking-widest text-[#8B5A2B] mb-2">{stat.label}</p>
-                    <p className="ext-3xl text-[#3B2314]">{stat.val}</p>
+                <div key={i} className="bg-card border-card border rounded-xl p-5 relative overflow-hidden group">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted/40"></div>
+                    <p className="text-[11px] uppercase tracking-widest text-card mb-2">{stat.label}</p>
+                    <p className="ext-3xl text-card">{stat.val}</p>
                     
                 </div>
             ))}

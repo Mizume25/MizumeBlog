@@ -15,10 +15,6 @@ function AuthorsShow({ post, build, author }: AuthorsShowProps) {
 
     const routes: Route[] = [
     {
-        label: "Home",
-        url: route("main"),
-    },
-    {
         label: "Authors",
         url:route("authors.index")
     },
