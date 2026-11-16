@@ -20,7 +20,7 @@ export const DATA_WORK_SHOW = {
             comments: "Comentarios",
             reports:"Reportes"
         },
-        search: { label: "Buscar usuario", placeholder: "Nombre del usuario..." },
+        search: { label: "Buscar post", placeholder: "Título o autor del post..." },
         orderBy: {
             title: "Ordenar por",
             types: [
@@ -53,7 +53,7 @@ export const DATA_WORK_SHOW = {
             comments: "Comments",
             reports:"Reports"
         },
-        search: { label: "Search user", placeholder: "User name..." },
+        search: { label: "Search post", placeholder: "Post title or author..." },
         orderBy: {
             title: "Order by",
             types: [

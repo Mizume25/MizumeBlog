@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
   <diagram name="Página-1" id="0grrpsTAw81fUPhTt2lW">
-    <mxGraphModel dx="4777" dy="-1465" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="4593" dy="-1574" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -134,7 +134,7 @@
             <mxRectangle height="30" width="26.418658435344696" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="CXqLTpzpeiR3J8EhgxoS-73" parent="CXqLTpzpeiR3J8EhgxoS-71" style="shape=partialRectangle;connectable=0;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="*publish_date DATE" vertex="1">
+        <mxCell id="CXqLTpzpeiR3J8EhgxoS-73" parent="CXqLTpzpeiR3J8EhgxoS-71" style="shape=partialRectangle;connectable=0;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="* publish_date DATE" vertex="1">
           <mxGeometry height="30" width="498.6095233828371" x="26.418658435344696" as="geometry">
             <mxRectangle height="30" width="498.6095233828371" as="alternateBounds" />
           </mxGeometry>
@@ -417,7 +417,7 @@
             <mxRectangle height="30" width="25.75" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="CXqLTpzpeiR3J8EhgxoS-147" parent="CXqLTpzpeiR3J8EhgxoS-145" style="shape=partialRectangle;connectable=0;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="*publish_date DATE" vertex="1">
+        <mxCell id="CXqLTpzpeiR3J8EhgxoS-147" parent="CXqLTpzpeiR3J8EhgxoS-145" style="shape=partialRectangle;connectable=0;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;" value="O publish_date DATE" vertex="1">
           <mxGeometry height="30" width="424.25" x="25.75" as="geometry">
             <mxRectangle height="30" width="424.25" as="alternateBounds" />
           </mxGeometry>

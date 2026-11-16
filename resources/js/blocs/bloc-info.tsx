@@ -3,6 +3,19 @@
  */
 import { Lang } from "@/store/lang-store";
 import { PostRecord, Tag } from "@/types/definitions";
+import { Link, router } from '@inertiajs/react';
+import { confirmDelete, SECTION, Section, Section_Content } from '@/types';
+import Switch from "react-switch";
+import { useState } from 'react';
+import { Edit2, Eye, Filter, Pin, RotateCcwIcon, Trash2 } from 'lucide-react';
+import { DATA } from '@/constants/main-constants';
+import { Button } from '@/components/animate-ui/components/buttons/button';
+import { now } from "@/lib/utils";
+import { StatsPosts } from "@/types/custom/workshop-types";
+import { FilterSearch } from "@/core/desktop/utils-components";
+import { DATA_WORKSHOP_TYPE } from "@/constants/workshop-constants";
+import { TurtleService } from "@/custom/services";
+import { BlocTabs } from "./bloc-manage-info";
 
 interface InfoCurrentActivityProps {
     posts: PostRecord[],
@@ -352,14 +365,14 @@ interface InfoLastPostProps {
 
 const InfoLastPosttext = {
     es: {
-        title:"Ultima Publicacion Editada"
+        title: "Ultima Publicacion Editada"
     },
-    en:{
-        title:"Last Edited Post"
+    en: {
+        title: "Last Edited Post"
     }
 }
 
-export const InfoLastPost = ({ posts , lang }: InfoLastPostProps) => {
+export const InfoLastPost = ({ posts, lang }: InfoLastPostProps) => {
 
 
 
@@ -371,8 +384,352 @@ export const InfoLastPost = ({ posts , lang }: InfoLastPostProps) => {
                 <h3 className="text-card-foreground">{DATA.title}</h3>
             </div>
             <div className="bg-card-foreground text-card rounded-2xl p-4 " >
-                   <a href={route('works.posts.show', [posts[0].works[0].slug, posts[0].id])} className="text-md text-card transition-transform duration-300 hover:border-b hover:border-b-card ease-in-out cursor-pointer">{posts[0].title}</a>
+                <a href={route('works.posts.show', [posts[0].works[0].slug, posts[0].id])} className="text-md text-card transition-transform duration-300 hover:border-b hover:border-b-card ease-in-out cursor-pointer">{posts[0].title}</a>
             </div>
         </div>
     )
 }
+
+
+interface InfoPanelProps {
+    stats: StatsPosts,
+    lang: Lang
+}
+
+export function InfoPanel({ stats, lang }: InfoPanelProps) {
+
+
+
+
+    const InfoPanelNav = {
+        es: [
+            {
+                label: 'Publicaciones',
+                val: stats.publish
+            },
+            {
+                label: 'Borradores',
+                val: stats.drafts
+            },
+            {
+                label: 'Pendientes',
+                val: stats.pending
+            },
+            {
+                label: 'Comentarios',
+                val: stats.comments
+            }
+        ]
+        ,
+        en: [
+            {
+                label: 'Publish Posts',
+                val: stats.publish
+            },
+            {
+                label: 'Drafts',
+                val: stats.drafts
+            },
+            {
+                label: 'Pending',
+                val: stats.pending
+            },
+            {
+                label: 'Comments',
+                val: stats.comments
+            }
+        ]
+    }
+
+    const DATA = InfoPanelNav[lang]
+
+    return (
+        <div className="grid h-full w-full grid-cols-1 gap-4 md:grid-cols-4">
+            {DATA.map((stat, i) => (
+                <div key={i} className="bg-card border-card border rounded-xl p-5 relative overflow-hidden group">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-card-muted/40"></div>
+                    <p className="text-[11px] uppercase tracking-widest text-card-foreground mb-2">{stat.label}</p>
+                    <p className="text-3xl text-card-foreground">{stat.val}</p>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+
+interface InfoTableProps {
+    posts: PostRecord[];
+    lang: Lang,
+    search: string,
+    setSearch: (v: string) => void,
+    onFilter: () => void,
+    TEXT: DATA_WORKSHOP_TYPE
+
+}
+
+const InfoTableText = {
+    es: {
+        title: "Tabla de Publicaciones",
+        header: ["Titulo", "Estado", "Fecha Publi.", "Destacado", "Acciones"],
+        status: {
+            publish: "Publicado",
+            draft: "Borrador",
+        }
+    },
+    en: {
+        title: "Posts Table",
+        header: ["Title", "Status", "Publish Date", "Featured", "Actions"],
+        status: {
+            publish: "Publish",
+            draft: "Draft",
+        }
+    }
+}
+
+
+/* ─────────── Piezas compartidas por la vista desktop y la mobile ─────────── */
+
+type InfoTableData = (typeof InfoTableText)[Lang]
+
+interface StatusBadgeProps {
+    lang: Lang,
+    post: PostRecord,
+}
+
+/** Badge de estado: publicado / borrador */
+const StatusBadge = ({ lang, post }: StatusBadgeProps) => {
+    const today = now();
+
+    const TEXT = {
+        es: {
+            publish: "Publicada",
+            draft: "Borrador",
+            pending: "Pendiente"
+        },
+        en: {
+            publish: "Publish",
+            draft: "Draft",
+            pending: "Pending"
+        }
+    }
+    {/* Tres Estados: Draft  | Publish | Pending */ }
+
+    const DATA = TEXT[lang]
+
+    const BadgeStatus = {
+        publish: {
+            text: DATA.publish,
+            css: "text-btn-success bg-btn-success/10 border-btn-success/30"
+        },
+        draft: {
+            text: DATA.draft,
+            css: "text-btn-danger bg-btn-danger/10 border-btn-danger/30"
+        },
+        pending: {
+            text: DATA.pending,
+            css: "text-secondary-foreground bg-accent/40 border-accent"
+        }
+    }
+    type BadgeStatusType = typeof BadgeStatus.pending
+    let result: BadgeStatusType;
+
+    if (post.publish_date) {
+        // "YYYY-MM-DD" → medianoche LOCAL (new Date("YYYY-MM-DD") la toma como UTC)
+        const [y, m, d] = post.publish_date.slice(0, 10).split('-').map(Number)
+        const publishDay = new Date(y, m - 1, d)
+        result = today < publishDay ? BadgeStatus.pending : BadgeStatus.publish
+    } else {
+        result = BadgeStatus.draft
+    }
+
+
+
+    return (
+        <span className={`text-[11px] font-bold px-2 py-1 rounded-full border whitespace-nowrap ${result.css}`}>
+            {result.text}
+        </span>
+    )
+
+}
+/** Marca de destacado */
+const FeaturedMark = ({ featured }: { featured: boolean }) => (
+    featured ? <Pin className="text-mizume-primary-foreground" /> : null
+)
+
+/** Base común: mismo tamaño en todos los botones (más grande en mobile para tocar con el dedo) */
+const actionBtn = "size-9 md:size-8 p-0 shrink-0 flex items-center justify-center border border-border rounded transition-colors cursor-pointer"
+
+/** Acciones de cada post: ver, editar, borrar */
+const PostActions = () => (
+    <div className="flex shrink-0 gap-2">
+        <Button className={`${actionBtn} bg-btn-info text-btn-info-foreground hover:bg-btn-info-foreground hover:text-btn-info hover:border-muted-foreground`}>
+            <Eye size={16} />
+        </Button>
+        <Button className={`${actionBtn} bg-mizume-tertiary text-mizume-tertiary-foreground hover:bg-mizume-tertiary-foreground hover:text-mizume-tertiary hover:border-muted-foreground`}>
+            <Edit2 size={16} />
+        </Button>
+        <Button className={`${actionBtn} bg-btn-danger text-btn-danger-foreground hover:bg-btn-danger-foreground hover:text-btn-danger`}>
+            <Trash2 size={16} />
+        </Button>
+    </div>
+)
+
+export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT }: InfoTableProps) {
+
+    const [publish, setPublish] = useState(false);
+
+    const handleDelete = (id: number, title: string) => {
+        confirmDelete(
+            '¿Eliminar Post?',
+            `Esta acción borrará "${title}" permanentemente.`,
+            () => router.delete(route('post.destroy', id))
+        );
+    };
+
+    const DATA = InfoTableText[lang]
+
+    /** Misma regla de filtrado para las dos vistas */
+
+
+    return (
+        <div className="lg:col-span-2 bg-mizume-primary border border-border rounded-xl overflow-hidden shadow-sm h-full">
+
+            {/* Header: título + filtro (botones en desktop, select en mobile) */}
+            <div className="px-4 py-3 lg:px-5 lg:py-4 border-b border-border flex flex-col lg:flex-row items-center gap-3 bg-gradient-to-r from-accent/40 to-transparent">
+                <h3 className="min-w-0 truncate text-mizume-primary-foreground text-sm lg:text-base font-semibold">
+                    {DATA.title}
+                </h3>
+
+                <div className="max-w-sm min-h-15 bg-mizume-fourthary p-2 rounded-2xl">
+                    <div className="w-full h-full bg-mizume-primary text-mizume-primary rounded-2xl">
+                        <FilterSearch
+                            search={search}
+                            onFilter={onFilter}
+                            setSearch={setSearch}
+                            content="bg-input-border rounded-md p-1"
+                            inputClass="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
+                            placeholder={TEXT.filter.search.placeholder}
+                        />
+                    </div>
+                </div>
+
+                <div className="flex flex-row items-center justify-center">
+                
+                </div>
+
+
+                <div className="ml-auto shrink-0 gap-4 flex flex-row p-4">
+                    <Button variant={`default`} className="bg-btn-success text-btn-success-foreground hover:bg-btn-success-foreground hover:text-btn-success">
+                        <Filter />
+                        Aplicar
+                    </Button>
+                    <Button variant={`default`} className="bg-btn-danger text-btn-danger-foreground hover:bg-btn-danger-foreground hover:text-btn-danger">
+                        <RotateCcwIcon />
+                        Reset
+                    </Button>
+                </div>
+
+            </div>
+
+            {/* Vista tablet/desktop: tabla (md–xl: Fecha y Destacado pasan bajo el título) */}
+            <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                    <thead className="bg-accent/20 text-[10px] uppercase tracking-widest text-muted-foreground border-b border-border">
+                        <tr>
+                            {DATA.header.map((p, i) => (
+                                <th
+                                    key={p}
+                                    /* 2 = Fecha, 3 = Destacado: solo como columna desde xl */
+                                    className={`px-4 xl:px-5 py-3 font-semibold whitespace-nowrap ${i === 2 || i === 3 ? 'hidden xl:table-cell' : ''}`}
+                                >
+                                    {p}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/50">
+                        {posts.map((post, i) => (
+                            <tr key={i} className={`hover:bg-accent/20 capitalize transition-colors group`}>
+                                {/* Campo titulo (+ fecha y destacado por debajo de xl) */}
+                                <td className="px-4 xl:px-5 py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 shrink-0 bg-secondary rounded flex items-center justify-center text-lg border border-border">{TurtleService.bullet}</div>
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <p
+                                                    title={post.title.replaceAll('-', ' ')}
+                                                    className="max-w-[16rem] xl:max-w-sm truncate text-sm font-semibold text-mizume-primary-foreground"
+                                                >
+                                                    {post.title.replaceAll('-', ' ')}
+                                                </p>
+                                                <span className="xl:hidden shrink-0">
+                                                    <FeaturedMark featured={post.featured} />
+                                                </span>
+                                            </div>
+                                            {post.publish_date && (
+                                                <p className="xl:hidden text-[11px] font-light text-mizume-primary-foreground">{post.publish_date}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </td>
+                                {/* Campo Estado */}
+                                <td className="px-4 xl:px-5 py-4">
+                                    <StatusBadge lang={lang} post={post} />
+                                </td>
+
+                                {/* Campo Fecha */}
+                                <td className='hidden xl:table-cell px-5 py-4'>
+                                    <p className='text-sm font-light whitespace-nowrap text-mizume-primary-foreground'>{post.publish_date}</p>
+                                </td>
+
+                                {/* Campo Destacado */}
+                                <td className='hidden xl:table-cell px-5 py-4'>
+                                    <FeaturedMark featured={post.featured} />
+                                </td>
+
+                                {/* Acciones */}
+                                <td className="px-4 xl:px-5 py-4">
+                                    <PostActions />
+                                </td>
+
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Vista mobile: lista de tarjetas, acciones a la derecha */}
+            <div className="md:hidden divide-y divide-border/50">
+                {posts.map((post, i) => (
+                    <div key={i} className={`capitalize flex items-center gap-3 px-4 py-3 hover:bg-accent/20 transition-colors`}>
+                        <div className="w-10 h-10 shrink-0 bg-secondary rounded flex items-center justify-center text-lg border border-border">📖</div>
+
+                        <div className="min-w-0 flex-1 flex flex-col gap-1.5">
+                            {/* Titulo + Destacado */}
+                            <div className="flex items-center gap-2">
+                                <p className="min-w-0 flex-1 text-sm font-semibold text-mizume-primary-foreground truncate">{post.title.replaceAll('-', ' ')}</p>
+                                <FeaturedMark featured={post.featured} />
+                            </div>
+
+                            {/* Estado + Fecha */}
+                            <div className="flex flex-wrap items-center gap-2">
+                                <StatusBadge lang={lang} post={post} />
+                                {post.publish_date && (
+                                    <p className="text-[11px] font-light text-mizume-primary-foreground">{post.publish_date}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Acciones: en pantallas muy estrechas bajan en columna */}
+                        <div className="shrink-0 [&>div]:flex-col min-[400px]:[&>div]:flex-row">
+                            <PostActions />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+
+

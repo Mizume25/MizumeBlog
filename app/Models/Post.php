@@ -149,6 +149,12 @@ class Post extends Model implements HasMedia
             ->where('publish_date', '<=', now());
     }
 
+    /** Búsqueda parcial por título (escapa % _ \ para buscarlos como literales) */
+    public function scopeSearchTitle(Builder $query, string $term): Builder
+    {
+        return $query->where('posts.title', 'like', '%' . addcslashes($term, '%_\\') . '%');
+    }
+
 
     public function isOwnedBy(User $user): bool
     {

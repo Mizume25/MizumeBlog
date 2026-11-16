@@ -21,6 +21,12 @@ export function formatDate(iso: string): string {
 
 export const CURRENT_YEAR = new Date().getFullYear();
 
+/**
+ * Fecha y hora actual (se evalúa en cada llamada)
+ * @returns Date del momento
+ */
+export const now = (): Date => new Date();
+
 export const PaginatedText = {
     es: { prev: 'Anterior', next: 'Siguiente', page: 'Página' },
     en: { prev: 'Previous', next: 'Next', page: 'Page' },

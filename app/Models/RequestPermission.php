@@ -19,6 +19,8 @@ class RequestPermission extends Model
     private const ACCESS_WINDOW_HOURS = 24;
 
     /** Propiedades */
+    protected $table = 'requests_permissions';
+
    protected $fillable = ['message', 'user_id', 'post_id'];
 
 

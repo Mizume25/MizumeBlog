@@ -207,7 +207,7 @@ export type Permissions = Field & {
 
 export type PostRecord = Post & {
     user: User,
-    works: Work[]
+    works: WorkRecord[]
     comments: CommentRecord[]
     authors: Author[]
 }

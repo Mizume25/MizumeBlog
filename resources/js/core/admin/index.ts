@@ -1,5 +1,3 @@
 export { default as InfoNav } from './InfoNav';
-export { default as InfoPanel } from './InfoPanel';
-export { default as InfoProgresBar } from '../../components/InfoProgresBar';
 export { default as InfoSideBarLeft } from './InfoSideBarLeft';
 export { default as InfoTable } from './InfoTable';

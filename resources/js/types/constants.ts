@@ -11,23 +11,23 @@ export interface Route {
     label: string,
     url: string
     icon?: string,
-    luciIcon?:LucideIcon,
+    luciIcon?: LucideIcon,
 }
 
 /**
  * Navegación de web
  */
-export const WEB_ROUTE : Route [] = [
+export const WEB_ROUTE: Route[] = [
     {
         label: 'home',
         url: "#"
     },
     {
-        label:'archive',
+        label: 'archive',
         url: "#"
     },
     {
-        label:'Contacto',
+        label: 'Contacto',
         url: '#'
     }
 ]
@@ -38,37 +38,35 @@ export const WEB_ROUTE : Route [] = [
  * NetWorks
  */
 export const NETWORKS: Route[] = [
-    { label: "LinkedIn",  url: "https://www.linkedin.com/in/gabriel-nivicela-86733035a/" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/gabriel-nivicela-86733035a/" },
     { label: "Instagram", url: "https://www.instagram.com/_mi_zume_/" },
-    { label: "GitHub",    url: "https://github.com/Mizume25" },
+    { label: "GitHub", url: "https://github.com/Mizume25" },
 ];
 
 /** Secciones web */
-export type Section = "todos" | "literatura" | "animemanga" | "reflexiones";
 
-export type Section_Content =  {
-    label:Section,
-    active:boolean
+
+export type Section = "todos" | "literatura" | "animemanga";
+
+export type Section_Content = {
+    label: Section,
+    active: boolean
 }
 
 
-export const SECTION : Section_Content [] = [
+export const SECTION: Section_Content[] = [
     {
-        label:"todos",
+        label: "todos",
         active: true
-        
+
     },
     {
-        label:"literatura",
+        label: "literatura",
         active: false
     },
     {
-        label:"animemanga",
+        label: "animemanga",
         active: false
     },
-    {
-        label:"reflexiones",
-        active: false
-    }
-] 
+]
 

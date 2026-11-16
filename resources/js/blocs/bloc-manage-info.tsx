@@ -3,6 +3,15 @@ import { cn } from "@/lib/utils";
 import { Lang } from "@/store/lang-store";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+    ListBox,
+    ListBoxItem,
+    Popover,
+    SelectionIndicator,
+    SelectValue,
+} from '@animate-ui/react/primitives/react-aria';
+// Select y Button no los exporta animate-ui: vienen de react-aria-components
+import { Button as AriaButton, Select } from 'react-aria-components';
 
 
 
@@ -135,14 +144,28 @@ interface BlocTabsProps<T extends string> {
     value: T;
     onChange: (tab: T) => void;
     className?: string;
+    /** Clases extra para cada pestaña (color de texto, tamaño, etc.). Sobrescriben las de por defecto */
+    tabClassName?: string;
+    /** Clases extra para el indicador deslizante (p. ej. su color). Sobrescriben las de por defecto */
+    indicatorClassName?: string;
+    /** Insignia opcional por pestaña (p. ej. un contador). Sin valor no se pinta */
+    badges?: Partial<Record<T, number>>;
+    /** Clases extra para las insignias. Sobrescriben las de por defecto */
+    badgeClassName?: string;
 }
+
+const BADGE_CLASS = 'min-w-5 h-5 px-1.5 rounded-full bg-mizume-tertiary text-mizume-primary text-xs font-bold inline-flex items-center justify-center';
+
+/** Insignia de una pestaña: no se pinta si no hay valor */
+const TabBadge = ({ value, className }: { value?: number, className?: string }) =>
+    value === undefined ? null : <span className={cn(BADGE_CLASS, className)}>{value}</span>;
 
 /**
  * Pestañas genéricas y controladas: reparten el ancho entre N labels (flex-1)
  * y un indicador que se desliza hacia la pestaña activa.
  * Trabajan con el valor, no con el label: al cambiar de idioma solo cambia el texto.
  */
-export const BlocTabs = <T extends string>({ tabs, labels, value, onChange, className }: BlocTabsProps<T>) => {
+export const BlocTabs = <T extends string>({ tabs, labels, value, onChange, className, tabClassName, indicatorClassName, badges, badgeClassName }: BlocTabsProps<T>) => {
     const activeIndex = Math.max(tabs.indexOf(value), 0);
 
     return (
@@ -153,24 +176,101 @@ export const BlocTabs = <T extends string>({ tabs, labels, value, onChange, clas
                         key={t}
                         onClick={() => onChange(t)}
                         className={cn(
-                            'flex-1 text-mizume-tertiary flex flex-row items-center justify-center cursor-pointer transition-opacity duration-300 ease-out',
+                            'flex-1 text-mizume-tertiary flex flex-row gap-2 items-center justify-center cursor-pointer transition-opacity duration-300 ease-out',
                             value === t ? 'opacity-100' : 'opacity-60 hover:opacity-90',
+                            tabClassName,
                         )}
                     >
                         {labels[t]}
+                        <TabBadge value={badges?.[t]} className={badgeClassName} />
                     </div>
                 ))}
 
                 {/* Ancho y desplazamiento dinámicos: van en style porque Tailwind no genera clases en runtime */}
                 <span
                     aria-hidden
-                    className="pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-mizume-tertiary transition-transform duration-300 ease-out motion-reduce:transition-none"
+                    className={cn(
+                        'pointer-events-none absolute bottom-0 left-0 h-1 rounded-full bg-mizume-tertiary transition-transform duration-300 ease-out motion-reduce:transition-none',
+                        indicatorClassName,
+                    )}
                     style={{
                         width: `${100 / tabs.length}%`,
                         transform: `translateX(${activeIndex * 100}%)`,
                     }}
                 />
             </div>
+        </div>
+    );
+};
+
+
+
+interface BlocSelectTabsProps<T extends string> {
+    /** Valores fijos (no traducidos) */
+    tabs: readonly T[];
+    /** Etiqueta traducida de cada valor */
+    labels: Record<T, string>;
+    /** Valor activo (controlado por el padre) */
+    value: T;
+    onChange: (tab: T) => void;
+    className?: string;
+    /** Clases extra para el botón del select. Sobrescriben las de por defecto */
+    triggerClassName?: string;
+    /** Clases extra para cada opción de la lista. Sobrescriben las de por defecto */
+    itemClassName?: string;
+    /** Insignia opcional por pestaña (p. ej. un contador). Sin valor no se pinta */
+    badges?: Partial<Record<T, number>>;
+    /** Clases extra para las insignias. Sobrescriben las de por defecto */
+    badgeClassName?: string;
+}
+
+/**
+ * Versión select de BlocTabs (pensada para móvil): mismas props, mismo valor controlado.
+ * El id de cada opción es el valor fijo; solo se traduce el label.
+ */
+export const BlocSelectTabs = <T extends string>({ tabs, labels, value, onChange, className, triggerClassName, itemClassName, badges, badgeClassName }: BlocSelectTabsProps<T>) => {
+    return (
+        <div className={className}>
+            <Select
+                aria-label={labels[value]}
+                value={value}
+                onChange={(key) => key && onChange(key as T)}
+                className="w-full"
+            >
+                <AriaButton
+                    className={cn(
+                        'w-full text-left capitalize bg-input text-input-foreground p-2 rounded-xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-input-focus',
+                        triggerClassName,
+                    )}
+                >
+                    {/* Label propio en vez de SelectValue: así la insignia se ve también en el botón */}
+                    <span className="flex flex-row items-center justify-between gap-2">
+                        {labels[value]}
+                        <TabBadge value={badges?.[value]} className={badgeClassName} />
+                    </span>
+                </AriaButton>
+                <Popover placement="bottom start" offset={4} className="w-(--trigger-width)">
+                    <ListBox className="bg-popover text-popover-foreground p-2 rounded-xl">
+                        {tabs.map((t) => (
+                            <ListBoxItem
+                                key={t}
+                                id={t}
+                                textValue={labels[t]}
+                                className={cn(
+                                    'capitalize outline-none py-2 bg-popover cursor-pointer text-item-foreground flex flex-row-reverse justify-center items-center data-focused:bg-item-hover data-selected:text-item-active-foreground',
+                                    itemClassName,
+                                )}
+                            >
+                                <span className="flex flex-row items-center gap-2">
+                                    {labels[t]}
+                                    <TabBadge value={badges?.[t]} className={badgeClassName} />
+                                </span>
+                                <SelectionIndicator animation="pop">✓</SelectionIndicator>
+                            </ListBoxItem>
+                        ))}
+                    </ListBox>
+                </Popover>
+            </Select>
         </div>
     );
 };
