@@ -1,6 +1,7 @@
 /**
  * @fileoverview Types del taller (workshop) de editores y administradores
  */
+import { WORKSHOP_POST_TABS_TYPE } from "@/constants/workshop-constants"
 import { Paginated, PostRecord } from "../definitions"
 
 /** Pestañas del taller: valores fijos, no se traducen (solo sus labels) */
@@ -29,7 +30,8 @@ export interface StatsPosts {
 
 export interface WorkShopPostsFilter {
     /** Ausente cuando no hay búsqueda (el backend manda {}) */
-    search?: string
+    search?: string,
+    status?: WORKSHOP_POST_TABS_TYPE
 }
 
 /** panel/workshop/posts */

@@ -70,7 +70,7 @@ interface WorkShopPostsMainProps {
 
 export const WorkShopPostsMain = ({ children }: WorkShopPostsMainProps) => {
     return (
-        <div className="bg-mizume-primary relative min-h-screen w-full rounded-2xl p-8 content-start items-start gap-4">
+        <div className="bg-mizume-primary relative min-h-screen w-full rounded-2xl p-4 lg:p-8 content-start items-start gap-4">
             {children}
         </div>
     )

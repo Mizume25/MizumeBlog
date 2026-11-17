@@ -29,7 +29,7 @@ export function usePostReader(post: PostRecord, build: PostBuild, headerExtra?: 
     const DATA = DATA_WORK_SHOW[lang]
 
     const { section, setSection, direction, onIndex, totalSections, body } = usePostSections(build)
-
+    const edit = false
     return {
         section,
         setSection,
@@ -52,6 +52,7 @@ export function usePostReader(post: PostRecord, build: PostBuild, headerExtra?: 
                     sections={{ min: 1, max: totalSections }}
                     value={section + 1}
                     onChange={(n) => setSection(n - 1)}
+                    edit={edit}
                 />
                 {headerExtra}
             </PostHeader>

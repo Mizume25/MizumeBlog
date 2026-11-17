@@ -33,7 +33,7 @@ import {
 import { COMMENTS_CACHE_TAG } from '@/hooks/custom/use-comments';
 import { useLangStore } from '@/store/lang-store';
 import { TurtleService } from '@/custom/services';
-import { Route } from '@/types';
+import { Route, SharedData } from '@/types';
 import { PostManageTab, WorkShowContextProps } from '@/types/custom/work-show-types';
 
 /* ───────────────────────────── Slots ───────────────────────────── */
@@ -46,6 +46,8 @@ export interface WorkShowSlots {
     top?: ReactNode,
     /** Al final de la cabecera del post (p. ej. selector de secciones) */
     headerExtra?: ReactNode,
+    /** Entre el selector y el PDF (p. ej. switch de edición). Ausente → el PDF ocupa su hueco */
+    headerAction?: ReactNode,
 
     head?: ReactNode
 }
@@ -87,11 +89,15 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
 
     const lang = useLangStore((l) => l.lang);
 
+    const { auth } = usePage<SharedData>().props
+
     const { component } = usePage();
 
     const reduce = useReducedMotion();
 
     const [slots, setSlots] = useState<WorkShowSlots>({});
+
+    
 
     const DATA = DATA_WORK_SHOW[lang];
 
@@ -157,7 +163,7 @@ export default function WorkShowLayout({ children, work, post }: PropsWithChildr
 
                     <WorkShowMain>
                         <SmoothCollapse show={open && active === 'posts'}>
-                            {lastPost && <PostHeader post={lastPost}>{slots.headerExtra}</PostHeader>}
+                            {lastPost && <PostHeader post={lastPost} action={slots.headerAction}>{slots.headerExtra}</PostHeader>}
                         </SmoothCollapse>
 
                         {/* Entrada suave de cada página; el layout (y su estado) no se toca */}

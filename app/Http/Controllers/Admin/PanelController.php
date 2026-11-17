@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ArticleType;
 use App\Enums\PostType;
+use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\PostFilterRequest;
 use App\Models\Comment;
@@ -48,17 +49,32 @@ class PanelController extends Controller
     {
         $filters = $request->validated();
 
+        /** Posts del usuario filtrados por título (?search=) y estado (?status=) */
+        $filter = new PostFilter($filters);
+
+        $query = $this->content()
+            ->with(['works.tags', 'author', 'media', 'comments'])
+            ->latest();
+
+        $filter->applyTitle($query);
+        $filter->applyPostStatus($query);
+
+        $paginated = $query->paginate(8)->withQueryString();
+
+       
+        $active = array_filter($filters, fn($v) => filled($v));
+
+        // now() en vez de flash() para que el mensaje no sobreviva a la siguiente petición
+        if (!empty($active)) {
+            [$type, $text] = $this->message($active, $paginated->total());
+            session()->now($type, $text);
+        }
+
         return Inertia::render('panel/workshop/posts', [
             ...$this->context(),
-            'paginated' => fn() => $this->content()
-                ->when($filters['search'] ?? null, fn($q, $v) => $q->searchTitle($v))
-                ->with(['works.tags', 'author', 'media', 'comments'])
-                ->latest()
-                ->paginate(5)
-                ->withQueryString(),
-            'stats'  => fn() => $this->stats(),
-            // (object): con filtros vacíos llega {} y no [] al frontend
-            'filter' => (object) $filters,
+            'paginated' => $paginated,
+            'stats'     => fn() => $this->stats(),
+            'filter'    => (object) $filters,
         ]);
     }
 
@@ -133,5 +149,30 @@ class PanelController extends Controller
                 ];
             },
         ];
+    }
+
+    /**
+     * Mensaje de filtros aplicados: success si hay resultados, error si no.
+     *
+     * @return array{0: 'success'|'error', 1: string}
+     */
+    private function message(array $filters, int $total): array
+    {
+        $parts = [];
+
+        foreach ($filters as $k => $v) {
+            $value = match ($k) {
+                'status' => __("filters.posts.statuses.{$v}"),
+                default  => $v,
+            };
+
+            $parts[] = __("filters.posts.messages.{$k}") . ": {$value}";
+        }
+
+        $filters = implode(' · ', $parts);
+
+        return $total > 0
+            ? ['success', trans_choice('filters.posts.applied.success', $total, ['filters' => $filters, 'total' => $total])]
+            : ['error',   __('filters.posts.applied.error', ['filters' => $filters])];
     }
 }

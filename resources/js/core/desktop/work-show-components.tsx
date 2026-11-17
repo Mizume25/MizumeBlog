@@ -282,32 +282,30 @@ export const PostsFilterHeader = ({ search, setSearch, onFilter, onReset, orderB
 interface PostHeaderProps {
     post: PostRecord,
     /** Hueco para lo que aporta cada página (p. ej. el selector de secciones en posts) */
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    /** Acción del dueño (switch de edición). Sin ella, el PDF ocupa también su columna */
+    action?: React.ReactNode,
 }
 
 /**
  * Cabecera del post abierto (la pinta el layout, común a posts / comments / reports).
- * Container query: estrecho = uno debajo de otro · ancho (@2xl) = [Título | Fecha | Autor | extra]
+ * Grid de 3 columnas: [extra (selector de secciones) | PDF | acción (switch de edición)].
+ * Sin acción (no es el dueño), el PDF ocupa las columnas 2 y 3.
  */
-export const PostHeader = ({ post, children }: PostHeaderProps) => {
+export const PostHeader = ({ post, children, action }: PostHeaderProps) => {
     return (
         <div className='w-full rounded-2xl bg-mizume-primary mb-5'>
             <div className='@container w-full p-4'>
-                <div className='flex flex-row justify-between items-center gap-4'>
-                    {/** 
-                    <PostWidget heading text={post.title} className='min-w-0 @2xl:flex-3' />
+                <div className='grid grid-cols-3 items-center gap-4'>
+                    {/* min-w-0: sin él, un hijo con min-width propio desbordaría su columna */}
+                    {children && <div className='min-w-0'>{children}</div>}
 
-                    <PostWidget text={post.publish_date} className='whitespace-nowrap @2xl:shrink-0' />
-
-                    <PostWidget text={post.user.name} className='min-w-0 @2xl:flex-2' />
-                    */}
-
-                    {children}
-
-                    <Button variant={'default'} className='flex shrink-0 flex-row h-15 gap-4 bg-btn-danger text-btn-danger-foreground py-2 px-4 @md:px-6 rounded-xl duration-300 transform-transition hover:scale-105 '>
+                    <Button variant={'default'} className={cn('col-start-2 flex w-full flex-row h-15 gap-4 bg-btn-danger text-btn-danger-foreground  hover:bg-btn-danger-foreground  hover:text-btn-danger py-2 px-4 @md:px-6 rounded-xl duration-300 transform-transition', !action && 'col-span-2')}>
                         <Download />
                         <span className='hidden @md:inline'>PDF</span>
                     </Button>
+
+                    {action && <div className='col-start-3 min-w-0'>{action}</div>}
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ use App\Enums\ArticleType;
 use App\Enums\PostType;
 use App\Models\Post;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,6 +29,8 @@ class MarkdownService
     {
         [$content, $index] = $this->read($this->resolvePaths($post, $article));
 
+        $content = $this->resolveMedia($content, $post);
+
         return [
             'content'  => $content,
             'index'    => $index,
@@ -35,6 +38,27 @@ class MarkdownService
         ];
     }
 
+
+    /**
+     * Sustituye ![alt](media:clave) por la URL pública de la imagen de la galería del post.
+     *
+     * La resolución se hace en servidor: react-markdown vacía las URLs con protocolos
+     * desconocidos (media:), así que el frontend no podría resolverlas.
+     * La clave se compara con el slug del nombre (P-c-tatakau-shisho → p-c-tatakau-shisho).
+     * Una sola consulta para todo el markdown; si falta la imagen, deja un aviso visible.
+     */
+    private function resolveMedia(string $content, Post $post): string
+    {
+        $gallery = $post->getMedia('gallery')->keyBy(fn($m) => Str::slug($m->name));
+
+        return preg_replace_callback(
+            '/!\[([^\]]*)\]\(media:([\w-]+)\)/',
+            fn($m) => ($media = $gallery->get($m[2]))
+                ? "![{$m[1]}]({$media->getUrl()})"
+                : "**[imagen no encontrada: {$m[2]}]**",
+            $content
+        );
+    }
 
     /**
      * Funcion para conter el numero de secciones

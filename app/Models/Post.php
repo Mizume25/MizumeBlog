@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\ArticleType;
+use App\Enums\PostFilterType;
 use App\Enums\PostType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -153,6 +154,20 @@ class Post extends Model implements HasMedia
     public function scopeSearchTitle(Builder $query, string $term): Builder
     {
         return $query->where('posts.title', 'like', '%' . addcslashes($term, '%_\\') . '%');
+    }
+
+
+    /** Filtra por estado de publicación: publicados, programados (pending), borradores o todos */
+    public function scopePostStatus(Builder $query, PostFilterType $type): Builder
+    {
+        $today = now()->toDateString();
+
+        return match ($type) {
+            PostFilterType::Publish  => $query->whereNotNull('publish_date')->whereDate('publish_date', '<=', $today),
+            PostFilterType::Pendings => $query->whereDate('publish_date', '>', $today),
+            PostFilterType::Drafts   => $query->whereNull('publish_date'),
+            PostFilterType::All      => $query,
+        };
     }
 
 

@@ -40,4 +40,24 @@ return [
         ],
         'applied' => 'Filtros aplicados (:filters) — :total obra|Filtros aplicados (:filters) — :total obras',
     ],
+
+    'posts' => [
+        // Etiqueta de cada filtro (?search=, ?status=)
+        'messages' => [
+            'search' => 'Búsqueda',
+            'status' => 'Estado',
+        ],
+        // Valores de App\Enums\PostFilterType
+        'statuses' => [
+            'all'      => 'Todos',
+            'publish'  => 'Publicados',
+            'pendings' => 'Pendientes',
+            'drafts'   => 'Borradores',
+        ],
+        // Resultado del filtrado: success con resultados, error sin ellos
+        'applied' => [
+            'success' => 'Filtros aplicados (:filters) — :total publicación|Filtros aplicados (:filters) — :total publicaciones',
+            'error'   => 'No se encontraron publicaciones con (:filters)',
+        ],
+    ],
 ];

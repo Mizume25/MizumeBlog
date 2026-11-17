@@ -34,6 +34,7 @@ interface NumbersSectionProps extends BlocSectionBaseProps {
   /** Sección actual (entre min y max) si la controla el padre */
   value?: number;
   onChange?: (section: number) => void;
+  edit: boolean
 }
 
 interface NamesSectionProps<T> extends BlocSectionBaseProps {
@@ -44,6 +45,7 @@ interface NamesSectionProps<T> extends BlocSectionBaseProps {
   /** Sección (base 0) desde la que empezar */
   initialIndex?: number;
   onChange?: (item: T, index: number) => void;
+  edit: boolean
 }
 
 export type BlocSectionPageProps<T> = NumbersSectionProps | NamesSectionProps<T>;
@@ -57,7 +59,7 @@ export const findSectionIndex = <T,>(items: T[], predicate: (item: T) => boolean
 
 export const BlocSectionPage = <T,>(props: BlocSectionPageProps<T>) => {
 
-    const { className, lang } = props;
+    const { className, lang, edit } = props;
 
     // names empieza en initialIndex; numbers sigue a `value` si el padre lo controla, si no la primera
     const startIndex = props.variant === "names"
@@ -102,7 +104,7 @@ export const BlocSectionPage = <T,>(props: BlocSectionPageProps<T>) => {
             <div className="w-full h-full bg-mizume-primary flex flex-row justify-between items-center rounded-xl text-sm">
 
                 <div className="p-2">
-                    <Button variant={"default"} className="bg-mizume-fourthary hover:bg-mizume-secondary hover:text-mizume-secondary-foreground" onClick={() => goTo(index - 1)} disabled={prev}>
+                    <Button variant={"default"} className="bg-mizume-fourthary hover:bg-mizume-secondary hover:text-mizume-secondary-foreground" onClick={() => goTo(index - 1)} disabled={prev || edit}  >
                         <ArrowLeft />
                     </Button>
                 </div>
@@ -120,7 +122,7 @@ export const BlocSectionPage = <T,>(props: BlocSectionPageProps<T>) => {
 
 
                 <div className="p-2">
-                    <Button variant={"default"} className="bg-mizume-fourthary hover:bg-mizume-secondary hover:text-mizume-secondary-foreground " onClick={() => goTo(index + 1)} disabled={next}>
+                    <Button variant={"default"} className="bg-mizume-fourthary hover:bg-mizume-secondary hover:text-mizume-secondary-foreground " onClick={() => goTo(index + 1)} disabled={next || edit}>
                         <ArrowRight />
                     </Button>
                 </div>

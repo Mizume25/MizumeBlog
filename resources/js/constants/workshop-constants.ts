@@ -11,11 +11,18 @@ import { WorkShopTab } from "@/types/custom/workshop-types";
  */
 export const WORKSHOP_TABS: readonly WorkShopTab[] = ["manage", "posts", "reports", "requests"]
 
+export const WORKSHOP_POST_TABS = ["all", "publish", "pendings", "drafts"] as const
+export type WORKSHOP_POST_TABS_TYPE = typeof WORKSHOP_POST_TABS[number]
+
 export const DATA_WORKSHOP: Record<Lang, {
     heads: Record<WorkShopTab, string>,
     TAB_LABELS: Record<WorkShopTab, string>,
     filter: {
         search: { title: string, placeholder: string }
+        apply: string,
+        reset: string,
+        WORKSHOP_POST_TABS: readonly WORKSHOP_POST_TABS_TYPE[],
+        POST_LABELS: Record<WORKSHOP_POST_TABS_TYPE, string>
     }
 }> = {
     es: {
@@ -36,6 +43,17 @@ export const DATA_WORKSHOP: Record<Lang, {
                 title: "Buscador",
                 placeholder: "Buscar por titulo..."
             },
+            apply: "Aplicar",
+            reset: "Resetear",
+            WORKSHOP_POST_TABS,
+            POST_LABELS: {
+                all: "Todos",
+                publish: "Publicados",
+                pendings: "Pendientes",
+                drafts: "Borradores",
+            } as Record<WORKSHOP_POST_TABS_TYPE, string>
+
+
         },
     },
     en: {
@@ -56,6 +74,15 @@ export const DATA_WORKSHOP: Record<Lang, {
                 title: "Search",
                 placeholder: "Search by title..."
             },
+             apply: "Apply",
+            reset: "Reset",
+            WORKSHOP_POST_TABS,
+            POST_LABELS: {
+                all: "All",
+                publish: "Publish",
+                pendings: "Pendings",
+                drafts: "Drafts",
+            } as Record<WORKSHOP_POST_TABS_TYPE, string>
         },
     },
 }

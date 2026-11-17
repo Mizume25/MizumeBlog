@@ -13,9 +13,9 @@ import { Button } from '@/components/animate-ui/components/buttons/button';
 import { now } from "@/lib/utils";
 import { StatsPosts } from "@/types/custom/workshop-types";
 import { FilterSearch } from "@/core/desktop/utils-components";
-import { DATA_WORKSHOP_TYPE } from "@/constants/workshop-constants";
+import { DATA_WORKSHOP_TYPE, WORKSHOP_POST_TABS_TYPE } from "@/constants/workshop-constants";
 import { TurtleService } from "@/custom/services";
-import { BlocTabs } from "./bloc-manage-info";
+import { BlocSelectTabs, BlocTabs } from "./bloc-manage-info";
 
 interface InfoCurrentActivityProps {
     posts: PostRecord[],
@@ -463,7 +463,10 @@ interface InfoTableProps {
     search: string,
     setSearch: (v: string) => void,
     onFilter: () => void,
-    TEXT: DATA_WORKSHOP_TYPE
+    TEXT: DATA_WORKSHOP_TYPE,
+    postTab: WORKSHOP_POST_TABS_TYPE,
+    setPostTab: (v: WORKSHOP_POST_TABS_TYPE) => void,
+    onReset: () => void
 
 }
 
@@ -574,7 +577,7 @@ const PostActions = () => (
     </div>
 )
 
-export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT }: InfoTableProps) {
+export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, postTab, setPostTab, onReset }: InfoTableProps) {
 
     const [publish, setPublish] = useState(false);
 
@@ -592,16 +595,14 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT }: In
 
 
     return (
-        <div className="lg:col-span-2 bg-mizume-primary border border-border rounded-xl overflow-hidden shadow-sm h-full">
+        <div className="@container lg:col-span-2 bg-mizume-primary border border-border rounded-xl overflow-hidden shadow-sm h-full">
 
-            {/* Header: título + filtro (botones en desktop, select en mobile) */}
-            <div className="px-4 py-3 lg:px-5 lg:py-4 border-b border-border flex flex-col lg:flex-row items-center gap-3 bg-gradient-to-r from-accent/40 to-transparent">
-                <h3 className="min-w-0 truncate text-mizume-primary-foreground text-sm lg:text-base font-semibold">
-                    {DATA.title}
-                </h3>
+        
+            <div className="grid grid-cols-2 items-center gap-3 px-4 py-3 @2xl:px-5 @2xl:py-4 @2xl:grid-cols-[16rem_minmax(0,1fr)_auto_auto] @5xl:grid-cols-[18rem_minmax(0,1fr)_auto_auto] border-b border-border bg-gradient-to-r from-accent/40 to-transparent">
 
-                <div className="max-w-sm min-h-15 bg-mizume-fourthary p-2 rounded-2xl">
-                    <div className="w-full h-full bg-mizume-primary text-mizume-primary rounded-2xl">
+                {/* Buscador */}
+                <div className="col-span-2 @2xl:col-span-1 h-16 flex flex-col justify-center bg-mizume-fourthary p-2 rounded-2xl">
+                    <div className="w-full bg-mizume-primary text-mizume-primary rounded-2xl">
                         <FilterSearch
                             search={search}
                             onFilter={onFilter}
@@ -613,21 +614,27 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT }: In
                     </div>
                 </div>
 
-                <div className="flex flex-row items-center justify-center">
-                
+                {/* Filtro de estado: select hasta @5xl, pestañas desde @5xl */}
+                <div className="col-span-2 @2xl:col-span-1 min-w-0">
+                    <BlocTabs tabs={TEXT.filter.WORKSHOP_POST_TABS} labels={TEXT.filter.POST_LABELS} value={postTab} onChange={setPostTab} className='hidden @5xl:flex w-full flex-row h-16 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' />
+
+                    <BlocSelectTabs
+                        tabs={TEXT.filter.WORKSHOP_POST_TABS}
+                        labels={TEXT.filter.POST_LABELS}
+                        value={postTab}
+                        onChange={setPostTab}
+                        className="@5xl:hidden w-full"
+                    />
                 </div>
 
-
-                <div className="ml-auto shrink-0 gap-4 flex flex-row p-4">
-                    <Button variant={`default`} className="bg-btn-success text-btn-success-foreground hover:bg-btn-success-foreground hover:text-btn-success">
-                        <Filter />
-                        Aplicar
-                    </Button>
-                    <Button variant={`default`} className="bg-btn-danger text-btn-danger-foreground hover:bg-btn-danger-foreground hover:text-btn-danger">
-                        <RotateCcwIcon />
-                        Reset
-                    </Button>
-                </div>
+                <Button variant={`default`} className="w-full bg-btn-success text-btn-success-foreground hover:bg-btn-success-foreground hover:text-btn-success" onClick={onFilter}>
+                    <Filter />
+                    { TEXT.filter.apply}
+                </Button>
+                <Button variant={`default`} className="w-full bg-btn-danger text-btn-danger-foreground hover:bg-btn-danger-foreground hover:text-btn-danger" onClick={onReset} >
+                    <RotateCcwIcon />
+                    {TEXT.filter.reset}
+                </Button>
 
             </div>
 
@@ -702,8 +709,6 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT }: In
             <div className="md:hidden divide-y divide-border/50">
                 {posts.map((post, i) => (
                     <div key={i} className={`capitalize flex items-center gap-3 px-4 py-3 hover:bg-accent/20 transition-colors`}>
-                        <div className="w-10 h-10 shrink-0 bg-secondary rounded flex items-center justify-center text-lg border border-border">📖</div>
-
                         <div className="min-w-0 flex-1 flex flex-col gap-1.5">
                             {/* Titulo + Destacado */}
                             <div className="flex items-center gap-2">

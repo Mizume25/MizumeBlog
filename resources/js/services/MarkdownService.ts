@@ -17,12 +17,14 @@ export default class MarkdownService {
     private content: string;
     private index: Nodo[];
     private chunks: string[] = [];   // chunks[0] = 1ª sección ## (incluye el preámbulo)
+    private edit : boolean;
+    
 
-
-    constructor(content: string, index: Nodo[]) {
+    constructor(content: string, index: Nodo[], edit?:boolean) {
         this.content = content;
         this.index = index;
         this.chunks = this.split(content);
+        this.edit = false
     }
 
     public setContent(content: string): void {
@@ -34,6 +36,11 @@ export default class MarkdownService {
         this.index = index
     }
 
+    public setEdit (edit : boolean) {
+        
+    } 
+
+
 
     public getContent(): string {
         return this.content
@@ -42,6 +49,12 @@ export default class MarkdownService {
     public getIndex(): Nodo [] {
         return this.index
     }
+
+    public getMode() : boolean {
+        return this.edit
+    }
+
+
 
 
     /** Número total de secciones */

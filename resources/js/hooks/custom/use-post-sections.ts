@@ -1,6 +1,6 @@
 import MarkdownService from "@/services/MarkdownService"
 import { PostBuild } from "@/types/definitions"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 /**
  * Lectura por secciones del post (página works/show/post).
@@ -10,6 +10,12 @@ export default function usePostSections(build: PostBuild) {
 
     /** Servicio de markdown: se crea una vez por build */
     const markdown = useMemo(() => new MarkdownService(build.content, build.index), [build])
+
+    /** Markdown completo editable. Flecha: llamar a getContent() suelto pierde `this` */
+    const [content, setContent] = useState(() => markdown.getContent())
+
+    // Inertia reutiliza la página entre posts: al cambiar el build, el editor toma el nuevo markdown
+    useEffect(() => setContent(markdown.getContent()), [markdown])
 
     /** Sección actual (base 0) */
     const [section, setSection] = useState(0)
@@ -36,5 +42,7 @@ export default function usePostSections(build: PostBuild) {
         totalSections: markdown.total(),
         /** Trozo de markdown a renderizar: la sección actual */
         body: markdown.section(section),
+        content,
+        setContent
     }
 }

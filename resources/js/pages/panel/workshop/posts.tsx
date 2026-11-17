@@ -24,7 +24,7 @@ function WorkShopPosts({ paginated , stats, filter }: WorkShopPostsProps) {
 
     const DATA = DATA_WORKSHOP[lang]
 
-    const { search , setSearch, onFilter } = WorkShopPostHok(filter)
+    const { search , setSearch, onFilter, postTab , setPostTab , onReset} = WorkShopPostHok(filter)
 
     return (
         <>
@@ -42,18 +42,18 @@ function WorkShopPosts({ paginated , stats, filter }: WorkShopPostsProps) {
                     </div>
                 </div>
 
-                <div className="w-full min-h-screen bg-mizume-secondary p-5 rounded-2xl">
-                    <InfoTable lang={lang} posts={paginated.data} TEXT={DATA}  onFilter={onFilter} search={search} setSearch={setSearch}/>
+                <div className="w-full flex flex-col gap-4 bg-mizume-secondary p-5 rounded-2xl">
+                    <InfoTable lang={lang} posts={paginated.data} TEXT={DATA}  onFilter={onFilter} search={search} setSearch={setSearch} postTab={postTab} setPostTab={setPostTab} onReset={onReset}  />
 
-                    <div className="col-span-full">
+                    <div>
                         <Pagination
                             prevUrl={paginated.prev_page_url}
                             nextUrl={paginated.next_page_url}
                             current={paginated.current_page}
                             last={paginated.last_page}
                             labels={PaginatedText[lang]}
-                            classBTN="bg-mizume-primary text-mizume-primary-foreground rounded-2xl p-4"
                             spanClass='text-sm font-bold text-mizume-secondary-foreground'
+                            
                         />
                     </div>
                 </div>

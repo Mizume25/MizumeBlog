@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\PostFilterType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PostFilterRequest extends FormRequest
 {
@@ -24,6 +26,7 @@ class PostFilterRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', Rule::enum(PostFilterType::class)],
         ];
     }
 }
