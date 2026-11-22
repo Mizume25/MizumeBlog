@@ -9,7 +9,7 @@ import { router } from "@inertiajs/react";
 
 interface AuthorCardProps {
     author: Author
-    avatarUrl?: string;
+    avatarUrl?: string | null;
     labels: AUTHOR_LABELS
 }
 
@@ -36,7 +36,7 @@ export default function AuthorCard({
                 {avatarUrl && (
                     <img
                         src={avatarUrl}
-                        alt={`${author.name} ${author.last_name}`}
+                        alt={author.pseudonym || [author.name, author.last_name].filter(Boolean).join(" ")}
                         className="w-full h-full object-cover"
                     />
                 )}

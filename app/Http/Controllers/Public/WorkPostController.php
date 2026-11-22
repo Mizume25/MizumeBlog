@@ -11,6 +11,11 @@ use App\Services\MarkdownService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use League\CommonMark\MarkdownConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\Table\TableExtension;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * Páginas de un post dentro del contexto de un work.
@@ -60,10 +65,7 @@ class WorkPostController extends Controller
      */
     private function context(Work $work, Post $post): array
     {
-        abort_unless(
-            $work->posts()->publishPosts()->whereKey($post->id)->exists(),
-            404
-        );
+        abort_unless($post->work_id === $work->id && $post->isPublished(), 404);
 
         $work->load('authors');
         $post->load('user:id,uuid,name');
@@ -72,5 +74,37 @@ class WorkPostController extends Controller
             'work' => $work,
             'post' => $post,
         ];
+    }
+
+    /**
+     * Exportacion PDF
+     */
+    public function pdf(string $id)
+    {
+        $post = Post::findOrFail($id);
+
+        $files = $this->markdown->build($post);   // work o author: se deduce del post
+
+        $env = new Environment();
+
+        $env->addExtension(new CommonMarkCoreExtension());
+
+        $env->addExtension(new TableExtension());
+
+
+
+        $converter = new MarkdownConverter($env);
+
+        $html = $converter->convert($files["content"])->getContent();
+
+
+
+        $pdf = Pdf::loadView('post.pdf', [
+            'content' => $html,
+            'post' => $post,
+            'index' => $files["index"]
+        ]);
+
+        return $pdf->download("{$post->title}.pdf");
     }
 }

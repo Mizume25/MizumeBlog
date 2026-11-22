@@ -1,46 +1,59 @@
+@php
+    /** Obra del post (posts.work_id); null en los artículos de author */
+    $work = $post->work;
+@endphp
 <!DOCTYPE html>
-<html>
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     <meta charset="utf-8">
+    <title>{{ $post->title }}</title>
     <style>
         {!! file_get_contents(public_path('pdf.css')) !!}
     </style>
 </head>
 
 <body>
-    <!--Ficha Técnica de el post-->
+    <!-- Ficha técnica del post -->
     <div class="info">
-        <h2>Titulo: {{ $post->title }}</h2>
-        <h4 class="text-muted">Titulo Post: {{ $post->web_title }}</h4>
-        <p><strong>Categoria: </strong>{{ $post->category }}</p>
-        <p><strong>Autor/ra:</strong>: {{ $post->author }}</p>
-        <p><strong>Fecha Publicacion:</strong>: {{ $post->publish_date }}</p>
-        @foreach ($tags as $tag)
-            <span class="badge info">{{ $tag }}</span>
-        @endforeach
+        <h2>{{ __('pdf.title') }}: {{ $post->title }}</h2>
+
+        @if ($work)
+            <h4 class="text-muted">{{ __('pdf.work') }}: {{ $work->title }}</h4>
+            <p><strong>{{ __('pdf.category') }}:</strong> {{ __("filters.works.categories.{$work->category->value}") }}</p>
+
+            @if ($work->medium)
+                <p><strong>{{ __('pdf.medium') }}:</strong> {{ __("filters.works.mediums.{$work->medium->value}") }}</p>
+            @endif
+
+            @if ($work->tags->isNotEmpty())
+                <p><strong>{{ __('pdf.tags') }}:</strong> {{ $work->tags->pluck('name')->implode(', ') }}</p>
+            @endif
+        @endif
+
+        <p><strong>{{ __('pdf.author') }}:</strong> {{ $post->user?->name }}</p>
+
+        <p>
+            <strong>{{ __('pdf.published') }}:</strong>
+            {{ $post->publish_date
+                ? \Illuminate\Support\Carbon::parse($post->publish_date)->locale(app()->getLocale())->translatedFormat('j F Y')
+                : __('pdf.unpublished') }}
+        </p>
     </div>
 
-    <!--  Indice de contenido -->
-    <div>
-        <h4>Indice de Contenido</h4>
-        <ul>
-            @foreach ($index as $item)
-                <div class="order-item">
-                    <li class="index"><a href="#{{ $item['id'] }}">{{ $item['titulo'] }}</a></li>
-                </div>
-            @endforeach
-        </ul>
+    <!-- Índice de contenido -->
+    @if (!empty($index))
+        <div>
+            <h4>{{ __('pdf.index') }}</h4>
+            @include('post.partials.pdf-index', ['nodes' => $index])
+        </div>
+    @endif
 
-    </div>
-
-    <hr> <!--  Separador Incial -->
+    <hr> <!-- Separador inicial -->
 
     <main class="content">
         {!! $content !!}
     </main>
-
-
 </body>
 
 </html>

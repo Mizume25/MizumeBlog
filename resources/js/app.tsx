@@ -5,6 +5,8 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
 import { initializeTheme } from './hooks/use-appearance';
+import FlashHandler from './layouts/app/FlashHandler';
+import { FlashMessage } from './types';
 
 declare global {
     const route: typeof routeFn;
@@ -18,7 +20,13 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        // FlashHandler (con su Toaster) vive fuera de las páginas: no se desmonta al navegar
+        root.render(
+            <>
+                <App {...props} />
+                <FlashHandler initialFlash={props.initialPage.props.flash as FlashMessage | undefined} />
+            </>,
+        );
     },
     progress: {
         color: '#4B5563',

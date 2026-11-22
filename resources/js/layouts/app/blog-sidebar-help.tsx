@@ -18,7 +18,8 @@ import {
     Settings2,
     MegaphoneIcon,
     GavelIcon,
-    Toolbox
+    Toolbox,
+    X
 } from 'lucide-react';
 import { Button } from '@/components/animate-ui/components/buttons/button';
 
@@ -139,7 +140,12 @@ export const RenderProfileAuth = ({ isMobile, role, user, content }: RenderProfi
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Toolbox className='text-sidebar-accent' />
+                                {role === "editor" || role == "admin" ? (
+                                    <Toolbox className='text-sidebar-accent' />
+                                ) : (
+                                    <X className='text-sidebar-accent' />
+                                )
+                                }
                                 <Link href={route("panel.workshop",)} method="get" as="button">
                                     {content.sidebar.profile.workshop.content}
                                 </Link>

@@ -8,6 +8,8 @@ type BaseFieldProps = {
     label: string;
     icon?: LucideIcon;
     error?: string;
+    className: string,
+    labelClass: string
 };
 
 type SelectOption = { value: string; label: string };
@@ -23,7 +25,7 @@ type FormFieldProps =
     | (BaseFieldProps & { type: 'textarea' } & React.ComponentProps<typeof Textarea>);
 
 export default function FormField(props: FormFieldProps) {
-    const { label, icon: Icon, error } = props;
+    const { label, icon: Icon, error, className , labelClass } = props;
 
     const renderControl = () => {
         switch (props.type) {
@@ -57,8 +59,8 @@ export default function FormField(props: FormFieldProps) {
     };
 
     return (
-        <Field className="flex flex-col gap-2">
-            <Label className="flex items-center gap-2 text-white">
+        <Field className={`${className}`}>
+            <Label className={`${labelClass}`}>
                 {Icon && <Icon size={20} />}
                 <span>{label}</span>
             </Label>

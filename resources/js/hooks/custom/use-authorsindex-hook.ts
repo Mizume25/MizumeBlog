@@ -3,7 +3,8 @@
  */
 
 import { AUTHOR_YEAR_MIN, DATA_AUTHOR_INDEX_TYPE } from "@/constants/authors-index-constants";
-import { AuthorOrder } from "@/types/custom/author-index-types";
+import { ORDER_DEFAULT, sortByOrder, ValueOrder } from "@/lib/order";
+import { useLangStore } from "@/store/lang-store";
 import { AuthorFilter } from "@/types/custom/work-index-types";
 import { Author } from "@/types/definitions";
 import { router } from "@inertiajs/react";
@@ -18,36 +19,17 @@ export function useAuthorsIndex(authors: Author[], DATA: DATA_AUTHOR_INDEX_TYPE,
 
     const [search, setSearch] = useState(filters.search ?? "");
 
-    const [orderBy, setOrderBy] = useState<AuthorOrder>(DATA.filter.orderBy.types[0].type);
+    const [orderBy, setOrderBy] = useState<ValueOrder>(ORDER_DEFAULT);
+
+    const lang = useLangStore((l) => l.lang);
 
     const [orderRevert, setOrderRevert] = useState(false);
 
 
-    const Authors = useMemo(() => {
-
-        const sorted = [...authors];
-
-        const sortKey = (a: Author) =>
-            a.pseudonym?.trim() || `${a.last_name ?? ""} ${a.name ?? ""}`.trim();
-
-        switch (orderBy) {
-            case "date":
-                sorted.sort((a, b) => Number(b.birth_year) - Number(a.birth_year));
-                break;
-            case "alpha":
-                sorted.sort((a, b) =>
-                    sortKey(a).localeCompare(sortKey(b), "es", { sensitivity: "base" })
-                );
-                break;
-            default:
-                break;
-        }
-
-        if (orderRevert) sorted.reverse();
-
-        return sorted;
-
-    }, [orderBy, orderRevert, authors])
+    const Authors = useMemo(() => sortByOrder(authors, orderBy, {
+        date: (a) => Number(a.birth_year),
+        alpha: (a) => a.pseudonym?.trim() || `${a.last_name ?? ""} ${a.name ?? ""}`.trim(),
+    }, lang, orderRevert), [orderBy, orderRevert, authors, lang])
 
 
     const onFilter = () => {
@@ -71,7 +53,7 @@ export function useAuthorsIndex(authors: Author[], DATA: DATA_AUTHOR_INDEX_TYPE,
     const onReset = () => {
         setYear(AUTHOR_YEAR_MIN);
         setSearch("");
-        setOrderBy(DATA.filter.orderBy.types[0].type);
+        setOrderBy(ORDER_DEFAULT);
         setOrderRevert(false);
 
         router.get(

@@ -4,7 +4,7 @@ import { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/animate-ui/primitives/buttons/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { PostsGroupedByUser, Work, WorkRecord } from '@/types/definitions';
+import { WorkRecord } from '@/types/definitions';
 import { router } from '@inertiajs/react';
 
 
@@ -124,7 +124,8 @@ function MotionCarousel(props: PropType) {
         <div className="flex touch-pan-y touch-pinch-zoom">
           {slides.map((p, i) => {
             const isActive = i === selectedIndex;
-            const cover = p.media?.[0]?.original_url ?? FALLBACK_COVER;
+            // cover_url siempre viene en el JSON (accessor de Work); no depende de cargar `media`
+            const cover = p.cover_url ?? FALLBACK_COVER;
 
             return (
               <div

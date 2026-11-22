@@ -163,7 +163,7 @@ function PostCover({ post, total }: { post: Post, total: number }) {
                             <Tag size={11} /> {post.type}
                         </span>
                     )}
-                    {post.featured && (
+                    {post.featured_at && (
                         <span className="flex items-center gap-1 rounded-full bg-card-muted px-2 py-0.5 text-card-muted-foreground">
                             <Star size={11} /> Destacado
                         </span>

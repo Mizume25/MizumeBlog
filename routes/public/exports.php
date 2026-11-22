@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Public\WorkPostController;
+
 Route::middleware(['auth', 'verified', 'throttle:comments'])->group(function () {
 
 
-    //Route::get('/post/{id}/pdf', [HomeController::class, 'pdf'])->name('post.pdf');
+    Route::get('/post/{id}/pdf', [WorkPostController::class, 'pdf'])->name('post.pdf');
 
 });

@@ -2,8 +2,8 @@
  * @fileoverview Constanes del show de works
  */
 
-import { PostManageTab, PostOrder } from "@/types/custom/work-show-types";
-import { ArrowDownZA, CalendarCheck2 } from "lucide-react";
+import { PostManageTab } from "@/types/custom/work-show-types";
+import { ORDER_TEXT, orderOptions } from "@/lib/order";
 import { DATA_WORK_INDEX } from "./work-index-constants";
 
 /**
@@ -22,11 +22,8 @@ export const DATA_WORK_SHOW = {
         },
         search: { label: "Buscar post", placeholder: "Título o autor del post..." },
         orderBy: {
-            title: "Ordenar por",
-            types: [
-                { type: "date" as PostOrder, label: "Fecha", icon: CalendarCheck2 },
-                { type: "alpha" as PostOrder, label: "Usuario (A-Z)", icon: ArrowDownZA },
-            ],
+            title: ORDER_TEXT.es.title,
+            types: orderOptions("es", { alpha: "Usuario (A-Z)" }),
         },
         apply: "Aplicar",
         reset: "Restablecer",
@@ -55,11 +52,8 @@ export const DATA_WORK_SHOW = {
         },
         search: { label: "Search post", placeholder: "Post title or author..." },
         orderBy: {
-            title: "Order by",
-            types: [
-                { type: "date" as PostOrder, label: "Date", icon: CalendarCheck2 },
-                { type: "alpha" as PostOrder, label: "User (A-Z)", icon: ArrowDownZA },
-            ],
+            title: ORDER_TEXT.en.title,
+            types: orderOptions("en", { alpha: "User (A-Z)" }),
         },
         apply: "Apply",
         reset: "Reset",

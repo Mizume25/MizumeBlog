@@ -21,8 +21,9 @@ class HandleInertiaRequests extends Middleware
 
     private function getLegalityPosts(): array
     {
+        // Una entrada por idioma: los títulos se guardan ya traducidos
         return Cache::remember(
-            'legality_posts',
+            Post::legalityCacheKey(),
             3600,
             fn () => Post::where('type', PostType::Legality)->get(['id', 'title', 'code'])->toArray()
         );

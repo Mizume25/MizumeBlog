@@ -1,1 +1,1 @@
-export type AuthorOrder = "date" | "alpha"
+/** Orden de autores: ValueOrder (@/lib/order) */

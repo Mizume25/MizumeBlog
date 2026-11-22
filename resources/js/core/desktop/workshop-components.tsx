@@ -7,6 +7,7 @@ import { Button } from "@/components/animate-ui/components/buttons/button"
 import { WORKSHOP_TABS } from "@/constants/workshop-constants"
 import { Lang } from "@/store/lang-store"
 import { WorkShopTab } from "@/types/custom/workshop-types"
+import { router } from "@inertiajs/react"
 
 interface WorkShopHeaderProps {
     /** Etiqueta traducida de cada pestaña */
@@ -84,10 +85,36 @@ export const WorkShopPostActions = ({ lang }: WorkShopPostActions) => {
 
     const ACTIONS = {
         es: {
-            actions: ["Publicacion +", "Autor +", "Obra +"]
+            actions: [
+                {
+                    label: "Publicacion +",
+                    url: "#"
+                },
+                {
+                    label: "Obra +",
+                    url: route("works.create")
+                },
+                {
+                    label: "Autor +",
+                    url: "#"
+                }
+            ]
         },
         en: {
-            actions: ["Post +", "Author +", "Work +"]
+            actions: [
+                {
+                    label: "Posts +",
+                    url: "#"
+                },
+                {
+                    label: "Work +",
+                    url: route("works.create")
+                },
+                {
+                    label: "Author +",
+                    url: "#"
+                }
+            ]
         }
     }
 
@@ -95,13 +122,14 @@ export const WorkShopPostActions = ({ lang }: WorkShopPostActions) => {
     const DATA = ACTIONS[lang]
 
 
-    return DATA.actions.map((a) => (
+    return DATA.actions.map((a, i) => (
         <Button
-            key={a}
+            key={i}
             variant="default"
+            onClick={() => router.get(a.url)}
             className="h-full min-h-15 w-full cursor-pointer bg-mizume-secondary text-mizume-tertiary hover:bg-mizume-fourthary"
         >
-            {a}
+            {a.label}
         </Button>
     ))
 }

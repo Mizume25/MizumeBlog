@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { setZodLocale } from '@/lib/schema-messages';
 
 export type Lang = "en" | "es"
 
@@ -20,15 +21,20 @@ export const useLangStore = create<LangState>()(
       lang: 'es',
       setLang: (lang) => {
         writeLangCookie(lang);
+        setZodLocale(lang);
         set({ lang });
-        
+
+        // Las páginas precargadas (prefetch) están en el idioma anterior: se descartan antes de recargar
+        router.flushAll();
         router.reload();
       },
     }),
     {
       name: 'lang',
       onRehydrateStorage: () => (state) => {
-        if (state) writeLangCookie(state.lang);
+        if (!state) return;
+        writeLangCookie(state.lang);
+        setZodLocale(state.lang);
       },
     },
   ),

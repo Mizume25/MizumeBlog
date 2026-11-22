@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 
 /** Stores */
 import { Lang } from '@/store/lang-store';
@@ -12,7 +12,7 @@ import { TurtleService } from '@/custom/services';
 
 /** Types */
 import { Paginated, PostRecord, User, WorkRecord } from '@/types/definitions';
-import { PostOrder } from '@/types/custom/work-show-types';
+import { ValueOrder } from '@/lib/order';
 import { ArticleProps, PageProgressProps, PostManageTab } from '@/types/custom/work-show-types';
 import { Nodo } from '@/services/MarkdownService';
 /* Constantes */
@@ -21,14 +21,13 @@ import { DATA_WORK_SHOW_TYPE } from '@/constants/work-show-constants';
 import MarkdownRenderer from '../post/MarkdownRenderer';
 
 /** Utilidades */
-import { BlogProfile, FilterSearch, WORK_LABELS } from './utils-components';
+import { BlogProfile, FilterOrderBy, FilterSearch, WORK_LABELS } from './utils-components';
 import { Pagination } from '@/components/paginator';
 import { BlogShowTrigger } from '@/layouts/app/blog-show';
 import { useBlogShowContext } from '@/hooks/custom/use-blog-show';
 import { BlogShowSidebarContent } from '@/layouts/app/blog-show-components';
 import { BlocLabel } from '@/blocs/bloc-filter';
 import { Button as UIButton } from '@/components/ui/button';
-import { Highlight } from '@/components/animate-ui/primitives/effects/highlight';
 import RevertButton from '@/components/revert-buttono';
 import { Button } from '@/components/animate-ui/components/buttons/button';
 import { FlipWork } from '@/components/flip-work';
@@ -48,6 +47,7 @@ import { Button as AriaButton, Select } from 'react-aria-components';
 
 /** Iconos */
 import { Calendar, FilterIcon, RotateCcw, ArrowLeft, RotateCw, Search, UserCircle2, FileTextIcon, Download } from 'lucide-react';
+import { SharedData } from '@/types';
 
 
 /**
@@ -204,8 +204,8 @@ interface PostsFilterHeaderProps {
     setSearch: (v: string) => void,
     onFilter: () => void,
     onReset: () => void,
-    orderBy: PostOrder,
-    setOrderBy: (v: PostOrder) => void,
+    orderBy: ValueOrder,
+    setOrderBy: (v: ValueOrder) => void,
     onRevert: () => void,
     DATA: DATA_WORK_SHOW_TYPE,
 }
@@ -240,25 +240,7 @@ export const PostsFilterHeader = ({ search, setSearch, onFilter, onReset, orderB
                     titleStyles='title mx-2'
                     sideTitle={<RevertButton onToggle={onRevert} className="ms-auto bg-btn-info text-btn-info-foreground hover:bg-btn-info-foreground hover:text-btn-info" />}
                 >
-                    <div className="grid grid-cols-2 gap-2 bg-item rounded-lg">
-                        <Highlight
-                            value={orderBy}
-                            onValueChange={(v) => setOrderBy(v as PostOrder)}
-                            className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
-                        >
-                            {DATA.orderBy.types.map((o) => (
-                                <button
-                                    key={o.type}
-                                    aria-label={o.label}
-                                    title={o.label}
-                                    data-value={o.type}
-                                    className="px-3 py-1 flex justify-center text-item-foreground cursor-pointer"
-                                >
-                                    <o.icon />
-                                </button>
-                            ))}
-                        </Highlight>
-                    </div>
+                    <FilterOrderBy value={orderBy} onChange={setOrderBy} options={DATA.orderBy.types} />
                 </BlocLabel>
 
                 {/* Acciones */}
@@ -293,6 +275,8 @@ interface PostHeaderProps {
  * Sin acción (no es el dueño), el PDF ocupa las columnas 2 y 3.
  */
 export const PostHeader = ({ post, children, action }: PostHeaderProps) => {
+
+    const { auth } = usePage<SharedData>().props;
     return (
         <div className='w-full rounded-2xl bg-mizume-primary mb-5'>
             <div className='@container w-full p-4'>
@@ -300,10 +284,10 @@ export const PostHeader = ({ post, children, action }: PostHeaderProps) => {
                     {/* min-w-0: sin él, un hijo con min-width propio desbordaría su columna */}
                     {children && <div className='min-w-0'>{children}</div>}
 
-                    <Button variant={'default'} className={cn('col-start-2 flex w-full flex-row h-15 gap-4 bg-btn-danger text-btn-danger-foreground  hover:bg-btn-danger-foreground  hover:text-btn-danger py-2 px-4 @md:px-6 rounded-xl duration-300 transform-transition', !action && 'col-span-2')}>
+                    <a href={route('post.pdf', post.id)} className={cn('col-start-2 flex w-full flex-row justify-center items-center h-15 gap-4 bg-btn-danger text-btn-danger-foreground  hover:bg-btn-danger-foreground  hover:text-btn-danger py-2 px-4 @md:px-6 rounded-xl duration-300 transform-transition', !action && 'col-span-2')}>
                         <Download />
                         <span className='hidden @md:inline'>PDF</span>
-                    </Button>
+                    </a>
 
                     {action && <div className='col-start-3 min-w-0'>{action}</div>}
                 </div>

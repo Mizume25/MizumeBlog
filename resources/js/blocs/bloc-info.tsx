@@ -2,7 +2,7 @@
  * @fileoverview Bloque de metricas he informacion
  */
 import { Lang } from "@/store/lang-store";
-import { PostRecord, Tag } from "@/types/definitions";
+import { PostRecord } from "@/types/definitions";
 import { Link, router } from '@inertiajs/react';
 import { confirmDelete, SECTION, Section, Section_Content } from '@/types';
 import Switch from "react-switch";
@@ -13,7 +13,7 @@ import { Button } from '@/components/animate-ui/components/buttons/button';
 import { now } from "@/lib/utils";
 import { StatsPosts } from "@/types/custom/workshop-types";
 import { FilterSearch } from "@/core/desktop/utils-components";
-import { DATA_WORKSHOP_TYPE, WORKSHOP_POST_TABS_TYPE } from "@/constants/workshop-constants";
+import { DATA_WORKSHOP_TYPE, WORKSHOP_POST_ORDER_LABELS, WORKSHOP_POST_ORDER_TYPE, WORKSHOP_POST_ORDERS, WORKSHOP_POST_TABS_TYPE } from "@/constants/workshop-constants";
 import { TurtleService } from "@/custom/services";
 import { BlocSelectTabs, BlocTabs } from "./bloc-manage-info";
 
@@ -89,32 +89,28 @@ const InfoProgresBartext = {
 
 export function InfoProgresBar({ posts, lang }: InfoProgresBarProps) {
 
-    const works = Array.from(
-        new Map(
-            posts.flatMap(post => post.works).map(work => [work.id, work])
-        ).values()
-    );
+    // Un usuario escribe un solo post por work: cada post cuenta como una obra distinta
+    const counted = posts.filter(post => post.work)
+    const total = counted.length
 
     const DATA = InfoProgresBartext[lang]
 
     const lit = lang === "es" ? "Literatura" : "Literature"
 
-    const v1 = works.filter((p) => p.category === 'literatura');
-    const v2 = works.filter((p) => p.category === 'animemanga');
+    const v1 = counted.filter(post => post.work?.category === 'literatura').length
+    const v2 = counted.filter(post => post.work?.category === 'animemanga').length
 
-    const Literatura = (v1.length * 100) / posts.length;
-    const AnimeManga = (v2.length * 100) / posts.length;
-
-    const r1 = Math.round(Literatura).toString();
-    const r2 = Math.round(AnimeManga).toString();
+    // Sin posts el porcentaje es 0 (evita NaN%)
+    const r1 = total ? Math.round((v1 * 100) / total).toString() : "0"
+    const r2 = total ? Math.round((v2 * 100) / total).toString() : "0"
 
     return (
         <div className="bg-card  border-card border rounded-xl p-5 shadow-card-foreground shadow-2xl w-full">
             <h3 className="text-card-foreground mb-4">{DATA.title}</h3>
             <div className="space-y-4">
                 {[
-                    { label: lit, val: v1.length, width: r1 },
-                    { label: 'AnimeManga', val: v2.length, width: r2 },
+                    { label: lit, val: v1, width: r1 },
+                    { label: 'AnimeManga', val: v2, width: r2 },
                 ].map((g, i) => (
                     <div key={i}>
                         <div className="flex justify-between text-xs mb-1 italic text-card-foreground">
@@ -155,26 +151,18 @@ const InfoTagsContenttext = {
     }
 }
 
-/** Los works de PostRecord no tipan tags; llegan cuando el controlador carga `works.tags` */
-type WorkWithTags = PostRecord["works"][number] & { tags?: Tag[] }
-
 export function InfoTagsContent({ posts, lang, limit = 8 }: InfoTagsContentProps) {
 
     const DATA = InfoTagsContenttext[lang]
 
-    // Cuenta en cuántos posts aparece cada tag (un tag repetido en varias obras del mismo post cuenta una vez)
+    // Cuenta en cuántos posts aparece cada tag (un post tiene un único work y sus tags no se repiten)
     const counts = new Map<number, { name: string, count: number }>()
 
     posts.forEach(post => {
-        const tagsInPost = new Map<number, string>()
-
-            ; (post.works as WorkWithTags[]).forEach(work => {
-                work.tags?.forEach(tag => tagsInPost.set(tag.id, tag.name))
-            })
-
-        tagsInPost.forEach((name, id) => {
-            const current = counts.get(id)
-            counts.set(id, { name, count: (current?.count ?? 0) + 1 })
+        // work y tags solo vienen si el controlador carga `work.tags`
+        post.work?.tags?.forEach(tag => {
+            const current = counts.get(tag.id)
+            counts.set(tag.id, { name: tag.name, count: (current?.count ?? 0) + 1 })
         })
     })
 
@@ -357,6 +345,17 @@ export function InfoWritingRhythm({ posts, lang, months = 6 }: InfoWritingRhythm
     )
 }
 
+/** "YYYY-MM-DD" → medianoche LOCAL (new Date("YYYY-MM-DD") la toma como UTC) */
+function publishDay(date: string): Date {
+    const [y, m, d] = date.slice(0, 10).split('-').map(Number)
+    return new Date(y, m - 1, d)
+}
+
+/** Publicado = tiene fecha y ya ha llegado (misma regla que publishPosts() del backend) */
+function isPublished(post: PostRecord): boolean {
+    return post.publish_date !== null && publishDay(post.publish_date) <= now()
+}
+
 interface InfoLastPostProps {
     posts: PostRecord[],
     lang: Lang
@@ -374,9 +373,17 @@ const InfoLastPosttext = {
 
 export const InfoLastPost = ({ posts, lang }: InfoLastPostProps) => {
 
-
-
     const DATA = InfoLastPosttext[lang]
+
+    const last = posts[0]
+
+    // Sin posts (o sin su work cargado) no hay nada que mostrar
+    if (!last?.work) return null
+
+    // works.posts.show solo abre posts publicados: un borrador o programado daría 404
+    const published = isPublished(last)
+
+    const css = "text-md text-card transition-transform duration-300 ease-in-out"
 
     return (
         <div className="bg-card border-card border rounded-xl p-5 shadow-card-foreground shadow-2xl w-full">
@@ -384,7 +391,11 @@ export const InfoLastPost = ({ posts, lang }: InfoLastPostProps) => {
                 <h3 className="text-card-foreground">{DATA.title}</h3>
             </div>
             <div className="bg-card-foreground text-card rounded-2xl p-4 " >
-                <a href={route('works.posts.show', [posts[0].works[0].slug, posts[0].id])} className="text-md text-card transition-transform duration-300 hover:border-b hover:border-b-card ease-in-out cursor-pointer">{posts[0].title}</a>
+                {published ? (
+                    <a href={route('works.posts.show', [last.work.slug, last.id])} className={`${css} hover:border-b hover:border-b-card cursor-pointer`}>{last.title}</a>
+                ) : (
+                    <p className={css}>{last.title}</p>
+                )}
             </div>
         </div>
     )
@@ -466,8 +477,10 @@ interface InfoTableProps {
     TEXT: DATA_WORKSHOP_TYPE,
     postTab: WORKSHOP_POST_TABS_TYPE,
     setPostTab: (v: WORKSHOP_POST_TABS_TYPE) => void,
-    onReset: () => void
-
+    onReset: () => void,
+    /** Orden de la tabla (?order=). Si no se pasa, el selector no se muestra */
+    order?: WORKSHOP_POST_ORDER_TYPE,
+    setOrder?: (v: WORKSHOP_POST_ORDER_TYPE) => void,
 }
 
 const InfoTableText = {
@@ -537,10 +550,7 @@ const StatusBadge = ({ lang, post }: StatusBadgeProps) => {
     let result: BadgeStatusType;
 
     if (post.publish_date) {
-        // "YYYY-MM-DD" → medianoche LOCAL (new Date("YYYY-MM-DD") la toma como UTC)
-        const [y, m, d] = post.publish_date.slice(0, 10).split('-').map(Number)
-        const publishDay = new Date(y, m - 1, d)
-        result = today < publishDay ? BadgeStatus.pending : BadgeStatus.publish
+        result = today < publishDay(post.publish_date) ? BadgeStatus.pending : BadgeStatus.publish
     } else {
         result = BadgeStatus.draft
     }
@@ -554,9 +564,9 @@ const StatusBadge = ({ lang, post }: StatusBadgeProps) => {
     )
 
 }
-/** Marca de destacado */
-const FeaturedMark = ({ featured }: { featured: boolean }) => (
-    featured ? <Pin className="text-mizume-primary-foreground" /> : null
+/** Marca de destacado: el post está destacado si featured_at no es null */
+const FeaturedMark = ({ post }: { post: PostRecord }) => (
+    post.featured_at ? <Pin className="text-mizume-primary-foreground" /> : null
 )
 
 /** Base común: mismo tamaño en todos los botones (más grande en mobile para tocar con el dedo) */
@@ -577,7 +587,7 @@ const PostActions = () => (
     </div>
 )
 
-export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, postTab, setPostTab, onReset }: InfoTableProps) {
+export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, postTab, setPostTab, onReset, order, setOrder }: InfoTableProps) {
 
     const [publish, setPublish] = useState(false);
 
@@ -598,7 +608,12 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
         <div className="@container lg:col-span-2 bg-mizume-primary border border-border rounded-xl overflow-hidden shadow-sm h-full">
 
         
-            <div className="grid grid-cols-2 items-center gap-3 px-4 py-3 @2xl:px-5 @2xl:py-4 @2xl:grid-cols-[16rem_minmax(0,1fr)_auto_auto] @5xl:grid-cols-[18rem_minmax(0,1fr)_auto_auto] border-b border-border bg-gradient-to-r from-accent/40 to-transparent">
+            {/*
+              * Columnas: buscador | estado | orden | aplicar | reset
+              * @2xl: estado y orden comparten la columna flexible (selects apilados)
+              * @5xl: el espacio libre se reparte 3/4 para las pestañas y 1/4 para el orden
+              */}
+            <div className="grid grid-cols-2 items-center gap-3 px-4 py-3 @2xl:px-5 @2xl:py-4 @2xl:grid-cols-[16rem_minmax(0,1fr)_auto_auto] @5xl:grid-cols-[18rem_minmax(0,3fr)_minmax(0,1fr)_auto_auto] border-b border-border bg-gradient-to-r from-accent/40 to-transparent">
 
                 {/* Buscador */}
                 <div className="col-span-2 @2xl:col-span-1 h-16 flex flex-col justify-center bg-mizume-fourthary p-2 rounded-2xl">
@@ -615,8 +630,15 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
                 </div>
 
                 {/* Filtro de estado: select hasta @5xl, pestañas desde @5xl */}
-                <div className="col-span-2 @2xl:col-span-1 min-w-0">
-                    <BlocTabs tabs={TEXT.filter.WORKSHOP_POST_TABS} labels={TEXT.filter.POST_LABELS} value={postTab} onChange={setPostTab} className='hidden @5xl:flex w-full flex-row h-16 items-center justify-center rounded-2xl bg-mizume-fourthary px-8 py-2' />
+                <div className="col-span-2 @2xl:col-span-1 min-w-0 flex flex-col gap-2">
+                    {/* Las pestañas llenan su columna (3/4) a partes iguales: la barra animada asume el mismo ancho */}
+                    <BlocTabs
+                        tabs={TEXT.filter.WORKSHOP_POST_TABS}
+                        labels={TEXT.filter.POST_LABELS}
+                        value={postTab}
+                        onChange={setPostTab}
+                        className='hidden @5xl:flex w-full flex-row h-16 items-center rounded-2xl bg-mizume-fourthary px-4 py-2'
+                    />
 
                     <BlocSelectTabs
                         tabs={TEXT.filter.WORKSHOP_POST_TABS}
@@ -625,6 +647,30 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
                         onChange={setPostTab}
                         className="@5xl:hidden w-full"
                     />
+
+                    {/* Hasta @5xl el orden va debajo del estado, en la misma columna */}
+                    {order && setOrder && (
+                        <BlocSelectTabs
+                            tabs={WORKSHOP_POST_ORDERS}
+                            labels={WORKSHOP_POST_ORDER_LABELS[lang]}
+                            value={order}
+                            onChange={setOrder}
+                            className="@5xl:hidden w-full"
+                        />
+                    )}
+                </div>
+
+                {/* Orden desde @5xl: columna propia (si no hay orden, la celda queda vacía y el grid no se descoloca) */}
+                <div className="hidden @5xl:flex h-16 min-w-0 items-center rounded-2xl bg-mizume-fourthary px-3">
+                    {order && setOrder && (
+                        <BlocSelectTabs
+                            tabs={WORKSHOP_POST_ORDERS}
+                            labels={WORKSHOP_POST_ORDER_LABELS[lang]}
+                            value={order}
+                            onChange={setOrder}
+                            className="w-full"
+                        />
+                    )}
                 </div>
 
                 <Button variant={`default`} className="w-full bg-btn-success text-btn-success-foreground hover:bg-btn-success-foreground hover:text-btn-success" onClick={onFilter}>
@@ -670,7 +716,7 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
                                                     {post.title.replaceAll('-', ' ')}
                                                 </p>
                                                 <span className="xl:hidden shrink-0">
-                                                    <FeaturedMark featured={post.featured} />
+                                                    <FeaturedMark post={post} />
                                                 </span>
                                             </div>
                                             {post.publish_date && (
@@ -691,7 +737,7 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
 
                                 {/* Campo Destacado */}
                                 <td className='hidden xl:table-cell px-5 py-4'>
-                                    <FeaturedMark featured={post.featured} />
+                                    <FeaturedMark post={post} />
                                 </td>
 
                                 {/* Acciones */}
@@ -713,7 +759,7 @@ export function InfoTable({ posts, lang, search, setSearch, onFilter, TEXT, post
                             {/* Titulo + Destacado */}
                             <div className="flex items-center gap-2">
                                 <p className="min-w-0 flex-1 text-sm font-semibold text-mizume-primary-foreground truncate">{post.title.replaceAll('-', ' ')}</p>
-                                <FeaturedMark featured={post.featured} />
+                                <FeaturedMark post={post} />
                             </div>
 
                             {/* Estado + Fecha */}

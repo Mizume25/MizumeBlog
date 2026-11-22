@@ -37,6 +37,48 @@ export type PermissionsSatatus = "denied" | "accepted" | "pending" | "expired" |
 export type UserType = "admin" | "editor" | "user" | "guest"
 
 /**
+ * @enum PostType
+ * Tipos de post (posts.type)
+ */
+export type PostType = "article" | "legality" | "community" | "policies"
+
+/**
+ * @enum ArticleType
+ * Destino de un article: se deduce de posts.work_id / posts.author_id (no es columna)
+ */
+export type ArticleType = "work" | "author"
+
+/**
+ * @enum EntityStatus
+ * Estado de una ficha neutra (Work, Author): pending = "ficha sin verificar"
+ */
+export type EntityStatus = "pending" | "verified"
+
+/**
+ * @enum Locale
+ * Idiomas disponibles (config app.available_locales)
+ */
+export type Locale = "es" | "en"
+
+/**
+ * Todas las traducciones de un campo traducible.
+ *
+ * Las vistas públicas NUNCA reciben esto: el backend resuelve el idioma y manda
+ * el campo como texto (title = "valor"). Solo los formularios de edición lo piden
+ * explícitamente (getTranslations / append('translations')).
+ */
+export type Translations = Partial<Record<Locale, string>>
+
+/**
+ * Entidad cargada para un formulario de edición con $model->append('translations'):
+ * los campos siguen llegando como texto y además `translations` trae { campo: { es, en } }.
+ * @example type WorkEdit = WithTranslations<Work, 'title' | 'sinopsi'>
+ */
+export type WithTranslations<T, K extends keyof T & string> = T & {
+    translations: Record<K, Translations>
+}
+
+/**
  * Todos los campos comparten estas propieaddes
  * @type field
  */
@@ -44,6 +86,14 @@ export type Field = {
     id: number;
     created_at: string;
     updated_at: string;
+};
+
+/**
+ * Entidades con borrado suave (works, authors, tags, posts)
+ * @type SoftDeletes
+ */
+export type SoftDeletes = {
+    deleted_at: string | null;
 };
 
 
@@ -58,6 +108,8 @@ export type User = Field & {
     role: string
     avatar: string
     uuid: string
+    /** Destacados propios permitidos (lo fija el admin) */
+    featured_quota: number
 };
 
 /**
@@ -80,20 +132,35 @@ export type Media = Field & {
     order_column: number | null
     original_url: string
     preview_url?: string
+    /** Créditos del artista (custom_properties.credit); null si la imagen no tiene artista */
+    credit: MediaCredit | null
+}
+
+/**
+ * @type MediaCredit
+ * Créditos de una imagen. social es texto libre (@usuario, nombre de la red, URL...).
+ * Para enlazar usa SIEMPRE social_url: solo viene si social es una URL http(s).
+ */
+export type MediaCredit = {
+    artist: string
+    social: string | null
+    social_url: string | null
 }
 
 /**
  * @type Tags
  * interfaz de tags
+ * name: traducible, llega ya resuelto al idioma actual
  */
-export type Tag = Field & { name: string };
+export type Tag = Field & SoftDeletes & { name: string };
 
 
 /**
  * @type Work
- * interfaz de work
+ * interfaz de work (ficha neutra de la comunidad)
+ * title / sinopsi: traducibles, llegan ya resueltos al idioma actual
  */
-export type Work = Field & {
+export type Work = Field & SoftDeletes & {
     title: string,
     slug: string,
     abbreviation: string,
@@ -101,21 +168,30 @@ export type Work = Field & {
     publish_date: string,
     sinopsi: string,
     medium: Medium,
-    cover_url: string
+    cover_url: string | null,
+    status: EntityStatus,
+    /** Atribución: NO da permisos sobre la ficha */
+    created_by: number | null,
+    /** Curación de la home (admin): null = no sale en la home */
+    home_at: string | null,
+    home_order: number | null,
 }
 
 /**
- * @type Author 
- * interfaz de Autor
+ * @type Author
+ * interfaz de Autor (ficha neutra de una persona real)
+ * description: traducible, llega ya resuelta al idioma actual
  */
-export type Author = Field & {
+export type Author = Field & SoftDeletes & {
     name: string | null,
     last_name: string | null,
     pseudonym: string | null,
-    birth_year: string | null,
+    birth_year: number | null,
     description: string,
-    profile_url: string,
+    profile_url: string | null,
     slug: string,
+    status: EntityStatus,
+    created_by: number | null,
 }
 
 
@@ -134,26 +210,25 @@ export type Comment = Field & {
 /**
  *  @type Post
  * Propiedades de Post
+ * title / description: traducibles, llegan ya resueltos al idioma actual
+ *
+ * Un article pertenece a UN work (work_id) o a UN author (author_id), nunca a ambos.
  */
-export type Post = Field & {
+export type Post = Field & SoftDeletes & {
     title: string,
-    publish_date: string,
+    publish_date: string | null,
     description: string | null,
-    featured: boolean,
-    type: string,
+    type: PostType,
     code: string | null,
-    id_user: string
-}
-
-
-/**
- * @type PostImages
- * interfaz de PostImages
- */
-export type PostImages = Field & {
-    key: string,
-    post_id: number,
-    media_id: number
+    user_id: number,
+    work_id: number | null,
+    author_id: number | null,
+    /** Calculado en el backend a partir de work_id / author_id; null si no es article */
+    article_type: ArticleType | null,
+    /** Destacado si no es null */
+    featured_at: string | null,
+    /** Quién lo destacó: el propio autor (consume cupo) o un admin */
+    featured_by: number | null,
 }
 
 /**
@@ -203,16 +278,64 @@ export type Permissions = Field & {
     post_id: number,
 }
 
-// -- Tipados customizados
+/**
+ * @enum RevisionAction / RevisionStatus / RevisionSource
+ * Cola de revisión + historial de fichas neutras (entity_revisions)
+ */
+export type RevisionAction = "create" | "update" | "delete" | "restore"
+export type RevisionStatus = "pending" | "approved" | "rejected"
+export type RevisionSource = "user" | "moderator" | "system"
 
-export type PostRecord = Post & {
-    user: User,
-    works: WorkRecord[]
-    comments: CommentRecord[]
-    authors: Author[]
+/** Entidades revisables (alias del morphMap del backend) */
+export type RevisableType = "work" | "author" | "tag"
+
+/**
+ * Diff de una revisión: solo los campos que cambian.
+ * Los traducibles van por idioma ("sinopsi.en"); las relaciones como arrays de ids ("authors", "tags").
+ */
+export type RevisionChanges = Record<string, { old: unknown, new: unknown }>
+
+/**
+ * @type EntityRevision
+ * pending = propuesta en la cola · approved = entrada del historial · rejected = descartada
+ */
+export type EntityRevision = Field & {
+    revisable_type: RevisableType,
+    revisable_id: number,
+    action: RevisionAction,
+    changes: RevisionChanges,
+    reason: string | null,
+    status: RevisionStatus,
+    source: RevisionSource,
+    /** Alertas automáticas de RevisionGuard */
+    flags: Record<string, unknown> | null,
+    user_id: number | null,
+    reviewed_by: number | null,
+    reviewed_at: string | null,
+    review_note: string | null,
+    /** Revisión que esta deshace */
+    reverts_id: number | null,
 }
 
-export type PostsGroupedByUser = Record<string, PostRecord[]>
+// -- Tipados customizados
+
+/**
+ * Post con relaciones. work / author solo vienen si el backend los carga
+ * (y son null cuando el post no es de ese tipo).
+ */
+export type PostRecord = Post & {
+    user: User,
+    work?: WorkRecord | null
+    author?: Author | null
+    comments: CommentRecord[]
+}
+
+export type EntityRevisionRecord = EntityRevision & {
+    user: User | null,
+    reviewer: User | null,
+    revisable: Work | Author | Tag | null,
+}
+
 
 export type WorkRecord = Work & {
     media: Media[]
@@ -253,4 +376,12 @@ export type PostBuild = {
     content: string,
     index: Nodo[],
     sections: number,
-}        
+}  
+
+export type MediaItem = {
+  id: number
+  url: string
+  alt: string
+  credit: { artist: string; social_url: string | null } | null
+  source: { type: 'work' | 'author' | 'post'; title: string }
+}

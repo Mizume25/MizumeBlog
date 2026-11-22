@@ -178,7 +178,7 @@ export const BlocTabs = <T extends string>({ tabs, labels, value, onChange, clas
                         key={t}
                         onClick={() => onChange(t)}
                         className={cn(
-                            'flex-1 text-mizume-tertiary flex flex-row gap-2 items-center justify-center cursor-pointer transition-opacity duration-300 ease-out',
+                            'flex-1 text-mizume-tertiary flex flex-row gap-2 items-center justify-center cursor-pointer transition-opacity duration-300 ease-out mb-3',
                             value === t ? 'opacity-100' : 'opacity-60 hover:opacity-90',
                             tabClassName,
                         )}

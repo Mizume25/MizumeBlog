@@ -21,6 +21,7 @@ Route::middleware(['auth', 'role:editor'])->prefix('panel')->name('panel.')->gro
         Route::get('/posts', 'posts')->name('.posts');
         Route::get('/reports', 'reports')->name('.reports');
         Route::get('/requests', 'requests')->name('.requests');
+        Route::get('/media', 'media')->name('.media');
     });
 
     // Editores

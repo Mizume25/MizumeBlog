@@ -99,7 +99,7 @@ return [
     /*
      * The fully qualified class name of the media model.
      */
-    'media_model' => Media::class,
+    'media_model' => \App\Models\Media::class,   // modelo propio: créditos del artista en custom_properties
 
     /*
      * The fully qualified class name of the media observer.

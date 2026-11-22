@@ -1,6 +1,8 @@
 import { Author, Post, Work, WorkRecord } from "@/types/definitions";
 import React, { ReactNode, useMemo } from "react";
 import { Fragment } from 'react'
+import { Highlight } from '@/components/animate-ui/primitives/effects/highlight';
+import { OrderOption, ValueOrder } from '@/lib/order';
 interface AvatarProps {
     name?: string;
     /** Identificador estable (p. ej. user.uuid) usado para calcular el color */
@@ -236,6 +238,39 @@ export const FilterSearch = ({ search, setSearch, onFilter, placeholder }: Filte
                 placeholder={placeholder}
                 className="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
             />
+        </div>
+    )
+}
+
+
+interface FilterOrderByProps {
+    value: ValueOrder,
+    onChange: (v: ValueOrder) => void,
+    /** orderOptions(lang) o DATA.*.orderBy.types */
+    options: readonly OrderOption[],
+}
+
+/** Selector de orden (fecha / alfabético) compartido por works/index, authors/index y works/show */
+export const FilterOrderBy = ({ value, onChange, options }: FilterOrderByProps) => {
+    return (
+        <div className="grid grid-cols-2 gap-2 bg-item rounded-lg">
+            <Highlight
+                value={value}
+                onValueChange={(v) => onChange(v as ValueOrder)}
+                className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
+            >
+                {options.map((o) => (
+                    <button
+                        key={o.type}
+                        aria-label={o.label}
+                        title={o.label}
+                        data-value={o.type}
+                        className="px-3 py-1 flex justify-center text-item-foreground cursor-pointer"
+                    >
+                        <o.icon />
+                    </button>
+                ))}
+            </Highlight>
         </div>
     )
 }

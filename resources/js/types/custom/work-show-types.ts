@@ -8,9 +8,6 @@ export interface PostUserFilter {
   search?: string | null,
 }
 
-/** Orden de los posts de un work: por fecha de publicación o alfabético por usuario */
-export type PostOrder = "date" | "alpha"
-
 export interface ArticleProps {
   children?: React.ReactNode
   className?: string

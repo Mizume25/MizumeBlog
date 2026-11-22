@@ -2,8 +2,7 @@
  * @fileoverview Constantes de authors
  */
 
-import { AuthorOrder } from "@/types/custom/author-index-types";
-import { ArrowDownZA, CalendarCheck2 } from "lucide-react";
+import { ORDER_TEXT, orderOptions } from "@/lib/order";
 
 /** Año mínimo del slider: con este valor no se aplica filtro por año */
 export const AUTHOR_YEAR_MIN = -1000;
@@ -23,19 +22,8 @@ export const DATA_AUTHOR_INDEX = {
             apply: "Aplicar",
             reset: "Resetear",
             orderBy: {
-                title: "Ordenar por",
-                types: [
-                    {
-                        type: "date" as AuthorOrder,
-                        label: "Fecha",
-                        icon: CalendarCheck2
-                    },
-                    {
-                        type: "alpha" as AuthorOrder,
-                        label: "Alfabetico",
-                        icon: ArrowDownZA
-                    },
-                ]
+                title: ORDER_TEXT.es.title,
+                types: orderOptions("es"),
             },
         },
 
@@ -54,19 +42,8 @@ export const DATA_AUTHOR_INDEX = {
             apply: "Apply",
             reset: "Reset",
             orderBy: {
-                title: "Order by",
-                types: [
-                    {
-                        type: "date" as AuthorOrder,
-                        label: "Date",
-                        icon: CalendarCheck2
-                    },
-                    {
-                        type: "alpha" as AuthorOrder,
-                        label: "Alphabetical",
-                        icon: ArrowDownZA
-                    },
-                ]
+                title: ORDER_TEXT.en.title,
+                types: orderOptions("en"),
             },
         },
 

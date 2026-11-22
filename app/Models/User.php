@@ -58,6 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'featured_quota' => 'integer',
         ];
     }
 
@@ -124,6 +125,55 @@ class User extends Authenticatable implements MustVerifyEmail
     public function resolvedReports(): HasMany
     {
         return $this->hasMany(Report::class, 'resolved_by');
+    }
+
+    // --- Fichas y revisiones ---
+
+    /** Revisiones propuestas (o cambios directos) de este usuario sobre fichas neutras. */
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(EntityRevision::class);
+    }
+
+    /** Revisiones que este usuario ha moderado. */
+    public function reviewedRevisions(): HasMany
+    {
+        return $this->hasMany(EntityRevision::class, 'reviewed_by');
+    }
+
+    public function createdWorks(): HasMany
+    {
+        return $this->hasMany(Work::class, 'created_by');
+    }
+
+    public function createdAuthors(): HasMany
+    {
+        return $this->hasMany(Author::class, 'created_by');
+    }
+
+    // --- Destacados ---
+
+    /** Posts propios destacados por él mismo: son los que consumen el cupo. */
+    public function featuredPosts(): HasMany
+    {
+        return $this->posts()->featuredByOwner();
+    }
+
+    public function featuredQuotaUsed(): int
+    {
+        return $this->featuredPosts()->count();
+    }
+
+    /** Si el admin baja el cupo por debajo de lo usado, no se quita nada: solo no puede destacar más. */
+    public function hasFeaturedQuotaAvailable(): bool
+    {
+        return $this->featuredQuotaUsed() < $this->featured_quota;
+    }
+
+    /** Solo el admin cambia cupos (lo comprueba la policy/controlador). */
+    public function setFeaturedQuota(int $quota): bool
+    {
+        return $this->forceFill(['featured_quota' => max(0, min($quota, 255))])->save();
     }
 
     // --- Roles ---

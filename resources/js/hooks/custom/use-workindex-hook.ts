@@ -1,8 +1,10 @@
 import { WorkRecord } from "@/types/definitions";
 import { useEffect, useMemo, useState } from "react";
-import { CategorySelect, MEDIUM_VALUES_TYPE, WorkFilters, WorkOrder } from "@/types/custom/work-index-types"
+import { CategorySelect, MEDIUM_VALUES_TYPE, WorkFilters } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX_TYPE } from "@/constants/work-index-constants";
 import { router } from "@inertiajs/react";
+import { dateTime, ORDER_DEFAULT, sortByOrder, ValueOrder } from "@/lib/order";
+import { useLangStore } from "@/store/lang-store";
 
 
 
@@ -31,7 +33,9 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
 
     const [selectTags, setSelectTags] = useState<number[]>(filters.tags?.map(Number) ?? DATA.values.tags);
 
-    const [orderBy, setOrderBy] = useState<WorkOrder>(DATA.filter.orderBy.types[0].type);
+    const [orderBy, setOrderBy] = useState<ValueOrder>(ORDER_DEFAULT);
+
+    const lang = useLangStore((l) => l.lang);
 
     const [orderRevert, setOrderRevert] = useState(false);
 
@@ -69,26 +73,10 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
     }
 
 
-    const Works = useMemo(() => {
-
-        const sorted = [...works];
-
-        switch (orderBy) {
-            case "date":
-                sorted.sort((a, b) => new Date(b.publish_date).getTime() - new Date(a.publish_date).getTime());
-                break;
-            case "alpha":
-                sorted.sort((a, b) => a.title.localeCompare(b.title, "es"));
-                break;
-            default:
-                break;
-        }
-
-        if (orderRevert) sorted.reverse();
-
-        return sorted;
-
-    }, [orderBy, orderRevert, works])
+    const Works = useMemo(() => sortByOrder(works, orderBy, {
+        date: (w) => dateTime(w.publish_date),
+        alpha: (w) => w.title,
+    }, lang, orderRevert), [orderBy, orderRevert, works, lang])
 
 
     const [selectWork, setSelectWork] = useState<WorkRecord | null>(Works[0] ?? null);
@@ -112,7 +100,7 @@ export function useWorkIndex(works: WorkRecord[], DATA: DATA_WORK_INDEX_TYPE, fi
         setMedium("todos");
         setSearch("");
         setSelectTags(DATA.values.tags);
-        setOrderBy(DATA.filter.orderBy.types[0].type);
+        setOrderBy(ORDER_DEFAULT);
         setOrderRevert(false);
 
 

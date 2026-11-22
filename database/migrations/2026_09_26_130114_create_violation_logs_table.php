@@ -15,15 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('action');
             $table->integer('attempts_count');
-            $table->unsignedBigInteger('post_id')->nullable();
-
-            $table->foreign('post_id')
-            ->references('id')
-            ->on('posts')
-            ->onDelete('restrict')
-            ->onUpdate('cascade');
-
-            $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('post_id')->nullable()->constrained()->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

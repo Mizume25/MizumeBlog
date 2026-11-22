@@ -19,13 +19,13 @@ return new class extends Migration
         Schema::create('requests_permissions', function (Blueprint $table) {
             $table->id();
             $table->text("message");
-            $table->enum("status", self::STATUS);
+            $table->enum('status', self::STATUS)->default('pending');
             $table->timestamp('granted_at')->nullable();
             $table->timestamp('access_expires_at')->nullable();
-            $table->timestamp('requested_at')->nullable(); 
-            $table->foreignId('granted_by')->constrained('users', 'id');
-            $table->foreignId('user_id')->constrained('users', 'id');
-            $table->foreignId('post_id')->constrained('posts', 'id');
+            $table->timestamp('requested_at')->nullable();
+            $table->foreignId('granted_by')->nullable()->constrained('users');  // null hasta que se resuelve
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('post_id')->constrained('posts');
             $table->timestamps();
         });
     }

@@ -1,4 +1,6 @@
-import { PostOrder, PostUserFilter } from "@/types/custom/work-show-types"
+import { PostUserFilter } from "@/types/custom/work-show-types"
+import { dateTime, ORDER_DEFAULT, sortByOrder, ValueOrder } from "@/lib/order"
+import { useLangStore } from "@/store/lang-store"
 import { PostRecord } from "@/types/definitions"
 import { router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
@@ -13,29 +15,19 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
 
     const [search, setSearch] = useState<string>(filter.search ?? "");
 
-    const [orderBy, setOrderBy] = useState<PostOrder>("date");
+    const [orderBy, setOrderBy] = useState<ValueOrder>(ORDER_DEFAULT);
+
+    const lang = useLangStore((l) => l.lang);
 
     const [orderRevert, setOrderRevert] = useState(false);
 
     /** Orden en cliente sobre la página actual (igual que works/index) */
-    const Posts = useMemo(() => {
-
-        const sorted = [...posts];
-
-        switch (orderBy) {
-            case "date":
-                sorted.sort((a, b) => new Date(b.publish_date).getTime() - new Date(a.publish_date).getTime());
-                break;
-            case "alpha":
-                sorted.sort((a, b) => a.user.name.localeCompare(b.user.name, "es"));
-                break;
-        }
-
-        if (orderRevert) sorted.reverse();
-
-        return sorted;
-
-    }, [posts, orderBy, orderRevert]);
+    const Posts = useMemo(() => sortByOrder(posts, orderBy, {
+        date: (p) => dateTime(p.publish_date),
+        alpha: (p) => p.user.name,
+        // Destacados primero (mismo orden que WorkController@show)
+        first: (p) => p.featured_at !== null,
+    }, lang, orderRevert), [posts, orderBy, orderRevert, lang]);
 
     /** Búsqueda por nombre de usuario en servidor (?search=) */
     const onFilter = () => {
@@ -53,7 +45,7 @@ export default function useWorkShow(filter: PostUserFilter, posts: PostRecord[],
 
     const onReset = () => {
         setSearch("");
-        setOrderBy("date");
+        setOrderBy(ORDER_DEFAULT);
         setOrderRevert(false);
 
         router.get(

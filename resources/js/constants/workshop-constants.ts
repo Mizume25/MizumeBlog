@@ -14,6 +14,18 @@ export const WORKSHOP_TABS: readonly WorkShopTab[] = ["manage", "posts", "report
 export const WORKSHOP_POST_TABS = ["all", "publish", "pendings", "drafts"] as const
 export type WORKSHOP_POST_TABS_TYPE = typeof WORKSHOP_POST_TABS[number]
 
+/**
+ * Orden de la tabla de posts del taller (?order=). Valores fijos, solo se traducen las etiquetas.
+ * recent = creación · updated = última edición · title = alfabético · featured = destacados primero
+ */
+export const WORKSHOP_POST_ORDERS = ["recent", "updated", "title", "featured"] as const
+export type WORKSHOP_POST_ORDER_TYPE = typeof WORKSHOP_POST_ORDERS[number]
+
+export const WORKSHOP_POST_ORDER_LABELS: Record<Lang, Record<WORKSHOP_POST_ORDER_TYPE, string>> = {
+    es: { recent: "Más recientes", updated: "Última edición", title: "Título (A-Z)", featured: "Destacados primero" },
+    en: { recent: "Most recent", updated: "Last edited", title: "Title (A-Z)", featured: "Featured first" },
+}
+
 export const DATA_WORKSHOP: Record<Lang, {
     heads: Record<WorkShopTab, string>,
     TAB_LABELS: Record<WorkShopTab, string>,

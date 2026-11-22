@@ -76,3 +76,26 @@ Con N propuestas aceptadas, los **cambios menores** (tags, erratas, sin flags) s
 4. `RevisionGuard` (reglas automáticas).
 5. Historial y revertir.
 6. Niveles de confianza.
+
+### Títulos y nombres alternativos (largo plazo, opcional)
+
+Diseño acordado (2026-11-19). **Estado: pendiente, fase a largo plazo.**
+
+- `title` (es/en) sigue siendo `translatable`: son **idiomas de la interfaz** y de él sale el slug. **No** meter `ja`, romaji, etc. en ese JSON (romperían el fallback, el slug y `WithTranslations`).
+- El título original, el romaji y los alias son **propiedades de la obra**, no traducciones → van en una tabla aparte:
+
+```
+work_titles
+├── work_id      → works (cascade)
+├── title        string           "Re:ゼロから始める異世界生活"
+├── kind         enum             native | romanized | alias
+├── lang         string(10) null  BCP 47: ja | ko | zh | ja-Latn …
+└── unique(work_id, kind, lang, title)
+```
+
+- Totalmente opcional: una obra sin filas funciona igual.
+- `scopePossibleDuplicates` y `search` deben buscar también en `work_titles` (ej. "Kono Subarashii Sekai ni Shukufuku wo" → "Konosuba").
+- `alias` puede acabar absorbiendo `abbreviation` (varias abreviaturas por obra).
+- Cambios registrados como relación (`recordRelationChange`, igual que tags). En `RevisionGuard`, quitar o cambiar el `native` = **cambio estructural**.
+- Authors tienen el mismo caso (渡航 / Wataru Watari): valorar una tabla polimórfica `alternative_names` (`nameable_type/id`) para Work y Author.
+- En público: título en el idioma del lector como principal; nativo y romaji debajo, en pequeño.

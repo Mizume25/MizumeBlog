@@ -1,0 +1,68 @@
+/* Editor visual de posts: adapta el tema de Crepe a los colores de Mizume (claro y oscuro) */
+.post-editor .milkdown {
+    --crepe-color-background: var(--mizume-fourthary);
+    --crepe-color-on-background: var(--md-text);
+    --crepe-color-surface: var(--mizume-fourthary);
+    --crepe-color-surface-low: color-mix(in oklab, var(--md-accent) 8%, var(--mizume-fourthary));
+    --crepe-color-on-surface: var(--md-text);
+    --crepe-color-on-surface-variant: var(--md-muted);
+    --crepe-color-outline: var(--md-border);
+    --crepe-color-primary: var(--md-accent);
+    --crepe-color-secondary: color-mix(in oklab, var(--md-accent) 25%, var(--mizume-fourthary));
+    --crepe-color-on-secondary: var(--md-text);
+    --crepe-color-inverse: var(--md-text);
+    --crepe-color-on-inverse: var(--mizume-fourthary);
+    --crepe-color-inline-code: var(--md-accent);
+    --crepe-color-hover: color-mix(in oklab, var(--md-accent) 14%, var(--mizume-fourthary));
+    --crepe-color-selected: color-mix(in oklab, var(--md-accent) 28%, var(--mizume-fourthary));
+    --crepe-color-inline-area: color-mix(in oklab, var(--md-accent) 12%, var(--mizume-fourthary));
+    --crepe-font-title: inherit;
+    --crepe-font-default: inherit;
+}
+
+.post-editor .milkdown .milkdown-top-bar {
+    position: sticky;
+    /* Debajo de la barra de progreso de lectura (h-1) */
+    top: 0.25rem;
+    z-index: 20;
+    overflow-x: auto;
+    /* Hueco para el botón Guardar, que flota a la derecha */
+    padding-right: 3.5rem;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+@media (min-width: 640px) {
+    .post-editor .milkdown .milkdown-top-bar {
+        padding-right: 11rem;
+    }
+}
+
+.post-editor .w-md-editor-toolbar {
+    padding-right: 3.5rem;
+}
+
+.post-editor .milkdown .ProseMirror {
+    min-height: 24rem;
+    padding: 1.5rem clamp(1rem, 4vw, 3rem) 3rem;
+}
+
+.post-editor .milkdown .ProseMirror h2 {
+    border-bottom: 2px solid var(--md-border);
+    padding-bottom: 0.25rem;
+}
+
+/* Contraste: iconos de la barra y rejilla de las tablas */
+.post-editor .milkdown .milkdown-top-bar button,
+.post-editor .milkdown .milkdown-top-bar button svg {
+    color: var(--md-text);
+    fill: currentColor;
+    opacity: 1;
+}
+
+.post-editor .milkdown .milkdown-top-bar button svg[fill='none'] {
+    fill: none;
+}
+
+.post-editor .milkdown .ProseMirror :is(th, td) {
+    border-color: color-mix(in oklab, var(--md-accent) 45%, transparent);
+}

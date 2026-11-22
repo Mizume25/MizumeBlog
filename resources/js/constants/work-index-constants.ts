@@ -2,9 +2,9 @@
  * @fileoverview Constantes de works
  */
 
-import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE, WorkOrder } from "@/types/custom/work-index-types"
+import { MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE } from "@/types/custom/work-index-types"
 import { Tag } from "@/types/definitions"
-import { ArrowDownZA, CalendarCheck2 } from "lucide-react"
+import { ORDER_TEXT, orderOptions } from "@/lib/order"
 
 /**
  * Valores de filtrado: coinciden con los enums del backend (WorkCategory / WorkMedium),
@@ -47,19 +47,8 @@ export const DATA_WORK_INDEX = {
             tag: "Tags",
             category: "Categorias",
             orderBy: {
-                title: "Ordenar por",
-                types: [
-                    {
-                        type: "date" as WorkOrder,
-                        label: "Fecha",
-                        icon: CalendarCheck2
-                    },
-                    {
-                        type: "alpha" as WorkOrder,
-                        label: "Alfabetico",
-                        icon: ArrowDownZA
-                    },
-                ]
+                title: ORDER_TEXT.es.title,
+                types: orderOptions("es"),
             },
             medium: "Medio",
             search: {
@@ -104,19 +93,8 @@ export const DATA_WORK_INDEX = {
             tag: "Tags",
             category: "Category",
             orderBy: {
-                title: "Order by",
-                types: [
-                    {
-                        type: "date" as WorkOrder,
-                        label: "Date",
-                        icon: CalendarCheck2
-                    },
-                    {
-                        type: "alpha" as WorkOrder,
-                        label: "Alphabetical",
-                        icon: ArrowDownZA
-                    },
-                ]
+                title: ORDER_TEXT.en.title,
+                types: orderOptions("en"),
             },
             medium: "Medium",
             search: {

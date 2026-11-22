@@ -3,7 +3,7 @@ import { DATA_WORK_INDEX_TYPE } from "@/constants/work-index-constants"
 import { Tag } from "@/types/definitions"
 import { Tags } from "lucide-react"
 import { Highlight } from '@/components/animate-ui/primitives/effects/highlight'
-import { CategorySelect, MEDIUM_VALUES_TYPE, WorkOrder } from "@/types/custom/work-index-types"
+import { CategorySelect, MEDIUM_VALUES_TYPE } from "@/types/custom/work-index-types"
 import {
     Button as AriaButton,
     ListBox,
@@ -75,37 +75,6 @@ export const WorkFilterTags = ({ DATA, onTag, selectTags, tags }: WorkFilterTags
 
                 }
             </div>
-        </div>
-    )
-}
-
-interface WorkFilterOrderByProps {
-    orderBy: WorkOrder,
-    setOrderBy: (v: WorkOrder) => void,
-    DATA: DATA_WORK_INDEX_TYPE,
-
-}
-
-export const WorkFilterOrderBy = ({ orderBy, setOrderBy, DATA }: WorkFilterOrderByProps) => {
-    return (
-        <div className="grid grid-cols-2 gap-2 bg-item rounded-lg ">
-            <Highlight
-                value={orderBy}
-                onValueChange={(v) => setOrderBy(v as WorkOrder)}
-                className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
-            >
-                {DATA.filter.orderBy.types.map((c) => (
-                    <button
-                        key={c.type}
-                        aria-label={c.label}
-                        data-value={c.type}
-                        className="px-3 py-1  whitespace-nowrap shrink-0 text-item-foreground capitalize cursor-pointer"
-                    >
-                        <c.icon />
-
-                    </button>
-                ))}
-            </Highlight>
         </div>
     )
 }

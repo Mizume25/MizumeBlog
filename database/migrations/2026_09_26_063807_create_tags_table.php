@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->json('name');               // traducible: {"es": ..., "en": ...}
             $table->timestamps();
+            $table->softDeletes();              // el borrado se registra en entity_revisions y es reversible
         });
     }
 

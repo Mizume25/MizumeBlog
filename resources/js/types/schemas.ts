@@ -1,10 +1,12 @@
 /** OBJETO Zod */
 import { z } from 'zod';
+import { IMAGE_TYPES, msg, zFiles, zList, zText, zTranslatable, zTranslatableWithDefault } from '@/lib/schema-messages';
 
 /**
  * Schema de Categoria
  */
-export const categorySchema = z.enum(['literatura', 'animemanga', 'reflexiones']);
+export const CategorySchema = z.enum(['literatura', 'animemanga']);
+export const MediumSchema = z.enum(["libro", "poema", "novela_ligera", "novela", "anime", "manga", "pelicula"]);
 
 /**
  * Valores de las imagenes
@@ -15,16 +17,14 @@ const VALID_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 /**
  * Schema de artwork
  */
-
+/*
 const artworkSchema = z.object({
     id: z.number().nullable().optional(),
     title: z.string().min(2, 'Mínimo debe haber un nombre'),
     code: z.string().optional(),
 });
 
-/**
- * Schema para Post creado con zod
- */
+
 export const PostSchema = z.object({
     works: z.array(artworkSchema).optional(),
     title: z.string().min(2, 'Necesitas un titulo minimo'),
@@ -67,9 +67,6 @@ export const PostSchema = z.object({
 export type CreatePostSchemaOutput = z.output<typeof PostSchema>;
 export type CreatePostSchemaInput = z.input<typeof PostSchema>;
 
-/**
- * Schema para Artwork crado con zod
- */
 
 export const PhotoSchema = z.object({
     num: z.number().optional(),
@@ -89,3 +86,47 @@ export const ArtworkSchema = z.object({
 
 export type CreateArtworkSchemaOutput = z.output<typeof ArtworkSchema>;
 export type CreateArtworktSchemaInput = z.input<typeof ArtworkSchema>;
+
+
+*/
+
+
+/**
+ * Post. Límites = StorePostRequest. Los mensajes son genéricos (lib/schema-messages):
+ * un campo nuevo se construye con zText / zList / zFiles, sin crear mensajes.
+ */
+/*
+export const PostSchema = z.object({
+    title: zText(2, 255),
+    web_title: z.string().max(255, msg('max_chars', { n: 255 })).optional(),
+    tags: zList(zText(2, 50), 1, 10),
+    category: categorySchema,
+    author: zText(2, 255),
+    publish_date: z.string().optional(),
+    description: z.string().optional(),
+    featured: z.boolean().default(false),
+    cover: zFiles({ maxMB: 5, types: IMAGE_TYPES }),
+    cover_card: zFiles({ maxMB: 5, types: IMAGE_TYPES }),
+    content: zFiles({ maxMB: 5, ext: 'md', types: ['text/markdown', 'text/plain', ''] }),
+    images: zFiles({ maxMB: 5, types: IMAGE_TYPES }),
+});
+
+*/
+
+
+
+export const WorkSchema = z.object({
+    title: zTranslatableWithDefault(2, 255),
+    abbreviation: z.string().max(50, msg('max_chars', { n: 50 })).optional(),
+    category: CategorySchema,
+    publish_date: z.string().optional(),
+    sinopsi: zTranslatable(50),
+    medium: MediumSchema,
+    cover_url: zFiles({ maxMB: 5, types: IMAGE_TYPES }),
+    tags: zList(zText(2, 50), 1, 10),
+})
+
+
+export type CreateWorkOutput = z.output<typeof WorkSchema>
+export type CreateWorkInput = z.input<typeof WorkSchema>
+

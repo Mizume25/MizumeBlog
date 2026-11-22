@@ -15,7 +15,7 @@ class PostFilter
      *
      * Las dos condiciones van agrupadas en un where(): sin el grupo, el orWhere
      * quedaría al nivel del resto de la query y se saltaría los filtros externos
-     * (whereHas('works'), publishPosts()...).
+     * ($work->posts(), publishPosts()...).
      */
     public function apply(Builder $query): Builder
     {

@@ -14,15 +14,8 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->text('message');
-            $table->enum("status" , ["pending", "resolved", "rejected"]);
-            $table->unsignedBigInteger('resolved_by')->nullable();
-
-            $table->foreign('resolved_by')
-            ->references('id')
-            ->on('users')
-            ->onDelete('restrict')
-            ->onUpdate('cascade');
-
+            $table->enum('status', ['pending', 'resolved', 'rejected'])->default('pending');
+            $table->foreignId('resolved_by')->nullable()->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

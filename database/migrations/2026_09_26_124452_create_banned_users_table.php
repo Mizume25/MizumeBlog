@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('banned_users', function (Blueprint $table) {
             $table->id();
-            $table->string('email');
-            $table->string('ip_address');
+            $table->string('email')->index();          // se consulta en cada login/registro
+            $table->string('ip_address')->index();
             $table->text('reason');
-            $table->foreignId('banned_by')->constrained('users', 'id');
+            $table->foreignId('banned_by')->constrained('users');
             $table->timestamps();
         });
     }

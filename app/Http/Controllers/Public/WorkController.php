@@ -37,7 +37,7 @@ class WorkController extends Controller
             ->withQueryString();
 
 
-        $tags = Tag::whereHas('works')->orderBy('name')->get();
+        $tags = Tag::whereHas('works')->alphabetical()->get();
 
         // filled() descarta null, '' y arrays vacíos (tags: [])
         $active = array_filter($filters, fn($v) => filled($v));
@@ -67,18 +67,20 @@ class WorkController extends Controller
         /** Posts publicados de este work, filtrables por nombre de usuario (?search=) */
         $paginated = (new PostFilter($filters))
             ->apply(
-                Post::query()
-                    ->whereHas('works', fn($q) => $q->whereKey($work->id))
+                $work->posts()
                     ->publishPosts()
                     ->with('user:id,uuid,name')
+                    ->orderByRaw('featured_at IS NULL')   // primero los destacados
+                    ->latest('featured_at')
                     ->latest('publish_date')
+                    ->getQuery()
             )
             ->paginate(6)
             ->withQueryString();
 
-   
+
         $users = User::query()
-            ->whereHas('posts', fn($q) => $q->publishPosts()->whereHas('works', fn($w) => $w->whereKey($work->id)))
+            ->whereHas('posts', fn($q) => $q->publishPosts()->where('work_id', $work->id))
             ->get(['id', 'uuid', 'name']);
 
       

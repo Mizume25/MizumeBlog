@@ -31,7 +31,7 @@ class MakeSlugFaker extends Command
     {
 
         Work::whereNull('slug')->each(function ($work) {
-            $work->slug = Str::slug($work->title) . '-' . $work->id;
+            $work->slug = Str::slug($work->baseTranslation('title')) . '-' . $work->id;   // el slug sale siempre del castellano
             $work->saveQuietly();
         });
     }

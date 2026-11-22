@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\EntityStatus;
 use App\Models\Author;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,9 +22,20 @@ class AuthorFactory extends Factory
             'name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'pseudonym' => null,
-            'birth_year' => fake()->year(),
-            'description' => fake()->text(200),
+            'birth_year' => (int) fake()->year(),
+            'description' => [
+                'es' => fake()->text(200),
+                'en' => fake('en_US')->text(200),
+            ],
         ];
+    }
+
+    /** Ficha revisada por un moderador. */
+    public function verified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => EntityStatus::Verified,
+        ]);
     }
 
     /** Autor conocido solo por seudónimo (displayName devuelve el seudónimo). */

@@ -1,4 +1,3 @@
-
 import {
   BlogLayout,
   BlogWidget,
@@ -10,7 +9,6 @@ import {
   BlogWidgetWrap
 } from '@/core/desktop/main-components'
 import { useMainHook } from '@/hooks/custom/main-hook'
-import { PostsGroupedByUser } from '@/types/definitions';
 import { useLangStore } from '@/store/lang-store';
 import { DATA_ENTITIES } from '@/core/desktop/utils-components';
 import { DATA } from '@/constants/main-constants';
@@ -18,33 +16,21 @@ import { Route } from '@/types';
 import { Head } from '@inertiajs/react';
 
 
-
-
-/**
- * 
- * @param posts Filtra usuarios agrupados
- * @returns 
- */
-export function onUsers(posts: PostsGroupedByUser) {
-  const users = Object.values(posts)
-    .flat()
-    .map((post) => post.user);
-
-  return [...new Map(users.map((user) => [user.id, user] as const)).values()];
-}
-
-
 /** Home lo añade el sidebar: aquí no hay circuito propio */
 const routes: Route[] = []
 
 
-function main({ works, posts }: MainProps) {
+/**
+ * Home: obras destacadas por el admin.
+ * El carrusel elige una obra; la ficha enlaza a su índice (works/{slug}) con sus posts destacados.
+ */
+function main({ works }: MainProps) {
 
   /** Variable de estado de lenguaje */
   const lang = useLangStore((l) => l.lang)
 
-  /** Works y estado de variable */
-  const { work, changeWork } = useMainHook(works[0])
+  /** Obra seleccionada (por id: sobrevive al cambio de idioma) */
+  const { work, changeWork } = useMainHook(works)
 
   /** Contenido de la pagina */
   const CONTENT = DATA[lang]
@@ -52,21 +38,17 @@ function main({ works, posts }: MainProps) {
   /** Contenido de entidades */
   const ENTITIES = DATA_ENTITIES[lang]
 
-  /** Usuarios relacionales  */
-  const users = onUsers(posts)
-
-
   return (
     <BlogLayout routes={routes}>
-        <Head title={CONTENT.head} />
+      <Head title={CONTENT.head} />
       <BlogWidgetWrap>
         <BlogWidget variant='post' content={CONTENT} />
         <BlogWidget variant='work' content={CONTENT} />
         <BlogWidget variant='author' content={CONTENT} />
       </BlogWidgetWrap>
       <BlogMain>
-        <BlogSection variant='left' works={works} work={work} posts={posts} changeWork={changeWork} users={users} ENTITIES={ENTITIES} />
-        <BlogSection variant='right' works={works} work={work} posts={posts} changeWork={changeWork} users={users} ENTITIES={ENTITIES} />
+        <BlogSection variant='left' works={works} work={work} changeWork={changeWork} ENTITIES={ENTITIES} lang={lang} />
+        <BlogSection variant='right' works={works} work={work} changeWork={changeWork} ENTITIES={ENTITIES} lang={lang} />
       </BlogMain>
     </BlogLayout>
   )

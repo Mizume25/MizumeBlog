@@ -4,9 +4,7 @@
  * @fileoverview Componentes de Authors
  */
 import { AUTHOR_YEAR_MIN, DATA_AUTHOR_INDEX_TYPE } from '@/constants/authors-index-constants';
-import { Highlight } from '@/components/animate-ui/primitives/effects/highlight';
 import { CURRENT_YEAR } from '@/lib/utils';
-import { AuthorOrder } from '@/types/custom/author-index-types';
 import { Slider } from '@animate-ui/react/primitives/base-ui/slider';
 
 interface AuthorsIndexProps {
@@ -68,35 +66,6 @@ export const AuthorFilterSearch = ({ search, setSearch, onFilter }: AuthorFilter
                 placeholder="Buscar obras..."
                 className="w-full bg-input text-input-foreground placeholder:text-input-placeholder p-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-input-focus"
             />
-        </div>
-    )
-}
-
-interface AuthorFilterOrderByProps {
-    orderBy: AuthorOrder,
-    setOrderBy: (v: AuthorOrder) => void,
-    DATA: DATA_AUTHOR_INDEX_TYPE,
-}
-
-export const AuthorFilterOrderBy = ({ orderBy, setOrderBy, DATA }: AuthorFilterOrderByProps) => {
-    return (
-        <div className="grid grid-cols-2 gap-2 bg-item rounded-lg ">
-            <Highlight
-                value={orderBy}
-                onValueChange={(v) => setOrderBy(v as AuthorOrder)}
-                className="inset-0 rounded-lg bg-item-active border-2 border-item-border"
-            >
-                {DATA.filter.orderBy.types.map((c) => (
-                    <button
-                        key={c.type}
-                        aria-label={c.label}
-                        data-value={c.type}
-                        className="px-3 py-1  whitespace-nowrap shrink-0 text-item-foreground capitalize cursor-pointer"
-                    >
-                        <c.icon />
-                    </button>
-                ))}
-            </Highlight>
         </div>
     )
 }

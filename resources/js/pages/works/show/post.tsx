@@ -7,13 +7,13 @@ import { DATA_WORK_SHOW } from "@/constants/work-show-constants"
 import { WorkShowPostProps } from "@/types/custom/work-show-types"
 import { Head, usePage } from "@inertiajs/react"
 import { SharedData } from "@/types"
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import Switch from "react-switch"
-import MDEditor from "@uiw/react-md-editor"
-import { EDITOR_COMMANDS } from "@/core/post/md-commands"
-import MarkdownRenderer from "@/core/post/MarkdownRenderer"
 import { Button } from "@/components/animate-ui/components/buttons/button"
 import { Save } from "lucide-react"
+
+/** Carga diferida: quien solo lee el post no descarga el editor */
+const PostEditor = lazy(() => import("@/core/post/PostEditor"))
 
 /**
  * works/show/post: lectura del post por secciones.
@@ -73,10 +73,9 @@ function WorkShowPost({ post, build }: WorkShowPostProps) {
     <>
       <Head title={post.title} />
       {edit ? (
-        <MDEditor value={content} onChange={(val) => setContent(val ?? '')} data-color-mode="dark" height="auto" preview="edit"
-          components={{ preview: (source) => <MarkdownRenderer content={source} /> }}
-          commands={EDITOR_COMMANDS}
-        />
+        <Suspense fallback={<div className="min-h-96 animate-pulse rounded-xl bg-mizume-fourthary" />}>
+          <PostEditor key={post.id} value={content} onChange={setContent} lang={lang} />
+        </Suspense>
       ) : (
         <PostSections postId={post.id} body={body} section={section} direction={direction} />
       )

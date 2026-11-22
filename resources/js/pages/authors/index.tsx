@@ -5,9 +5,9 @@ import { Pagination } from "@/components/paginator"
 import RevertButton from "@/components/revert-buttono"
 import { DATA_AUTHOR_INDEX } from "@/constants/authors-index-constants"
 import { ROUTE } from "@/constants/routes"
-import { AuthorFilterOrderBy, AuthorFilterSearch, AuthorsMain, SliderYearAuthor } from "@/core/desktop/authors-index-components"
+import { AuthorFilterSearch, AuthorsMain, SliderYearAuthor } from "@/core/desktop/authors-index-components"
 import { PostIndexMain } from "@/core/desktop/post-index-components"
-import { DATA_ENTITIES, FilterSearch } from "@/core/desktop/utils-components"
+import { DATA_ENTITIES, FilterOrderBy, FilterSearch } from "@/core/desktop/utils-components"
 import { useAuthorsIndex } from "@/hooks/custom/use-authorsindex-hook"
 import { BlogLayout } from "@/layouts/app"
 import { PaginatedText } from "@/lib/utils"
@@ -88,11 +88,7 @@ function AuthorsIndex({ paginated, filters }: AuthorsIndexProps) {
 
               <div className="flex items-center gap-2">
                 <div className="flex-1">
-                  <AuthorFilterOrderBy
-                    DATA={DATA}
-                    orderBy={orderBy}
-                    setOrderBy={setOrderBy}
-                  />
+                  <FilterOrderBy value={orderBy} onChange={setOrderBy} options={DATA.filter.orderBy.types} />
                 </div>
                 <RevertButton
                   onToggle={() => setOrderRevert((r) => !r)}

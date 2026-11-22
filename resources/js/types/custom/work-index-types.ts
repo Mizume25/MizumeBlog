@@ -4,7 +4,6 @@ import { LucideIcon } from "lucide-react"
 
 
 
-export type WorkOrder = "date" | "alpha"
 
 export type NAV_VALUES_TYPE = 'todos' | 'literatura' | 'animemanga'
 

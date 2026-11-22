@@ -36,3 +36,5 @@ export const goBack = () => {
   if (window.history.length > 1) window.history.back();
   else router.visit(route('dashboard'));
 };
+/** Orden genérico de listados (ValueOrder, orderOptions, sortByOrder...) */
+export * from './order';

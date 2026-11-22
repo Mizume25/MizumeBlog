@@ -20,14 +20,14 @@ class MarkdownService
     /**
      * Maquetación de un post: markdown, índice (index.json) y número de secciones.
      *
-     * El tipo se toma de $post->type. Solo los posts de tipo article necesitan
-     * $article para saber si pertenecen a un work o a un author.
+     * El tipo se toma de $post->type. En los article, si no se indica $article,
+     * se deduce del propio post (work_id → work · author_id → author).
      *
      * @return array{content: string, index: array, sections: int}
      */
     public function build(Post $post, ?ArticleType $article = null): array
     {
-        [$content, $index] = $this->read($this->resolvePaths($post, $article));
+        [$content, $index] = $this->read($this->resolvePaths($post, $article ?? $post->article_type));
 
         $content = $this->resolveMedia($content, $post);
 

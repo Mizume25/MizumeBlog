@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();                       // identificador público (rutas)
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'user', 'editor'])->default('user');
             $table->string('google_id')->nullable();
             $table->string('avatar')->nullable();
+            $table->unsignedTinyInteger('featured_quota')->default(1); // destacados propios permitidos (lo fija el admin)
             $table->rememberToken();
             $table->timestamps();
         });

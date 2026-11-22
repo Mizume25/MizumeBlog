@@ -1,11 +1,11 @@
 import { BlogLayout } from "@/layouts/app"
-import { BlogTopUtil, BlogTopUtilLeft, BlogTopUtilRight, DATA_ENTITIES, FilterSearch } from "@/core/desktop/utils-components"
-import { WorkFilterCategory, WorkFilterMedium, WorkFilterOrderBy, WorkFilterSearch, WorkFilterTags, WorkIndexMain } from "@/core/desktop/works-index-components"
+import { BlogTopUtil, BlogTopUtilLeft, BlogTopUtilRight, DATA_ENTITIES, FilterOrderBy, FilterSearch } from "@/core/desktop/utils-components"
+import { WorkFilterCategory, WorkFilterMedium, WorkFilterSearch, WorkFilterTags, WorkIndexMain } from "@/core/desktop/works-index-components"
 import { Tag, WorkRecord } from "@/types/definitions"
 import { useLangStore } from "@/store/lang-store"
 import { FlipWork } from "@/components/flip-work"
 import { useWorkIndex } from "@/hooks/custom/use-workindex-hook"
-import { CategorySelect, MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE, WorkFilters, WorkOrder } from "@/types/custom/work-index-types"
+import { CategorySelect, MEDIUM_VALUES_TYPE, NAV_VALUES_TYPE, WorkFilters } from "@/types/custom/work-index-types"
 import { DATA_WORK_INDEX } from "@/constants/work-index-constants"
 import { Paginated } from "@/types/definitions"
 import { Button } from '@/components/ui/button';
@@ -87,12 +87,7 @@ function WorksIndex({ paginated, tags, filters }: WorksIndexProps) {
             titleStyles="title mx-2"
             sideTitle={<RevertButton onToggle={() => setOrderRevert((r) => !r)} className="bg-btn-info text-btn-info-foreground hover:bg-btn-info-foreground hover:text-btn-info" />}
           >
-            <WorkFilterOrderBy
-              DATA={DATA}
-              orderBy={orderBy}
-              setOrderBy={setOrderBy}
-
-            />
+            <FilterOrderBy value={orderBy} onChange={setOrderBy} options={DATA.filter.orderBy.types} />
           </BlocLabel>
 
 

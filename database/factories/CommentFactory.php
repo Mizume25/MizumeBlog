@@ -15,25 +15,29 @@ class CommentFactory extends Factory
 {
 
 
-    private function query(): Post
+    /** Artículo publicado al azar (los borradores no reciben comentarios). */
+    private function query(): ?Post
     {
-        return Post::whereHas('user', function ($query) {
-            $query->where('role', UserRole::Editor)
-                ->orWhere('role', UserRole::Admin);
-        })->first();
+        return Post::articles()->publishPosts()->inRandomOrder()->first();
     }
+
     /**
      * Define the model's default state.
+     *
+     * Comenta un lector (rol user) distinto del autor del post; si no hay, cualquier otro usuario.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
-    {   
+    {
         $post = $this->query();
+
         return [
             'description' => fake()->paragraph(),
             'publish_date' => fake()->dateTimeBetween('-6 months', 'now')->format('Y-m-d'),
-            'user_id' => $post?->user_id,
+            'user_id' => fn() => User::where('role', UserRole::User)->inRandomOrder()->value('id')
+                ?? User::whereKeyNot($post?->user_id)->inRandomOrder()->value('id')
+                ?? $post?->user_id,
             'post_id' => $post?->id,
             'parent_id' => null,
         ];

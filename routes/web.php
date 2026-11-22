@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Public\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\WorkController;
+use Inertia\Inertia;
 
 /**
  * Rutas Restringidas par ausuarios verificados
@@ -137,24 +138,50 @@ Route::get('/legal/{code}', [AboutController::class, 'legality'])
 
 
 /** Rutas Publicas Entidades */
-Route::get('/works', [WorkController::class, 'index'])->name('works.index');
-
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
 Route::get('/authors', [AuthorController::class, 'index'])->name('authors.index');
 
 Route::get('/authors/{author}', [AuthorController::class, 'show'])->name('authors.show');
 
+
+
+/** Rutas Works */
+require __DIR__ . '/private/work.php';
+
+Route::get('/works', [WorkController::class, 'index'])->name('works.index');
+
 Route::get('/works/{work}', [WorkController::class, 'show'])->name('works.show');
 
+require __DIR__ . '/public/work.php';
+
+/**´
+ * Ruta media library
+ */
 
 
 
+// Ruta de Fomrulario de peticion para convertirse en editor
+Route::get('forms/request', function () {
+    return Inertia::render('forms/request-role');
+})->name('forms.request');
 
 
+/**
+ * Rutas de perfil comun
+ */
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
-require __DIR__ . '/public/work.php';
-require __DIR__ . '/public/comments.php';
-require __DIR__ . '/private/panel.php';
 
+/**
+ * Rutas Publicas
+ */
+
+require __DIR__ . '/public/comments.php';
+require __DIR__ . '/public/exports.php';
+
+/**
+ * Rutas Privadas
+ */
+
+require __DIR__ . '/private/panel.php';

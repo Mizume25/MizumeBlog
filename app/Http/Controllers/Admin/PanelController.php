@@ -6,10 +6,13 @@ use App\Enums\ArticleType;
 use App\Enums\PostType;
 use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Filters\MediaRequest;
 use App\Http\Requests\Filters\PostFilterRequest;
 use App\Models\Comment;
+use App\Models\Media;
 use App\Models\Report;
 use App\Models\RequestPermission;
+use App\Models\Work;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -33,7 +36,7 @@ class PanelController extends Controller
             ...$this->context(),
             // Todos los posts: las estadísticas de bloc-info necesitan la lista completa
             'posts' => fn() => $this->content()
-                ->with(['works.tags', 'author', 'media', 'comments'])
+                ->with(['work.tags', 'media', 'comments'])
                 ->latest()
                 ->get(),
         ]);
@@ -53,7 +56,7 @@ class PanelController extends Controller
         $filter = new PostFilter($filters);
 
         $query = $this->content()
-            ->with(['works.tags', 'author', 'media', 'comments'])
+            ->with(['work.tags', 'media', 'comments'])
             ->latest();
 
         $filter->applyTitle($query);
@@ -61,7 +64,7 @@ class PanelController extends Controller
 
         $paginated = $query->paginate(8)->withQueryString();
 
-       
+
         $active = array_filter($filters, fn($v) => filled($v));
 
         // now() en vez de flash() para que el mensaje no sobreviva a la siguiente petición
@@ -94,6 +97,22 @@ class PanelController extends Controller
         return Inertia::render('panel/workshop/requests', $this->context());
     }
 
+    public function media(MediaRequest $request): Response
+    {
+        $paginated = Media::query()
+            ->latest('id')
+            ->paginate(12)
+            ->withQueryString();
+
+        // Solo lo que usa el select; sin modelos completos se evita la consulta de cover_url por obra
+        $works = Work::query()
+            ->get(['id', 'title'])
+            ->map(fn(Work $work) => ['id' => $work->id, 'title' => $work->title])
+            ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values();
+
+        return Inertia::render('panel/workshop/media', compact('paginated', 'works'));
+    }
 
     /**
      * Query base: artículos de works del usuario autenticado.
@@ -101,9 +120,7 @@ class PanelController extends Controller
      */
     private function content(): HasMany
     {
-        return Auth::user()->posts()
-            ->where('type', PostType::Article)
-            ->where('article_type', ArticleType::Work);
+        return Auth::user()->posts()->ofArticleType(ArticleType::Work);
     }
 
 

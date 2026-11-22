@@ -18,7 +18,7 @@ class RoleMiddleware
         $minimum = UserRole::from($role);
 
         if (!$request->user()?->hasRoleAtLeast($minimum)) {
-            abort(403);
+            return redirect()->route('forms.request')->with('error', __('access.role_denied'));
         }
 
         return $next($request);
