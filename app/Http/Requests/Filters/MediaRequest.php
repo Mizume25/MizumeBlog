@@ -28,7 +28,7 @@ class MediaRequest extends FormRequest
             'type' => ['nullable', Rule::enum(MediaType::class)],
             'search_name' => ['nullable', 'string', 'max:100'],
             'search_artist' => ['nullable', 'string', 'max:100'],
-            'work' => ['nullable', 'string', 'max:100'],
+            'work' => ['required, exists:works,id']
         ];
     }
 }

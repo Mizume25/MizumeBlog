@@ -99,6 +99,9 @@ class PanelController extends Controller
 
     public function media(MediaRequest $request): Response
     {
+
+        $filters = $request->validated();
+
         $paginated = Media::query()
             ->latest('id')
             ->paginate(12)
@@ -111,7 +114,11 @@ class PanelController extends Controller
             ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
             ->values();
 
-        return Inertia::render('panel/workshop/media', compact('paginated', 'works'));
+        return Inertia::render('panel/workshop/media', [
+            'paginated' => $paginated,
+            'works'     => $works,
+            'filters'   => (object) $filters,
+        ]);
     }
 
     /**

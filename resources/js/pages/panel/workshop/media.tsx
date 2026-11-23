@@ -1,3 +1,4 @@
+import { MediaFilter } from "@/constants/media-constants"
 import MediaLibrary from "@/core/library/media-library"
 import { BlogLayout } from "@/layouts/app"
 import { Route } from "@/types"
@@ -6,7 +7,8 @@ import { Head } from "@inertiajs/react"
 
 interface MediaIndexProps {
   paginated: Paginated<Media>,
-  works: Work []
+  works: Work [],
+  filters: MediaFilter
 }
 
 const routes: Route[] = [
@@ -20,7 +22,7 @@ const routes: Route[] = [
     }
 ]
 
-function MediaIndex({ paginated, works } : MediaIndexProps) {
+function MediaIndex({ paginated, works, filters } : MediaIndexProps) {
 
 
   return (
